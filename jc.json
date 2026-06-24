@@ -1,0 +1,10 @@
+{
+  "name": "TesinaReservasHotel",
+  "version": "1.0.0",
+  "mainClass": "Main",
+  "sourceDirectories": ["src"],
+  "testDirectories": [],
+  "dependencies": [],
+  "outputDirectory": "out/production/TesinaReservasHotel",
+  "javaVersion": 17
+}
