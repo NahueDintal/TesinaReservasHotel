@@ -7,5 +7,14 @@ public class Probabilidad {
     this.totalCanceladas = totalCanceladas;
   }
 
+  public double probabilidadCancelacion() {
+    return (double) totalCanceladas / totalReservas;
+  }
 
+  public double probabilidadDoubleCancelacion() {
+    return 1.0 - probabilidadCancelacion();
+  }
+
+  // cancelación de temporada baja
+  // cancelación en temporada alta
 }
