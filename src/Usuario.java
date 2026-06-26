@@ -6,7 +6,7 @@ public class Usuario {
   private String permisos; // escala de permisos, usuario, admin, o persimisos a seleccionar??
   private String area;
 
-  public Usuario(int idUsuario, String nombre, Strin clave, boolean habilitado, String permisos, String area) {
+  public Usuario(int idUsuario, String nombre, String clave, boolean habilitado, String permisos, String area) {
     this.nombre = nombre;
     this.clave = clave;
     this.habilitado = true;
@@ -26,8 +26,8 @@ public class Usuario {
     return habilitado;
   }
 
-  public String getPersimisos() {
-    return persimisos;
+  public String getPermisos() {
+    return permisos;
   }
 
   public String getArea() {
