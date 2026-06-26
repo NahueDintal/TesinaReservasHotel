@@ -2,7 +2,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class Reservation{
+public class Reservation {
   private Client client;
   private Room room;
   private LocalDate initDate;
@@ -27,4 +27,15 @@ public class Reservation{
     return endDate;
   }
 
+  public Room getRoom() {
+    return room;
+  }
+
+  public Client getClient() {
+    return client;
+  }
+
+  public double getTotal() {
+    return total;
+  }
 }

@@ -2,16 +2,16 @@ public class User {
   private int idUser;
   private String name;
   private String password;
-  private boolean enable;
-  private String permits; // escala de permits, usuario, admin, o persimisos a seleccionar??
-  private String area;
+  private boolean status; // estado de perfil, si está habilitado o no.
+  private String permissions; // escala de permits, usuario, admin, o persimisos a seleccionar??
+  private String role;
 
-  public User(int idUser, String name, String password, boolean enable, String permits, String area) {
+  public User(int idUser, String name, String password, boolean enable, String permissions, String role) {
     this.name = name;
     this.password = password;
-    this.enable = true;
-    this.permits = permits;
-    this.area = area;
+    this.status = true;
+    this.permissions = permissions;
+    this.role = role;
   }
 
   public int getIdUser() {
@@ -22,15 +22,22 @@ public class User {
     return name;
   }
 
-  public boolean getEnable() {
-    return enable;
+  public boolean getStatus() {
+    return status;
   }
 
-  public String getPermits() {
-    return permits;
+  public String getPermissions() {
+    return permissions;
   }
 
-  public String getArea() {
-    return area;
+  public String getRole() {
+    return role;
   }
+
+  // funcion de logging, mepa que hay que hacer una clase para el logging...como
+  // un servicio
+  public boolean Loggin(String user, String password) {
+    return true;
+  }
+  // funcion de logout
 }
