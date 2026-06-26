@@ -12,5 +12,7 @@ public class Probability {
   }
 
   // cancelación de temporada baja
+  // tendría que hacer una consulta con los meses que se denominan como temp baja
   // cancelación en temporada alta
+  // idem al anterior
 }
