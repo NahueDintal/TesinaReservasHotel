@@ -1,0 +1,406 @@
+¡Hola! He analizado en profundidad el documento de trazado fino que me has compartido. Es un sistema de gestión hotelera bastante completo, con módulos para recepción, limpieza, mantenimiento, cocina y administración. A partir de los casos de uso, he extraído las entidades principales, sus atributos y las relaciones entre ellas. Te propongo un modelo de base de datos relacional que cubre todos los requisitos funcionales identificados.
+
+A continuación, te presento el **Modelo Entidad-Relación (MER)** y el **Modelo Relacional** derivado, con tablas, claves primarias, foráneas y restricciones.
+
+---
+
+## Modelo Entidad-Relación (MER) – Resumen conceptual
+
+Las entidades principales son:
+
+- **Empleado** (personal del hotel)
+- **Usuario** (credenciales de acceso, vinculado a un empleado)
+- **Cliente** (huéspedes)
+- **Reserva** (estancia de un cliente)
+- **Habitación** (cuartos del hotel)
+- **Incidente** (reportes de problemas, asociados a reservas o habitaciones)
+- **TareaMantenimiento** (tareas correctivas o preventivas)
+- **Consumo** (gastos de frigobar, bar, servicios extras)
+- **PedidoCocina** (pedidos de comida, incluye room service)
+- **Plato** (ítems del menú)
+- **Receta** (detalle de preparación de un plato)
+- **Proveedor** (empresas que suministran bienes/servicios)
+- **Compra** (órdenes de compra a proveedores)
+- **Permiso** (asignación de permisos a usuarios)
+- **Auditoria** (registro de acciones de usuarios)
+- **IngresoOperativo** (registro de ingresos del hotel)
+
+Además, existen tablas auxiliares como **CategoriaIncidente**, **CategoriaProveedor**, **TipoCompra**, **FormaPago**, etc., que se pueden normalizar.
+
+---
+
+## Modelo Relacional – Tablas y Atributos
+
+A continuación, detallo cada tabla con sus columnas, tipo de dato sugerido, claves y restricciones. Las claves primarias se indican con **PK**, las foráneas con **FK**.
+
+---
+
+### 1. **Empleado**
+Almacena información personal y laboral de todo el personal del hotel.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_empleado           | INT           | **PK** (autoincremental)                      |
+| nombre                | VARCHAR(50)   |                                               |
+| apellido              | VARCHAR(50)   |                                               |
+| dni                   | VARCHAR(20)   | Único                                         |
+| fecha_nacimiento      | DATE          |                                               |
+| telefono              | VARCHAR(20)   |                                               |
+| email                 | VARCHAR(100)  | Único                                         |
+| foto_dni              | BLOB / TEXT   | Ruta o binario                                |
+| cargo                 | VARCHAR(50)   | Ej: Recepcionista, Mucama, etc.               |
+| estado                | VARCHAR(20)   | Activo / Inactivo                             |
+| fecha_ingreso         | DATE          |                                               |
+| fecha_inactivacion    | DATE          | NULL si activo                                |
+| motivo_inactivacion   | VARCHAR(100)  | NULL si activo                                |
+| observaciones         | TEXT          |                                               |
+
+**Índices:** dni, email.
+
+---
+
+### 2. **Usuario**
+Credenciales de acceso al sistema. Cada usuario está vinculado a un empleado.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_usuario            | INT           | **PK**                                        |
+| nombre_usuario        | VARCHAR(50)   | Único                                         |
+| contraseña_hash       | VARCHAR(255)  | Hash seguro                                   |
+| estado                | VARCHAR(20)   | Activo / Inactivo                             |
+| id_empleado           | INT           | **FK** → Empleado(id_empleado) (1:1)          |
+| fecha_creacion        | DATETIME      |                                               |
+| fecha_inactivacion    | DATETIME      | NULL si activo                                |
+
+**Restricción:** Un empleado solo puede tener un usuario activo a la vez (se controla a nivel de aplicación).
+
+---
+
+### 3. **Cliente**
+Huéspedes o clientes que realizan reservas.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_cliente            | INT           | **PK**                                        |
+| nombre                | VARCHAR(50)   |                                               |
+| apellido              | VARCHAR(50)   |                                               |
+| dni                   | VARCHAR(20)   | Único                                         |
+| telefono              | VARCHAR(20)   |                                               |
+| email                 | VARCHAR(100)  |                                               |
+| direccion             | VARCHAR(200)  |                                               |
+| fecha_registro        | DATETIME      |                                               |
+
+**Índices:** dni, email.
+
+---
+
+### 4. **Habitacion**
+Cuartos del hotel, con su estado de limpieza y ocupación.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_habitacion         | INT           | **PK**                                        |
+| numero                | VARCHAR(10)   | Único (ej: "101")                             |
+| piso                  | INT           |                                               |
+| tipo                  | VARCHAR(30)   | Ej: Suite, Doble, Individual                  |
+| estado_limpieza       | VARCHAR(20)   | Limpia / Sucia / En limpieza                  |
+| estado_ocupacion      | VARCHAR(20)   | Disponible / Ocupada / Fuera de servicio      |
+| descripcion           | TEXT          | Amenidades, etc.                              |
+
+---
+
+### 5. **Reserva**
+Registro de una estancia de un cliente. Puede incluir una o varias habitaciones (mediante tabla intermedia).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_reserva            | INT           | **PK**                                        |
+| id_cliente            | INT           | **FK** → Cliente(id_cliente)                  |
+| fecha_creacion        | DATETIME      |                                               |
+| fecha_checkin         | DATE          | Fecha de ingreso                              |
+| fecha_checkout        | DATE          | Fecha de salida                               |
+| estado                | VARCHAR(30)   | Confirmada, En espera, Check-in realizado, Check-out realizado, Cancelada |
+| cantidad_huespedes    | INT           |                                               |
+| tarifa_total          | DECIMAL(10,2) | Monto total estimado                          |
+| forma_pago            | VARCHAR(30)   | Efectivo, Tarjeta, Transferencia, etc.        |
+| observaciones         | TEXT          |                                               |
+
+**Índices:** id_cliente, fechas.
+
+---
+
+### 6. **ReservaHabitacion**
+Permite asignar varias habitaciones a una misma reserva (relación N:M).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_reserva            | INT           | **PK, FK** → Reserva(id_reserva)              |
+| id_habitacion         | INT           | **PK, FK** → Habitacion(id_habitacion)        |
+| fecha_asignacion      | DATETIME      |                                               |
+
+---
+
+### 7. **Incidente**
+Reportes de problemas, ya sea por clientes o por empleados (mantenimiento).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_incidente          | INT           | **PK**                                        |
+| id_reserva            | INT           | **FK** → Reserva(id_reserva) (opcional)       |
+| id_habitacion         | INT           | **FK** → Habitacion(id_habitacion) (opcional) |
+| id_usuario_reporte    | INT           | **FK** → Usuario(id_usuario) (quien reporta)  |
+| categoria             | VARCHAR(50)   | Electricidad, Plomería, etc.                  |
+| descripcion_breve     | VARCHAR(100)  |                                               |
+| descripcion_detallada | TEXT          |                                               |
+| urgencia              | VARCHAR(20)   | Baja, Media, Alta, Crítica                    |
+| estado                | VARCHAR(20)   | Pendiente, En proceso, Resuelto, Cerrado, Cancelado |
+| fecha_reporte         | DATETIME      |                                               |
+| fecha_resolucion      | DATETIME      | NULL si no resuelto                           |
+| solucion              | TEXT          | Descripción de la solución                    |
+| id_usuario_cierre     | INT           | **FK** → Usuario(id_usuario) (quien cerró)    |
+
+---
+
+### 8. **TareaMantenimiento**
+Tareas de mantenimiento, tanto correctivas (derivadas de incidentes) como preventivas (programadas).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_tarea              | INT           | **PK**                                        |
+| tipo                  | VARCHAR(20)   | Correctiva / Preventiva                       |
+| id_incidente          | INT           | **FK** → Incidente(id_incidente) (opcional)   |
+| equipo_instalacion    | VARCHAR(100)  | Ej: Ascensor, Caldera, Aire acondicionado     |
+| ubicacion             | VARCHAR(100)  | Detalle de ubicación                          |
+| descripcion           | TEXT          |                                               |
+| prioridad             | VARCHAR(20)   | Baja, Media, Alta                             |
+| fecha_programada      | DATETIME      |                                               |
+| fecha_ejecucion       | DATETIME      | NULL si no ejecutada                          |
+| estado                | VARCHAR(20)   | Pendiente, En proceso, Completada, Cancelada  |
+| recurrencia           | VARCHAR(30)   | Única, Diaria, Semanal, Mensual, etc. (para preventivas) |
+| id_personal_asignado  | INT           | **FK** → Empleado(id_empleado)                |
+| observaciones         | TEXT          |                                               |
+
+---
+
+### 9. **Consumo**
+Registro de consumos de frigobar, bar u otros servicios extras asociados a una reserva.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_consumo            | INT           | **PK**                                        |
+| id_reserva            | INT           | **FK** → Reserva(id_reserva)                  |
+| tipo                  | VARCHAR(30)   | Frigobar, Bar, Servicio_extra, etc.           |
+| concepto              | VARCHAR(100)  | Ej: "Coca-Cola", "Estacionamiento"            |
+| cantidad              | INT           |                                               |
+| precio_unitario       | DECIMAL(10,2) |                                               |
+| total                 | DECIMAL(10,2) | Calculado (cantidad * precio_unitario)        |
+| fecha                 | DATETIME      |                                               |
+| estado_pago           | VARCHAR(20)   | Pendiente / Pagado                            |
+| observaciones         | TEXT          |                                               |
+
+---
+
+### 10. **PedidoCocina**
+Pedidos realizados a cocina, ya sea para room service o para el restaurante (con mesa).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_pedido             | INT           | **PK**                                        |
+| id_reserva            | INT           | **FK** → Reserva(id_reserva) (opcional, si es room service) |
+| numero_mesa           | INT           | NULL si es room service                       |
+| fecha_hora            | DATETIME      |                                               |
+| estado                | VARCHAR(20)   | Pendiente, En preparación, Listo, Entregado, Cancelado |
+| total                 | DECIMAL(10,2) |                                               |
+| observaciones         | TEXT          |                                               |
+
+---
+
+### 11. **DetallePedido**
+Ítems individuales de un pedido de cocina.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_detalle            | INT           | **PK**                                        |
+| id_pedido             | INT           | **FK** → PedidoCocina(id_pedido)              |
+| id_plato              | INT           | **FK** → Plato(id_plato)                      |
+| cantidad              | INT           |                                               |
+| precio_unitario       | DECIMAL(10,2) | Precio al momento del pedido                  |
+| subtotal              | DECIMAL(10,2) | Calculado                                     |
+| estado_plato          | VARCHAR(20)   | Pendiente, En preparación, Listo, Entregado, Cancelado |
+
+---
+
+### 12. **Plato**
+Elementos del menú.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_plato              | INT           | **PK**                                        |
+| nombre                | VARCHAR(100)  |                                               |
+| descripcion           | TEXT          |                                               |
+| precio                | DECIMAL(10,2) |                                               |
+| disponible            | BOOLEAN       |                                               |
+| categoria             | VARCHAR(50)   | Ej: Entrada, Principal, Postre                |
+| tiempo_preparacion    | INT           | Minutos estimados                             |
+
+---
+
+### 13. **Receta**
+Instrucciones de preparación para un plato (opcional).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_receta             | INT           | **PK**                                        |
+| id_plato              | INT           | **FK** → Plato(id_plato) (1:1)                |
+| ingredientes          | TEXT          | Lista de ingredientes                         |
+| pasos                 | TEXT          | Instrucciones                                 |
+| tiempo_elaboracion    | INT           | Minutos                                       |
+
+---
+
+### 14. **Proveedor**
+Empresas que suministran bienes o servicios al hotel.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_proveedor          | INT           | **PK**                                        |
+| nombre                | VARCHAR(100)  |                                               |
+| cuit                  | VARCHAR(20)   | Único                                         |
+| telefono              | VARCHAR(20)   |                                               |
+| email                 | VARCHAR(100)  |                                               |
+| direccion             | VARCHAR(200)  |                                               |
+| categoria             | VARCHAR(50)   | Alimentos, Limpieza, Insumos, etc.            |
+| estado                | VARCHAR(20)   | Activo / Inactivo                             |
+| fecha_registro        | DATETIME      |                                               |
+| fecha_inactivacion    | DATETIME      | NULL si activo                                |
+| motivo_inactivacion   | VARCHAR(100)  |                                               |
+
+---
+
+### 15. **Compra**
+Órdenes de compra a proveedores.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_compra             | INT           | **PK**                                        |
+| id_proveedor          | INT           | **FK** → Proveedor(id_proveedor)              |
+| fecha                 | DATE          |                                               |
+| tipo_compra           | VARCHAR(50)   | Insumos, Equipamiento, Servicios, etc.        |
+| forma_pago            | VARCHAR(30)   | Efectivo, Transferencia, Cheque, etc.         |
+| estado                | VARCHAR(20)   | Pendiente, Pagada, Cancelada, Anulada         |
+| monto_total           | DECIMAL(10,2) |                                               |
+| observaciones         | TEXT          |                                               |
+| fecha_creacion        | DATETIME      |                                               |
+
+---
+
+### 16. **DetalleCompra**
+Ítems incluidos en una compra.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_detalle            | INT           | **PK**                                        |
+| id_compra             | INT           | **FK** → Compra(id_compra)                    |
+| descripcion_producto  | VARCHAR(200)  |                                               |
+| cantidad              | INT           |                                               |
+| precio_unitario       | DECIMAL(10,2) |                                               |
+| subtotal              | DECIMAL(10,2) | Calculado                                     |
+
+---
+
+### 17. **Permiso**
+Asignación de permisos a usuarios (módulo + acción).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_permiso            | INT           | **PK**                                        |
+| id_usuario            | INT           | **FK** → Usuario(id_usuario)                  |
+| modulo                | VARCHAR(50)   | Ej: Personal, Usuarios, Compras, etc.         |
+| accion                | VARCHAR(30)   | Crear, Modificar, Inactivar, Consultar        |
+| fecha_asignacion      | DATETIME      |                                               |
+
+**Restricción:** Un usuario puede tener varios permisos, pero no duplicados (mismo módulo+acción).
+
+---
+
+### 18. **Auditoria**
+Registro de auditoría de todas las acciones realizadas por los usuarios.
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_auditoria          | INT           | **PK**                                        |
+| id_usuario            | INT           | **FK** → Usuario(id_usuario)                  |
+| fecha_hora            | DATETIME      |                                               |
+| tipo_accion           | VARCHAR(30)   | Inicio_sesion, Creación, Modificación, etc.   |
+| modulo                | VARCHAR(50)   | Módulo afectado                               |
+| descripcion           | TEXT          | Detalle de la acción                          |
+| ip                    | VARCHAR(45)   | Dirección IP                                  |
+| datos_anteriores      | JSON / TEXT   | Estado previo (opcional)                      |
+| datos_nuevos          | JSON / TEXT   | Estado posterior (opcional)                   |
+
+---
+
+### 19. **IngresoOperativo**
+Registro de ingresos del hotel (ventas, servicios, etc.).
+
+| Columna               | Tipo          | Descripción                                   |
+|-----------------------|---------------|-----------------------------------------------|
+| id_ingreso            | INT           | **PK**                                        |
+| fecha                 | DATE          |                                               |
+| tipo_ingreso          | VARCHAR(50)   | Ventas, Alquileres, Servicios, Otros          |
+| concepto              | VARCHAR(100)  |                                               |
+| monto                 | DECIMAL(10,2) |                                               |
+| forma_pago            | VARCHAR(30)   |                                               |
+| observaciones         | TEXT          |                                               |
+
+---
+
+## Relaciones principales (cardinalidades)
+
+- **Empleado** (1) ---- (1) **Usuario** (un empleado puede tener un usuario, y un usuario pertenece a un empleado).
+- **Empleado** (1) ---- (N) **TareaMantenimiento** (un empleado puede ser asignado a muchas tareas).
+- **Usuario** (1) ---- (N) **Incidente** (un usuario puede reportar muchos incidentes, y también cerrarlos).
+- **Usuario** (1) ---- (N) **Permiso** (un usuario tiene muchos permisos).
+- **Usuario** (1) ---- (N) **Auditoria** (un usuario genera muchos registros de auditoría).
+- **Cliente** (1) ---- (N) **Reserva** (un cliente puede tener muchas reservas).
+- **Reserva** (1) ---- (N) **ReservaHabitacion** ---- (N) **Habitacion** (una reserva puede ocupar varias habitaciones y una habitación puede estar en varias reservas a lo largo del tiempo, pero no simultáneamente).
+- **Reserva** (1) ---- (N) **Consumo** (una reserva puede tener muchos consumos).
+- **Reserva** (1) ---- (N) **PedidoCocina** (opcional, si es room service).
+- **Reserva** (1) ---- (N) **Incidente** (opcional, un cliente puede reportar incidentes asociados a su reserva).
+- **Incidente** (1) ---- (N) **TareaMantenimiento** (un incidente puede derivar en una o varias tareas, aunque normalmente una).
+- **Plato** (1) ---- (N) **DetallePedido** (un plato aparece en muchos detalles de pedido).
+- **Plato** (1) ---- (1) **Receta** (opcional).
+- **Proveedor** (1) ---- (N) **Compra** (un proveedor puede tener muchas compras).
+- **Compra** (1) ---- (N) **DetalleCompra** (una compra tiene varios ítems).
+
+---
+
+## Consideraciones adicionales
+
+- **Estados**: Muchas entidades tienen estados (activo/inactivo, pendiente, etc.). Se recomienda usar tablas de catálogo para los valores fijos (ej. `EstadoReserva`, `EstadoIncidente`, `TipoUrgencia`, etc.) para mantener la integridad y facilitar cambios.
+- **Historial**: Las tablas de `Auditoria` e historiales de cambios en reservas o tareas pueden implementarse mediante triggers o a nivel de aplicación.
+- **Seguridad**: La contraseña debe almacenarse con hash (por ejemplo, bcrypt).
+- **Índices**: Crear índices en las claves foráneas y en campos de búsqueda frecuente (fechas, DNI, nombre, etc.).
+
+---
+
+## ¿Cómo se reflejan los casos de uso en el modelo?
+
+- **Acceder como invitado / Iniciar sesión**: Usan la tabla `Usuario` y `Empleado` para validar credenciales y permisos.
+- **Registrar reserva / Modificar reserva**: Manipulan `Reserva`, `ReservaHabitacion` y `Habitacion`.
+- **Check-in / Check-out**: Actualizan el estado de `Reserva` y `Habitacion`, y crean `Consumo` y `IngresoOperativo`.
+- **Reportar problema**: Crean `Incidente` y, si se deriva a mantenimiento, `TareaMantenimiento`.
+- **Mucama**: Actualiza `Habitacion` (estado_limpieza), registra `Consumo` (frigobar) y reporta incidentes.
+- **Cocina**: Gestiona `Plato`, `Receta`, `PedidoCocina` y `DetallePedido`.
+- **Administrador**: Administra `Empleado`, `Usuario`, `Permiso`, `Proveedor`, `Compra` y consulta `Auditoria` e `IngresoOperativo`.
+
+---
+
+## Próximos pasos sugeridos
+
+1. **Normalizar** algunas tablas creando catálogos (ej. `CategoriaIncidente`, `TipoHabitacion`, `FormaPago`, etc.).
+2. **Definir el motor de base de datos** (MySQL, PostgreSQL, SQL Server) y adaptar los tipos de datos.
+3. **Implementar triggers o procedimientos** para actualizar automáticamente totales (subtotal, monto_total) y fechas de creación/modificación.
+4. **Diseñar un diagrama visual** con una herramienta como Draw.io, Lucidchart o MySQL Workbench.
+
+Si necesitas que profundice en alguna tabla, que ajuste relaciones o que te ayude con las consultas SQL para crear el esquema, avísame. ¡Estoy aquí para ayudarte!
