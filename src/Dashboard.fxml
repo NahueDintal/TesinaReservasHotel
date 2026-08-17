@@ -13,7 +13,7 @@
     <left>
         <VBox nodeOrientation="RIGHT_TO_LEFT" prefWidth="300.0" style="-fx-background-color: #3E864D; -fx-padding: 20;">
          <ImageView fitHeight="154.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true" />
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Planilla de reserva">
+         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="246.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Planilla de reserva">
             <font>
                <Font name="Adwaita Sans" size="20.0" />
             </font>
