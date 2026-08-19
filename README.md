@@ -18,3 +18,40 @@ El programa deberá funcionar en varias computadoras pero con una base de datos,
 Tener a primera hora una notificación con todos los check-in y check-out del día. Para saber exactamente la cantidad de personas que van a ingresar y que se van a ir, ya tener impresa la información de las reservas y poder comenzar a gestionar las acciones de las mucamas.
 
 Luego de las acciones cotidianas, vamos agregar queries a la base de datos, con diferentes propósitos, para la toma de decisiones.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+📁 Estructura de archivos proyecto
+
+El proyecto está organizado por función para mantener los archivos ordenados a medida que el sistema crezca.
+
+📂 ¿Qué va en cada carpeta? 
+
+controllers/ → Controllers de JavaFX. Manejan las acciones e interacción de las pantallas. 
+Ejemplo: DashboardController.java
+
+models/ → Clases que representan las entidades del sistema.
+Ejemplo: Client.java, Reservation.java, Room.java
+
+views/ → Interfaces .fxml creadas con Scene Builder.
+Ejemplo: Dashboard.fxml
+
+css/ → Archivos .css utilizados para darle estilo a las interfaces.
+
+icons/ → Imágenes e iconos utilizados por la aplicación.
+
+MainApp.java → Punto de entrada de la aplicación. Se encarga de iniciar JavaFX y la ventana principal.
+🔮 Carpetas que se agregarán más adelante
+
+📁A medida que el proyecto crezca, se pueden agregar:
+
+services/ → Lógica de negocio del sistema.
+
+repositories/ → Comunicación con la base de datos.
+
+La idea será mantener una separación de responsabilidades: Controller → Service → Repository → Base de datos
+
+📌 Regla general:
+Antes de crear una nueva carpeta o colocar un archivo fuera de su ubicación habitual, consultar la estructura del proyecto para mantener la organización entre todos los integrantes.

@@ -14,11 +14,11 @@ sistema-reservas-hoteles/
 │       │       ├── MainApp.java                  # Punto de entrada (JavaFX)
 │       │       │
 │       │       ├── modelo/                       # Capa de dominio (entidades)
-│       │       │   ├── Client.java
-│       │       │   ├── Hotel.java
-│       │       │   ├── Room.java
-│       │       │   ├── Reservation.java
-│       │       │   ├── User.java
+│       │       │   ├── models.Client.java
+│       │       │   ├── models.Hotel.java
+│       │       │   ├── models.Room.java
+│       │       │   ├── models.Reservation.java
+│       │       │   ├── models.User.java
 │       │       │   └── enums/                    # Tipos fijos (estados, tipos)
 │       │       │       ├── ReservationStatus.java  (EN PROCESO, PAGADO, CHECK_IN, etc.)
 │       │       │       ├── RoomType.java
@@ -41,7 +41,7 @@ sistema-reservas-hoteles/
 │       │       │   └── PaymentService.java       (simulación de pagos, estados)
 │       │       │
 │       │       ├── controlador/                  # Controladores JavaFX (Vista ↔ Modelo)
-│       │       │   ├── DashboardController.java
+│       │       │   ├── controllers.DashboardController.java
 │       │       │   ├── MonthlyGridController.java   (lógica de la planilla)
 │       │       │   ├── ReservationFormController.java
 │       │       │   ├── ClientFormController.java

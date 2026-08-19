@@ -1,3 +1,5 @@
+package models;
+
 public class Room {
   private int number;
   private String type; // type de camas dispobibles, acá usariamos la nomenclatura del hotel, si es

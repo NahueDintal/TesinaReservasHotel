@@ -1,3 +1,5 @@
+package models;
+
 public class Hotel {
 
   // funcion para buscar reservas por nombre en db
