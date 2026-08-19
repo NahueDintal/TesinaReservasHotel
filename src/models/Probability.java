@@ -1,3 +1,5 @@
+package models;
+
 public class Probability {
   private int totalReservation;
   private int totalCancelled;

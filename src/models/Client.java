@@ -1,3 +1,5 @@
+package models;
+
 public class Client{
   private int idClient;
   private String name;

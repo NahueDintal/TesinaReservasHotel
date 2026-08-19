@@ -1,3 +1,4 @@
+import controllers.DashboardController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -13,7 +14,7 @@ public class MainApp extends Application {
     root.setCenter(dashboard.getMonthlyGrid());
 
     Scene scene = new Scene(root, 1200, 800);
-    scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+    scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
     primaryStage.setTitle("Sistema de Reservas - Dashboard");
     primaryStage.setScene(scene);
     primaryStage.show();
