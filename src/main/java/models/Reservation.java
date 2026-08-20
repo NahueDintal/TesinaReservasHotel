@@ -3,15 +3,15 @@ package models;
 import java.time.LocalDate;
 
 public class Reservation {
-  private Client client;
+  private Customer customer;
   private Room room;
   private LocalDate initDate;
   private LocalDate endDate;
   private double total;
 
-  public Reservation(Client client, Room room, LocalDate initDate, LocalDate endDate) {
-    if (client != null) {
-      this.client = client;
+  public Reservation(Customer customer, Room room, LocalDate initDate, LocalDate endDate) {
+    if (customer != null) {
+      this.customer = customer;
     }
     this.room = room;
     this.initDate = initDate; // aca tendría que haber una de error por la fecha
@@ -31,8 +31,8 @@ public class Reservation {
     return room;
   }
 
-  public Client getClient() {
-    return client;
+  public Customer getClient() {
+    return customer;
   }
 
   public double getTotal() {

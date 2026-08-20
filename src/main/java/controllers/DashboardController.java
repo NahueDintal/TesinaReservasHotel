@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import models.Client;
+import models.Customer;
 import models.Reservation;
 import models.Room;
 
@@ -27,8 +27,8 @@ public class DashboardController {
   private void loadSampleData() {
     reservations = new ArrayList<>();
     // Crear clientes, habitaciones y reservas de ejemplo
-    Client c1 = new Client(1, "Juan", "Pérez", "12345678A", 600123456);
-    Client c2 = new Client(2, "María", "García", "87654321B", 600654321);
+    Customer c1 = new Customer(1, "Juan", "Pérez", "12345678A", "60123456", "emai@ejemplo.com", "Cordoba, Argentina");
+    Customer c2 = new Customer(2, "María", "García", "87654321B", "600654321", "emai@ejemplo2.com", "Santa Catarina, Brasil");
     Room r1 = new Room(101, "Doble", 80.0);
     Room r2 = new Room(102, "Individual", 50.0);
     Room r3 = new Room(201, "Suite", 150.0);
