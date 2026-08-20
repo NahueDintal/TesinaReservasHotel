@@ -14,7 +14,7 @@ public class MainApp extends Application {
     root.setCenter(dashboard.getMonthlyGrid());
 
     Scene scene = new Scene(root, 1200, 800);
-    scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
+    scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
     primaryStage.setTitle("Sistema de Reservas - Dashboard");
     primaryStage.setScene(scene);
     primaryStage.show();
