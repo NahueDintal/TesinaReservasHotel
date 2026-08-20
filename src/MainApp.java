@@ -3,24 +3,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import models.Room;
 
-public class MainApp extends Application {
+public static void main(String[] args) {
+  Room room = new Room(101, 1, "Simple", 2, "Lago", true, "Wifi", 40000, "Habitacion con buena iluminación");
 
-  @Override
-  public void start(Stage primaryStage) {
-    BorderPane root = new BorderPane();
-    DashboardController dashboard = new DashboardController();
-    root.setTop(dashboard.getStatsPanel());
-    root.setCenter(dashboard.getMonthlyGrid());
-
-    Scene scene = new Scene(root, 1200, 800);
-    scene.getStylesheets().add(getClass().getResource("css/style.css").toExternalForm());
-    primaryStage.setTitle("Sistema de Reservas - Dashboard");
-    primaryStage.setScene(scene);
-    primaryStage.show();
-  }
-
-  public static void main(String[] args) {
-    launch(args);
-  }
 }
