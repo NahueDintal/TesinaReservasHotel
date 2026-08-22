@@ -1,0 +1,78 @@
+-- ==========================================
+-- Tabla: DocumentType
+-- ==========================================
+
+CREATE TABLE DocumentType (
+    idDocumentType INT AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY (idDocumentType)
+);
+
+
+-- ==========================================
+-- Tabla: Country
+-- ==========================================
+
+CREATE TABLE Country (
+    idCountry INT AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY (idCountry)
+);
+
+
+-- ==========================================
+-- Tabla: CustomerStatus
+-- ==========================================
+
+CREATE TABLE CustomerStatus (
+    idCustomerStatus INT AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY (idCustomerStatus)
+);
+
+
+-- ==========================================
+-- Tabla: CustomerOrigin
+-- ==========================================
+
+CREATE TABLE CustomerOrigin (
+    idCustomerOrigin INT AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY (idCustomerOrigin)
+);
+
+
+-- ==========================================
+-- Tabla: Customer
+-- ==========================================
+
+CREATE TABLE Customer (
+    idCustomer INT AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    surname VARCHAR(100) NOT NULL,
+    idDocumentType INT NOT NULL,
+    documentNumber VARCHAR(30) NOT NULL,
+    phoneNumber VARCHAR(30),
+    email VARCHAR(255),
+    idCountry INT NOT NULL,
+    idCustomerStatus INT NOT NULL,
+    idCustomerOrigin INT NOT NULL,
+
+    PRIMARY KEY (idCustomer),
+
+    FOREIGN KEY (idDocumentType)
+        REFERENCES DocumentType(idDocumentType),
+
+    FOREIGN KEY (idCountry)
+        REFERENCES Country(idCountry),
+
+    FOREIGN KEY (idCustomerStatus)
+        REFERENCES CustomerStatus(idCustomerStatus),
+
+    FOREIGN KEY (idCustomerOrigin)
+        REFERENCES CustomerOrigin(idCustomerOrigin)
+);
