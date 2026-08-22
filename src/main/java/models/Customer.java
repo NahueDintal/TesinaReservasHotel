@@ -2,31 +2,43 @@ package models;
 
 public class Customer {
   private int idCustomer;
-  private String names;
-  private String surnames;
+  private String name;
+  private String surname;
+  private int idDocumentType;
   private String documentNumber;
   private String phoneNumber;
   private String email;
-  private String address;
+  private int idCountry;
+  private int idCustomerStatus;
+  private int idCustomerOrigin;
+
+
 
   //constructor
   public Customer() {}
-  public Customer(int idClient, String names, String surnames, String documentNumber,
-                  String phoneNumber, String email, String address) {
-    this.names = names;
-    this.surnames = surnames;
+  public Customer(int idClient, String name, String surname,int idDocumentType, String documentNumber,
+                  String phoneNumber, String email,int idCountry, int idCustomerStatus, int idCustomerOrigin) {
+    this.name = name;
+    this.surname = surname;
+    this.idDocumentType = idDocumentType;
     this.documentNumber = documentNumber;
     this.phoneNumber = phoneNumber;
     this.email = email;
-    this.address = address;
+    this.idCountry = idCountry;
+    this.idCustomerStatus = idCustomerStatus;
+    this.idCustomerOrigin = idCustomerOrigin;
+
   }
   // GETTERS
   public int getIdCustomer() {return idCustomer;}
-  public String getNames() {
-    return names;
+  public String getName() {
+    return name;
   }
-  public String getSurnames() {
-    return surnames;
+  public String getSurname() {
+    return surname;
+  }
+  public int getIdDocumentType() {
+    return idDocumentType;
   }
   public String getDocumentNumber() {
     return documentNumber;
@@ -37,16 +49,28 @@ public class Customer {
   public String getEmail() {
     return email;
   }
-  public String getAddress() {
-    return address;
+  public int getIdCountry() {
+    return idCountry;
   }
+  public int getIdCustomerStatus() {
+    return idCustomerStatus;
+  }
+  public int getIdCustomerOrigin() {return idCustomerOrigin;}
 
   // SETTERS
   public void setIdCustomer(int idCustomer) { this.idCustomer = idCustomer; }
-  public void setNames(String names) { this.names = names; }
-  public void setSurnames(String surnames) { this.surnames = surnames; }
+  public void setName(String name) { this.name = name; }
+  public void setSurname(String surname) { this.surname = surname; }
+  public void setIdDocumentType(int idDocumentType) { this.idDocumentType = idDocumentType; }
   public void setDocumentNumber(String documentNumber) { this.documentNumber = documentNumber; }
   public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
   public void setEmail(String email) { this.email = email; }
-  public void setAddress(String email) { this.address = address; }
+  public void setIdCountry(int idCountry) { this.idCountry = idCountry; }
+  public void setIdCustomerStatus(int idCustomerStatus) { this.idCustomerStatus = idCustomerStatus; }
+  public void setIdCustomerOrigin(int idCustomerOrigin) { this.idCustomerOrigin = idCustomerOrigin; }
+
+  @Override
+  public String toString() {
+    return name + " " + surname + " (" + documentNumber + ")";
+  }
 }

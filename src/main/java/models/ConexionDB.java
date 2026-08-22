@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public class ConexionDB {
 
     // 1. Datos de conexión (CAMBIÁ ESTOS POR LOS TUYOS)
-    private static final String URL = "jdbc:mysql://localhost:3306/hotel_management";
+    private static final String URL = "jdbc:mysql://localhost:3306/NachoDB";
     private static final String USER = "root";
     private static final String PASSWORD = "12345678";
 
@@ -54,6 +54,8 @@ public class ConexionDB {
             }
         }
     }
+
+    //ejecutar para probar conexion
     public static void main(String[] args) {
         try (Connection conn = ConexionDB.getConnection()) {
             System.out.println("✅ ¡Conexión exitosa!");
