@@ -16,24 +16,33 @@ public class Room {
       double price, String description) {
     try {
       this.number = number;
+      if (type.isEmpty()) {
+        System.out.println("El Número de habitación no puede quedar vacío.");
+      }
     } catch (NumberFormatException e) {
       System.out.println("Valor de 'Numero de habitación' inválido! Ingrese un número entero positivo.");
     }
     try {
       this.floor = floor;
+      if (type.isEmpty()) {
+        System.out.println("El piso de la habitación no puede quedar vacío.");
+      }
     } catch (NumberFormatException e) {
       System.out.println("Valor de 'Piso' inválido! Ingrese un número entero positivo.");
     }
     try {
       this.type = type;
       if (type.isEmpty()) {
-        System.out.println("El campo no puede quedar vacío.");
+        System.out.println("El tipo de habitación no puede quedar vacío.");
       }
     } catch (IllegalArgumentException e) {
       System.out.println("Valor de 'Tipo' vacío! Ingrese una de las opciones");
     }
     try {
       this.capacity = capacity;
+      if (type.isEmpty()) {
+        System.out.println("La capacidad de la habitación no puede quedar vacío.");
+      }
     } catch (NumberFormatException e) {
       System.out.println("Valor de 'capacidad' inválido! Ingrese un número entero positivo");
     }
@@ -65,7 +74,10 @@ public class Room {
   }
 
   public boolean getAvailable() {
-    return available;
+    if (getOutOfService()) {
+      return available;
+    }
+    return false;
   }
 
   public boolean getOutOfService() {
