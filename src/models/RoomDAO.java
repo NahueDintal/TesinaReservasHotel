@@ -12,11 +12,11 @@ public class RoomDAO {
       pstmt.setInt(1, id);
       try (ResultSet rs = pstmt.executeQuery()) {
         if (rs.next()) {
-          return mapsRoom(rs);
+          return mapRoom(rs);
         }
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Error al obtener la habitación.");
+      throw new RuntimeException("Error al obtener la habitación por id.");
     }
     return null;
   }
@@ -28,21 +28,47 @@ public class RoomDAO {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)) {
       while (rs.next()) {
-        room
+        return mapRoom
       }
-
-
-
     } catch (SQLException e ){
-
+      throw new RuntimeException("Error al listar las habitaciones.")
     }
+    return null;
   }
 
-  public insert
+  public insert() {
+    String sql = "";
+    try (Connection conn = ConexionDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setInt(1, id);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return mapRoom(rs);
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Error al insertar la habitación.");
+    }
+    return null;
+  }
+    
+  }
 
   public upDate
 
   public delete
 
-  public
+
+  private Room mapRoom(ResultSet rs) throws SQLException {
+    String numberStr = rs.getString("number");
+    String floorStr = rs.getString("floor");
+    String type = rs.getString("type");
+    String capacityStr = rs.getString("capacity");
+    String view = rs.getString("view");
+    String availableStr = rs.getString("available");
+    String features = rs.getString("features");
+    String priceStr = rs.getString("price");
+    String description = rs.getString("description");
+
+    return new Room(numberStr, floorStr, type, capacityStr, view, availableStr, features, priceStr, description);
+  }
 }
