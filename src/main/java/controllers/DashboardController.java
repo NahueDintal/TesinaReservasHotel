@@ -4,7 +4,11 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+<<<<<<< HEAD
 import models.Customer;
+=======
+import models.Client;
+>>>>>>> Nahue
 import models.Reservation;
 import models.Room;
 
@@ -27,8 +31,13 @@ public class DashboardController {
   private void loadSampleData() {
     reservations = new ArrayList<>();
     // Crear clientes, habitaciones y reservas de ejemplo
+<<<<<<< HEAD
     Customer c1 = new Customer(1, "Juan", "Pérez del Valle",2, "28547896", "3541854163", "emai@ejemplo1.com", 5,1,1);
     Customer c2 = new Customer(2, "María Paula", "García",1, "26686950", "3541739152", "emai@ejemplo2.com", 1,1,1);
+=======
+    Client c1 = new Client(1, "Juan", "Pérez", "12345678A", 600123456);
+    Client c2 = new Client(2, "María", "García", "87654321B", 600654321);
+>>>>>>> Nahue
     Room r1 = new Room(101, "Doble", 80.0);
     Room r2 = new Room(102, "Individual", 50.0);
     Room r3 = new Room(201, "Suite", 150.0);

@@ -1,0 +1,32 @@
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.stats-card {
+    -fx-background-color: #34495e;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+}
+
+.stats-title {
+    -fx-text-fill: #bdc3c7;
+    -fx-font-size: 14px;
+}
+
+.stats-value {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.day-cell {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1;
+    -fx-padding: 5;
+}
+
+.slot-morning { -fx-background-color: rgba(144, 238, 144, 0.8); }
+.slot-afternoon { -fx-background-color: rgba(173, 216, 230, 0.8); }
+.slot-night { -fx-background-color: rgba(255, 200, 0, 0.8); }
+.slot-empty { -fx-background-color: lightgray; }
