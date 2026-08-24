@@ -31,27 +31,27 @@ public class RoomDAO {
         rooms.add(mapRoom(rs));
       }
     } catch (SQLException e ){
-      throw new RuntimeException("Error al listar las habitaciones.")
+      throw new RuntimeException("Error al listar las habitaciones.");
     }
     return rooms;
   }
 
-  public insert() {
-    String sql = "";
-    try (Connection conn = ConexionDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-      pstmt.setInt(1, id);
-      try (ResultSet rs = pstmt.executeQuery()) {
-        if (rs.next()) {
-          return mapRoom(rs);
-        }
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException("Error al insertar la habitación.");
-    }
-    return null;
-  }
+//  public insert() {
+//    String sql = "";
+//    try (Connection conn = ConexionDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//      pstmt.setInt(1, id);
+//      try (ResultSet rs = pstmt.executeQuery()) {
+//        if (rs.next()) {
+//          return mapRoom(rs);
+//        }
+//      }
+//    } catch (SQLException e) {
+//      throw new RuntimeException("Error al insertar la habitación.");
+//    }
+//    return null;
+//  }
 
-  public upDate
+//  public upDate
 
   private Room mapRoom(ResultSet rs) throws SQLException {
     String numberStr = rs.getString("number");
