@@ -20,4 +20,29 @@ public class RoomDAO {
     }
     return null;
   }
+
+  public List<Room> listAll() {
+    List<Room> rooms = new ArrayList<>();
+    String sql = "SELECT id, ";
+    try (Connection conn = ConexionDB.getConnection();
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql)) {
+      while (rs.next()) {
+        room
+      }
+
+
+
+    } catch (SQLException e ){
+
+    }
+  }
+
+  public insert
+
+  public upDate
+
+  public delete
+
+  public
 }
