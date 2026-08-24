@@ -5,7 +5,7 @@ import java.util.*;
 
 public class CustomerOriginDAO {
 
-    public Map<Integer, String> listarTodos() throws SQLException {
+    public Map<Integer, String> listAll() throws SQLException {
         Map<Integer, String> origenes = new LinkedHashMap<>();
         String sql = "SELECT idCustomerOrigin, name FROM CustomerOrigin ORDER BY name";
 
@@ -20,7 +20,7 @@ public class CustomerOriginDAO {
         return origenes;
     }
 
-    public String obtenerNombrePorId(int id) throws SQLException {
+    public String getNameById(int id) throws SQLException {
         String sql = "SELECT name FROM CustomerOrigin WHERE idCustomerOrigin = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

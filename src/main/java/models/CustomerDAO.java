@@ -6,9 +6,20 @@ import java.util.List;
 
 public class CustomerDAO {
 
+    // 1. LIST ALL (WITH JOINS TO GET NAMES)
     public List<Customer> listAll() throws SQLException {
-        List<Customer> customer = new ArrayList<>();
-        String sql = "SELECT * FROM Customer";
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT c.*, " +
+                "dt.name AS documentTypeName, " +
+                "co.name AS countryName, " +
+                "cs.name AS statusName, " +
+                "co2.name AS originName " +
+                "FROM Customer c " +
+                "LEFT JOIN DocumentType dt ON c.idDocumetType = dt.idDocumentType " +
+                "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
+                "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
+                "ORDER BY c.idCustomer DESC";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -16,55 +27,79 @@ public class CustomerDAO {
 
             while (rs.next()) {
                 Customer c = new Customer();
+                // Base fields
                 c.setIdCustomer(rs.getInt("idCustomer"));
                 c.setName(rs.getString("name"));
                 c.setSurname(rs.getString("surname"));
-                c.setIdDocumentType(rs.getInt("idDocumentTye"));
+                c.setIdDocumentType(rs.getInt("idDocumetType"));
                 c.setDocumentNumber(rs.getString("documentNumber"));
-                c.setPhoneNumber(rs.getString("phone"));
+                c.setPhoneNumber(rs.getString("phoneNumber"));
                 c.setEmail(rs.getString("email"));
                 c.setIdCountry(rs.getInt("idCountry"));
                 c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                 c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                customer.add(c);
+
+                // Names from JOINs (for display purposes)
+                c.setDocumentTypeName(rs.getString("documentTypeName"));
+                c.setCountryName(rs.getString("countryName"));
+                c.setStatusName(rs.getString("statusName"));
+                c.setOriginName(rs.getString("originName"));
+
+                customers.add(c);
             }
         }
-        return customer;
+        return customers;
     }
 
-    public Customer searchById(int idCustomer) throws SQLException {
-        String sql = "SELECT * FROM customer WHERE idCustomer = ?";
+    // 2. SEARCH BY ID
+    public Customer searchById(int id) throws SQLException {
+        String sql = "SELECT c.*, " +
+                "dt.name AS documentTypeName, " +
+                "co.name AS countryName, " +
+                "cs.name AS statusName, " +
+                "co2.name AS originName " +
+                "FROM Customer c " +
+                "LEFT JOIN DocumentType dt ON c.idDocumetType = dt.idDocumentType " +
+                "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
+                "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
+                "WHERE c.idCustomer = ?";
+
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idCustomer);
+            stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Customer c = new Customer();
                     c.setIdCustomer(rs.getInt("idCustomer"));
                     c.setName(rs.getString("name"));
                     c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumentTye"));
+                    c.setIdDocumentType(rs.getInt("idDocumetType"));
                     c.setDocumentNumber(rs.getString("documentNumber"));
-                    c.setPhoneNumber(rs.getString("phone"));
+                    c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
                     c.setIdCountry(rs.getInt("idCountry"));
                     c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                     c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
+                    c.setDocumentTypeName(rs.getString("documentTypeName"));
+                    c.setCountryName(rs.getString("countryName"));
+                    c.setStatusName(rs.getString("statusName"));
+                    c.setOriginName(rs.getString("originName"));
                     return c;
                 }
             }
         }
-        return null;  // No encontrado
+        return null;
     }
 
-    public boolean isInserted(Customer customer) throws SQLException {
-        String sql = "INSERT INTO Customer (name, surname, idDocumentType, " +
-                "DocumentNumber, phoneNumber, email, idCountry, idCustomerStatus, idCustomerOrigin) " +
+    // 3. INSERT
+    public boolean isInsert(Customer customer) throws SQLException {
+        String sql = "INSERT INTO Customer (name, surname, idDocumetType, documentNumber, " +
+                "phoneNumber, email, idCountry, idCustomerStatus, idCustomerOrigin) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
 
             stmt.setString(1, customer.getName());
             stmt.setString(2, customer.getSurname());
@@ -76,10 +111,8 @@ public class CustomerDAO {
             stmt.setInt(8, customer.getIdCustomerStatus());
             stmt.setInt(9, customer.getIdCustomerOrigin());
 
-
-            int filasAfectadas = stmt.executeUpdate();
-            if (filasAfectadas > 0) {
-                // Recuperar el ID generado automáticamente
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         customer.setIdCustomer(generatedKeys.getInt(1));
@@ -91,12 +124,13 @@ public class CustomerDAO {
         }
     }
 
-    public boolean isUpdated(Customer customer) throws SQLException {
-        String sql = "UPDATE Customer SET name=?, surname=?,idDocumentType , documentNumber=?, phoneNumber=?, " +
-                "email=?, idCountry=?, idCustomerStatus=?, idCustomerOrigin=? WHERE idCustomer=?";
+    // 4. UPDATE
+    public boolean isUpdate(Customer customer) throws SQLException {
+        String sql = "UPDATE Customer SET name=?, surname=?, idDocumetType=?, documentNumber=?, " +
+                "phoneNumber=?, email=?, idCountry=?, idCustomerStatus=?, idCustomerOrigin=? " +
+                "WHERE idCustomer=?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 
             stmt.setString(1, customer.getName());
             stmt.setString(2, customer.getSurname());
@@ -113,20 +147,19 @@ public class CustomerDAO {
         }
     }
 
-
-    //revisar si es necesario un delete
-    public boolean isDeleted(int idCustomer) throws SQLException {
+    // 5. DELETE
+    public boolean isDelete(int id) throws SQLException {
         String sql = "DELETE FROM Customer WHERE idCustomer = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idCustomer);
+            stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         }
     }
 
-    // 6. BUSCAR POR Documento (para validar duplicados)
-    public Customer searchByDocumentNumber(String documentNumber) throws SQLException {
+    // 6. FIND BY DOCUMENT NUMBER (for duplicate validation)
+    public Customer findByDocumentNumber(String documentNumber) throws SQLException {
         String sql = "SELECT * FROM Customer WHERE documentNumber = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -138,9 +171,9 @@ public class CustomerDAO {
                     c.setIdCustomer(rs.getInt("idCustomer"));
                     c.setName(rs.getString("name"));
                     c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumentTye"));
+                    c.setIdDocumentType(rs.getInt("idDocumetType"));
                     c.setDocumentNumber(rs.getString("documentNumber"));
-                    c.setPhoneNumber(rs.getString("phone"));
+                    c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
                     c.setIdCountry(rs.getInt("idCountry"));
                     c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
@@ -150,31 +183,5 @@ public class CustomerDAO {
             }
         }
         return null;
-    }
-    public static void main(String[] args) {
-        CustomerDAO dao = new CustomerDAO();
-
-        try {
-            // Probar LISTAR
-            System.out.println("=== LISTAR TODOS ===");
-            for (Customer c : dao.listAll()) {
-                System.out.println(c.getIdCustomer() + " - " + c.getName() + " " + c.getSurname() );
-            }
-
-            // Probar INSERTAR
-            Customer nuevo = new Customer(0, "Juan Bautista", "Pérez", 0, "20345678","3541265986", "juan@mail.com", 0,0,0);
-            if (dao.isInserted(nuevo)) {
-                System.out.println("✅ Insertado con ID: " + nuevo.getIdCustomer());
-            }
-
-            // Probar BUSCAR POR ID
-            Customer found = dao.searchById(1);
-            if (found != null) {
-                System.out.println("✅ Encontrado: " + found.getName());
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }

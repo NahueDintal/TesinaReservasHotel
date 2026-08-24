@@ -12,6 +12,12 @@ public class Customer {
   private int idCustomerStatus;
   private int idCustomerOrigin;
 
+  // atributos de tablas catalogo
+  private String documentTypeName;
+  private String countryName;
+  private String statusName;
+  private String originName;
+
 
 
   //constructor
@@ -49,13 +55,25 @@ public class Customer {
   public String getEmail() {
     return email;
   }
-  public int getIdCountry() {
-    return idCountry;
-  }
+  public int getIdCountry() {return idCountry; }
   public int getIdCustomerStatus() {
     return idCustomerStatus;
   }
-  public int getIdCustomerOrigin() {return idCustomerOrigin;}
+  public int getIdCustomerOrigin() {return idCustomerOrigin; }
+  //Atributos Catalogo
+  public String getDocumentTypeName() {
+    return documentTypeName;
+  }
+  public String getCountryName() {
+    return countryName;
+  }
+  public String getStatusName() {
+    return statusName;
+  }
+  public String getOriginName() {
+    return originName;
+  }
+
 
   // SETTERS
   public void setIdCustomer(int idCustomer) { this.idCustomer = idCustomer; }
@@ -68,6 +86,12 @@ public class Customer {
   public void setIdCountry(int idCountry) { this.idCountry = idCountry; }
   public void setIdCustomerStatus(int idCustomerStatus) { this.idCustomerStatus = idCustomerStatus; }
   public void setIdCustomerOrigin(int idCustomerOrigin) { this.idCustomerOrigin = idCustomerOrigin; }
+  //Atributos Catalogo
+  public void setDocumentTypeName(String documentTypeName) { this.documentNumber = documentTypeName; }
+  public void setCountryName(String countryName) { this.countryName = countryName; }
+  public void setStatusName(String statusName) { this.statusName = statusName; }
+  public void setOriginName(String originName) { this.originName = originName; }
+
 
   @Override
   public String toString() {
