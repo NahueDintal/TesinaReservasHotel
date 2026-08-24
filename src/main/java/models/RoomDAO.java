@@ -51,11 +51,7 @@ public class RoomDAO {
     return null;
   }
 
-  }
-
   public upDate
-
-  public delete
 
   private Room mapRoom(ResultSet rs) throws SQLException {
     String numberStr = rs.getString("number");

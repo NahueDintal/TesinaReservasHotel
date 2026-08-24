@@ -1,4 +1,4 @@
-package models;
+package main.java.models;
 
 public class Room {
   private int number;
@@ -39,7 +39,7 @@ public class Room {
       this.type = type;
     } catch (IllegalArgumentException e) {
       System.out.println("Valor de 'Tipo' vacío! " + e.getMessage() + " Se asigna 'Simple'.");
-      this.type = 'simple';
+      this.type = "simple";
     }
     try {
       this.capacity = Integer.parseInt(capacityStr);

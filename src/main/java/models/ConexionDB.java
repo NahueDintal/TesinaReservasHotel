@@ -69,7 +69,7 @@ public class ConexionDB {
       ConexionDB.closeConnection();
     }
   }
-}=======
+}
 
 public class ConexionDB {
 
@@ -132,4 +132,4 @@ public class ConexionDB {
       ConexionDB.closeConnection();
     }
   }
-}>>>>>>>Nahue
+}
