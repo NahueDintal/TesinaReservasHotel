@@ -30,3 +30,174 @@
 .slot-afternoon { -fx-background-color: rgba(173, 216, 230, 0.8); }
 .slot-night { -fx-background-color: rgba(255, 200, 0, 0.8); }
 .slot-empty { -fx-background-color: lightgray; }
+/* ========== SIDEBAR ========== */
+.sidebar {
+    -fx-background-color: #3E864D;
+    -fx-padding: 20;
+}
+
+.sidebar-titulo {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 20 0;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-padding: 12 15;
+    -fx-background-radius: 5;
+    -fx-alignment: CENTER_LEFT;
+    -fx-pref-width: Infinity;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #2E6D3D;
+}
+
+.sidebar-usuario {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 0 5 0;
+}
+
+.sidebar-logout {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-pref-width: Infinity;
+}
+
+.sidebar-logout:hover {
+    -fx-background-color: #e74c3c;
+}
+
+/* ========== CONTENIDO PRINCIPAL ========== */
+.contenido-principal {
+    -fx-background-color: #f5f7fa;
+}
+
+.titulo-seccion {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.subtitulo-seccion {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 14px;
+}
+
+/* ========== BOTONES ========== */
+.btn-primario {
+    -fx-background-color: #3E864D;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-primario:hover {
+    -fx-background-color: #2E6D3D;
+}
+
+.btn-secundario {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-secundario:hover {
+    -fx-background-color: #d5dbdb;
+}
+
+/* ========== CAMPOS DE BÚSQUEDA Y FILTROS ========== */
+.campo-busqueda {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+}
+
+.campo-busqueda:focused {
+    -fx-border-color: #3E864D;
+}
+
+.combo-filtro {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 8 12;
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+}
+
+/* ========== TABLA ========== */
+.tabla-clientes {
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-background-color: white;
+}
+
+.tabla-clientes .column-header {
+    -fx-background-color: #ecf0f1;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 10 0;
+}
+
+.tabla-clientes .column-header-background {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tabla-clientes .table-row-cell {
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tabla-clientes .table-row-cell:hover {
+    -fx-background-color: #eaf7ed;
+}
+
+.tabla-clientes .table-row-cell:selected {
+    -fx-background-color: #d4edda;
+}
+
+/* ========== BOTONES DE ACCIÓN EN LA TABLA ========== */
+.boton-accion {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3E864D;
+    -fx-font-size: 16px;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
+
+.boton-accion:hover {
+    -fx-text-fill: #2E6D3D;
+}
+
+.boton-accion-eliminar {
+    -fx-text-fill: #c0392b;
+}
+
+.boton-accion-eliminar:hover {
+    -fx-text-fill: #e74c3c;
+}
+
+/* ========== PIE DE TABLA ========== */
+.info-pie {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+}
