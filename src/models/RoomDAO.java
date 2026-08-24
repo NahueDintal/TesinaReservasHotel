@@ -23,17 +23,17 @@ public class RoomDAO {
 
   public List<Room> listAll() {
     List<Room> rooms = new ArrayList<>();
-    String sql = "SELECT id, ";
+    String sql = "SELECT * FROM room";
     try (Connection conn = ConexionDB.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)) {
       while (rs.next()) {
-        return mapRoom
+        rooms.add(mapRoom(rs));
       }
     } catch (SQLException e ){
       throw new RuntimeException("Error al listar las habitaciones.")
     }
-    return null;
+    return rooms;
   }
 
   public insert() {
