@@ -31,3 +31,4 @@ lib_backup/
 
 # Db
 .env
+src/main/java/models/ConexionDB.java
