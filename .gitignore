@@ -28,3 +28,6 @@ out/
 
 # Backup
 lib_backup/
+
+# Db
+.env
