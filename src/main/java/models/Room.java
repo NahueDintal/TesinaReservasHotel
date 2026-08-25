@@ -22,8 +22,6 @@ public class Room {
     setFeatures(features);
     setPrice(priceStr);
     setDescription(description);
-
-    this.description = description;
   }
 
   public int getNumber() {
