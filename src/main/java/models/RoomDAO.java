@@ -85,7 +85,7 @@ public class RoomDAO {
       pstmt.setString(1, number);
       pstmt.executeUpdate();
     } catch (SQLException e) {
-      throws new RuntimeException("Error al borrar habitación.", e);
+      throw new RuntimeException("Error al borrar habitación.", e);
     }
   }
 

@@ -12,9 +12,9 @@ public class ConexionDB {
       .ignoreIfMissing() // Si no encuentra .env, no falla (útil en producción)
       .load();
 
-  private static final String URL = dotenv.get("DB_URL", "jdbc:mysql://localhost:3306/defaultDB");
-  private static final String USER = dotenv.get("DB_USER", "root");
-  private static final String PASSWORD = dotenv.get("DB_PASSWORD", "");
+  private static final String URL = dotenv.get("DB_URL");
+  private static final String USER = dotenv.get("DB_USER");
+  private static final String PASSWORD = dotenv.get("DB_PASSWORD");
 
   private static Connection connection = null;
 
