@@ -16,35 +16,13 @@ public class Room {
       String priceStr, String description) {
     setNumber(numberStr);
     setFloor(floorStr);
-    try {
-      if (type == null || type.isBlank()) {
-        throw new IllegalArgumentException("El tipo no puede estar vacío.");
-      }
-      this.type = type;
-    } catch (IllegalArgumentException e) {
-      System.out.println("Valor de 'Tipo' vacío! " + e.getMessage() + " Se asigna 'Simple'.");
-      this.type = "simple";
-    }
-    try {
-      this.capacity = Integer.parseInt(capacityStr);
-      if (this.capacity <= 0) {
-        throw new NumberFormatException("La capacidad de la habitación no puede quedar vacío.");
-      }
-    } catch (NumberFormatException e) {
-      System.out.println("Valor de 'capacidad' inválido!" + e.getMessage() + "Se asigna 1.");
-      this.capacity = 1;
-    }
-    this.view = view;
-    this.features = features;
-    try {
-      this.price = Double.parseDouble(priceStr);
-      if (this.price < 0) {
-        throw new NumberFormatException("El precio por noche de la habitación no puede quedar vacío.");
-      }
-    } catch (NumberFormatException e) {
-      System.out.println("Valor de 'Precio' inválido! " + e.getMessage() + " Se asigna $ 0.0.");
-      this.price = 0.0;
-    }
+    setType(type);
+    setCapacity(capacityStr);
+    setView(view);
+    setFeatures(features);
+    setPrice(priceStr);
+    setDescription(description);
+
     this.description = description;
   }
 
@@ -115,7 +93,78 @@ public class Room {
     }
   }
 
+  public void setType(String type) {
+    try {
+      if (type == null || type.isBlank()) {
+        throw new IllegalArgumentException("El tipo no puede estar vacío.");
+      }
+      this.type = type;
+    } catch (IllegalArgumentException e) {
+      System.out.println("Valor de 'Tipo' vacío! " + e.getMessage());
+    }
+  }
+
+  public void setCapacity(String capacityStr) {
+    try {
+      int parsed = Integer.parseInt(capacityStr);
+      if (parsed <= 0) {
+        throw new NumberFormatException("La capacidad de la habitación no puede quedar vacío.");
+      }
+      this.capacity = parsed;
+    } catch (NumberFormatException e) {
+      System.out.println("Valor de 'capacidad' inválido!" + e.getMessage());
+    }
+  }
+
+  public void setView(String view) {
+    try {
+      if (view == null || view.isBlank()) {
+        throw new IllegalArgumentException("La vista no puede estar vacío.");
+      }
+      this.view = view;
+    } catch (IllegalArgumentException e) {
+      System.out.println("Valor de 'Vista' inválido! " + e.getMessage());
+    }
+  }
+
+  public void setFeatures(String features) {
+    try {
+      if (features == null || features.isBlank()) {
+        throw new IllegalArgumentException("La vista no puede estar vacío.");
+      }
+      this.features = features;
+    } catch (IllegalArgumentException e) {
+      System.out.println("Valor de 'Características' inválido! " + e.getMessage());
+    }
+  }
+
+  public void setPrice(String priceStr) {
+    try {
+      double parsed = Double.parseDouble(priceStr);
+      if (parsed < 0) {
+        throw new NumberFormatException("El precio por noche de la habitación no puede quedar vacío.");
+      }
+      this.price = parsed;
+    } catch (NumberFormatException e) {
+      System.out.println("Valor de 'Precio' inválido! " + e.getMessage() + " Se asigna $ 0.0.");
+    }
+  }
+
+  public void setDescription(String description) {
+    try {
+      if (description == null || description.isBlank()) {
+        throw new IllegalArgumentException("La vista no puede estar vacío.");
+      }
+      this.description = description;
+    } catch (IllegalArgumentException e) {
+      System.out.println("Valor de 'Características' inválido! " + e.getMessage());
+    }
+  }
+
   public void setIsAvailable(boolean isAvailable) {
+    if (isAvailable && this.outOfService) {
+      throw new IllegalArgumentException("Habitación fuera de servicio, no está dispobible para reservar.");
+    }
     this.isAvailable = isAvailable;
   }
 
