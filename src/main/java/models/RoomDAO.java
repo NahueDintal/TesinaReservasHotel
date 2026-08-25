@@ -82,9 +82,11 @@ public class RoomDAO {
     String sql = "DELETE FROM room WHERE number = ?";
     try (Connection conn = ConexionDB.getConnection();
           PreparedStatement pstmt = conn.prepareStatement(sql)) {
-      pstmt.setInt(1, room.setNu)
+      pstmt.setString(1, number);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      throws new RuntimeException("Error al borrar habitación.", e);
     }
-
   }
 
   private Room mapRoom(ResultSet rs) throws SQLException {
