@@ -168,6 +168,9 @@ public class Room {
 
   public void setOutOfService(boolean outOfService) {
     this.outOfService = outOfService;
+    if (outOfService) {
+      this.isAvailable = false;
+    }
   }
 
 }
