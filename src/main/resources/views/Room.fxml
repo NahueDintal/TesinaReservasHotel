@@ -1,56 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
-    <!-- Panel izquierdo (verde oscuro) -->
-    <left>
-        <VBox nodeOrientation="RIGHT_TO_LEFT" prefWidth="300.0" style="-fx-background-color: #3E864D; -fx-padding: 20;">
-         <ImageView fitHeight="154.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true" />
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="246.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Planilla de reserva">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Reservas">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Habitaciones">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Clientes">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Reportes">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Configuración">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-        </VBox>
-    </left>
+<!-- El controlador que manejará esta vista -->
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.RoomController"
+            prefHeight="800.0" prefWidth="1200.0">
 
-    <!-- Área central (fondo blanco) -->
-    <center>
-        <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: white;" BorderPane.alignment="TOP_RIGHT" />
-    </center>
-</BorderPane>
+    <!-- Tabla de habitaciones -->
+    <TableView fx:id="tablaHabitaciones"
+               AnchorPane.topAnchor="20.0"
+               AnchorPane.bottomAnchor="20.0"
+               AnchorPane.leftAnchor="20.0"
+               AnchorPane.rightAnchor="20.0">
+
+        <!-- Definición de columnas -->
+        <columns>
+            <!-- Columna Número -->
+            <TableColumn text="Número" prefWidth="100.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="number" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Columna Piso -->
+            <TableColumn text="Piso" prefWidth="80.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="floor" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Columna Tipo -->
+            <TableColumn text="Tipo" prefWidth="120.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="type" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Columna Capacidad -->
+            <TableColumn text="Capacidad" prefWidth="100.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="capacity" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Columna Vista -->
+            <TableColumn text="Vista" prefWidth="120.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="view" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Columna Precio -->
+            <TableColumn text="Precio" prefWidth="100.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="price" />
+                </cellValueFactory>
+            </TableColumn>
+
+            <!-- Columna Disponible -->
+            <TableColumn text="Disponible" prefWidth="120.0">
+                <cellValueFactory>
+                    <PropertyValueFactory property="isAvailable" />
+                </cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
+
+</AnchorPane>
