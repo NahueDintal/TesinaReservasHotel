@@ -201,3 +201,245 @@
     -fx-text-fill: #7f8c8d;
     -fx-font-size: 13px;
 }
+/* ========== FORM CONTAINER (para ventanas emergentes) ========== */
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1;
+}
+
+.form-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+}
+
+/* ========== SIDEBAR (ya existente, mantener) ========== */
+.sidebar {
+    -fx-background-color: #3E864D;
+    -fx-padding: 20;
+}
+
+.sidebar-titulo {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 20 0;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-padding: 12 15;
+    -fx-background-radius: 5;
+    -fx-alignment: CENTER_LEFT;
+    -fx-pref-width: Infinity;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #2E6D3D;
+}
+
+.sidebar-usuario {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10 0 5 0;
+}
+
+.sidebar-logout {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-pref-width: Infinity;
+}
+
+.sidebar-logout:hover {
+    -fx-background-color: #e74c3c;
+}
+
+/* ========== CONTENIDO PRINCIPAL ========== */
+.content-main {
+    -fx-background-color: #f5f7fa;
+}
+
+.section-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* ========== BOTONES ========== */
+.btn-primary {
+    -fx-background-color: #3E864D;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #2E6D3D;
+}
+
+.btn-secondary {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #d5dbdb;
+}
+
+.btn-filter {
+    -fx-background-color: white;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+}
+
+.btn-filter:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.btn-detail {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-font-size: 13px;
+}
+
+.btn-detail:hover {
+    -fx-background-color: #d5dbdb;
+}
+
+.btn-detail-danger {
+    -fx-background-color: #f8d7da;
+    -fx-text-fill: #c0392b;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-font-size: 13px;
+}
+
+.btn-detail-danger:hover {
+    -fx-background-color: #f5c6cb;
+}
+
+/* ========== CAMPOS DE BÚSQUEDA Y FILTROS ========== */
+.search-field {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+}
+
+.search-field:focused {
+    -fx-border-color: #3E864D;
+}
+
+/* ========== TABLA ========== */
+.customer-table {
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-background-color: white;
+}
+
+.customer-table .column-header {
+    -fx-background-color: #ecf0f1;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 10 0;
+}
+
+.customer-table .column-header-background {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 0 0 1 0;
+}
+
+.customer-table .table-row-cell {
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.customer-table .table-row-cell:hover {
+    -fx-background-color: #eaf7ed;
+}
+
+.customer-table .table-row-cell:selected {
+    -fx-background-color: #d4edda;
+}
+
+/* ========== PANEL DE DETALLE ========== */
+.detail-panel {
+    -fx-background-color: white;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 0 0 0 1;
+    -fx-background-radius: 0;
+}
+
+.detail-name {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-wrap-text: true;
+}
+
+.detail-status {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.detail-section-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+    -fx-underline: true;
+}
+
+.detail-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+}
+
+.detail-value {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+}
+
+/* ========== SPLITPANE ========== */
+.split-pane {
+    -fx-background-color: transparent;
+}
+
+.split-pane .split-pane-divider {
+    -fx-background-color: #dcdde1;
+    -fx-padding: 0 3;
+}
+
+/* ========== PIE DE TABLA ========== */
+.footer-info {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+}

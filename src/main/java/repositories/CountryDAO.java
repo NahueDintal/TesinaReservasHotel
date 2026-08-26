@@ -1,27 +1,27 @@
-package models;
+package repositories;
 
 import java.sql.*;
 import java.util.*;
 
-public class CustomerOriginDAO {
+public class CountryDAO {
 
     public Map<Integer, String> listAll() throws SQLException {
-        Map<Integer, String> origenes = new LinkedHashMap<>();
-        String sql = "SELECT idCustomerOrigin, name FROM CustomerOrigin ORDER BY name";
+        Map<Integer, String> paises = new LinkedHashMap<>();
+        String sql = "SELECT idCountry, name FROM Country ORDER BY name";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                origenes.put(rs.getInt("idCustomerOrigin"), rs.getString("name"));
+                paises.put(rs.getInt("idCountry"), rs.getString("name"));
             }
         }
-        return origenes;
+        return paises;
     }
 
     public String getNameById(int id) throws SQLException {
-        String sql = "SELECT name FROM CustomerOrigin WHERE idCustomerOrigin = ?";
+        String sql = "SELECT name FROM Country WHERE idCountry = ?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 

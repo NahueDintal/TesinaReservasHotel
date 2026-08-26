@@ -1,4 +1,4 @@
-package models;
+package repositories;
 
 import java.sql.*;
 import java.util.*;
