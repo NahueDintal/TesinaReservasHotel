@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class RoomDAO {
 
-  public Room seachByNumber(int number) {
+  public Room searchByNumber(int number) {
     String sql = "SELECT * FROM room WHERE number = ?";
     try (Connection conn = ConexionDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
       pstmt.setInt(1, number);
