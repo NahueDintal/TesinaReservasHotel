@@ -1,4 +1,4 @@
-package main.java.models;
+package repositories;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;

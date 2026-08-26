@@ -1,7 +1,7 @@
-package main.java.models; // o el paquete que uses
+package models; // o el paquete que uses
 
-import main.java.models.Room;
-import main.java.models.RoomDAO;
+import models.Room;
+import repositories.RoomDAO;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package repositories;
 
-import main.java.models.room;
+import models.Room;
 
 import java.sql.*;
 import java.util.List;
