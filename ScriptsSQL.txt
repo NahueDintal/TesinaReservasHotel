@@ -76,3 +76,8 @@ CREATE TABLE Customer (
     FOREIGN KEY (idCustomerOrigin)
         REFERENCES CustomerOrigin(idCustomerOrigin)
 );
+
+-- ==========================================
+-- Tabla: Reservation
+-- ==========================================
+

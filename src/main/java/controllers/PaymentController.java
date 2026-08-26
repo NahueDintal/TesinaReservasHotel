@@ -19,11 +19,10 @@ import javafx.scene.control.TextField;
 import javax.swing.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+
 
 public class PaymentController {
-
-    @FXML
-    private TextField txtIDReservation;
 
     @FXML
     private TextField txtAmount;
@@ -108,34 +107,59 @@ public class PaymentController {
 
     @FXML
     private void handleSave() {
+        System.out.println("El pago se guardará desde la reserva.");
+    }
+
+    @FXML
+    private void handleCancel() {
+        txtAmount.clear();
+        dpPaymentDate.setValue(null);
+        cmbPaymentMethod.setValue(null);
+        cmbPaymentStatus.setValue(null);
+        txtObservations.clear();
+    }
+
+    public boolean savePayment(int idReservation) {
 
         try {
 
-            int idReservation = Integer.parseInt(txtIDReservation.getText());
-            BigDecimal amount = new BigDecimal(txtAmount.getText());
+            BigDecimal amount =
+                    new BigDecimal(txtAmount.getText());
 
             LocalDateTime paymentDate;
 
             if (dpPaymentDate.getValue() != null) {
-                paymentDate = dpPaymentDate.getValue().atStartOfDay();
+                paymentDate =
+                        dpPaymentDate.getValue().atStartOfDay();
             } else {
-                paymentDate = LocalDateTime.now();
+                System.out.println(
+                        "Debe seleccionar una fecha de pago."
+                );
+                return false;
             }
 
-            PaymentMethod paymentMethod = cmbPaymentMethod.getValue();
-            PaymentStatus paymentStatus = cmbPaymentStatus.getValue();
+            PaymentMethod paymentMethod =
+                    cmbPaymentMethod.getValue();
 
-            String observations = txtObservations.getText();
+            PaymentStatus paymentStatus =
+                    cmbPaymentStatus.getValue();
 
             if (paymentMethod == null) {
-                System.out.println("Debe seleccionar un método de pago.");
-                return;
+                System.out.println(
+                        "Debe seleccionar un método de pago."
+                );
+                return false;
             }
 
             if (paymentStatus == null) {
-                System.out.println("Debe seleccionar un estado de pago.");
-                return;
+                System.out.println(
+                        "Debe seleccionar un estado de pago."
+                );
+                return false;
             }
+
+            String observations =
+                    txtObservations.getText();
 
             Payment payment = new Payment(
                     idReservation,
@@ -146,32 +170,24 @@ public class PaymentController {
                     observations
             );
 
-            boolean success = paymentRepo.createPayment(payment);
-
-            if (success) {
-                System.out.println("Pago guardado correctamente.");
-            } else {
-                System.out.println("No se pudo guardar el pago.");
-            }
+            return paymentRepo.createPayment(payment);
 
         } catch (NumberFormatException e) {
 
-            System.out.println("ID de reserva o importe inválido.");
+            System.out.println(
+                    "El importe no tiene un formato válido."
+            );
+
+            return false;
 
         } catch (Exception e) {
 
-            System.out.println("Error al guardar el pago: " + e.getMessage());
+            System.out.println(
+                    "Error al guardar el pago: "
+                            + e.getMessage()
+            );
+
+            return false;
         }
     }
-
-    @FXML
-    private void handleCancel() {
-        txtIDReservation.clear();
-        txtAmount.clear();
-        dpPaymentDate.setValue(null);
-        cmbPaymentMethod.setValue(null);
-        cmbPaymentStatus.setValue(null);
-        txtObservations.clear();
-    }
-
 }
