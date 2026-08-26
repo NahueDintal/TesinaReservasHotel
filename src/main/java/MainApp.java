@@ -12,9 +12,11 @@ public class MainApp extends Application {
   public void start(Stage primaryStage) throws Exception {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Dashboard.fxml"));
     BorderPane root = loader.load();
-    Scene scene = new Scene(root, 1200, 800);
+    Scene scene = new Scene(root, 800, 600);
     scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
     primaryStage.setTitle("Sistema de Reservas - Dashboard");
+    primaryStage.setResizable(false);
+    primaryStage.centerOnScreen();
     primaryStage.setScene(scene);
     primaryStage.show();
   }

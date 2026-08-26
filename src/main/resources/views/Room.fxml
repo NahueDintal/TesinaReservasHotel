@@ -2,71 +2,59 @@
 
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<!-- El controlador que manejará esta vista -->
-<AnchorPane xmlns="http://javafx.com/javafx/17"
+<AnchorPane prefHeight="650.0" prefWidth="670.0"
+            xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.RoomController"
-            prefHeight="800.0" prefWidth="1200.0">
+            fx:controller="controllers.RoomController">
+
+    <!-- Título -->
+    <Text layoutX="20.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0"
+          text="Habitaciones" wrappingWidth="150.0">
+        <font><Font size="16.0" /></font>
+    </Text>
+
+    <!-- Botón para insertar habitación -->
+    <ToggleButton fx:id="btnInsertRoom" mnemonicParsing="false"
+                  AnchorPane.topAnchor="20.0"
+                  AnchorPane.rightAnchor="20.0"
+                  prefHeight="35.0" prefWidth="140.0"
+                  text="+ Habitación" onAction="#handleInsertRoom">
+        <font><Font name="System Bold" size="12.0" /></font>
+    </ToggleButton>
 
     <!-- Tabla de habitaciones -->
     <TableView fx:id="tablaHabitaciones"
-               AnchorPane.topAnchor="20.0"
+               AnchorPane.topAnchor="70.0"
                AnchorPane.bottomAnchor="20.0"
                AnchorPane.leftAnchor="20.0"
                AnchorPane.rightAnchor="20.0">
-
-        <!-- Definición de columnas -->
         <columns>
-            <!-- Columna Número -->
-            <TableColumn text="Número" prefWidth="100.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="number" />
-                </cellValueFactory>
+            <TableColumn prefWidth="80.0" text="Número">
+                <cellValueFactory><PropertyValueFactory property="number" /></cellValueFactory>
             </TableColumn>
-
-            <!-- Columna Piso -->
-            <TableColumn text="Piso" prefWidth="80.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="floor" />
-                </cellValueFactory>
+            <TableColumn prefWidth="60.0" text="Piso">
+                <cellValueFactory><PropertyValueFactory property="floor" /></cellValueFactory>
             </TableColumn>
-
-            <!-- Columna Tipo -->
-            <TableColumn text="Tipo" prefWidth="120.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="type" />
-                </cellValueFactory>
+            <TableColumn prefWidth="100.0" text="Tipo">
+                <cellValueFactory><PropertyValueFactory property="type" /></cellValueFactory>
             </TableColumn>
-
-            <!-- Columna Capacidad -->
-            <TableColumn text="Capacidad" prefWidth="100.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="capacity" />
-                </cellValueFactory>
+            <TableColumn prefWidth="80.0" text="Capacidad">
+                <cellValueFactory><PropertyValueFactory property="capacity" /></cellValueFactory>
             </TableColumn>
-
-            <!-- Columna Vista -->
-            <TableColumn text="Vista" prefWidth="120.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="view" />
-                </cellValueFactory>
+            <TableColumn prefWidth="100.0" text="Vista">
+                <cellValueFactory><PropertyValueFactory property="view" /></cellValueFactory>
             </TableColumn>
-
-            <!-- Columna Precio -->
-            <TableColumn text="Precio" prefWidth="100.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="price" />
-                </cellValueFactory>
+            <TableColumn prefWidth="80.0" text="Precio">
+                <cellValueFactory><PropertyValueFactory property="price" /></cellValueFactory>
             </TableColumn>
-
-            <!-- Columna Disponible -->
-            <TableColumn text="Disponible" prefWidth="120.0">
-                <cellValueFactory>
-                    <PropertyValueFactory property="isAvailable" />
-                </cellValueFactory>
+            <TableColumn prefWidth="100.0" text="Disponible">
+                <cellValueFactory><PropertyValueFactory property="isAvailable" /></cellValueFactory>
             </TableColumn>
         </columns>
     </TableView>
