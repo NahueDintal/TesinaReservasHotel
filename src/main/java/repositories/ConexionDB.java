@@ -1,4 +1,4 @@
-package models;  // Ajustá si tu paquete es diferente
+package repositories;  // Ajustá si tu paquete es diferente
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -2,313 +2,236 @@ package controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import models.*;
+import repositories.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class CustomerController {  // ⬅️ Ya NO implementa Initializable
+public class CustomerController {
 
-    // ========== COMPONENTES FXML ==========
-    @FXML private TextField txtName;
-    @FXML private TextField txtSurname;
-    @FXML private ComboBox<String> comboDocumentType;
-    @FXML private TextField txtDocumentNumber;
-    @FXML private TextField txtPhone;
-    @FXML private TextField txtEmail;
-    @FXML private ComboBox<String> comboCountry;
-    @FXML private ComboBox<String> comboStatus;
-    @FXML private ComboBox<String> comboOrigin;
-
+    // ========== TABLE ==========
     @FXML private TableView<Customer> tableCustomers;
-    @FXML private TableColumn<Customer, Integer> colId;
-    @FXML private TableColumn<Customer, String> colName;
-    @FXML private TableColumn<Customer, String> colSurname;
-    @FXML private TableColumn<Customer, String> colDocument;
-    @FXML private TableColumn<Customer, String> colPhone;
-    @FXML private TableColumn<Customer, String> colEmail;
-    @FXML private TableColumn<Customer, String> colStatus;
+    @FXML private TableColumn<Customer, String> colFirstName;
+    @FXML private TableColumn<Customer, String> colLastName;
+    @FXML private TableColumn<Customer, String> colDocumentType;
+    @FXML private TableColumn<Customer, String> colOrigin;
+    @FXML private TableColumn<Customer, String> colCountry;
 
-    @FXML private Button btnAdd;
+    // ========== BUTTONS ==========
+    @FXML private Button btnNewCustomer;
+    @FXML private Button btnViewInactive;
     @FXML private Button btnEdit;
-    @FXML private Button btnDelete;
-    @FXML private Button btnClear;
+    @FXML private Button btnDeactivate;
 
-    // ========== COMPONENTES DEL PANEL DE DETALLE ==========
-    @FXML private Label lblDetalleNombre;
-    @FXML private Label lblDetalleEstado;
-    @FXML private Label lblDetalleId;
-    @FXML private Label lblDetalleDni;
-    @FXML private Label lblDetalleFechaNac;
-    @FXML private Label lblDetalleGenero;
-    @FXML private Label lblDetalleNacionalidad;
-    @FXML private Label lblDetalleCelular;
-    @FXML private Label lblDetalleFijo;
-    @FXML private Label lblDetalleEmail;
-    @FXML private Label lblDetalleDireccion;
-    @FXML private Label lblDetalleCiudad;
-    @FXML private Label lblDetalleProvincia;
+    // ========== DETAIL ==========
+    @FXML private Label lblDetailFullName;
+    @FXML private Label lblDetailStatus;
+    @FXML private Label lblDetailDocumentType;
+    @FXML private Label lblDetailDocumentNumber;
+    @FXML private Label lblDetailPhone;
+    @FXML private Label lblDetailEmail;
+    @FXML private Label lblDetailCountry;
+    @FXML private Label lblDetailOrigin;
 
-    @FXML private TextField txtBuscar;
-    @FXML private ComboBox<String> comboFiltroEstado;
-    @FXML private Label lblTotalClientes;
+    // ========== SEARCH ==========
+    @FXML private TextField txtSearch;
+    @FXML private Label lblTotalCustomers;
 
-    // ========== DAOs y Mapas ==========
+    // ========== DAOs ==========
     private CustomerDAO customerDAO = new CustomerDAO();
-    private Map<Integer, String> documentTypes;
-    private Map<Integer, String> countries;
-    private Map<Integer, String> statuses;
-    private Map<Integer, String> origins;
+    private ObservableList<Customer> masterCustomerList = FXCollections.observableArrayList();
+    private FilteredList<Customer> filteredCustomers;
 
-    private ObservableList<Customer> customerList = FXCollections.observableArrayList();
-
-    // ========== INICIALIZACIÓN (ahora con @FXML) ==========
+    // ========== INIT ==========
     @FXML
-    public void initialize() {  // ⬅️ Sin parámetros y con @FXML
-        // 1. Configurar columnas de la tabla
-        colId.setCellValueFactory(new PropertyValueFactory<>("idCustomer"));
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
-        colDocument.setCellValueFactory(new PropertyValueFactory<>("documentNumber"));
-        colPhone.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        colStatus.setCellValueFactory(new PropertyValueFactory<>("statusName")); // Asumiendo que tenés este campo
+    public void initialize() {
+        // Configurar columnas
+        colFirstName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colLastName.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
+        colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
+        colCountry.setCellValueFactory(new PropertyValueFactory<>("countryName"));
 
-        // 2. Cargar datos de catálogos
-        loadCatalogs();
+        // Cargar clientes activos
+        loadActiveCustomers();
 
-        // 3. Cargar lista de clientes
-        loadCustomers();
+        // Configurar buscador
+        txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredCustomers.setPredicate(customer -> {
+                if (newValue == null || newValue.isEmpty()) return true;
+                String lower = newValue.toLowerCase();
+                return customer.getName().toLowerCase().contains(lower) ||
+                        customer.getSurname().toLowerCase().contains(lower) ||
+                        customer.getEmail().toLowerCase().contains(lower) ||
+                        customer.getPhoneNumber().toLowerCase().contains(lower) ||
+                        customer.getDocumentNumber().toLowerCase().contains(lower);
+            });
+            updateCounter();
+        });
 
-        // 4. Escuchar selección en la tabla para actualizar el detalle
+        // Selección en tabla
         tableCustomers.getSelectionModel().selectedItemProperty().addListener(
-                (obs, oldSelection, newSelection) -> {
-                    if (newSelection != null) {
-                        showDetail(newSelection);
+                (obs, old, newVal) -> {
+                    if (newVal != null) {
+                        showDetail(newVal);
                     } else {
                         clearDetail();
                     }
                 }
         );
 
-        // 5. Deshabilitar botones si no hay selección
+        // Botones
         btnEdit.setDisable(true);
-        btnDelete.setDisable(true);
+        btnDeactivate.setDisable(true);
         tableCustomers.getSelectionModel().selectedItemProperty().addListener(
                 (obs, old, newVal) -> {
-                    boolean isSelected = newVal != null;
-                    btnEdit.setDisable(!isSelected);
-                    btnDelete.setDisable(!isSelected);
+                    boolean selected = newVal != null;
+                    btnEdit.setDisable(!selected);
+                    btnDeactivate.setDisable(!selected);
                 }
         );
+
+        // Acciones
+        btnNewCustomer.setOnAction(e -> openCustomerForm(null));
+        btnViewInactive.setOnAction(e -> openInactiveCustomersWindow());
+        btnEdit.setOnAction(e -> openCustomerForm(tableCustomers.getSelectionModel().getSelectedItem()));
+        btnDeactivate.setOnAction(e -> deactivateCustomer());
     }
 
-    // ========== MÉTODOS DE CARGA ==========
-    private void loadCatalogs() {
+    // ========== LOAD ==========
+    private void loadActiveCustomers() {
         try {
-            documentTypes = new DocumentTypeDAO().listAll();
-            comboDocumentType.getItems().setAll(documentTypes.values());
-
-            countries = new CountryDAO().listAll();
-            comboCountry.getItems().setAll(countries.values());
-
-            statuses = new CustomerStatusDAO().listAll();
-            comboStatus.getItems().setAll(statuses.values());
-
-            origins = new CustomerOriginDAO().listAll();
-            comboOrigin.getItems().setAll(origins.values());
-
-        } catch (SQLException e) {
-            showAlert("Error", "No se pudieron cargar los catálogos", e.getMessage());
-        }
-    }
-
-    private void loadCustomers() {
-        try {
-            customerList.setAll(customerDAO.listAll());
-            tableCustomers.setItems(customerList);
+            masterCustomerList.setAll(customerDAO.listAll());
+            masterCustomerList.removeIf(c -> !"Activo".equals(c.getStatusName()));
+            filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
+            tableCustomers.setItems(filteredCustomers);
             updateCounter();
         } catch (SQLException e) {
             showAlert("Error", "No se pudieron cargar los clientes", e.getMessage());
         }
     }
 
-    // ========== MÉTODOS DEL PANEL DE DETALLE ==========
-    private void showDetail(Customer customer) {
-        lblDetalleNombre.setText(customer.getName() + " " + customer.getSurname());
-        lblDetalleEstado.setText(customer.getStatusName() != null ? customer.getStatusName() : "Sin estado");
-        lblDetalleId.setText("ID: " + customer.getIdCustomer());
-        lblDetalleDni.setText(customer.getDocumentNumber());
-        // Los siguientes campos necesitan que los agregues en la clase Customer
-        lblDetalleFechaNac.setText("--"); // Podés agregar fechaNacimiento a Customer
-        lblDetalleGenero.setText("--");
-        lblDetalleNacionalidad.setText(customer.getCountryName() != null ? customer.getCountryName() : "--");
-        lblDetalleCelular.setText(customer.getPhoneNumber());
-        lblDetalleFijo.setText("--");
-        lblDetalleEmail.setText(customer.getEmail());
-        lblDetalleDireccion.setText("--");
-        lblDetalleCiudad.setText("--");
-        lblDetalleProvincia.setText("--");
+    // ========== CLEAR FILTERS ==========
+    @FXML
+    private void clearFilters() {
+        txtSearch.clear();
+        filteredCustomers.setPredicate(customer -> true);
+        updateCounter();
+    }
+
+    // ========== DETAIL ==========
+    private void showDetail(Customer c) {
+        lblDetailFullName.setText(c.getName() + " " + c.getSurname());
+        lblDetailStatus.setText(c.getStatusName());
+        lblDetailStatus.setStyle(c.getStatusName().equals("Activo") ? "-fx-text-fill: #27ae60;" : "-fx-text-fill: #e74c3c;");
+        lblDetailDocumentType.setText(c.getDocumentTypeName());
+        lblDetailDocumentNumber.setText(c.getDocumentNumber());
+        lblDetailPhone.setText(c.getPhoneNumber());
+        lblDetailEmail.setText(c.getEmail());
+        lblDetailCountry.setText(c.getCountryName());
+        lblDetailOrigin.setText(c.getOriginName());
     }
 
     private void clearDetail() {
-        lblDetalleNombre.setText("Seleccione un cliente");
-        lblDetalleEstado.setText("");
-        lblDetalleId.setText("");
-        lblDetalleDni.setText("");
-        lblDetalleFechaNac.setText("");
-        lblDetalleGenero.setText("");
-        lblDetalleNacionalidad.setText("");
-        lblDetalleCelular.setText("");
-        lblDetalleFijo.setText("");
-        lblDetalleEmail.setText("");
-        lblDetalleDireccion.setText("");
-        lblDetalleCiudad.setText("");
-        lblDetalleProvincia.setText("");
+        lblDetailFullName.setText("Seleccione un cliente");
+        lblDetailStatus.setText("");
+        lblDetailDocumentType.setText("--");
+        lblDetailDocumentNumber.setText("--");
+        lblDetailPhone.setText("--");
+        lblDetailEmail.setText("--");
+        lblDetailCountry.setText("--");
+        lblDetailOrigin.setText("--");
     }
 
-    // ========== MÉTODOS CRUD ==========
-    @FXML
-    private void addCustomer() {
-        if (!validateFields()) return;
-
-        Customer nuevo = new Customer();
-        loadDataFromForm(nuevo);
-
+    // ========== CRUD ==========
+    private void openCustomerForm(Customer customer) {
         try {
-            if (customerDAO.isInsert(nuevo)) {
-                customerList.add(nuevo);
-                showAlert("Éxito", "Cliente agregado", "ID: " + nuevo.getIdCustomer());
-                clearForm();
-                updateCounter();
-            }
-        } catch (SQLException e) {
-            showAlert("Error", "No se pudo agregar", e.getMessage());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/CustomerFormView.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(tableCustomers.getScene().getWindow());
+            stage.setTitle(customer == null ? "Nuevo Cliente" : "Editar Cliente");
+
+            CustomerFormController controller = loader.getController();
+            if (customer != null) controller.setCustomer(customer);
+
+            stage.showAndWait();
+            loadActiveCustomers();
+            tableCustomers.refresh();
+            updateCounter();
+        } catch (IOException e) {
+            showAlert("Error", "No se pudo abrir el formulario", e.getMessage());
         }
     }
 
-    @FXML
-    private void editCustomer() {
-        Customer selected = tableCustomers.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
-
-        if (!validateFields()) return;
-
-        loadDataFromForm(selected);
-
+    private void openInactiveCustomersWindow() {
         try {
-            if (customerDAO.isUpdate(selected)) {
-                tableCustomers.refresh();
-                showAlert("Éxito", "Cliente actualizado", "ID: " + selected.getIdCustomer());
-                clearForm();
-                showDetail(selected);
-            }
-        } catch (SQLException e) {
-            showAlert("Error", "No se pudo actualizar", e.getMessage());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InactiveCustomersView.fxml"));
+            Stage stage = new Stage();
+            stage.setScene(new Scene(loader.load()));
+            stage.setTitle("Clientes Inactivos");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(tableCustomers.getScene().getWindow());
+            stage.showAndWait();
+            loadActiveCustomers();
+            tableCustomers.refresh();
+            updateCounter();
+        } catch (IOException e) {
+            showAlert("Error", "No se pudo abrir la ventana de inactivos", e.getMessage());
         }
     }
 
-    @FXML
-    private void deleteCustomer() {
+    private void deactivateCustomer() {
         Customer selected = tableCustomers.getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmar eliminación");
-        alert.setHeaderText("¿Eliminar cliente?");
-        alert.setContentText("¿Estás seguro de eliminar a " + selected.getName() + " " + selected.getSurname() + "?");
+        alert.setTitle("Inactivar cliente");
+        alert.setHeaderText("¿Desea inactivar este cliente?");
+        alert.setContentText("El cliente " + selected.getName() + " " + selected.getSurname() + " no podrá realizar reservas.");
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    if (customerDAO.isDelete(selected.getIdCustomer())) {
-                        customerList.remove(selected);
-                        showAlert("Éxito", "Cliente eliminado", "");
-                        clearForm();
+                    selected.setIdCustomerStatus(getStatusIdByName("Inactivo"));
+                    if (customerDAO.isUpdate(selected)) {
+                        masterCustomerList.remove(selected);
+                        filteredCustomers.remove(selected);
+                        tableCustomers.refresh();
                         clearDetail();
                         updateCounter();
+                        showAlert("Éxito", "Cliente inactivado", "");
                     }
                 } catch (SQLException e) {
-                    showAlert("Error", "No se pudo eliminar", e.getMessage());
+                    showAlert("Error", "No se pudo inactivar", e.getMessage());
                 }
             }
         });
     }
 
-    @FXML
-    private void clearFields() {
-        clearForm();
-    }
-
-    // ========== MÉTODOS AUXILIARES ==========
-    private void loadDataFromForm(Customer customer) {
-        customer.setName(txtName.getText().trim());
-        customer.setSurname(txtSurname.getText().trim());
-        customer.setDocumentNumber(txtDocumentNumber.getText().trim());
-        customer.setPhoneNumber(txtPhone.getText().trim());
-        customer.setEmail(txtEmail.getText().trim());
-
-        customer.setIdDocumentType(getIdBySelection(comboDocumentType, documentTypes));
-        customer.setIdCountry(getIdBySelection(comboCountry, countries));
-        customer.setIdCustomerStatus(getIdBySelection(comboStatus, statuses));
-        customer.setIdCustomerOrigin(getIdBySelection(comboOrigin, origins));
-    }
-
-    private void clearForm() {
-        txtName.clear();
-        txtSurname.clear();
-        txtDocumentNumber.clear();
-        txtPhone.clear();
-        txtEmail.clear();
-        comboDocumentType.getSelectionModel().clearSelection();
-        comboCountry.getSelectionModel().clearSelection();
-        comboStatus.getSelectionModel().clearSelection();
-        comboOrigin.getSelectionModel().clearSelection();
-        tableCustomers.getSelectionModel().clearSelection();
-    }
-
-    private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {
-        String selected = combo.getSelectionModel().getSelectedItem();
-        for (Map.Entry<Integer, String> entry : map.entrySet()) {
-            if (entry.getValue().equals(selected)) {
-                return entry.getKey();
+    // ========== HELPERS ==========
+    private int getStatusIdByName(String name) {
+        try {
+            Map<Integer, String> statuses = new CustomerStatusDAO().listAll();
+            for (Map.Entry<Integer, String> entry : statuses.entrySet()) {
+                if (entry.getValue().equals(name)) return entry.getKey();
             }
-        }
-        return 0;
-    }
-
-    private boolean validateFields() {
-        if (txtName.getText().trim().isEmpty() || txtSurname.getText().trim().isEmpty()) {
-            showAlert("Validación", "Nombre y Apellido son obligatorios", "");
-            return false;
-        }
-        if (comboDocumentType.getSelectionModel().isEmpty()) {
-            showAlert("Validación", "Seleccioná un Tipo de Documento", "");
-            return false;
-        }
-        if (txtDocumentNumber.getText().trim().isEmpty()) {
-            showAlert("Validación", "El Nº de Documento es obligatorio", "");
-            return false;
-        }
-        if (comboCountry.getSelectionModel().isEmpty()) {
-            showAlert("Validación", "Seleccioná un País", "");
-            return false;
-        }
-        if (comboStatus.getSelectionModel().isEmpty()) {
-            showAlert("Validación", "Seleccioná un Estado", "");
-            return false;
-        }
-        if (comboOrigin.getSelectionModel().isEmpty()) {
-            showAlert("Validación", "Seleccioná un Origen", "");
-            return false;
-        }
-        return true;
+        } catch (SQLException e) { /* ignore */ }
+        return 1;
     }
 
     private void updateCounter() {
-        lblTotalClientes.setText("Mostrando " + customerList.size() + " clientes");
+        lblTotalCustomers.setText("Mostrando " + (filteredCustomers != null ? filteredCustomers.size() : 0) + " clientes");
     }
 
     private void showAlert(String title, String header, String content) {

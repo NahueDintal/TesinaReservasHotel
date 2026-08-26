@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CustomerFormController">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25" />
+    </padding>
+
+    <!-- Title -->
+    <Label fx:id="lblFormTitle" text="Nuevo Cliente" styleClass="form-title">
+        <font>
+            <Font size="20.0" />
+        </font>
+    </Label>
+
+    <!-- Form Fields -->
+    <GridPane hgap="15" vgap="12">
+        <!-- Name -->
+        <Label text="Nombres *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtFirstName" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250.0" />
+
+        <!-- Last Name -->
+        <Label text="Apellidos *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <TextField fx:id="txtLastName" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="250.0" />
+
+        <!-- Document Type -->
+        <Label text="Tipo de Documento *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="comboDocumentType" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="250.0" />
+
+        <!-- Document Number -->
+        <Label text="Número de Documento *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <TextField fx:id="txtDocumentNumber" GridPane.columnIndex="3" GridPane.rowIndex="1" prefWidth="250.0" />
+
+        <!-- Phone -->
+        <Label text="Teléfono" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="txtPhone" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250.0" />
+
+        <!-- Email -->
+        <Label text="Email" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <TextField fx:id="txtEmail" GridPane.columnIndex="3" GridPane.rowIndex="2" prefWidth="250.0" />
+
+        <!-- Country -->
+        <Label text="País *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <ComboBox fx:id="comboCountry" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="250.0" />
+
+        <!-- Status (solo para edición) -->
+        <Label text="Estado *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        <ComboBox fx:id="comboStatus" GridPane.columnIndex="3" GridPane.rowIndex="3" prefWidth="250.0" />
+
+        <!-- Origin -->
+        <Label text="Origen *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <ComboBox fx:id="comboOrigin" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="250.0" />
+    </GridPane>
+
+    <Region VBox.vgrow="ALWAYS" />
+
+    <!-- Action Buttons -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCancel" text="Cancelar" styleClass="btn-secondary" />
+        <Button fx:id="btnSave" text="Guardar" styleClass="btn-primary" />
+    </HBox>
+</VBox>

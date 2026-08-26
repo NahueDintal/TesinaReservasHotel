@@ -1,4 +1,6 @@
-package models;
+package repositories;
+
+import models.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;

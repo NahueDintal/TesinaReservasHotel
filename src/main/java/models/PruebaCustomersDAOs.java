@@ -1,5 +1,10 @@
 package models;
 
+import repositories.CountryDAO;
+import repositories.CustomerOriginDAO;
+import repositories.CustomerStatusDAO;
+import repositories.DocumentTypeDAO;
+
 import java.sql.SQLException;
 import java.util.Map;
 
