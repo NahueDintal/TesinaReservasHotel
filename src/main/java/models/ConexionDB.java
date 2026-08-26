@@ -1,4 +1,4 @@
-package models;
+package main.java.models;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
@@ -7,14 +7,9 @@ import java.sql.SQLException;
 
 public class ConexionDB {
 
-  // Cargar variables desde .env
-  private static final Dotenv dotenv = Dotenv.configure()
-      .ignoreIfMissing() // Si no encuentra .env, no falla (útil en producción)
-      .load();
-
-  private static final String URL = dotenv.get("DB_URL");
-  private static final String USER = dotenv.get("DB_USER");
-  private static final String PASSWORD = dotenv.get("DB_PASSWORD");
+  private static final String URL = System.getenv("DB_URL");
+  private static final String USER = System.getenv("DB_USER");
+  private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
   private static Connection connection = null;
 

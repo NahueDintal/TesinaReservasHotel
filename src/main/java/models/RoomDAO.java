@@ -45,7 +45,7 @@ public class RoomDAO {
       pstmt.setInt(2, room.getFloor());
       pstmt.setString(3, room.getType());
       pstmt.setInt(4, room.getCapacity());
-      pstmt.setString(5, room.view());
+      pstmt.setString(5, room.getView());
       pstmt.setBoolean(6, room.getIsAvailable());
       pstmt.setBoolean(7, room.getOutOfService());
       pstmt.setString(8, room.getFeatures());
@@ -59,7 +59,7 @@ public class RoomDAO {
 
   public void update(Room room) {
     String sql = "UPDATE room SET floor = ?, type = ?, capacity = ?, view = ?, available = ?,"
-        + "out_of_service = ?, features = ?, price = ?, description = ?, WHERE number = ?";
+        + "out_of_service = ?, features = ?, price = ?, description = ? WHERE number = ?";
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement pstmt = conn.prepareStatement(sql)) {
       pstmt.setInt(1, room.getFloor());
@@ -81,8 +81,8 @@ public class RoomDAO {
   public void delete(int number) {
     String sql = "DELETE FROM room WHERE number = ?";
     try (Connection conn = ConexionDB.getConnection();
-          PreparedStatement pstmt = conn.prepareStatement(sql)) {
-      pstmt.setString(1, number);
+        PreparedStatement pstmt = conn.prepareStatement(sql)) {
+      pstmt.setInt(1, number);
       pstmt.executeUpdate();
     } catch (SQLException e) {
       throw new RuntimeException("Error al borrar habitación.", e);
@@ -95,11 +95,13 @@ public class RoomDAO {
     String type = rs.getString("type");
     String capacityStr = rs.getString("capacity");
     String view = rs.getString("view");
-    String availableStr = rs.getString("available");
     String features = rs.getString("features");
     String priceStr = rs.getString("price");
     String description = rs.getString("description");
 
-    return new Room(numberStr, floorStr, type, capacityStr, view, availableStr, features, priceStr, description);
+    Room room = new Room(numberStr, floorStr, type, capacityStr, view, features, priceStr, description);
+    room.setIsAvailable(rs.getBoolean("available"));
+    room.setOutOfService(rs.getBoolean("out_of_service"));
+    return room;
   }
 }
