@@ -33,6 +33,7 @@ public class RoomDAO {
         rooms.add(mapRoom(rs));
       }
     } catch (SQLException e) {
+      e.printStackTrace();
       throw new RuntimeException("Error al listar las habitaciones.", e);
     }
     return rooms;
