@@ -7,14 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import models.Room;
-import repositories.RoomDAO;
+import repositories.RoomDAO; // Ajusta según tu paquete (models.RoomDAO o repositories.RoomDAO)
 
 import java.net.URL;
 import java.util.List;
@@ -39,6 +36,7 @@ public class RoomController implements Initializable {
             tablaHabitaciones.setItems(habitaciones);
         } catch (Exception e) {
             e.printStackTrace();
+            // Opcional: mostrar alerta de error
         }
     }
 

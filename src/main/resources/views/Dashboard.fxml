@@ -8,49 +8,53 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
-    <!-- Panel izquierdo (verde oscuro) -->
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.DashboardController"
+            prefHeight="650.0" prefWidth="900.0">
+
+    <!-- Panel izquierdo (barra lateral verde) -->
     <left>
-        <VBox nodeOrientation="RIGHT_TO_LEFT" prefWidth="300.0" style="-fx-background-color: #3E864D; -fx-padding: 20;">
-         <ImageView fitHeight="154.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true" />
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="246.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Planilla de reserva">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Reservas">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Habitaciones">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Clientes">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Reportes">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <ToggleButton mnemonicParsing="false" prefHeight="53.0" prefWidth="315.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 10 15; -fx-background-radius: 5;" text="Configuración">
-            <font>
-               <Font name="Adwaita Sans" size="20.0" />
-            </font>
-         </ToggleButton>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
+        <VBox fx:id="leftMenu" nodeOrientation="RIGHT_TO_LEFT" prefWidth="230.0"
+              style="-fx-background-color: #3E864D; -fx-padding: 10; -fx-spacing: 5;">
+            <ImageView fitHeight="100.0" fitWidth="210.0" pickOnBounds="true" preserveRatio="true" />
+            <ToggleButton fx:id="btnPlanilla" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0"
+                          style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                          text="Planilla de reserva">
+                <font><Font name="Adwaita Sans" size="14.0" /></font>
+            </ToggleButton>
+            <ToggleButton fx:id="btnReservas" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0"
+                          style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                          text="Reservas">
+                <font><Font name="Adwaita Sans" size="14.0" /></font>
+            </ToggleButton>
+            <ToggleButton fx:id="btnHabitaciones" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0"
+                          style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                          text="Habitaciones">
+                <font><Font name="Adwaita Sans" size="14.0" /></font>
+            </ToggleButton>
+            <ToggleButton fx:id="btnClientes" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0"
+                          style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                          text="Clientes">
+                <font><Font name="Adwaita Sans" size="14.0" /></font>
+            </ToggleButton>
+            <ToggleButton fx:id="btnReportes" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0"
+                          style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                          text="Reportes">
+                <font><Font name="Adwaita Sans" size="14.0" /></font>
+            </ToggleButton>
+            <ToggleButton fx:id="btnConfiguracion" mnemonicParsing="false" prefHeight="40.0" prefWidth="210.0"
+                          style="-fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 5 10; -fx-background-radius: 5;"
+                          text="Configuración">
+                <font><Font name="Adwaita Sans" size="14.0" /></font>
+            </ToggleButton>
+            <opaqueInsets><Insets /></opaqueInsets>
         </VBox>
     </left>
 
     <!-- Área central (fondo blanco) -->
     <center>
-        <AnchorPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: white;" BorderPane.alignment="TOP_RIGHT" />
+        <AnchorPane fx:id="centerPane" prefHeight="650.0" prefWidth="670.0"
+                    style="-fx-background-color: white;" BorderPane.alignment="TOP_RIGHT" />
     </center>
 </BorderPane>
