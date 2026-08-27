@@ -3,15 +3,10 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TableView;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import models.Room;
-import repositories.RoomDAO; // Ajusta según tu paquete (models.RoomDAO o repositories.RoomDAO)
+import repositories.RoomDAO;
 
 import java.net.URL;
 import java.util.List;
@@ -23,6 +18,11 @@ public class RoomController implements Initializable {
     private TableView<Room> tablaHabitaciones;
 
     private RoomDAO roomDAO = new RoomDAO();
+    private DashboardController dashboardController;
+
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -36,30 +36,15 @@ public class RoomController implements Initializable {
             tablaHabitaciones.setItems(habitaciones);
         } catch (Exception e) {
             e.printStackTrace();
-            // Opcional: mostrar alerta de error
         }
     }
 
     @FXML
-    private void handleInsertRoom() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/RoomForm.fxml"));
-            Parent root = loader.load();
-
-            RoomFormController formController = loader.getController();
-            formController.setParentController(this);
-
-            Stage stage = new Stage();
-            stage.setTitle("Nueva Habitación");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-            // Al cerrar, recargar la tabla
-            cargarHabitaciones();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void handleInsertRoom() {
+        if (dashboardController != null) {
+            dashboardController.loadView("/views/RoomForm.fxml");
+        } else {
+            System.err.println("DashboardController no disponible");
         }
     }
 }
