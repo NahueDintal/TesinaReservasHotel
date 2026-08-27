@@ -1,4 +1,4 @@
-package main.java.models;
+package models;
 
 public class Room {
   private int number;
@@ -172,5 +172,4 @@ public class Room {
       this.isAvailable = false;
     }
   }
-
 }
