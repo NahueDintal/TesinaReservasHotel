@@ -10,9 +10,9 @@ import java.io.IOException;
 public class DashboardController {
 
     @FXML
-    private VBox leftMenu;          // Panel izquierdo (barra lateral)
+    private VBox leftMenu;
     @FXML
-    private AnchorPane centerPane;  // Área central donde se cargan las vistas
+    private AnchorPane centerPane;
 
     @FXML
     private ToggleButton btnPlanilla;
@@ -33,7 +33,7 @@ public class DashboardController {
         btnPlanilla.setOnAction(e -> loadView("/views/.fxml"));
         btnReservas.setOnAction(e -> loadView("/views/.fxml"));
         btnHabitaciones.setOnAction(e -> loadView("/views/Room.fxml"));
-        btnClientes.setOnAction(e -> loadView("/views/.fxml"));
+        btnClientes.setOnAction(e -> loadView("/views/CustomerView.fxml"));
         btnReportes.setOnAction(e -> loadView("/views/.fxml"));
         btnConfiguracion.setOnAction(e -> loadView("/views/.fxml"));
 
@@ -45,16 +45,22 @@ public class DashboardController {
      * @param fxmlPath Ruta del archivo FXML (debe comenzar con "/" y estar en
      *                 resources/views)
      */
-    private void loadView(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            AnchorPane view = loader.load();
-            centerPane.getChildren().setAll(view);
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Si falla, muestra un panel vacío
-            AnchorPane errorPane = new AnchorPane();
-            centerPane.getChildren().setAll(errorPane);
-        }
+    public void loadView(String fxmlPath) {
+      try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        AnchorPane view = loader.load();
+
+        Object controller = loader.getController();
+          if (controller instanceof RoomController) {
+              ((RoomController) controller).setDashboardController(this);
+          } else if (controller instanceof RoomFormController) {
+              ((RoomFormController) controller).setDashboardController(this);
+          }
+          centerPane.getChildren().setAll(view);
+      } catch (IOException e) {
+        e.printStackTrace();
+        AnchorPane errorPane = new AnchorPane();
+        centerPane.getChildren().setAll(errorPane);
+      }
     }
 }

@@ -4,9 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import models.Room;
-import repositories.RoomDAO; // Ajusta el paquete según corresponda
+import repositories.RoomDAO;
 
 public class RoomFormController {
 
@@ -32,10 +31,10 @@ public class RoomFormController {
     private CheckBox chkOutOfService;
 
     private RoomDAO roomDAO = new RoomDAO();
-    private RoomController parentController;
+    private DashboardController dashboardController;
 
-    public void setParentController(RoomController controller) {
-        this.parentController = controller;
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
     }
 
     @FXML
@@ -51,7 +50,6 @@ public class RoomFormController {
                     txtPrice.getText(),
                     txtDescription.getText()
             );
-
             room.setIsAvailable(chkAvailable.isSelected());
             room.setOutOfService(chkOutOfService.isSelected());
 
@@ -63,12 +61,10 @@ public class RoomFormController {
             alert.setContentText("Habitación creada correctamente.");
             alert.showAndWait();
 
-            if (parentController != null) {
-                parentController.cargarHabitaciones();
+            // Volver a la lista de habitaciones
+            if (dashboardController != null) {
+                dashboardController.loadView("/views/Room.fxml");
             }
-
-            Stage stage = (Stage) txtNumber.getScene().getWindow();
-            stage.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +78,9 @@ public class RoomFormController {
 
     @FXML
     private void handleCancel() {
-        Stage stage = (Stage) txtNumber.getScene().getWindow();
-        stage.close();
+        // Volver a la lista sin guardar
+        if (dashboardController != null) {
+            dashboardController.loadView("/views/Room.fxml");
+        }
     }
 }
