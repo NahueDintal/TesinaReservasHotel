@@ -1,6 +1,6 @@
 package repositories;
 
-import models.ConexionDB;
+import repositories.ConexionDB;
 import models.Payment;
 
 import java.math.BigDecimal;
@@ -12,33 +12,45 @@ public class PaymentRepo {
 
     private boolean validatePayment(Payment payment) {
 
-        if (payment == null) {
-            System.err.println("El pago no puede ser null.");
-            return false;
-        }
+            if (payment == null) {
+                System.err.println("El pago ingresado no es válido.");
+                return false;
+            }
 
-        if (payment.getIdReservation() <= 0) {
-            System.err.println("La reserva asociada al pago no es válida.");
-            return false;
-        }
+            if (payment.getIdReservation() <= 0) {
+                System.err.println("La reserva asociada al pago no es válida.");
+                return false;
+            }
 
-        if (payment.getAmount() == null || payment.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            System.err.println("El importe del pago no es válido.");
-            return false;
-        }
+            if (payment.getAmount() == null ||
+                    payment.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+                System.err.println("El importe ingreado debe ser mayor a cero.");
+                return false;
+            }
+
+            if (payment.getPaymentDate() == null) {
+                System.err.println("La fecha del pago es obligatoria.");
+                return false;
+            }
 
         if (payment.getIdPaymentMethod() <= 0) {
-            System.err.println("El método de pago no es válido.");
+            System.err.println("Debe seleccionar un método de pago.");
             return false;
         }
 
         if (payment.getIdPaymentStatus() <= 0) {
-            System.err.println("El estado del pago no es válido.");
+            System.err.println("Debe seleccionar un estado de pago.");
             return false;
         }
 
-        return true;
-    }
+            if (payment.getObservations() != null &&
+                    payment.getObservations().trim().isEmpty()) {
+                System.err.println("La observación no puede contener solo espacios.");
+                return false;
+            }
+
+            return true;
+        }
 
     public boolean createPayment(Payment payment) {
 
@@ -55,7 +67,7 @@ public class PaymentRepo {
 
             stmt.setInt(1, payment.getIdReservation());
             stmt.setBigDecimal(2, payment.getAmount());
-            stmt.setObject(3, payment.getPaymentDate());
+            stmt.setObject(3, Timestamp.valueOf(payment.getPaymentDate()));
             stmt.setInt(4, payment.getIdPaymentMethod());
             stmt.setInt(5, payment.getIdPaymentStatus());
             stmt.setString(6, payment.getObservations());

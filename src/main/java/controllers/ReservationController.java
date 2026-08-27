@@ -31,11 +31,11 @@ public class ReservationController {
 
     public boolean updateReservationStatus(
             int idReservation,
-            String status) {
+            int idReservationStatus) {
 
         return reservationRepo.updateReservationStatus(
                 idReservation,
-                status
+                idReservationStatus
         );
     }
 }

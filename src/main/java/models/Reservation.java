@@ -11,7 +11,7 @@ public class Reservation {
         private LocalDateTime creationDate;
         private LocalDate checkIn;
         private LocalDate checkOut;
-        private String status;
+        private int idReservationStatus;
         private int numberOfGuests;
         private BigDecimal totalRate;
         private String observations;
@@ -23,7 +23,7 @@ public class Reservation {
                            LocalDateTime creationDate,
                            LocalDate checkIn,
                            LocalDate checkOut,
-                           String status,
+                           int idReservationStatus,
                            int numberOfGuests,
                            BigDecimal totalRate,
                            String observations) {
@@ -32,7 +32,7 @@ public class Reservation {
             this.creationDate = creationDate;
             this.checkIn = checkIn;
             this.checkOut = checkOut;
-            this.status = status;
+            this.idReservationStatus = idReservationStatus;
             this.numberOfGuests = numberOfGuests;
             this.totalRate = totalRate;
             this.observations = observations;
@@ -78,12 +78,12 @@ public class Reservation {
             this.checkOut = checkOut;
         }
 
-        public String getStatus() {
-            return status;
+        public int getIdReservationStatus() {
+            return idReservationStatus;
         }
 
-        public void setStatus(String status) {
-            this.status = status;
+        public void setIdReservationStatus(int idReservationStatus) {
+            this.idReservationStatus = idReservationStatus;
         }
 
         public int getNumberOfGuests() {

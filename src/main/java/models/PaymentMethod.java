@@ -28,7 +28,7 @@ public class PaymentMethod {
         this.name = name;
     }
 
-    public String ToString() {
+    public String toString() {
         return name;
 
     }

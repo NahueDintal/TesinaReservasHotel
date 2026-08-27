@@ -1,6 +1,5 @@
 package repositories;
 
-import models.ConexionDB;
 import models.Reservation;
 
 import java.math.BigDecimal;
@@ -17,7 +16,7 @@ public class ReservationRepo {
         }
 
         String sql = "INSERT INTO Reservation " +
-                "(idCustomer, creationDate, checkIn, checkOut, status, " +
+                "(idCustomer, creationDate, checkIn, checkOut, idReservationStatus, " +
                 "numberOfGuests, totalRate, observations) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -27,22 +26,41 @@ public class ReservationRepo {
                      Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, reservation.getIdCustomer());
+
             stmt.setTimestamp(
                     2,
                     Timestamp.valueOf(reservation.getCreationDate())
             );
+
             stmt.setDate(
                     3,
                     Date.valueOf(reservation.getCheckIn())
             );
+
             stmt.setDate(
                     4,
                     Date.valueOf(reservation.getCheckOut())
             );
-            stmt.setString(5, reservation.getStatus());
-            stmt.setInt(6, reservation.getNumberOfGuests());
-            stmt.setBigDecimal(7, reservation.getTotalRate());
-            stmt.setString(8, reservation.getObservations());
+
+            stmt.setInt(
+                    5,
+                    reservation.getIdReservationStatus()
+            );
+
+            stmt.setInt(
+                    6,
+                    reservation.getNumberOfGuests()
+            );
+
+            stmt.setBigDecimal(
+                    7,
+                    reservation.getTotalRate()
+            );
+
+            stmt.setString(
+                    8,
+                    reservation.getObservations()
+            );
 
             int rowsAffected = stmt.executeUpdate();
 
@@ -68,13 +86,14 @@ public class ReservationRepo {
         return -1;
     }
 
+
     public List<Reservation> getReservations() {
 
         List<Reservation> reservations = new ArrayList<>();
 
         String sql = "SELECT idReservation, idCustomer, creationDate, " +
-                "checkIn, checkOut, status, numberOfGuests, " +
-                "totalRate, observations " +
+                "checkIn, checkOut, idReservationStatus, " +
+                "numberOfGuests, totalRate, observations " +
                 "FROM Reservation";
 
         try (Connection conn = ConexionDB.getConnection();
@@ -94,6 +113,7 @@ public class ReservationRepo {
                 );
 
                 if (rs.getTimestamp("creationDate") != null) {
+
                     reservation.setCreationDate(
                             rs.getTimestamp("creationDate")
                                     .toLocalDateTime()
@@ -101,19 +121,21 @@ public class ReservationRepo {
                 }
 
                 if (rs.getDate("checkIn") != null) {
+
                     reservation.setCheckIn(
                             rs.getDate("checkIn").toLocalDate()
                     );
                 }
 
                 if (rs.getDate("checkOut") != null) {
+
                     reservation.setCheckOut(
                             rs.getDate("checkOut").toLocalDate()
                     );
                 }
 
-                reservation.setStatus(
-                        rs.getString("status")
+                reservation.setIdReservationStatus(
+                        rs.getInt("idReservationStatus")
                 );
 
                 reservation.setNumberOfGuests(
@@ -142,11 +164,19 @@ public class ReservationRepo {
         return reservations;
     }
 
+
     public Reservation getReservationById(int idReservation) {
 
+        if (idReservation <= 0) {
+            System.err.println(
+                    "El ID de la reserva no es válido."
+            );
+            return null;
+        }
+
         String sql = "SELECT idReservation, idCustomer, creationDate, " +
-                "checkIn, checkOut, status, numberOfGuests, " +
-                "totalRate, observations " +
+                "checkIn, checkOut, idReservationStatus, " +
+                "numberOfGuests, totalRate, observations " +
                 "FROM Reservation " +
                 "WHERE idReservation = ?";
 
@@ -170,6 +200,7 @@ public class ReservationRepo {
                     );
 
                     if (rs.getTimestamp("creationDate") != null) {
+
                         reservation.setCreationDate(
                                 rs.getTimestamp("creationDate")
                                         .toLocalDateTime()
@@ -177,19 +208,21 @@ public class ReservationRepo {
                     }
 
                     if (rs.getDate("checkIn") != null) {
+
                         reservation.setCheckIn(
                                 rs.getDate("checkIn").toLocalDate()
                         );
                     }
 
                     if (rs.getDate("checkOut") != null) {
+
                         reservation.setCheckOut(
                                 rs.getDate("checkOut").toLocalDate()
                         );
                     }
 
-                    reservation.setStatus(
-                            rs.getString("status")
+                    reservation.setIdReservationStatus(
+                            rs.getInt("idReservationStatus")
                     );
 
                     reservation.setNumberOfGuests(
@@ -219,15 +252,19 @@ public class ReservationRepo {
         return null;
     }
 
+
     public boolean updateReservation(Reservation reservation) {
 
-        if (reservation == null) {
-            System.err.println("La reserva no puede ser null.");
+        if (!validateReservation(reservation)) {
             return false;
         }
 
         if (reservation.getIdReservation() <= 0) {
-            System.err.println("El ID de la reserva no es válido.");
+
+            System.err.println(
+                    "El ID de la reserva no es válido."
+            );
+
             return false;
         }
 
@@ -235,7 +272,7 @@ public class ReservationRepo {
                 "idCustomer = ?, " +
                 "checkIn = ?, " +
                 "checkOut = ?, " +
-                "status = ?, " +
+                "idReservationStatus = ?, " +
                 "numberOfGuests = ?, " +
                 "totalRate = ?, " +
                 "observations = ? " +
@@ -259,9 +296,9 @@ public class ReservationRepo {
                     Date.valueOf(reservation.getCheckOut())
             );
 
-            stmt.setString(
+            stmt.setInt(
                     4,
-                    reservation.getStatus()
+                    reservation.getIdReservationStatus()
             );
 
             stmt.setInt(
@@ -287,9 +324,11 @@ public class ReservationRepo {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
+
                 System.out.println(
                         "Reserva actualizada correctamente."
                 );
+
                 return true;
             }
 
@@ -313,7 +352,7 @@ public class ReservationRepo {
 
     public boolean updateReservationStatus(
             int idReservation,
-            String status) {
+            int idReservationStatus) {
 
         if (idReservation <= 0) {
             System.err.println(
@@ -322,7 +361,7 @@ public class ReservationRepo {
             return false;
         }
 
-        if (status == null || status.trim().isEmpty()) {
+        if (idReservationStatus <= 0) {
             System.err.println(
                     "El estado de la reserva no es válido."
             );
@@ -330,13 +369,13 @@ public class ReservationRepo {
         }
 
         String sql = "UPDATE Reservation " +
-                "SET status = ? " +
+                "SET idReservationStatus = ? " +
                 "WHERE idReservation = ?";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, status);
+            stmt.setInt(1, idReservationStatus);
             stmt.setInt(2, idReservation);
 
             int rowsAffected = stmt.executeUpdate();
@@ -371,30 +410,47 @@ public class ReservationRepo {
     private boolean validateReservation(Reservation reservation) {
 
         if (reservation == null) {
+
             System.err.println(
                     "La reserva no puede ser null."
             );
+
             return false;
         }
 
         if (reservation.getIdCustomer() <= 0) {
+
             System.err.println(
                     "El cliente asociado a la reserva no es válido."
             );
+
+            return false;
+        }
+
+        if (reservation.getCreationDate() == null) {
+
+            System.err.println(
+                    "La fecha de creación es obligatoria."
+            );
+
             return false;
         }
 
         if (reservation.getCheckIn() == null) {
+
             System.err.println(
                     "La fecha de check-in es obligatoria."
             );
+
             return false;
         }
 
         if (reservation.getCheckOut() == null) {
+
             System.err.println(
                     "La fecha de check-out es obligatoria."
             );
+
             return false;
         }
 
@@ -405,22 +461,25 @@ public class ReservationRepo {
                     "La fecha de check-out debe ser posterior "
                             + "a la fecha de check-in."
             );
+
             return false;
         }
 
-        if (reservation.getStatus() == null ||
-                reservation.getStatus().trim().isEmpty()) {
+        if (reservation.getIdReservationStatus() <= 0) {
 
             System.err.println(
                     "El estado de la reserva es obligatorio."
             );
+
             return false;
         }
 
         if (reservation.getNumberOfGuests() <= 0) {
+
             System.err.println(
                     "La cantidad de huéspedes debe ser mayor que cero."
             );
+
             return false;
         }
 
@@ -431,10 +490,10 @@ public class ReservationRepo {
             System.err.println(
                     "La tarifa total no puede ser negativa."
             );
+
             return false;
         }
 
         return true;
     }
-
 }

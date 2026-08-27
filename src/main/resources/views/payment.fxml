@@ -1,52 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.ColumnConstraints?>
 
-<AnchorPane prefHeight="268.0" prefWidth="483.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PaymentController">
-   <children>
-      <GridPane layoutX="106.0" layoutY="66.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <HBox prefHeight="0.0" prefWidth="483.0" spacing="2.0" />
-            <Label text="Importe" />
-            <TextField fx:id="txtAmount" promptText="Ingrese el importe" GridPane.columnIndex="1" />
-            <Label text="Fecha de pago" GridPane.rowIndex="1" />
-            <DatePicker fx:id="dpPaymentDate" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="Metodo de Pago" GridPane.rowIndex="2" />
-            <ComboBox fx:id="cmbPaymentMethod" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Estado de pago" GridPane.rowIndex="3" />
-            <ComboBox fx:id="cmbPaymentStatus" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label text="Observaciones" GridPane.rowIndex="4" />
-            <TextArea fx:id="txtObservations" prefHeight="45.0" prefWidth="338.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-         </children>
-      </GridPane>
-      <Button fx:id="btnSave" layoutX="364.0" layoutY="171.0" mnemonicParsing="false" onAction="#handleSave" text="Guardar Pago" />
-      <Button fx:id="btnCancel" layoutX="377.0" layoutY="202.0" mnemonicParsing="false" onAction="#handleCancel" text="Cancelar" />
-      <Label layoutX="183.0" layoutY="25.0" text="Gestión de Pago" textAlignment="CENTER">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-   </children>
-</AnchorPane>
+<GridPane
+        xmlns="http://javafx.com/javafx/26"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controllers.PaymentController"
+        hgap="15.0"
+        vgap="10.0"
+        maxWidth="Infinity">
+
+    <columnConstraints>
+        <ColumnConstraints
+                minWidth="120.0"
+                prefWidth="140.0"
+                halignment="LEFT"/>
+
+        <ColumnConstraints
+                hgrow="ALWAYS"
+                minWidth="180.0"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="60.0"/>
+    </rowConstraints>
+
+    <children>
+
+        <!-- IMPORTE -->
+        <Label
+                text="Importe:"
+                GridPane.rowIndex="0"/>
+
+        <TextField
+                fx:id="txtAmount"
+                promptText="Ingrese el importe"
+                maxWidth="Infinity"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="0"/>
+
+
+        <!-- FECHA -->
+        <Label
+                text="Fecha de pago:"
+                GridPane.rowIndex="1"/>
+
+        <DatePicker
+                fx:id="dpPaymentDate"
+                maxWidth="Infinity"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="1"/>
+
+
+        <!-- MÉTODO -->
+        <Label
+                text="Método de pago:"
+                GridPane.rowIndex="2"/>
+
+        <ComboBox
+                fx:id="cmbPaymentMethod"
+                maxWidth="Infinity"
+                promptText="Seleccione un método"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="2"/>
+
+
+        <!-- ESTADO -->
+        <Label
+                text="Estado del pago:"
+                GridPane.rowIndex="3"/>
+
+        <ComboBox
+                fx:id="cmbPaymentStatus"
+                maxWidth="Infinity"
+                promptText="Seleccione un estado"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="3"/>
+
+
+        <!-- OBSERVACIONES -->
+        <Label
+                text="Observaciones:"
+                GridPane.rowIndex="4"/>
+
+        <TextArea
+                fx:id="txtObservations"
+                promptText="Observaciones del pago..."
+                prefRowCount="3"
+                wrapText="true"
+                maxWidth="Infinity"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="4"/>
+
+    </children>
+
+</GridPane>

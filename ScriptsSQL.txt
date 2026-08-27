@@ -78,6 +78,91 @@ CREATE TABLE Customer (
 );
 
 -- ==========================================
+-- Tabla: ReservationStatus
+-- ==========================================
+CREATE TABLE `reservationstatus` (
+    `idReservationStatus` int NOT NULL AUTO_INCREMENT,
+    `name` varchar(30) NOT NULL,
+    PRIMARY KEY (`idReservationStatus`)
+);
+
+-- ==========================================
 -- Tabla: Reservation
 -- ==========================================
 
+CREATE TABLE `reservation` (
+    `idReservation` int NOT NULL AUTO_INCREMENT,
+    `idCustomer` int NOT NULL,
+    `creationDate` datetime NOT NULL,
+    `checkIn` date NOT NULL,
+    `checkOut` date NOT NULL,
+    `numberOfGuests` int NOT NULL,
+    `totalRate` decimal(10,2) NOT NULL,
+    `observations` text,
+    `idReservationStatus` int NOT NULL,
+
+    PRIMARY KEY (`idReservation`),
+
+    KEY `fk_reservation_customer` (`idCustomer`),
+    KEY `fk_reservation_status` (`idReservationStatus`),
+
+    CONSTRAINT `fk_reservation_customer`
+        FOREIGN KEY (`idCustomer`)
+        REFERENCES `customer` (`idCustomer`),
+
+    CONSTRAINT `fk_reservation_status`
+        FOREIGN KEY (`idReservationStatus`)
+        REFERENCES `reservationstatus` (`idReservationStatus`)
+);
+
+-- ==========================================
+-- Tabla: PaymentMethod
+-- ==========================================
+
+CREATE TABLE `paymentmethod` (
+    `idPaymentMethod` int NOT NULL AUTO_INCREMENT,
+    `name` varchar(50) NOT NULL,
+    PRIMARY KEY (`idPaymentMethod`)
+);
+
+-- ==========================================
+-- Tabla: PaymentStatus
+-- ==========================================
+
+CREATE TABLE `paymentstatus` (
+    `idPaymentStatus` int NOT NULL AUTO_INCREMENT,
+    `name` varchar(50) NOT NULL,
+    PRIMARY KEY (`idPaymentStatus`)
+);
+
+-- ==========================================
+-- Tabla: Payment
+-- ==========================================
+
+CREATE TABLE `payment` (
+    `idPayment` int NOT NULL AUTO_INCREMENT,
+    `idReservation` int NOT NULL,
+    `amount` decimal(10,2) NOT NULL,
+    `paymentDate` datetime NOT NULL,
+    `idPaymentMethod` int NOT NULL,
+    `idPaymentStatus` int NOT NULL,
+    `observations` text,
+
+    PRIMARY KEY (`idPayment`),
+
+    KEY `idReservation` (`idReservation`),
+    KEY `idPaymentMethod` (`idPaymentMethod`),
+    KEY `idPaymentStatus` (`idPaymentStatus`),
+
+    CONSTRAINT `payment_ibfk_1`
+        FOREIGN KEY (`idReservation`)
+        REFERENCES `reservation` (`idReservation`),
+
+    CONSTRAINT `payment_ibfk_2`
+        FOREIGN KEY (`idPaymentMethod`)
+        REFERENCES `paymentmethod` (`idPaymentMethod`),
+
+    CONSTRAINT `payment_ibfk_3`
+        FOREIGN KEY (`idPaymentStatus`)
+        REFERENCES `paymentstatus` (`idPaymentStatus`)
+);

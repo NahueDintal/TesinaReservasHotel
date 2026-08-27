@@ -1,6 +1,6 @@
 package repositories;
 
-import models.ConexionDB;
+import repositories.ConexionDB;
 import models.PaymentMethod;
 
 import java.sql.Connection;
