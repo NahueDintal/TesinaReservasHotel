@@ -6,155 +6,391 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane
-        xmlns="http://javafx.com/javafx/26"
+<ScrollPane
+        fitToWidth="true"
+        xmlns="http://javafx.com/javafx/17"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="controllers.NewReservationController"
-        prefWidth="900.0"
-        prefHeight="700.0">
+        fx:controller="controllers.NewReservationController">
 
-    <center>
+    <content>
 
-        <ScrollPane
-                fitToWidth="true"
-                fitToHeight="false"
-                hbarPolicy="NEVER"
-                vbarPolicy="AS_NEEDED">
+        <VBox spacing="20">
 
-            <content>
-
-                <VBox
-                        spacing="15.0"
-                        fillWidth="true"
-                        prefWidth="850.0"
-                        maxWidth="850.0">
-
-                    <padding>
-                        <Insets top="30.0"
-                                right="40.0"
-                                bottom="30.0"
-                                left="40.0"/>
-                    </padding>
-
-                    <!-- ========================= -->
-                    <!-- TÍTULO -->
-                    <!-- ========================= -->
-
-                    <Label
-                            text="Nueva Reserva"
-                            style="-fx-font-size: 26px; -fx-font-weight: bold;"/>
+            <padding>
+                <Insets top="25" right="30" bottom="25" left="30"/>
+            </padding>
 
 
-                    <!-- ========================= -->
-                    <!-- DATOS DE RESERVA -->
-                    <!-- ========================= -->
+            <!-- ================================================= -->
+            <!-- RESERVA -->
+            <!-- ================================================= -->
 
-                    <Label
-                            text="Datos de la reserva"
-                            style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <Label
+                    text="Nueva Reserva"
+                    style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
 
-
-                    <Label text="Cliente"/>
-
-                    <ComboBox
-                            fx:id="cmbCustomer"
-                            prefWidth="350.0"
-                            promptText="Seleccione un cliente"/>
+            <Separator/>
 
 
-                    <Label text="Check-in"/>
-
-                    <DatePicker
-                            fx:id="dpCheckIn"
-                            prefWidth="350.0"/>
+            <Label
+                    text="Datos de la reserva"
+                    style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
 
-                    <Label text="Check-out"/>
+            <GridPane
+                    hgap="15"
+                    vgap="12">
 
-                    <DatePicker
-                            fx:id="dpCheckOut"
-                            prefWidth="350.0"/>
+                <Label
+                        text="Cliente:"
+                        GridPane.rowIndex="0"
+                        GridPane.columnIndex="0"/>
 
-
-                    <Label text="Cantidad de huéspedes"/>
-
-                    <TextField
-                            fx:id="txtNumberOfGuests"
-                            prefWidth="350.0"
-                            promptText="Ingrese cantidad de huéspedes"/>
-
-
-                    <Label text="Tarifa total"/>
-
-                    <TextField
-                            fx:id="txtTotalRate"
-                            prefWidth="350.0"
-                            promptText="Ingrese tarifa total"/>
+                <ComboBox
+                        fx:id="cmbCustomer"
+                        prefWidth="220"
+                        GridPane.rowIndex="0"
+                        GridPane.columnIndex="1"/>
 
 
-                    <Label text="Estado de reserva"/>
+                <Label
+                        text="Check-in:"
+                        GridPane.rowIndex="1"
+                        GridPane.columnIndex="0"/>
 
-                    <ComboBox
-                            fx:id="cmbReservationStatus"
-                            prefWidth="350.0"
-                            promptText="Seleccione un estado"/>
-
-
-                    <Label text="Observaciones"/>
-
-                    <TextArea
-                            fx:id="txtReservationObservations"
-                            prefWidth="500.0"
-                            prefHeight="80.0"
-                            wrapText="true"
-                            promptText="Observaciones de la reserva"/>
+                <DatePicker
+                        fx:id="dpCheckIn"
+                        prefWidth="220"
+                        GridPane.rowIndex="1"
+                        GridPane.columnIndex="1"/>
 
 
-                    <!-- ========================= -->
-                    <!-- SECCIÓN PAGO -->
-                    <!-- ========================= -->
+                <Label
+                        text="Check-out:"
+                        GridPane.rowIndex="2"
+                        GridPane.columnIndex="0"/>
 
-                    <Label text="Datos del pago"/>
+                <DatePicker
+                        fx:id="dpCheckOut"
+                        prefWidth="220"
+                        GridPane.rowIndex="2"
+                        GridPane.columnIndex="1"/>
 
-                    <fx:include
-                            fx:id="payment"
-                            source="payment.fxml"/>
 
-                    <!-- ========================= -->
-                    <!-- BOTONES -->
-                    <!-- ========================= -->
+                <Label
+                        text="Cantidad de huéspedes:"
+                        GridPane.rowIndex="3"
+                        GridPane.columnIndex="0"/>
 
-                    <HBox
-                            spacing="15.0"
-                            alignment="CENTER_RIGHT">
+                <TextField
+                        fx:id="txtNumberOfGuests"
+                        promptText="Ej: 2"
+                        prefWidth="220"
+                        GridPane.rowIndex="3"
+                        GridPane.columnIndex="1"/>
 
-                        <Button
-                                text="Cancelar"
-                                onAction="#handleCancel"
-                                prefWidth="120.0"
-                                prefHeight="40.0"/>
 
-                        <Button
-                                text="Guardar Reserva"
-                                onAction="#handleSave"
-                                prefWidth="160.0"
-                                prefHeight="40.0"/>
+                <Label
+                        text="Tarifa total:"
+                        GridPane.rowIndex="4"
+                        GridPane.columnIndex="0"/>
 
-                    </HBox>
+                <TextField
+                        fx:id="txtTotalRate"
+                        promptText="Ej: 50000"
+                        prefWidth="220"
+                        GridPane.rowIndex="4"
+                        GridPane.columnIndex="1"/>
 
-                </VBox>
 
-            </content>
+                <Label
+                        text="Estado:"
+                        GridPane.rowIndex="5"
+                        GridPane.columnIndex="0"/>
 
-        </ScrollPane>
+                <ComboBox
+                        fx:id="cmbReservationStatus"
+                        prefWidth="220"
+                        GridPane.rowIndex="5"
+                        GridPane.columnIndex="1"/>
 
-    </center>
 
-</BorderPane>
+                <Label
+                        text="Tipo de reserva:"
+                        GridPane.rowIndex="6"
+                        GridPane.columnIndex="0"/>
+
+                <ComboBox
+                        fx:id="cmbReservationType"
+                        prefWidth="220"
+                        GridPane.rowIndex="6"
+                        GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+
+            <Label
+                    text="Observaciones de la reserva:"
+                    style="-fx-font-weight: bold;"/>
+
+            <TextArea
+                    fx:id="txtReservationObservations"
+                    prefRowCount="3"
+                    promptText="Ingrese observaciones..."/>
+
+
+            <!-- ================================================= -->
+            <!-- PAYMENT -->
+            <!-- ================================================= -->
+
+            <Separator/>
+
+            <Label
+                    text="Pago"
+                    style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <Label
+                    text="El pago es opcional."
+                    style="-fx-text-fill: #666666;"/>
+
+
+            <GridPane
+                    hgap="15"
+                    vgap="12">
+
+                <Label
+                        text="Importe:"
+                        GridPane.rowIndex="0"
+                        GridPane.columnIndex="0"/>
+
+                <TextField
+                        fx:id="txtPaymentAmount"
+                        promptText="Ej: 25000"
+                        prefWidth="220"
+                        GridPane.rowIndex="0"
+                        GridPane.columnIndex="1"/>
+
+
+                <Label
+                        text="Fecha de pago:"
+                        GridPane.rowIndex="1"
+                        GridPane.columnIndex="0"/>
+
+                <DatePicker
+                        fx:id="dpPaymentDate"
+                        prefWidth="220"
+                        GridPane.rowIndex="1"
+                        GridPane.columnIndex="1"/>
+
+
+                <Label
+                        text="Método de pago:"
+                        GridPane.rowIndex="2"
+                        GridPane.columnIndex="0"/>
+
+                <ComboBox
+                        fx:id="cmbPaymentMethod"
+                        prefWidth="220"
+                        GridPane.rowIndex="2"
+                        GridPane.columnIndex="1"/>
+
+
+                <Label
+                        text="Estado del pago:"
+                        GridPane.rowIndex="3"
+                        GridPane.columnIndex="0"/>
+
+                <ComboBox
+                        fx:id="cmbPaymentStatus"
+                        prefWidth="220"
+                        GridPane.rowIndex="3"
+                        GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+
+            <Label
+                    text="Observaciones del pago:"
+                    style="-fx-font-weight: bold;"/>
+
+            <TextArea
+                    fx:id="txtPaymentObservations"
+                    prefRowCount="3"
+                    promptText="Ingrese observaciones del pago..."/>
+
+
+            <!-- ================================================= -->
+            <!-- CONSUMOS -->
+            <!-- ================================================= -->
+
+            <Separator/>
+
+            <Label
+                    text="Consumos"
+                    style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+
+            <GridPane
+                    hgap="15"
+                    vgap="12">
+
+                <Label
+                        text="Tipo de consumo:"
+                        GridPane.rowIndex="0"
+                        GridPane.columnIndex="0"/>
+
+                <ComboBox
+                        fx:id="cmbConsumptionType"
+                        prefWidth="220"
+                        promptText="1 - Producto / 2 - Servicio"
+                        GridPane.rowIndex="0"
+                        GridPane.columnIndex="1"/>
+
+
+                <Label
+                        text="Producto:"
+                        GridPane.rowIndex="1"
+                        GridPane.columnIndex="0"/>
+
+                <ComboBox
+                        fx:id="cmbProduct"
+                        prefWidth="300"
+                        promptText="Seleccione un producto"
+                        GridPane.rowIndex="1"
+                        GridPane.columnIndex="1"/>
+
+
+                <Label
+                        text="Servicio:"
+                        GridPane.rowIndex="2"
+                        GridPane.columnIndex="0"/>
+
+                <ComboBox
+                        fx:id="cmbService"
+                        prefWidth="300"
+                        promptText="Seleccione un servicio"
+                        GridPane.rowIndex="2"
+                        GridPane.columnIndex="1"/>
+
+
+                <Label
+                        text="Cantidad:"
+                        GridPane.rowIndex="3"
+                        GridPane.columnIndex="0"/>
+
+                <TextField
+                        fx:id="txtConsumptionQuantity"
+                        prefWidth="220"
+                        promptText="Ej: 2"
+                        GridPane.rowIndex="3"
+                        GridPane.columnIndex="1"/>
+
+            </GridPane>
+
+
+            <Button
+                    text="Agregar consumo"
+                    onAction="#handleAddConsumption"
+                    prefWidth="180"/>
+
+
+            <!-- ================================================= -->
+            <!-- TABLA CONSUMOS -->
+            <!-- ================================================= -->
+
+            <TableView
+                    fx:id="tblConsumptions"
+                    prefHeight="220">
+
+                <columns>
+
+                    <TableColumn
+                            fx:id="colConsumptionType"
+                            text="Tipo"
+                            prefWidth="100"/>
+
+                    <TableColumn
+                            fx:id="colConsumptionName"
+                            text="Nombre"
+                            prefWidth="180"/>
+
+                    <TableColumn
+                            fx:id="colConsumptionQuantity"
+                            text="Cantidad"
+                            prefWidth="100"/>
+
+                    <TableColumn
+                            fx:id="colConsumptionUnitPrice"
+                            text="Precio unitario"
+                            prefWidth="130"/>
+
+                    <TableColumn
+                            fx:id="colConsumptionTotal"
+                            text="Total"
+                            prefWidth="130"/>
+
+                </columns>
+
+            </TableView>
+
+
+            <!-- ================================================= -->
+            <!-- TOTAL CONSUMOS -->
+            <!-- ================================================= -->
+
+            <HBox
+                    spacing="15"
+                    alignment="CENTER_RIGHT">
+
+                <Label
+                        text="Total consumos:"
+                        style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                <TextField
+                        fx:id="txtConsumptionTotal"
+                        text="0.00"
+                        editable="false"
+                        prefWidth="130"
+                        style="-fx-font-size: 15px; -fx-font-weight: bold;"/>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- BOTONES -->
+            <!-- ================================================= -->
+
+            <Separator/>
+
+            <HBox
+                    spacing="15"
+                    alignment="CENTER_RIGHT">
+
+                <Button
+                        text="Cancelar"
+                        onAction="#handleCancel"
+                        prefWidth="120"/>
+
+                <Button
+                        text="Guardar reserva"
+                        onAction="#handleSave"
+                        prefWidth="160"/>
+
+            </HBox>
+
+
+        </VBox>
+
+    </content>
+
+</ScrollPane>
+

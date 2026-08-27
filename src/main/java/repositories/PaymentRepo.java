@@ -52,6 +52,7 @@ public class PaymentRepo {
             return true;
         }
 
+    //para cuando quieras crear un pago independiente
     public boolean createPayment(Payment payment) {
 
         if (!validatePayment(payment)) {
@@ -83,6 +84,52 @@ public class PaymentRepo {
 
         } catch (SQLException e) {
             System.err.println("Error al crear el pago: " + e.getMessage());
+            return false;
+        }
+    }
+
+    //para cuando el pago forma parte de una transaccion de reserva
+    public boolean createPayment(Connection conn, Payment payment) {
+
+        if (!validatePayment(payment)) {
+            return false;
+        }
+
+        String sql = "INSERT INTO payment " +
+                "(idReservation, amount, paymentDate, idPaymentMethod, " +
+                "idPaymentStatus, observations) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, payment.getIdReservation());
+            stmt.setBigDecimal(2, payment.getAmount());
+            stmt.setTimestamp(
+                    3,
+                    Timestamp.valueOf(payment.getPaymentDate())
+            );
+            stmt.setInt(4, payment.getIdPaymentMethod());
+            stmt.setInt(5, payment.getIdPaymentStatus());
+            stmt.setString(6, payment.getObservations());
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println(
+                        "Pago creado correctamente dentro de la transacción."
+                );
+                return true;
+            }
+
+            return false;
+
+        } catch (SQLException e) {
+
+            System.err.println(
+                    "Error al crear el pago dentro de la transacción: "
+                            + e.getMessage()
+            );
+
             return false;
         }
     }

@@ -13,21 +13,53 @@ public class ReservationController {
         reservationRepo = new ReservationRepo();
     }
 
+    // =========================================================
+    // CREAR RESERVA
+    // =========================================================
+
     public int createReservation(Reservation reservation) {
-        return reservationRepo.createReservation(reservation);
+
+        return reservationRepo.createReservation(
+                reservation
+        );
     }
 
+    // =========================================================
+    // OBTENER TODAS LAS RESERVAS
+    // =========================================================
+
     public List<Reservation> getReservations() {
+
         return reservationRepo.getReservations();
     }
 
-    public Reservation getReservationById(int idReservation) {
-        return reservationRepo.getReservationById(idReservation);
+    // =========================================================
+    // OBTENER RESERVA POR ID
+    // =========================================================
+
+    public Reservation getReservationById(
+            int idReservation) {
+
+        return reservationRepo.getReservationById(
+                idReservation
+        );
     }
 
-    public boolean updateReservation(Reservation reservation) {
-        return reservationRepo.updateReservation(reservation);
+    // =========================================================
+    // ACTUALIZAR RESERVA
+    // =========================================================
+
+    public boolean updateReservation(
+            Reservation reservation) {
+
+        return reservationRepo.updateReservation(
+                reservation
+        );
     }
+
+    // =========================================================
+    // ACTUALIZAR ESTADO
+    // =========================================================
 
     public boolean updateReservationStatus(
             int idReservation,
@@ -39,3 +71,5 @@ public class ReservationController {
         );
     }
 }
+
+

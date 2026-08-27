@@ -12,6 +12,7 @@ public class Reservation {
         private LocalDate checkIn;
         private LocalDate checkOut;
         private int idReservationStatus;
+        private int idReservationType;
         private int numberOfGuests;
         private BigDecimal totalRate;
         private String observations;
@@ -24,6 +25,7 @@ public class Reservation {
                            LocalDate checkIn,
                            LocalDate checkOut,
                            int idReservationStatus,
+                           int idReservationType,
                            int numberOfGuests,
                            BigDecimal totalRate,
                            String observations) {
@@ -33,6 +35,7 @@ public class Reservation {
             this.checkIn = checkIn;
             this.checkOut = checkOut;
             this.idReservationStatus = idReservationStatus;
+            this.idReservationType = idReservationType;
             this.numberOfGuests = numberOfGuests;
             this.totalRate = totalRate;
             this.observations = observations;
@@ -85,6 +88,14 @@ public class Reservation {
         public void setIdReservationStatus(int idReservationStatus) {
             this.idReservationStatus = idReservationStatus;
         }
+
+        public int getIdReservationType() {
+        return idReservationType;
+    }
+
+        public void setIdReservationType(int idReservationType) {
+        this.idReservationType = idReservationType;
+    }
 
         public int getNumberOfGuests() {
             return numberOfGuests;

@@ -9,6 +9,10 @@ import java.util.List;
 
 public class ReservationRepo {
 
+    // =========================================================
+    // CREATE para unico
+    // =========================================================
+
     public int createReservation(Reservation reservation) {
 
         if (!validateReservation(reservation)) {
@@ -16,14 +20,108 @@ public class ReservationRepo {
         }
 
         String sql = "INSERT INTO Reservation " +
-                "(idCustomer, creationDate, checkIn, checkOut, idReservationStatus, " +
+                "(idCustomer, creationDate, checkIn, checkOut, " +
+                "idReservationStatus, idReservationType, " +
                 "numberOfGuests, totalRate, observations) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                      sql,
                      Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(
+                    1,
+                    reservation.getIdCustomer()
+            );
+
+            stmt.setTimestamp(
+                    2,
+                    Timestamp.valueOf(
+                            reservation.getCreationDate()
+                    )
+            );
+
+            stmt.setDate(
+                    3,
+                    Date.valueOf(
+                            reservation.getCheckIn()
+                    )
+            );
+
+            stmt.setDate(
+                    4,
+                    Date.valueOf(
+                            reservation.getCheckOut()
+                    )
+            );
+
+            stmt.setInt(
+                    5,
+                    reservation.getIdReservationStatus()
+            );
+
+            stmt.setInt(
+                    6,
+                    reservation.getIdReservationType()
+            );
+
+            stmt.setInt(
+                    7,
+                    reservation.getNumberOfGuests()
+            );
+
+            stmt.setBigDecimal(
+                    8,
+                    reservation.getTotalRate()
+            );
+
+            stmt.setString(
+                    9,
+                    reservation.getObservations()
+            );
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                return -1;
+            }
+
+            try (ResultSet generatedKeys =
+                         stmt.getGeneratedKeys()) {
+
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+
+            System.err.println(
+                    "Error al crear la reserva: "
+                            + e.getMessage()
+            );
+        }
+
+        return -1;
+    }
+
+    //para la transaccion
+    public int createReservation(Connection conn, Reservation reservation) {
+
+        if (!validateReservation(reservation)) {
+            return -1;
+        }
+
+        String sql = "INSERT INTO Reservation " +
+                "(idCustomer, creationDate, checkIn, checkOut, " +
+                "idReservationStatus, idReservationType, " +
+                "numberOfGuests, totalRate, observations) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = conn.prepareStatement(
+                sql,
+                Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setInt(1, reservation.getIdCustomer());
 
@@ -49,16 +147,21 @@ public class ReservationRepo {
 
             stmt.setInt(
                     6,
+                    reservation.getIdReservationType()
+            );
+
+            stmt.setInt(
+                    7,
                     reservation.getNumberOfGuests()
             );
 
             stmt.setBigDecimal(
-                    7,
+                    8,
                     reservation.getTotalRate()
             );
 
             stmt.setString(
-                    8,
+                    9,
                     reservation.getObservations()
             );
 
@@ -78,7 +181,7 @@ public class ReservationRepo {
         } catch (SQLException e) {
 
             System.err.println(
-                    "Error al crear la reserva: "
+                    "Error al crear la reserva dentro de la transacción: "
                             + e.getMessage()
             );
         }
@@ -86,23 +189,31 @@ public class ReservationRepo {
         return -1;
     }
 
+    // =========================================================
+    // GET ALL
+    // =========================================================
 
     public List<Reservation> getReservations() {
 
-        List<Reservation> reservations = new ArrayList<>();
+        List<Reservation> reservations =
+                new ArrayList<>();
 
-        String sql = "SELECT idReservation, idCustomer, creationDate, " +
-                "checkIn, checkOut, idReservationStatus, " +
-                "numberOfGuests, totalRate, observations " +
-                "FROM Reservation";
+        String sql =
+                "SELECT idReservation, idCustomer, creationDate, " +
+                        "checkIn, checkOut, idReservationStatus, " +
+                        "idReservationType, numberOfGuests, totalRate, " +
+                        "observations " +
+                        "FROM Reservation";
 
         try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
+             PreparedStatement stmt =
+                     conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
 
-                Reservation reservation = new Reservation();
+                Reservation reservation =
+                        new Reservation();
 
                 reservation.setIdReservation(
                         rs.getInt("idReservation")
@@ -123,19 +234,25 @@ public class ReservationRepo {
                 if (rs.getDate("checkIn") != null) {
 
                     reservation.setCheckIn(
-                            rs.getDate("checkIn").toLocalDate()
+                            rs.getDate("checkIn")
+                                    .toLocalDate()
                     );
                 }
 
                 if (rs.getDate("checkOut") != null) {
 
                     reservation.setCheckOut(
-                            rs.getDate("checkOut").toLocalDate()
+                            rs.getDate("checkOut")
+                                    .toLocalDate()
                     );
                 }
 
                 reservation.setIdReservationStatus(
                         rs.getInt("idReservationStatus")
+                );
+
+                reservation.setIdReservationType(
+                        rs.getInt("idReservationType")
                 );
 
                 reservation.setNumberOfGuests(
@@ -165,7 +282,12 @@ public class ReservationRepo {
     }
 
 
-    public Reservation getReservationById(int idReservation) {
+    // =========================================================
+    // GET BY ID
+    // =========================================================
+
+    public Reservation getReservationById(
+            int idReservation) {
 
         if (idReservation <= 0) {
             System.err.println(
@@ -174,22 +296,29 @@ public class ReservationRepo {
             return null;
         }
 
-        String sql = "SELECT idReservation, idCustomer, creationDate, " +
-                "checkIn, checkOut, idReservationStatus, " +
-                "numberOfGuests, totalRate, observations " +
-                "FROM Reservation " +
-                "WHERE idReservation = ?";
+        String sql =
+                "SELECT idReservation, idCustomer, creationDate, " +
+                        "checkIn, checkOut, idReservationStatus, " +
+                        "idReservationType, numberOfGuests, totalRate, " +
+                        "observations " +
+                        "FROM Reservation " +
+                        "WHERE idReservation = ?";
 
         try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idReservation);
+            stmt.setInt(
+                    1,
+                    idReservation
+            );
 
             try (ResultSet rs = stmt.executeQuery()) {
 
                 if (rs.next()) {
 
-                    Reservation reservation = new Reservation();
+                    Reservation reservation =
+                            new Reservation();
 
                     reservation.setIdReservation(
                             rs.getInt("idReservation")
@@ -210,19 +339,25 @@ public class ReservationRepo {
                     if (rs.getDate("checkIn") != null) {
 
                         reservation.setCheckIn(
-                                rs.getDate("checkIn").toLocalDate()
+                                rs.getDate("checkIn")
+                                        .toLocalDate()
                         );
                     }
 
                     if (rs.getDate("checkOut") != null) {
 
                         reservation.setCheckOut(
-                                rs.getDate("checkOut").toLocalDate()
+                                rs.getDate("checkOut")
+                                        .toLocalDate()
                         );
                     }
 
                     reservation.setIdReservationStatus(
                             rs.getInt("idReservationStatus")
+                    );
+
+                    reservation.setIdReservationType(
+                            rs.getInt("idReservationType")
                     );
 
                     reservation.setNumberOfGuests(
@@ -253,7 +388,12 @@ public class ReservationRepo {
     }
 
 
-    public boolean updateReservation(Reservation reservation) {
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
+    public boolean updateReservation(
+            Reservation reservation) {
 
         if (!validateReservation(reservation)) {
             return false;
@@ -268,18 +408,21 @@ public class ReservationRepo {
             return false;
         }
 
-        String sql = "UPDATE Reservation SET " +
-                "idCustomer = ?, " +
-                "checkIn = ?, " +
-                "checkOut = ?, " +
-                "idReservationStatus = ?, " +
-                "numberOfGuests = ?, " +
-                "totalRate = ?, " +
-                "observations = ? " +
-                "WHERE idReservation = ?";
+        String sql =
+                "UPDATE Reservation SET " +
+                        "idCustomer = ?, " +
+                        "checkIn = ?, " +
+                        "checkOut = ?, " +
+                        "idReservationStatus = ?, " +
+                        "idReservationType = ?, " +
+                        "numberOfGuests = ?, " +
+                        "totalRate = ?, " +
+                        "observations = ? " +
+                        "WHERE idReservation = ?";
 
         try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
 
             stmt.setInt(
                     1,
@@ -288,12 +431,16 @@ public class ReservationRepo {
 
             stmt.setDate(
                     2,
-                    Date.valueOf(reservation.getCheckIn())
+                    Date.valueOf(
+                            reservation.getCheckIn()
+                    )
             );
 
             stmt.setDate(
                     3,
-                    Date.valueOf(reservation.getCheckOut())
+                    Date.valueOf(
+                            reservation.getCheckOut()
+                    )
             );
 
             stmt.setInt(
@@ -303,25 +450,31 @@ public class ReservationRepo {
 
             stmt.setInt(
                     5,
+                    reservation.getIdReservationType()
+            );
+
+            stmt.setInt(
+                    6,
                     reservation.getNumberOfGuests()
             );
 
             stmt.setBigDecimal(
-                    6,
+                    7,
                     reservation.getTotalRate()
             );
 
             stmt.setString(
-                    7,
+                    8,
                     reservation.getObservations()
             );
 
             stmt.setInt(
-                    8,
+                    9,
                     reservation.getIdReservation()
             );
 
-            int rowsAffected = stmt.executeUpdate();
+            int rowsAffected =
+                    stmt.executeUpdate();
 
             if (rowsAffected > 0) {
 
@@ -350,35 +503,54 @@ public class ReservationRepo {
         }
     }
 
+
+    // =========================================================
+    // UPDATE STATUS
+    // =========================================================
+
     public boolean updateReservationStatus(
             int idReservation,
             int idReservationStatus) {
 
         if (idReservation <= 0) {
+
             System.err.println(
                     "El ID de la reserva no es válido."
             );
+
             return false;
         }
 
         if (idReservationStatus <= 0) {
+
             System.err.println(
                     "El estado de la reserva no es válido."
             );
+
             return false;
         }
 
-        String sql = "UPDATE Reservation " +
-                "SET idReservationStatus = ? " +
-                "WHERE idReservation = ?";
+        String sql =
+                "UPDATE Reservation " +
+                        "SET idReservationStatus = ? " +
+                        "WHERE idReservation = ?";
 
         try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idReservationStatus);
-            stmt.setInt(2, idReservation);
+            stmt.setInt(
+                    1,
+                    idReservationStatus
+            );
 
-            int rowsAffected = stmt.executeUpdate();
+            stmt.setInt(
+                    2,
+                    idReservation
+            );
+
+            int rowsAffected =
+                    stmt.executeUpdate();
 
             if (rowsAffected > 0) {
 
@@ -407,7 +579,13 @@ public class ReservationRepo {
         }
     }
 
-    private boolean validateReservation(Reservation reservation) {
+
+    // =========================================================
+    // VALIDATION
+    // =========================================================
+
+    private boolean validateReservation(
+            Reservation reservation) {
 
         if (reservation == null) {
 
@@ -468,7 +646,16 @@ public class ReservationRepo {
         if (reservation.getIdReservationStatus() <= 0) {
 
             System.err.println(
-                    "El estado de la reserva es obligatorio."
+                    "El estado de la reserva no es válido."
+            );
+
+            return false;
+        }
+
+        if (reservation.getIdReservationType() <= 0) {
+
+            System.err.println(
+                    "El tipo de reserva no es válido."
             );
 
             return false;
@@ -497,3 +684,4 @@ public class ReservationRepo {
         return true;
     }
 }
+

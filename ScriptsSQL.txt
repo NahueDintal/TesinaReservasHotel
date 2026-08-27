@@ -87,32 +87,41 @@ CREATE TABLE `reservationstatus` (
 );
 
 -- ==========================================
+-- Tabla: ReservationType
+-- ==========================================
+
+CREATE TABLE ReservationType (
+    idReservationType INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+-- ==========================================
 -- Tabla: Reservation
 -- ==========================================
 
-CREATE TABLE `reservation` (
-    `idReservation` int NOT NULL AUTO_INCREMENT,
-    `idCustomer` int NOT NULL,
-    `creationDate` datetime NOT NULL,
-    `checkIn` date NOT NULL,
-    `checkOut` date NOT NULL,
-    `numberOfGuests` int NOT NULL,
-    `totalRate` decimal(10,2) NOT NULL,
-    `observations` text,
-    `idReservationStatus` int NOT NULL,
+CREATE TABLE Reservation (
+    idReservation INT AUTO_INCREMENT PRIMARY KEY,
+    idCustomer INT NOT NULL,
+    creationDate DATETIME NOT NULL,
+    checkIn DATE NOT NULL,
+    checkOut DATE NOT NULL,
+    idReservationStatus INT NOT NULL,
+    idReservationType INT NOT NULL,
+    numberOfGuests INT NOT NULL,
+    totalRate DECIMAL(10,2) NOT NULL,
+    observations VARCHAR(500),
 
-    PRIMARY KEY (`idReservation`),
+    CONSTRAINT fk_reservation_customer
+        FOREIGN KEY (idCustomer)
+        REFERENCES Customer(idCustomer),
 
-    KEY `fk_reservation_customer` (`idCustomer`),
-    KEY `fk_reservation_status` (`idReservationStatus`),
+    CONSTRAINT fk_reservation_status
+        FOREIGN KEY (idReservationStatus)
+        REFERENCES ReservationStatus(idReservationStatus),
 
-    CONSTRAINT `fk_reservation_customer`
-        FOREIGN KEY (`idCustomer`)
-        REFERENCES `customer` (`idCustomer`),
-
-    CONSTRAINT `fk_reservation_status`
-        FOREIGN KEY (`idReservationStatus`)
-        REFERENCES `reservationstatus` (`idReservationStatus`)
+    CONSTRAINT fk_reservation_type
+        FOREIGN KEY (idReservationType)
+        REFERENCES ReservationType(idReservationType)
 );
 
 -- ==========================================
@@ -165,4 +174,81 @@ CREATE TABLE `payment` (
     CONSTRAINT `payment_ibfk_3`
         FOREIGN KEY (`idPaymentStatus`)
         REFERENCES `paymentstatus` (`idPaymentStatus`)
+);
+
+-- ==========================================
+-- Tabla: Service
+-- ==========================================
+
+CREATE TABLE Service (
+    idService INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    price DECIMAL(10,2) NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+-- ==========================================
+-- Tabla: Product
+-- ==========================================
+
+CREATE TABLE Product (
+    idProduct INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    price DECIMAL(10,2) NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE
+);
+
+-- ==========================================
+-- Tabla: ConsumptionType
+-- ==========================================
+
+CREATE TABLE ConsumptionType (
+    idConsumptionType INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- ==========================================
+-- Tabla: Consumption
+-- ==========================================
+
+CREATE TABLE Consumption (
+    idConsumption INT AUTO_INCREMENT PRIMARY KEY,
+
+    idReservation INT NOT NULL,
+    idConsumptionType INT NOT NULL,
+
+    idProduct INT NULL,
+    idService INT NULL,
+
+    quantity INT NOT NULL,
+    unitPrice DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+
+    consumptionDate DATETIME NOT NULL,
+
+    idPaymentStatus INT NOT NULL,
+
+    observations VARCHAR(500) NULL,
+
+    CONSTRAINT fk_consumption_reservation
+        FOREIGN KEY (idReservation)
+        REFERENCES Reservation(idReservation),
+
+    CONSTRAINT fk_consumption_type
+        FOREIGN KEY (idConsumptionType)
+        REFERENCES ConsumptionType(idConsumptionType),
+
+    CONSTRAINT fk_consumption_product
+        FOREIGN KEY (idProduct)
+        REFERENCES Product(idProduct),
+
+    CONSTRAINT fk_consumption_service
+        FOREIGN KEY (idService)
+        REFERENCES Service(idService),
+
+    CONSTRAINT fk_consumption_payment_status
+        FOREIGN KEY (idPaymentStatus)
+        REFERENCES PaymentStatus(idPaymentStatus)
 );
