@@ -6,7 +6,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.Room;
-import repositories.RoomDAO; // Ajusta el paquete si es models.RoomDAO
+import repositories.RoomDAO; // Ajusta el paquete según corresponda
 
 public class RoomFormController {
 
@@ -42,14 +42,14 @@ public class RoomFormController {
     private void handleSave() {
         try {
             Room room = new Room(
-                txtNumber.getText(),
-                txtFloor.getText(),
-                txtType.getText(),
-                txtCapacity.getText(),
-                txtView.getText(),
-                txtFeatures.getText(),
-                txtPrice.getText(),
-                txtDescription.getText()
+                    txtNumber.getText(),
+                    txtFloor.getText(),
+                    txtType.getText(),
+                    txtCapacity.getText(),
+                    txtView.getText(),
+                    txtFeatures.getText(),
+                    txtPrice.getText(),
+                    txtDescription.getText()
             );
 
             room.setIsAvailable(chkAvailable.isSelected());
