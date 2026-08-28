@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import models.*;
 
@@ -23,7 +24,7 @@ public class NewReservationController {
     // =========================================================
 
     @FXML
-    private ComboBox<Integer> cmbCustomer;
+    private ComboBox<Customer> cmbCustomer;
 
     @FXML
     private DatePicker dpCheckIn;
@@ -105,6 +106,25 @@ public class NewReservationController {
     @FXML
     private TextField txtConsumptionTotal;
 
+    // =========================================================
+    // HABITACIÓN
+    // =========================================================
+
+    @FXML
+    private ComboBox<Room> cmbRoom;
+
+    @FXML
+    private TextField txtRoomFloor;
+
+    @FXML
+    private TextField txtRoomType;
+
+    @FXML
+    private TextField txtRoomView;
+
+    @FXML
+    private TextField txtRoomCapacity;
+
 
     // =========================================================
     // REPOSITORIES
@@ -122,6 +142,10 @@ public class NewReservationController {
 
     private final ProductRepo productRepo;
     private final ServiceRepo serviceRepo;
+
+    private final CustomerDAO customerDAO;
+
+    private final RoomDAO roomDAO;
 
 
     // =========================================================
@@ -150,6 +174,10 @@ public class NewReservationController {
 
         productRepo = new ProductRepo();
         serviceRepo = new ServiceRepo();
+
+        customerDAO = new CustomerDAO();
+
+        roomDAO = RoomDAO();
     }
 
 
@@ -173,6 +201,31 @@ public class NewReservationController {
                 FXCollections.observableArrayList(1, 2)
         );
 
+        cmbConsumptionType.setOnAction(event -> {
+
+            Integer tipo =
+                    cmbConsumptionType.getValue();
+
+            if (tipo == null) {
+                cmbProduct.setDisable(true);
+                cmbService.setDisable(true);
+                return;
+            }
+
+            if (tipo == 1) {
+
+                cmbProduct.setDisable(false);
+                cmbService.setDisable(true);
+                cmbService.setValue(null);
+
+            } else if (tipo == 2) {
+
+                cmbProduct.setDisable(true);
+                cmbService.setDisable(false);
+                cmbProduct.setValue(null);
+            }
+        });
+
         // Cargamos los datos de los ComboBox
         loadReservationStatuses();
         loadReservationTypes();
@@ -183,15 +236,116 @@ public class NewReservationController {
         loadProducts();
         loadServices();
 
+        loadCustomers();
+
+        loadRooms();
+
+        cmbRoom.setOnAction(event -> {
+
+            Room room = cmbRoom.getValue();
+
+            if (room == null) {
+                limpiarDatosHabitacion();
+                return;
+            }
+
+            txtRoomFloor.setText(String.valueOf(room.getFloor()));
+            txtRoomType.setText(room.getType());
+            txtRoomView.setText(room.getView());
+            txtRoomCapacity.setText(String.valueOf(room.getCapacity()));
+
+            // La habitación no se puede seleccionar si está fuera de servicio
+            if (room.getOutOfService()) {
+
+                mostrarError(
+                        "La habitación " + room.getNumber() +
+                                " está fuera de servicio."
+                );
+
+                cmbRoom.setValue(null);
+                limpiarDatosHabitacion();
+            }
+        });
+
+        txtConsumptionTotal.setText("0.00");
+        txtConsumptionTotal.setEditable(false);
+
+        cmbProduct.setDisable(true);
+        cmbService.setDisable(true);
+
         // El total comienza en 0
         txtConsumptionTotal.setText("0.00");
         txtConsumptionTotal.setEditable(false);
+
+        cmbProduct.setDisable(true);
+        cmbService.setDisable(true);
     }
 
+    // =========================================================
+    // Customers
+    // =========================================================
+
+    private void loadCustomers() {
+
+        try {
+
+            List<Customer> customers =
+                    customerDAO.listAll();
+
+            cmbCustomer.getItems().clear();
+            cmbCustomer.getItems().addAll(customers);
+
+            System.out.println("Clientes encontrados: " + customers.size());
+
+            for (Customer customer : customers) {
+                System.out.println(
+                        customer.getIdCustomer() + " - " +
+                                customer.getName() + " " +
+                                customer.getSurname()
+                );
+            }
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Error cargando clientes: "
+                            + e.getMessage()
+            );
+        }
+    }
 
     // =========================================================
     // RESERVATION STATUS
     // =========================================================
+
+    private void loadRooms() {
+
+        try {
+
+            List<Room> rooms = roomDAO.listAll();
+
+            cmbRoom.getItems().clear();
+
+            for (Room room : rooms) {
+
+                if (!room.getOutOfService()) {
+                    cmbRoom.getItems().add(room);
+                }
+            }
+
+            System.out.println(
+                    "Habitaciones encontradas: " +
+                            cmbRoom.getItems().size()
+            );
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Error cargando habitaciones: " +
+                            e.getMessage()
+            );
+        }
+    }
 
     private void loadReservationStatuses() {
 
@@ -251,6 +405,14 @@ public class NewReservationController {
             cmbPaymentMethod.getItems().clear();
             cmbPaymentMethod.getItems().addAll(methods);
 
+            System.out.println("Métodos de pago encontrados: " + methods.size());
+
+            for (PaymentMethod method : methods) {
+                System.out.println(
+                        method.getIdPaymentMethod() + " - " + method.getName()
+                );
+            }
+
         } catch (Exception e) {
 
             System.err.println(
@@ -274,6 +436,14 @@ public class NewReservationController {
 
             cmbPaymentStatus.getItems().clear();
             cmbPaymentStatus.getItems().addAll(statuses);
+
+            System.out.println("Estados de pago encontrados: " + statuses.size());
+
+            for (PaymentStatus status : statuses) {
+                System.out.println(
+                        status.getIdPaymentStatus() + " - " + status.getName()
+                );
+            }
 
         } catch (Exception e) {
 
@@ -340,25 +510,91 @@ public class NewReservationController {
     private void configureConsumptionTable() {
 
         colConsumptionQuantity.setCellValueFactory(
-                cellData ->
-                        new javafx.beans.property.SimpleIntegerProperty(
-                                cellData.getValue().getQuantity()
-                        ).asObject()
+                new PropertyValueFactory<>("quantity")
         );
 
         colConsumptionUnitPrice.setCellValueFactory(
-                cellData ->
-                        new javafx.beans.property.SimpleObjectProperty<>(
-                                cellData.getValue().getUnitPrice()
-                        )
+                new PropertyValueFactory<>("unitPrice")
         );
 
         colConsumptionTotal.setCellValueFactory(
-                cellData ->
-                        new javafx.beans.property.SimpleObjectProperty<>(
-                                cellData.getValue().getTotal()
-                        )
+                new PropertyValueFactory<>("total")
         );
+
+        // =========================
+        // TIPO
+        // =========================
+
+        colConsumptionType.setCellValueFactory(
+                cellData -> {
+
+                    Consumption consumption =
+                            cellData.getValue();
+
+                    String tipo;
+
+                    if (consumption.getIdConsumptionType() == 1) {
+                        tipo = "Producto";
+                    } else if (consumption.getIdConsumptionType() == 2) {
+                        tipo = "Servicio";
+                    } else {
+                        tipo = "Desconocido";
+                    }
+
+                    return new javafx.beans.property.SimpleStringProperty(tipo);
+                }
+        );
+
+
+        // =========================
+        // NOMBRE
+        // =========================
+
+        colConsumptionName.setCellValueFactory(
+                cellData -> {
+
+                    Consumption consumption =
+                            cellData.getValue();
+
+                    String nombre = "";
+
+                    if (consumption.getIdConsumptionType() == 1) {
+
+                        for (Product product :
+                                cmbProduct.getItems()) {
+
+                            if (product.getIdProduct() ==
+                                    consumption.getIdProduct()) {
+
+                                nombre = product.getName();
+                                break;
+                            }
+                        }
+
+                    } else if (consumption.getIdConsumptionType() == 2) {
+
+                        for (Service service :
+                                cmbService.getItems()) {
+
+                            if (service.getIdService() ==
+                                    consumption.getIdService()) {
+
+                                nombre = service.getName();
+                                break;
+                            }
+                        }
+                    }
+
+                    return new javafx.beans.property.SimpleStringProperty(
+                            nombre
+                    );
+                }
+        );
+
+
+        // =========================
+        // TABLA
+        // =========================
 
         tblConsumptions.setItems(consumptions);
     }
@@ -448,6 +684,13 @@ public class NewReservationController {
                 return;
             }
 
+            System.out.println(
+                    "PRODUCTO: " +
+                            product.getName() +
+                            " | ID: " +
+                            product.getIdProduct()
+            );
+
             idProduct =
                     product.getIdProduct();
 
@@ -472,6 +715,13 @@ public class NewReservationController {
 
                 return;
             }
+
+            System.out.println(
+                    "SERVICIO: " +
+                            service.getName() +
+                            " | ID: " +
+                            service.getIdService()
+            );
 
             idService =
                     service.getIdService();
@@ -571,10 +821,10 @@ public class NewReservationController {
             // CLIENTE
             // =================================================
 
-            Integer idCustomer =
+            Customer customer =
                     cmbCustomer.getValue();
 
-            if (idCustomer == null || idCustomer <= 0) {
+            if (customer == null) {
 
                 mostrarError(
                         "Debe seleccionar un cliente."
@@ -582,6 +832,9 @@ public class NewReservationController {
 
                 return;
             }
+
+            int idCustomer =
+                    customer.getIdCustomer();
 
 
             // =================================================
@@ -1141,6 +1394,13 @@ public class NewReservationController {
         txtConsumptionTotal.setText("0.00");
     }
 
+    private void limpiarDatosHabitacion() {
+
+        txtRoomFloor.clear();
+        txtRoomType.clear();
+        txtRoomView.clear();
+        txtRoomCapacity.clear();
+    }
 
     // =========================================================
     // ERROR

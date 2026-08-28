@@ -17,13 +17,17 @@
 
 <ScrollPane
         fitToWidth="true"
+        prefHeight="750.0"
+        hbarPolicy="NEVER"
+        vbarPolicy="AS_NEEDED"
         xmlns="http://javafx.com/javafx/17"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="controllers.NewReservationController">
 
     <content>
 
-        <VBox spacing="20">
+        <VBox spacing="20"
+        prefWidth="650">
 
             <padding>
                 <Insets top="25" right="30" bottom="25" left="30"/>

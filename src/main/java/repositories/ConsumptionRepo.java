@@ -40,15 +40,17 @@ public class ConsumptionRepo {
                     consumption.getIdConsumptionType()
             );
 
-            ps.setInt(
-                    3,
-                    consumption.getIdProduct()
-            );
+            if (consumption.getIdProduct() > 0) {
+                ps.setInt(3, consumption.getIdProduct());
+            } else {
+                ps.setNull(3, java.sql.Types.INTEGER);
+            }
 
-            ps.setInt(
-                    4,
-                    consumption.getIdService()
-            );
+            if (consumption.getIdService() > 0) {
+                ps.setInt(4, consumption.getIdService());
+            } else {
+                ps.setNull(4, java.sql.Types.INTEGER);
+            }
 
             ps.setInt(
                     5,

@@ -7,6 +7,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
 
+import javafx.scene.Parent;
+
 public class DashboardController {
 
     @FXML
@@ -31,7 +33,7 @@ public class DashboardController {
     public void initialize() {
         // Asignar acciones a los botones
         btnPlanilla.setOnAction(e -> loadView("/views/.fxml"));
-        btnReservas.setOnAction(e -> loadView("/views/.fxml"));
+        btnReservas.setOnAction(e -> loadView("/views/Reservations.fxml"));
         btnHabitaciones.setOnAction(e -> loadView("/views/Room.fxml"));
         btnClientes.setOnAction(e -> loadView("/views/CustomerView.fxml"));
         btnReportes.setOnAction(e -> loadView("/views/.fxml"));
@@ -48,13 +50,17 @@ public class DashboardController {
     public void loadView(String fxmlPath) {
       try {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        AnchorPane view = loader.load();
+        Parent view = loader.load();
 
         Object controller = loader.getController();
           if (controller instanceof RoomController) {
               ((RoomController) controller).setDashboardController(this);
           } else if (controller instanceof RoomFormController) {
               ((RoomFormController) controller).setDashboardController(this);
+          } else if (controller instanceof ReservationsController) {
+
+              ((ReservationsController) controller)
+                      .setDashboardController(this);
           }
           centerPane.getChildren().setAll(view);
       } catch (IOException e) {
