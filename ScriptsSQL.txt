@@ -76,3 +76,16 @@ CREATE TABLE Customer (
     FOREIGN KEY (idCustomerOrigin)
         REFERENCES CustomerOrigin(idCustomerOrigin)
 );
+
+CREATE TABLE IF NOT EXISTS room (
+    number INT PRIMARY KEY,
+    floor INT NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    capacity INT NOT NULL,
+    view VARCHAR(50),
+    available TINYINT(1) NOT NULL DEFAULT 1,
+    out_of_service TINYINT(1) NOT NULL DEFAULT 0,
+    features VARCHAR(255),
+    price DECIMAL(10,2) NOT NULL,
+    description TEXT
+);
