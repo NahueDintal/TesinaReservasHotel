@@ -53,10 +53,6 @@
         <Label text="País *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
         <ComboBox fx:id="comboCountry" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="250.0" />
 
-        <!-- Status (solo para edición) -->
-        <Label text="Estado *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-        <ComboBox fx:id="comboStatus" GridPane.columnIndex="3" GridPane.rowIndex="3" prefWidth="250.0" />
-
         <!-- Origin -->
         <Label text="Origen *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
         <ComboBox fx:id="comboOrigin" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="250.0" />

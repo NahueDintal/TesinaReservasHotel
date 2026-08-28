@@ -20,7 +20,7 @@ public class CustomerFormController {
     @FXML private TextField txtPhone;
     @FXML private TextField txtEmail;
     @FXML private ComboBox<String> comboCountry;
-    @FXML private ComboBox<String> comboStatus;
+    //@FXML private ComboBox<String> comboStatus;
     @FXML private ComboBox<String> comboOrigin;
 
     @FXML private Button btnSave;
@@ -35,7 +35,6 @@ public class CustomerFormController {
 
     private Map<Integer, String> documentTypes;
     private Map<Integer, String> countries;
-    private Map<Integer, String> statuses;
     private Map<Integer, String> origins;
 
     private Customer editingCustomer; // null if creating new
@@ -55,9 +54,6 @@ public class CustomerFormController {
 
             countries = countryDAO.listAll();
             comboCountry.getItems().setAll(countries.values());
-
-            statuses = customerStatusDAO.listAll();
-            comboStatus.getItems().setAll(statuses.values());
 
             origins = customerOriginDAO.listAll();
             comboOrigin.getItems().setAll(origins.values());
@@ -83,7 +79,6 @@ public class CustomerFormController {
         txtEmail.setText(customer.getEmail());
         comboDocumentType.getSelectionModel().select(customer.getDocumentTypeName());
         comboCountry.getSelectionModel().select(customer.getCountryName());
-        comboStatus.getSelectionModel().select(customer.getStatusName());
         comboOrigin.getSelectionModel().select(customer.getOriginName());
     }
 
@@ -95,6 +90,33 @@ public class CustomerFormController {
         loadDataFromForm(customer);
 
         try {
+            // 1. Validar duplicado de documento
+            int excludeId = editingCustomer != null ? editingCustomer.getIdCustomer() : 0;
+            boolean docExists = customerDAO.isDuplicatedByDocumentation(
+                    customer.getDocumentNumber(),
+                    customer.getIdDocumentType(),
+                    excludeId
+            );
+
+            if (docExists) {
+                showAlert("Error", "Cliente duplicado",
+                        "Ya existe un cliente con el mismo número de documento y tipo.");
+                return;
+            }
+
+            // 2. Validar duplicado de teléfono
+            boolean phoneExists = customerDAO.isDuplicatedByPhone(
+                    customer.getPhoneNumber(),
+                    excludeId
+            );
+
+            if (phoneExists) {
+                showAlert("Error", "Teléfono duplicado",
+                        "Ya existe un cliente con el mismo número de teléfono.");
+                return;
+            }
+
+            // 3. Si todo está bien, guardar
             boolean success;
             if (editingCustomer != null) {
                 success = customerDAO.isUpdate(customer);
@@ -123,7 +145,6 @@ public class CustomerFormController {
 
         customer.setIdDocumentType(getIdBySelection(comboDocumentType, documentTypes));
         customer.setIdCountry(getIdBySelection(comboCountry, countries));
-        customer.setIdCustomerStatus(getIdBySelection(comboStatus, statuses));
         customer.setIdCustomerOrigin(getIdBySelection(comboOrigin, origins));
     }
 
@@ -152,10 +173,6 @@ public class CustomerFormController {
         }
         if (comboCountry.getSelectionModel().isEmpty()) {
             showAlert("Validación", "Seleccione un País", "");
-            return false;
-        }
-        if (comboStatus.getSelectionModel().isEmpty()) {
-            showAlert("Validación", "Seleccione un Estado", "");
             return false;
         }
         if (comboOrigin.getSelectionModel().isEmpty()) {

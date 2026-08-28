@@ -34,4 +34,21 @@ public class CustomerStatusDAO {
         }
         return null;
     }
+    public int getIdByName(String name) throws SQLException {
+        String sql = "SELECT idCustomerStatus FROM CustomerStatus WHERE name = ?";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, name);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("idCustomerStatus");
+                }
+            }
+        }
+
+        return 0;
+    }
 }
