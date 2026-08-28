@@ -66,8 +66,6 @@
             <!-- Buscador -->
             <HBox spacing="15" alignment="CENTER_LEFT">
                 <TextField fx:id="txtSearch" promptText="🔍 Buscar por nombre, apellido, email, teléfono..." styleClass="search-field" HBox.hgrow="ALWAYS" />
-                <Button text="Limpiar filtros" onAction="#clearFilters" styleClass="btn-secondary" />
-                <Button text="📤 Exportar" styleClass="btn-secondary" />
             </HBox>
 
             <!-- SplitPane: Tabla + Detalle -->
@@ -120,9 +118,9 @@
 
                     <Region VBox.vgrow="ALWAYS" />
 
-                    <Button fx:id="btnEdit" text="✏️ Editar Cliente" styleClass="btn-detail" maxWidth="Infinity" />
-                    <Button fx:id="btnDeactivate" text="🚫 Inactivar Cliente" styleClass="btn-detail-danger" maxWidth="Infinity" />
-                    <Button text="📋 Ver Historial" styleClass="btn-detail" maxWidth="Infinity" />
+                    <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity" />
+                    <Button fx:id="btnDeactivate" text="Eliminar" styleClass="btn-detail-danger" maxWidth="Infinity" />
+                    <Button text="Ver Reservas" styleClass="btn-detail" maxWidth="Infinity" />
                 </VBox>
             </SplitPane>
         </VBox>

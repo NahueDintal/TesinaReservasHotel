@@ -49,15 +49,16 @@ public class InactiveCustomersController {
         // 3. Setup search filter
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredInactive.setPredicate(customer -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return customer.getName().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getSurname().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getEmail().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getPhoneNumber().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getDocumentNumber().toLowerCase().contains(lowerCaseFilter);
+                if (newValue == null || newValue.isEmpty()) return true;
+                String lower = newValue.toLowerCase();
+                return customer.getName().toLowerCase().contains(lower) ||
+                        customer.getSurname().toLowerCase().contains(lower) ||
+                        customer.getEmail().toLowerCase().contains(lower) ||
+                        customer.getPhoneNumber().toLowerCase().contains(lower) ||
+                        customer.getDocumentNumber().toLowerCase().contains(lower) ||
+                        customer.getDocumentTypeName().toLowerCase().contains(lower) ||
+                        customer.getCountryName().toLowerCase().contains(lower) ||
+                        customer.getOriginName().toLowerCase().contains(lower);
             });
             updateCounter();
         });
@@ -78,7 +79,7 @@ public class InactiveCustomersController {
         try {
             inactiveCustomers.setAll(customerDAO.listAll());
             // Filter only inactive customers
-            inactiveCustomers.removeIf(c -> !"Inactivo".equals(c.getStatusName()));
+            inactiveCustomers.removeIf(c -> !"Inactive".equals(c.getStatusName()));
             filteredInactive = new FilteredList<>(inactiveCustomers, p -> true);
             tableInactiveCustomers.setItems(filteredInactive);
             updateCounter();

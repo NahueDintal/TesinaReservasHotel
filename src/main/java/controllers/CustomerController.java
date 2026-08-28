@@ -15,6 +15,7 @@ import repositories.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 public class CustomerController {
@@ -74,7 +75,10 @@ public class CustomerController {
                         customer.getSurname().toLowerCase().contains(lower) ||
                         customer.getEmail().toLowerCase().contains(lower) ||
                         customer.getPhoneNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentNumber().toLowerCase().contains(lower);
+                        customer.getDocumentNumber().toLowerCase().contains(lower) ||
+                        customer.getDocumentTypeName().toLowerCase().contains(lower) ||
+                        customer.getCountryName().toLowerCase().contains(lower) ||
+                        customer.getOriginName().toLowerCase().contains(lower);
             });
             updateCounter();
         });
@@ -112,9 +116,10 @@ public class CustomerController {
     private void loadActiveCustomers() {
         try {
             masterCustomerList.setAll(customerDAO.listAll());
-            masterCustomerList.removeIf(c -> !"Activo".equals(c.getStatusName()));
+            masterCustomerList.removeIf(c -> !"Active".equals(c.getStatusName()));
             filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
             tableCustomers.setItems(filteredCustomers);
+            //tableCustomers.refresh();
             updateCounter();
         } catch (SQLException e) {
             showAlert("Error", "No se pudieron cargar los clientes", e.getMessage());
@@ -131,15 +136,26 @@ public class CustomerController {
 
     // ========== DETAIL ==========
     private void showDetail(Customer c) {
-        lblDetailFullName.setText(c.getName() + " " + c.getSurname());
-        lblDetailStatus.setText(c.getStatusName());
-        lblDetailStatus.setStyle(c.getStatusName().equals("Activo") ? "-fx-text-fill: #27ae60;" : "-fx-text-fill: #e74c3c;");
-        lblDetailDocumentType.setText(c.getDocumentTypeName());
-        lblDetailDocumentNumber.setText(c.getDocumentNumber());
-        lblDetailPhone.setText(c.getPhoneNumber());
-        lblDetailEmail.setText(c.getEmail());
-        lblDetailCountry.setText(c.getCountryName());
-        lblDetailOrigin.setText(c.getOriginName());
+        // Nombre completo (siempre debería tener, pero por si acaso)
+        lblDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
+
+        // Estado
+        lblDetailStatus.setText(getDisplayText(c.getStatusName()));
+        // Color según estado
+        if ("Activo".equals(c.getStatusName())) {
+            lblDetailStatus.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
+        } else if ("Inactivo".equals(c.getStatusName())) {
+            lblDetailStatus.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
+        } else {
+            lblDetailStatus.setStyle("-fx-text-fill: #f39c12; -fx-font-weight: bold;");
+        }
+
+        lblDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
+        lblDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
+        lblDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
+        lblDetailEmail.setText(getDisplayText(c.getEmail()));
+        lblDetailCountry.setText(getDisplayText(c.getCountryName()));
+        lblDetailOrigin.setText(getDisplayText(c.getOriginName()));
     }
 
     private void clearDetail() {
@@ -151,6 +167,10 @@ public class CustomerController {
         lblDetailEmail.setText("--");
         lblDetailCountry.setText("--");
         lblDetailOrigin.setText("--");
+    }
+
+    private String getDisplayText(String value) {
+        return (value != null && !value.isEmpty()) ? value : "--";
     }
 
     // ========== CRUD ==========
