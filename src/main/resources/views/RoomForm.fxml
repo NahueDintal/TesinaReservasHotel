@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane prefHeight="452.0" prefWidth="520.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomFormController">
 
@@ -24,6 +25,11 @@
             <TextField fx:id="txtFloor" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
             <Label text="Tipo:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+         <TextFlow GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <children>
+               <ChoiceBox fx:id="chbType" prefHeight="23.0" prefWidth="166.0" />
+            </children>
+         </TextFlow>
 
             <Label text="Capacidad:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
             <TextField fx:id="txtCapacity" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -38,26 +44,26 @@
 
             <Label text="Descripción:" GridPane.columnIndex="0" GridPane.rowIndex="7" />
             <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-         <ChoiceBox prefHeight="23.0" prefWidth="166.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-         <ChoiceBox prefHeight="23.0" prefWidth="166.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-         <columnConstraints>
-            <ColumnConstraints />
-            <ColumnConstraints />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
+         <ChoiceBox fx:id="chbView" prefHeight="23.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
         </GridPane>
-   
-           <Button onAction="#handleSave" prefHeight="23.0" prefWidth="120.0" text="Guardar" />
+
+        <Button onAction="#handleSave" prefHeight="23.0" prefWidth="120.0" text="Guardar" />
         <Button onAction="#handleCancel" prefHeight="0.0" prefWidth="120.0" text="Cancelar" />
     </VBox>
 
