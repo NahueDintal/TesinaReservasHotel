@@ -16,7 +16,7 @@
     </Text>
 
     <!-- Botón para insertar habitación -->
-    <ToggleButton fx:id="btnInsertRoom" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleInsertRoom" prefHeight="35.0" prefWidth="140.0" text="+ Habitación" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="20.0">
+    <ToggleButton fx:id="btnInsertRoom" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleInsertRoom" prefHeight="35.0" prefWidth="140.0" text="+ Habitación" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
         <font><Font name="System Bold" size="12.0" /></font>
     </ToggleButton>
 
