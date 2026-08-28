@@ -1,24 +1,31 @@
 package controllers;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import models.Room;
 import repositories.RoomDAO;
 
 public class RoomFormController {
 
+  private final ObservableList<String> typeRoomList = FXCollections.observableArrayList(
+      "simple", "doble", "suite", "familiar");
+  private final ObservableList<String> viewRoomList = FXCollections.observableArrayList(
+      "vista al lago", "vista al jardín", "vista a las montañas");
+
   @FXML
   private TextField txtNumber;
   @FXML
   private TextField txtFloor;
   @FXML
-  private java.awt.TextField txtType;
+  private ChoiceBox<String> chbType;
   @FXML
   private TextField txtCapacity;
   @FXML
-  private TextField txtView;
+  private ChoiceBox<String> chbView;
   @FXML
   private TextField txtFeatures;
   @FXML
@@ -34,6 +41,12 @@ public class RoomFormController {
   }
 
   @FXML
+  public void initialize() {
+    chbType.setItems(typeRoomList);
+    chbView.setItems(viewRoomList);
+  }
+
+  @FXML
   private void handleSave() {
     String errores = validarCampos();
     if (errores != null) {
@@ -41,12 +54,15 @@ public class RoomFormController {
       return;
     }
     try {
+      String type = chbType.getValue() != null ? chbType.getValue().trim().toLowerCase() : "";
+      String view = chbView.getValue() != null ? chbView.getValue().trim() : "";
+
       Room room = new Room(
           txtNumber.getText().trim(),
           txtFloor.getText().trim(),
-          txtType.getText().trim(),
+          type,
           txtCapacity.getText().trim(),
-          txtView.getText().trim(),
+          view,
           txtFeatures.getText().trim(),
           txtPrice.getText().trim(),
           txtDescription.getText().trim().toLowerCase());
@@ -88,21 +104,22 @@ public class RoomFormController {
     if (txtFloor.getText().trim().isEmpty()) {
       errores.append("El piso es obligatorio.\n");
     }
-    if (txtType.getText().trim().isEmpty()) {
+    if (chbType.getValue() == null || chbType.getValue().trim().isEmpty()) {
       errores.append("El tipo de habitación es obligatorio.\n");
     }
     if (txtCapacity.getText().trim().isEmpty()) {
-      errores.append("La capaidad de la habitación es obligatoria.\n");
+      errores.append("La capacidad de la habitación es obligatoria.\n");
     }
-    if (txtView.getText().trim().isEmpty()) {
-      errores.append("La vista de la habitación es obligatoria.\n");
+    if (chbView.getValue() == null || chbView.getValue().trim().isEmpty()) {
+      errores.append("La vista es obligatoria.\n");
     }
     if (txtFeatures.getText().trim().isEmpty()) {
-      errores.append("Las caracteristicas de habitación es obligatorio.\n");
+      errores.append("Las características de habitación son obligatorias.\n");
     }
     if (txtPrice.getText().trim().isEmpty()) {
       errores.append("El precio de la habitación es obligatorio.\n");
     }
+    // Validación de capacidad numérica y positiva
     try {
       int capacidad = Integer.parseInt(txtCapacity.getText().trim());
       if (capacidad <= 0) {
@@ -111,6 +128,7 @@ public class RoomFormController {
     } catch (NumberFormatException e) {
       errores.append("La capacidad debe ser un número válido.\n");
     }
+    // Validación de precio numérico y no negativo
     try {
       double precio = Double.parseDouble(txtPrice.getText().trim());
       if (precio < 0) {
