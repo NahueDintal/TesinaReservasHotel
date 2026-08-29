@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 import models.Room;
 import repositories.RoomDAO;
 
-public class RoomFormController {
+public class RoomModifController {
 
   private final ObservableList<String> typeRoomList = FXCollections.observableArrayList(
       "simple", "doble", "suite", "familiar");
