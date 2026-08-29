@@ -20,7 +20,6 @@ public class CustomerFormController {
     @FXML private TextField txtPhone;
     @FXML private TextField txtEmail;
     @FXML private ComboBox<String> comboCountry;
-    @FXML private ComboBox<String> comboStatus;
     @FXML private ComboBox<String> comboOrigin;
 
     @FXML private Button btnSave;
@@ -35,8 +34,8 @@ public class CustomerFormController {
 
     private Map<Integer, String> documentTypes;
     private Map<Integer, String> countries;
-    private Map<Integer, String> statuses;
     private Map<Integer, String> origins;
+    private Map<Integer, String> statuses;
 
     private Customer editingCustomer; // null if creating new
 
@@ -45,6 +44,7 @@ public class CustomerFormController {
     public void initialize() {
         loadCatalogs();
         setupButtonActions();
+
     }
 
     // ========== LOAD METHODS ==========
@@ -56,8 +56,7 @@ public class CustomerFormController {
             countries = countryDAO.listAll();
             comboCountry.getItems().setAll(countries.values());
 
-            statuses = customerStatusDAO.listAll();
-            comboStatus.getItems().setAll(statuses.values());
+            statuses = new CustomerStatusDAO().listAll();
 
             origins = customerOriginDAO.listAll();
             comboOrigin.getItems().setAll(origins.values());
@@ -83,7 +82,6 @@ public class CustomerFormController {
         txtEmail.setText(customer.getEmail());
         comboDocumentType.getSelectionModel().select(customer.getDocumentTypeName());
         comboCountry.getSelectionModel().select(customer.getCountryName());
-        comboStatus.getSelectionModel().select(customer.getStatusName());
         comboOrigin.getSelectionModel().select(customer.getOriginName());
     }
 
@@ -95,6 +93,33 @@ public class CustomerFormController {
         loadDataFromForm(customer);
 
         try {
+            // 1. Validar duplicado de documento
+            int excludeId = editingCustomer != null ? editingCustomer.getIdCustomer() : 0;
+            boolean isDocumentationExisting = customerDAO.isDuplicatedByDocumentation(
+                    customer.getDocumentNumber(),
+                    customer.getIdDocumentType(),
+                    excludeId
+            );
+
+            if (isDocumentationExisting) {
+                showAlert("Error", "Cliente duplicado",
+                        "Ya existe un cliente con el mismo número de documento y tipo.");
+                return;
+            }
+
+            // 2. Validar duplicado de teléfono
+            boolean isPhoneNumberExisting = customerDAO.isDuplicatedByPhone(
+                    customer.getPhoneNumber(),
+                    excludeId
+            );
+
+            if (isPhoneNumberExisting) {
+                showAlert("Error", "Teléfono duplicado",
+                        "Ya existe un cliente con el mismo número de teléfono.");
+                return;
+            }
+
+            // 3. guardar
             boolean success;
             if (editingCustomer != null) {
                 success = customerDAO.isUpdate(customer);
@@ -121,10 +146,19 @@ public class CustomerFormController {
         customer.setPhoneNumber(txtPhone.getText().trim());
         customer.setEmail(txtEmail.getText().trim());
 
-        customer.setIdDocumentType(getIdBySelection(comboDocumentType, documentTypes));
-        customer.setIdCountry(getIdBySelection(comboCountry, countries));
-        customer.setIdCustomerStatus(getIdBySelection(comboStatus, statuses));
-        customer.setIdCustomerOrigin(getIdBySelection(comboOrigin, origins));
+        // Obtener IDs de los combos
+        int idDocType = getIdBySelection(comboDocumentType, documentTypes);
+        int idCountry = getIdBySelection(comboCountry, countries);
+        int idOrigin = getIdBySelection(comboOrigin, origins);
+
+        // Obtener ID del estado "Activo" automáticamente
+        int idStatus = getActiveStatusId();
+
+        // Asignar los IDs al cliente
+        customer.setIdDocumentType(idDocType);
+        customer.setIdCountry(idCountry);
+        customer.setIdCustomerStatus(idStatus);
+        customer.setIdCustomerOrigin(idOrigin);
     }
 
     private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {
@@ -154,10 +188,6 @@ public class CustomerFormController {
             showAlert("Validación", "Seleccione un País", "");
             return false;
         }
-        if (comboStatus.getSelectionModel().isEmpty()) {
-            showAlert("Validación", "Seleccione un Estado", "");
-            return false;
-        }
         if (comboOrigin.getSelectionModel().isEmpty()) {
             showAlert("Validación", "Seleccione un Origen", "");
             return false;
@@ -176,5 +206,24 @@ public class CustomerFormController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+    private int getActiveStatusId() {
+        // Si statuses es null, cargarlo ahora
+        if (statuses == null) {
+            try {
+                statuses = new CustomerStatusDAO().listAll();
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo cargar el estado 'Activo'", e.getMessage());
+                return 1; // Valor por defecto
+            }
+        }
+
+        for (Map.Entry<Integer, String> entry : statuses.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase("Activo")) {
+                return entry.getKey();
+            }
+        }
+        // Si no encuentra "Activo", devuelve 1
+        return 1;
     }
 }

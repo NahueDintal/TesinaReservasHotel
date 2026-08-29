@@ -18,14 +18,13 @@
 
     <!-- Title -->
     <HBox alignment="CENTER_LEFT" spacing="15">
-        <Label text="Clientes Inactivos" styleClass="section-title">
+        <Label text="Clientes Eliminados" styleClass="section-title">
             <font>
                 <Font size="22.0" />
             </font>
         </Label>
         <Region HBox.hgrow="ALWAYS" />
-        <Button fx:id="btnReactivate" text="♻️ Reactivar" styleClass="btn-primary" disable="true" />
-        <Button fx:id="btnClose" text="Cerrar" styleClass="btn-secondary" />
+        <Button fx:id="btnReactivate" text="Reactivar" styleClass="btn-primary" disable="true" />
     </HBox>
 
     <!-- Search Bar -->
