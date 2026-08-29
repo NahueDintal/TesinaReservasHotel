@@ -20,7 +20,6 @@ public class CustomerFormController {
     @FXML private TextField txtPhone;
     @FXML private TextField txtEmail;
     @FXML private ComboBox<String> comboCountry;
-    //@FXML private ComboBox<String> comboStatus;
     @FXML private ComboBox<String> comboOrigin;
 
     @FXML private Button btnSave;
@@ -36,6 +35,7 @@ public class CustomerFormController {
     private Map<Integer, String> documentTypes;
     private Map<Integer, String> countries;
     private Map<Integer, String> origins;
+    private Map<Integer, String> statuses;
 
     private Customer editingCustomer; // null if creating new
 
@@ -44,6 +44,7 @@ public class CustomerFormController {
     public void initialize() {
         loadCatalogs();
         setupButtonActions();
+
     }
 
     // ========== LOAD METHODS ==========
@@ -54,6 +55,8 @@ public class CustomerFormController {
 
             countries = countryDAO.listAll();
             comboCountry.getItems().setAll(countries.values());
+
+            statuses = new CustomerStatusDAO().listAll();
 
             origins = customerOriginDAO.listAll();
             comboOrigin.getItems().setAll(origins.values());
@@ -92,31 +95,31 @@ public class CustomerFormController {
         try {
             // 1. Validar duplicado de documento
             int excludeId = editingCustomer != null ? editingCustomer.getIdCustomer() : 0;
-            boolean docExists = customerDAO.isDuplicatedByDocumentation(
+            boolean isDocumentationExisting = customerDAO.isDuplicatedByDocumentation(
                     customer.getDocumentNumber(),
                     customer.getIdDocumentType(),
                     excludeId
             );
 
-            if (docExists) {
+            if (isDocumentationExisting) {
                 showAlert("Error", "Cliente duplicado",
                         "Ya existe un cliente con el mismo número de documento y tipo.");
                 return;
             }
 
             // 2. Validar duplicado de teléfono
-            boolean phoneExists = customerDAO.isDuplicatedByPhone(
+            boolean isPhoneNumberExisting = customerDAO.isDuplicatedByPhone(
                     customer.getPhoneNumber(),
                     excludeId
             );
 
-            if (phoneExists) {
+            if (isPhoneNumberExisting) {
                 showAlert("Error", "Teléfono duplicado",
                         "Ya existe un cliente con el mismo número de teléfono.");
                 return;
             }
 
-            // 3. Si todo está bien, guardar
+            // 3. guardar
             boolean success;
             if (editingCustomer != null) {
                 success = customerDAO.isUpdate(customer);
@@ -143,9 +146,19 @@ public class CustomerFormController {
         customer.setPhoneNumber(txtPhone.getText().trim());
         customer.setEmail(txtEmail.getText().trim());
 
-        customer.setIdDocumentType(getIdBySelection(comboDocumentType, documentTypes));
-        customer.setIdCountry(getIdBySelection(comboCountry, countries));
-        customer.setIdCustomerOrigin(getIdBySelection(comboOrigin, origins));
+        // Obtener IDs de los combos
+        int idDocType = getIdBySelection(comboDocumentType, documentTypes);
+        int idCountry = getIdBySelection(comboCountry, countries);
+        int idOrigin = getIdBySelection(comboOrigin, origins);
+
+        // Obtener ID del estado "Activo" automáticamente
+        int idStatus = getActiveStatusId();
+
+        // Asignar los IDs al cliente
+        customer.setIdDocumentType(idDocType);
+        customer.setIdCountry(idCountry);
+        customer.setIdCustomerStatus(idStatus);
+        customer.setIdCustomerOrigin(idOrigin);
     }
 
     private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {
@@ -193,5 +206,24 @@ public class CustomerFormController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+    private int getActiveStatusId() {
+        // Si statuses es null, cargarlo ahora
+        if (statuses == null) {
+            try {
+                statuses = new CustomerStatusDAO().listAll();
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo cargar el estado 'Activo'", e.getMessage());
+                return 1; // Valor por defecto
+            }
+        }
+
+        for (Map.Entry<Integer, String> entry : statuses.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase("Activo")) {
+                return entry.getKey();
+            }
+        }
+        // Si no encuentra "Activo", devuelve 1
+        return 1;
     }
 }
