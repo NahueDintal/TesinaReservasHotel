@@ -87,7 +87,7 @@ public class Customer {
   public void setIdCustomerStatus(int idCustomerStatus) { this.idCustomerStatus = idCustomerStatus; }
   public void setIdCustomerOrigin(int idCustomerOrigin) { this.idCustomerOrigin = idCustomerOrigin; }
   //Atributos Catalogo
-  public void setDocumentTypeName(String documentTypeName) { this.documentNumber = documentTypeName; }
+  public void setDocumentTypeName(String documentTypeName) { this.documentTypeName = documentTypeName; }
   public void setCountryName(String countryName) { this.countryName = countryName; }
   public void setStatusName(String statusName) { this.statusName = statusName; }
   public void setOriginName(String originName) { this.originName = originName; }

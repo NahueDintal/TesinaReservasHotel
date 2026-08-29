@@ -17,7 +17,7 @@ public class CustomerDAO {
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
-                "LEFT JOIN DocumentType dt ON c.idDocumetType = dt.idDocumentType " +
+                "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
@@ -33,7 +33,7 @@ public class CustomerDAO {
                 c.setIdCustomer(rs.getInt("idCustomer"));
                 c.setName(rs.getString("name"));
                 c.setSurname(rs.getString("surname"));
-                c.setIdDocumentType(rs.getInt("idDocumetType"));
+                c.setIdDocumentType(rs.getInt("idDocumentType"));
                 c.setDocumentNumber(rs.getString("documentNumber"));
                 c.setPhoneNumber(rs.getString("phoneNumber"));
                 c.setEmail(rs.getString("email"));
@@ -61,7 +61,7 @@ public class CustomerDAO {
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
-                "LEFT JOIN DocumentType dt ON c.idDocumetType = dt.idDocumentType " +
+                "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
@@ -77,7 +77,7 @@ public class CustomerDAO {
                     c.setIdCustomer(rs.getInt("idCustomer"));
                     c.setName(rs.getString("name"));
                     c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumetType"));
+                    c.setIdDocumentType(rs.getInt("idDocumentType"));
                     c.setDocumentNumber(rs.getString("documentNumber"));
                     c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
@@ -97,7 +97,7 @@ public class CustomerDAO {
 
     // 3. INSERT
     public boolean isInsert(Customer customer) throws SQLException {
-        String sql = "INSERT INTO Customer (name, surname, idDocumetType, documentNumber, " +
+        String sql = "INSERT INTO Customer (name, surname, idDocumentType, documentNumber, " +
                 "phoneNumber, email, idCountry, idCustomerStatus, idCustomerOrigin) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConexionDB.getConnection();
@@ -128,7 +128,7 @@ public class CustomerDAO {
 
     // 4. UPDATE
     public boolean isUpdate(Customer customer) throws SQLException {
-        String sql = "UPDATE Customer SET name=?, surname=?, idDocumetType=?, documentNumber=?, " +
+        String sql = "UPDATE Customer SET name=?, surname=?, idDocumentType=?, documentNumber=?, " +
                 "phoneNumber=?, email=?, idCountry=?, idCustomerStatus=?, idCustomerOrigin=? " +
                 "WHERE idCustomer=?";
         try (Connection conn = ConexionDB.getConnection();
@@ -173,7 +173,7 @@ public class CustomerDAO {
                     c.setIdCustomer(rs.getInt("idCustomer"));
                     c.setName(rs.getString("name"));
                     c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumetType"));
+                    c.setIdDocumentType(rs.getInt("idDocumentType"));
                     c.setDocumentNumber(rs.getString("documentNumber"));
                     c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
@@ -185,5 +185,80 @@ public class CustomerDAO {
             }
         }
         return null;
+    }
+
+    // 7. validation for duplicated documentation
+    public boolean isDuplicatedByDocumentation(String documentNumber, int idDocumentType, int excludeCustomerId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Customer WHERE documentNumber = ? AND idDocumentType = ?";
+
+        if (excludeCustomerId > 0) {
+            sql += " AND idCustomer != ?";
+        }
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, documentNumber);
+            stmt.setInt(2, idDocumentType);
+
+            if (excludeCustomerId > 0) {
+                stmt.setInt(3, excludeCustomerId);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1); // Aquí obtenemos el COUNT
+                    return count > 0; // Si count > 0, existe duplicado
+                }
+            }
+        }
+        return false;
+    }
+    // 8. validation for duplicated phonenumber
+    public boolean isDuplicatedByPhone(String phoneNumber, int excludeCustomerId) throws SQLException {
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+            return false;
+        }
+
+        String sql = "SELECT COUNT(*) FROM Customer WHERE phoneNumber = ?";
+
+        if (excludeCustomerId > 0) {
+            sql += " AND idCustomer != ?";
+        }
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, phoneNumber);
+
+            if (excludeCustomerId > 0) {
+                stmt.setInt(2, excludeCustomerId);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt(1);
+                    return count > 0;
+                }
+            }
+        }
+        return false;
+    }
+    public static void main(String[] args) {
+        try {
+            System.out.println("=== TIPOS DE DOCUMENTO ===");
+            System.out.println(new DocumentTypeDAO().listAll());
+
+            System.out.println("=== PAÍSES ===");
+            System.out.println(new CountryDAO().listAll());
+
+            System.out.println("=== ESTADOS ===");
+            System.out.println(new CustomerStatusDAO().listAll());
+
+            System.out.println("=== ORÍGENES ===");
+            System.out.println(new CustomerOriginDAO().listAll());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

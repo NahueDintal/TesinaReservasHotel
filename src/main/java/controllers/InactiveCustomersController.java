@@ -24,7 +24,6 @@ public class InactiveCustomersController {
     @FXML private TableColumn<Customer, String> colCountry;
 
     @FXML private Button btnReactivate;
-    @FXML private Button btnClose;
     @FXML private TextField txtSearch;
     @FXML private Label lblTotalInactive;
 
@@ -49,15 +48,16 @@ public class InactiveCustomersController {
         // 3. Setup search filter
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredInactive.setPredicate(customer -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                return customer.getName().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getSurname().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getEmail().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getPhoneNumber().toLowerCase().contains(lowerCaseFilter) ||
-                        customer.getDocumentNumber().toLowerCase().contains(lowerCaseFilter);
+                if (newValue == null || newValue.isEmpty()) return true;
+                String lower = newValue.toLowerCase();
+                return customer.getName().toLowerCase().contains(lower) ||
+                        customer.getSurname().toLowerCase().contains(lower) ||
+                        customer.getEmail().toLowerCase().contains(lower) ||
+                        customer.getPhoneNumber().toLowerCase().contains(lower) ||
+                        customer.getDocumentNumber().toLowerCase().contains(lower) ||
+                        customer.getDocumentTypeName().toLowerCase().contains(lower) ||
+                        customer.getCountryName().toLowerCase().contains(lower) ||
+                        customer.getOriginName().toLowerCase().contains(lower);
             });
             updateCounter();
         });
@@ -70,7 +70,6 @@ public class InactiveCustomersController {
 
         // 5. Action listeners
         btnReactivate.setOnAction(e -> reactivateCustomer());
-        btnClose.setOnAction(e -> closeWindow());
     }
 
     // ========== LOAD METHODS ==========
@@ -78,7 +77,7 @@ public class InactiveCustomersController {
         try {
             inactiveCustomers.setAll(customerDAO.listAll());
             // Filter only inactive customers
-            inactiveCustomers.removeIf(c -> !"Inactivo".equals(c.getStatusName()));
+            inactiveCustomers.removeIf(c -> !"inactive".equals(c.getStatusName()));
             filteredInactive = new FilteredList<>(inactiveCustomers, p -> true);
             tableInactiveCustomers.setItems(filteredInactive);
             updateCounter();
@@ -108,8 +107,9 @@ public class InactiveCustomersController {
                         updateCounter();
                         showAlert("Éxito", "Cliente reactivado",
                                 "El cliente ha sido reactivado correctamente.");
-                        // Close window after reactivation
-                        closeWindow();
+                        // ✅ Cerrar la ventana SIN botón
+                        Stage stage = (Stage) tableInactiveCustomers.getScene().getWindow();
+                        stage.close();
                     }
                 } catch (SQLException e) {
                     showAlert("Error", "No se pudo reactivar el cliente", e.getMessage());
@@ -139,10 +139,6 @@ public class InactiveCustomersController {
         lblTotalInactive.setText("Mostrando " + count + " clientes inactivos");
     }
 
-    private void closeWindow() {
-        Stage stage = (Stage) btnClose.getScene().getWindow();
-        stage.close();
-    }
 
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

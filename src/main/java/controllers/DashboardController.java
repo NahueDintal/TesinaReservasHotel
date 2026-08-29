@@ -2,31 +2,37 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import java.io.IOException;
-
-import javafx.scene.Parent;
 import models.Reservation;
+
+import java.io.IOException;
 
 public class DashboardController {
 
     @FXML
     private VBox leftMenu;
+
     @FXML
     private AnchorPane centerPane;
 
     @FXML
     private ToggleButton btnPlanilla;
+
     @FXML
     private ToggleButton btnReservas;
+
     @FXML
     private ToggleButton btnHabitaciones;
+
     @FXML
     private ToggleButton btnClientes;
+
     @FXML
     private ToggleButton btnReportes;
+
     @FXML
     private ToggleButton btnConfiguracion;
 
@@ -39,7 +45,6 @@ public class DashboardController {
         btnClientes.setOnAction(e -> loadView("/views/CustomerView.fxml"));
         btnReportes.setOnAction(e -> loadView("/views/.fxml"));
         btnConfiguracion.setOnAction(e -> loadView("/views/.fxml"));
-
     }
 
     /**
@@ -49,36 +54,43 @@ public class DashboardController {
      *                 resources/views)
      */
     public void loadView(String fxmlPath) {
-      try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent view = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource(fxmlPath)
+            );
 
-        Object controller = loader.getController();
-          if (controller instanceof RoomController) {
-              ((RoomController) controller).setDashboardController(this);
-          } else if (controller instanceof RoomFormController) {
-              ((RoomFormController) controller).setDashboardController(this);
-          } else if (controller instanceof ReservationsController) {
+            Parent view = loader.load();
 
-              ((ReservationsController) controller)
-                      .setDashboardController(this);
-          } else if (controller instanceof NewReservationController) {
+            Object controller = loader.getController();
 
-            ((NewReservationController) controller)
-                    .setDashboardController(this);
+            if (controller instanceof RoomController) {
+                ((RoomController) controller).setDashboardController(this);
+
+            } else if (controller instanceof RoomFormController) {
+                ((RoomFormController) controller).setDashboardController(this);
+
+            } else if (controller instanceof ReservationsController) {
+                ((ReservationsController) controller)
+                        .setDashboardController(this);
+
+            } else if (controller instanceof NewReservationController) {
+                ((NewReservationController) controller)
+                        .setDashboardController(this);
+            }
+
+            centerPane.getChildren().setAll(view);
+
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            AnchorPane errorPane = new AnchorPane();
+            centerPane.getChildren().setAll(errorPane);
         }
-          centerPane.getChildren().setAll(view);
-
-          AnchorPane.setTopAnchor(view, 0.0);
-          AnchorPane.setBottomAnchor(view, 0.0);
-          AnchorPane.setLeftAnchor(view, 0.0);
-          AnchorPane.setRightAnchor(view, 0.0);
-
-      } catch (IOException e) {
-        e.printStackTrace();
-        AnchorPane errorPane = new AnchorPane();
-        centerPane.getChildren().setAll(errorPane);
-      }
     }
 
     public void loadEditReservation(Reservation reservation) {
@@ -112,3 +124,4 @@ public class DashboardController {
     }
 
 }
+
