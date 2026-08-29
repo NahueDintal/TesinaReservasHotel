@@ -487,6 +487,28 @@
 
                 </TableView>
 
+                <!-- ================================================= -->
+                <!-- ACCIONES DE CONSUMOS -->
+                <!-- ================================================= -->
+
+                <HBox
+                        spacing="12"
+                        alignment="CENTER_RIGHT">
+
+                    <Button
+                            text="Modificar consumo"
+                            onAction="#handleEditConsumption"
+                            prefWidth="160"/>
+
+                    <Button
+                            text="Anular consumo"
+                            onAction="#handleDeleteConsumption"
+                            prefWidth="140"/>
+
+                </HBox>
+
+
+
 
                 <!-- ================================================= -->
                 <!-- TOTAL -->

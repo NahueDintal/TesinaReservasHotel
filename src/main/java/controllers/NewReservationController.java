@@ -6,6 +6,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
 import models.*;
 import repositories.*;
 
@@ -1009,7 +1012,7 @@ public class NewReservationController {
                         1,
                         null
                 );
-
+        consumption.setIdConsumptionStatus(1);
 
         // =====================================================
         // AGREGAR A LA TABLA
@@ -1056,6 +1059,49 @@ public class NewReservationController {
         );
     }
 
+    // =========================================================
+    // Borrar consumo
+    // =========================================================
+
+    @FXML
+    private void handleDeleteConsumption() {
+
+        Consumption selected =
+                tblConsumptions.getSelectionModel()
+                        .getSelectedItem();
+
+        if (selected == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Consumo",
+                    "Seleccione un consumo para anular."
+            );
+
+            return;
+        }
+
+        Alert confirmation =
+                new Alert(Alert.AlertType.CONFIRMATION);
+
+        confirmation.setTitle("Anular consumo");
+        confirmation.setHeaderText(
+                "¿Está seguro de anular este consumo?"
+        );
+        confirmation.setContentText(
+                "El consumo no será eliminado de la base de datos."
+        );
+
+        confirmation.showAndWait().ifPresent(response -> {
+
+            if (response == ButtonType.OK) {
+
+                // Acá posteriormente llamaremos al repository
+                // para hacer el soft delete.
+
+            }
+        });
+    }
 
     // =========================================================
     // GUARDAR
@@ -1909,6 +1955,22 @@ public class NewReservationController {
         alert.setContentText(
                 mensaje
         );
+
+        alert.showAndWait();
+    }
+
+
+    private void showAlert(
+            Alert.AlertType type,
+            String title,
+            String message
+    ) {
+
+        Alert alert = new Alert(type);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
 
         alert.showAndWait();
     }

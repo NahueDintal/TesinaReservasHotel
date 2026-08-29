@@ -17,6 +17,8 @@ public class Consumption {
     private int idPaymentStatus;
     private String observations;
 
+    private int idConsumptionStatus;
+
     public Consumption() {
     }
 
@@ -41,6 +43,7 @@ public class Consumption {
         this.consumptionDate = consumptionDate;
         this.idPaymentStatus = idPaymentStatus;
         this.observations = observations;
+        this.idConsumptionStatus = 1;
     }
 
     public int getIdConsumption() {
@@ -129,6 +132,14 @@ public class Consumption {
 
     public void setObservations(String observations) {
         this.observations = observations;
+    }
+
+    public int getIdConsumptionStatus() {
+        return idConsumptionStatus;
+    }
+
+    public void setIdConsumptionStatus(int idConsumptionStatus) {
+        this.idConsumptionStatus = idConsumptionStatus;
     }
 
 }

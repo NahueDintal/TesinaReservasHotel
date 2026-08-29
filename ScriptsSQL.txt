@@ -223,6 +223,24 @@ CREATE TABLE Consumption (
         REFERENCES PaymentStatus(idPaymentStatus)
 );
 
+CREATE TABLE ConsumptionStatus (
+    idConsumptionStatus INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL
+);
+
+INSERT INTO ConsumptionStatus (name)
+VALUES
+('Activo'),
+('Anulado');
+
+ALTER TABLE Consumption
+ADD COLUMN idConsumptionStatus INT NOT NULL DEFAULT 1,
+ADD CONSTRAINT fk_consumption_status
+FOREIGN KEY (idConsumptionStatus)
+REFERENCES ConsumptionStatus(idConsumptionStatus);
+
+//----------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS room (
     number INT PRIMARY KEY,
     floor INT NOT NULL,
