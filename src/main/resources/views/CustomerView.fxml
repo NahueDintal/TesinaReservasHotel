@@ -120,7 +120,8 @@
 
                     <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity" />
                     <Button fx:id="btnDeactivate" text="Eliminar" styleClass="btn-detail-danger" maxWidth="Infinity" />
-                    <Button text="Ver Reservas" styleClass="btn-detail" maxWidth="Infinity" />
+                    <!--Para despues-->
+                    <!--<Button text="Ver Reservas" styleClass="btn-detail" maxWidth="Infinity" />-->
                 </VBox>
             </SplitPane>
         </VBox>

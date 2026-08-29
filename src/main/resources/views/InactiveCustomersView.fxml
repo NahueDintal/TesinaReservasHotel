@@ -25,7 +25,6 @@
         </Label>
         <Region HBox.hgrow="ALWAYS" />
         <Button fx:id="btnReactivate" text="Reactivar" styleClass="btn-primary" disable="true" />
-        <Button fx:id="btnClose" text="Cerrar" styleClass="btn-secondary" />
     </HBox>
 
     <!-- Search Bar -->

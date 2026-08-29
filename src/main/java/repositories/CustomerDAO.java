@@ -244,4 +244,21 @@ public class CustomerDAO {
         }
         return false;
     }
+    public static void main(String[] args) {
+        try {
+            System.out.println("=== TIPOS DE DOCUMENTO ===");
+            System.out.println(new DocumentTypeDAO().listAll());
+
+            System.out.println("=== PAÍSES ===");
+            System.out.println(new CountryDAO().listAll());
+
+            System.out.println("=== ESTADOS ===");
+            System.out.println(new CustomerStatusDAO().listAll());
+
+            System.out.println("=== ORÍGENES ===");
+            System.out.println(new CustomerOriginDAO().listAll());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

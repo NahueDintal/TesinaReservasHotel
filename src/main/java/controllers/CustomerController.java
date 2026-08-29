@@ -116,7 +116,7 @@ public class CustomerController {
     private void loadActiveCustomers() {
         try {
             masterCustomerList.setAll(customerDAO.listAll());
-            masterCustomerList.removeIf(c -> !"Active".equals(c.getStatusName()));
+            masterCustomerList.removeIf(c -> !"active".equals(c.getStatusName()));
             filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
             tableCustomers.setItems(filteredCustomers);
             //tableCustomers.refresh();
@@ -217,23 +217,23 @@ public class CustomerController {
         if (selected == null) return;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Inactivar cliente");
-        alert.setHeaderText("¿Desea inactivar este cliente?");
+        alert.setTitle("Eliminar cliente");
+        alert.setHeaderText("¿Desea eliminar este cliente?");
         alert.setContentText("El cliente " + selected.getName() + " " + selected.getSurname() + " no podrá realizar reservas.");
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    selected.setIdCustomerStatus(getStatusIdByName("Inactivo"));
+                    selected.setIdCustomerStatus(getStatusIdByName("inactive"));
                     if (customerDAO.isUpdate(selected)) {
                         masterCustomerList.remove(selected);
                         filteredCustomers.remove(selected);
                         tableCustomers.refresh();
                         clearDetail();
                         updateCounter();
-                        showAlert("Éxito", "Cliente inactivado", "");
+                        showAlert("Éxito", "Cliente eliminado", "");
                     }
                 } catch (SQLException e) {
-                    showAlert("Error", "No se pudo inactivar", e.getMessage());
+                    showAlert("Error", "No se pudo eliminar", e.getMessage());
                 }
             }
         });
