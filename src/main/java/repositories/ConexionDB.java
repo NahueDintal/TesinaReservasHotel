@@ -1,5 +1,4 @@
 package repositories;
-
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.Connection;
@@ -16,8 +15,6 @@ public class ConexionDB {
   private static final String USER = dotenv.get("DB_USER");
   private static final String PASSWORD = dotenv.get("DB_PASSWORD");
 
-  private static Connection connection = null;
-
   private ConexionDB() {
   }
 
@@ -31,43 +28,22 @@ public class ConexionDB {
       throw new SQLException("DB_USER no está configurado.");
     }
 
-    if (connection == null || connection.isClosed()) {
+    try {
+      Class.forName("com.mysql.cj.jdbc.Driver");
 
-      try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-      } catch (ClassNotFoundException e) {
-        throw new SQLException(
-                "Driver de MySQL no encontrado.",
-                e
-        );
-      }
+    } catch (ClassNotFoundException e) {
 
-      connection = DriverManager.getConnection(
-              URL,
-              USER,
-              PASSWORD
+      throw new SQLException(
+              "Driver de MySQL no encontrado.",
+              e
       );
     }
 
-    return connection;
-  }
-
-  public static void closeConnection() {
-
-    if (connection != null) {
-
-      try {
-        connection.close();
-        connection = null;
-
-      } catch (SQLException e) {
-
-        System.err.println(
-                "Error al cerrar la conexión: "
-                        + e.getMessage()
-        );
-      }
-    }
+    return DriverManager.getConnection(
+            URL,
+            USER,
+            PASSWORD
+    );
   }
 
   public static void main(String[] args) {
@@ -86,10 +62,6 @@ public class ConexionDB {
               "❌ Error: "
                       + e.getMessage()
       );
-
-    } finally {
-
-      ConexionDB.closeConnection();
     }
   }
 }

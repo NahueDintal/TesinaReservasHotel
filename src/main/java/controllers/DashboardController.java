@@ -8,6 +8,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 
 import javafx.scene.Parent;
+import models.Reservation;
 
 public class DashboardController {
 
@@ -61,12 +62,53 @@ public class DashboardController {
 
               ((ReservationsController) controller)
                       .setDashboardController(this);
-          }
+          } else if (controller instanceof NewReservationController) {
+
+            ((NewReservationController) controller)
+                    .setDashboardController(this);
+        }
           centerPane.getChildren().setAll(view);
+
+          AnchorPane.setTopAnchor(view, 0.0);
+          AnchorPane.setBottomAnchor(view, 0.0);
+          AnchorPane.setLeftAnchor(view, 0.0);
+          AnchorPane.setRightAnchor(view, 0.0);
+
       } catch (IOException e) {
         e.printStackTrace();
         AnchorPane errorPane = new AnchorPane();
         centerPane.getChildren().setAll(errorPane);
       }
     }
+
+    public void loadEditReservation(Reservation reservation) {
+
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource(
+                                    "/views/NewReservation.fxml"
+                            )
+                    );
+
+            Parent view = loader.load();
+
+            NewReservationController controller =
+                    loader.getController();
+
+            controller.setDashboardController(this);
+
+            controller.setReservationToEdit(
+                    reservation
+            );
+
+            centerPane.getChildren().setAll(view);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
 }

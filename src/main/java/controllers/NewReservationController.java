@@ -7,7 +7,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import models.*;
-
 import repositories.*;
 
 import java.math.BigDecimal;
@@ -102,33 +101,17 @@ public class NewReservationController {
     @FXML
     private TableColumn<Consumption, String> colConsumptionName;
 
-    // REEMPLAZA AL LABEL QUE DABA ERROR
     @FXML
     private TextField txtConsumptionTotal;
-
-    // =========================================================
-    // HABITACIÓN
-    // =========================================================
-
-    @FXML
-    private ComboBox<Room> cmbRoom;
-
-    @FXML
-    private TextField txtRoomFloor;
-
-    @FXML
-    private TextField txtRoomType;
-
-    @FXML
-    private TextField txtRoomView;
-
-    @FXML
-    private TextField txtRoomCapacity;
 
 
     // =========================================================
     // REPOSITORIES
     // =========================================================
+
+    private DashboardController dashboardController;
+
+    private Reservation reservationToEdit;
 
     private final ReservationRepo reservationRepo;
     private final ReservationStatusRepo reservationStatusRepo;
@@ -144,8 +127,6 @@ public class NewReservationController {
     private final ServiceRepo serviceRepo;
 
     private final CustomerDAO customerDAO;
-
-    private final RoomDAO roomDAO;
 
 
     // =========================================================
@@ -163,21 +144,292 @@ public class NewReservationController {
     public NewReservationController() {
 
         reservationRepo = new ReservationRepo();
-        reservationStatusRepo = new ReservationStatusRepo();
-        reservationTypeRepo = new ReservationTypeRepo();
 
-        paymentRepo = new PaymentRepo();
-        paymentMethodRepo = new PaymentMethodRepo();
-        paymentStatusRepo = new PaymentStatusRepo();
+        reservationStatusRepo =
+                new ReservationStatusRepo();
 
-        consumptionRepo = new ConsumptionRepo();
+        reservationTypeRepo =
+                new ReservationTypeRepo();
 
-        productRepo = new ProductRepo();
-        serviceRepo = new ServiceRepo();
+        paymentRepo =
+                new PaymentRepo();
 
-        customerDAO = new CustomerDAO();
+        paymentMethodRepo =
+                new PaymentMethodRepo();
 
-        roomDAO = RoomDAO();
+        paymentStatusRepo =
+                new PaymentStatusRepo();
+
+        consumptionRepo =
+                new ConsumptionRepo();
+
+        productRepo =
+                new ProductRepo();
+
+        serviceRepo =
+                new ServiceRepo();
+
+        customerDAO =
+                new CustomerDAO();
+    }
+
+
+    // =========================================================
+    // RECIBIR RESERVA A MODIFICAR
+    // =========================================================
+
+    public void setReservationToEdit(
+            Reservation reservation) {
+
+        this.reservationToEdit = reservation;
+
+        if (reservation == null) {
+            return;
+        }
+
+        // =====================================================
+        // CLIENTE
+        // =====================================================
+
+        try {
+
+            Customer customer =
+                    customerDAO.searchById(
+                            reservation.getIdCustomer()
+                    );
+
+            if (customer != null) {
+
+                cmbCustomer.setValue(customer);
+            }
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Error cargando el cliente de la reserva: "
+                            + e.getMessage()
+            );
+        }
+
+
+        // =====================================================
+        // DATOS RESERVA
+        // =====================================================
+
+        dpCheckIn.setValue(
+                reservation.getCheckIn()
+        );
+
+        dpCheckOut.setValue(
+                reservation.getCheckOut()
+        );
+
+        txtNumberOfGuests.setText(
+                String.valueOf(
+                        reservation.getNumberOfGuests()
+                )
+        );
+
+        txtTotalRate.setText(
+                reservation.getTotalRate() != null
+                        ? reservation.getTotalRate().toString()
+                        : ""
+        );
+
+
+        // =====================================================
+        // ESTADO RESERVA
+        // =====================================================
+
+        cmbReservationStatus.getItems()
+                .stream()
+                .filter(status ->
+                        status.getIdReservationStatus()
+                                == reservation.getIdReservationStatus()
+                )
+                .findFirst()
+                .ifPresent(
+                        cmbReservationStatus::setValue
+                );
+
+
+        // =====================================================
+        // TIPO RESERVA
+        // =====================================================
+
+        cmbReservationType.getItems()
+                .stream()
+                .filter(type ->
+                        type.getIdReservationType()
+                                == reservation.getIdReservationType()
+                )
+                .findFirst()
+                .ifPresent(
+                        cmbReservationType::setValue
+                );
+
+
+        // =====================================================
+        // OBSERVACIONES
+        // =====================================================
+
+        txtReservationObservations.setText(
+                reservation.getObservations() == null
+                        ? ""
+                        : reservation.getObservations()
+        );
+
+
+        // =====================================================
+        // CARGAR PAGO
+        // =====================================================
+
+        cargarPagoDeReserva(
+                reservation.getIdReservation()
+        );
+
+
+        // =====================================================
+        // CARGAR CONSUMOS
+        // =====================================================
+
+        cargarConsumosDeReserva(
+                reservation.getIdReservation()
+        );
+    }
+
+
+    // =========================================================
+    // CARGAR PAGO DE RESERVA
+    // =========================================================
+
+    private void cargarPagoDeReserva(
+            int idReservation) {
+
+        try {
+
+            List<Payment> payments =
+                    paymentRepo.getPaymentsByReservation(
+                            idReservation
+                    );
+
+            if (payments.isEmpty()) {
+
+                txtPaymentAmount.clear();
+
+                dpPaymentDate.setValue(null);
+
+                cmbPaymentMethod.setValue(null);
+
+                cmbPaymentStatus.setValue(null);
+
+                txtPaymentObservations.clear();
+
+                return;
+            }
+
+
+            // Por ahora manejamos el primer pago
+            Payment payment =
+                    payments.get(0);
+
+
+            txtPaymentAmount.setText(
+                    payment.getAmount() != null
+                            ? payment.getAmount().toString()
+                            : ""
+            );
+
+
+            if (payment.getPaymentDate() != null) {
+
+                dpPaymentDate.setValue(
+                        payment.getPaymentDate().toLocalDate()
+                );
+            }
+
+
+            cmbPaymentMethod.getItems()
+                    .stream()
+                    .filter(method ->
+                            method.getIdPaymentMethod()
+                                    == payment.getIdPaymentMethod()
+                    )
+                    .findFirst()
+                    .ifPresent(
+                            cmbPaymentMethod::setValue
+                    );
+
+
+            cmbPaymentStatus.getItems()
+                    .stream()
+                    .filter(status ->
+                            status.getIdPaymentStatus()
+                                    == payment.getIdPaymentStatus()
+                    )
+                    .findFirst()
+                    .ifPresent(
+                            cmbPaymentStatus::setValue
+                    );
+
+
+            txtPaymentObservations.setText(
+                    payment.getObservations() == null
+                            ? ""
+                            : payment.getObservations()
+            );
+
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Error cargando el pago de la reserva: "
+                            + e.getMessage()
+            );
+
+            e.printStackTrace();
+        }
+    }
+
+
+    // =========================================================
+    // CARGAR CONSUMOS DE RESERVA
+    // =========================================================
+
+    private void cargarConsumosDeReserva(
+            int idReservation) {
+
+        try {
+
+            List<Consumption> consumptionsBD =
+                    consumptionRepo.getConsumptionsByReservation(
+                            idReservation
+                    );
+
+            consumptions.clear();
+
+            consumptions.addAll(
+                    consumptionsBD
+            );
+
+            tblConsumptions.refresh();
+
+            updateConsumptionTotal();
+
+            System.out.println(
+                    "Consumos cargados: "
+                            + consumptions.size()
+            );
+
+        } catch (Exception e) {
+
+            System.err.println(
+                    "Error cargando los consumos de la reserva: "
+                            + e.getMessage()
+            );
+
+            e.printStackTrace();
+        }
     }
 
 
@@ -192,14 +444,25 @@ public class NewReservationController {
                 "NewReservationController iniciado"
         );
 
+
+        // =====================================================
+        // TABLA CONSUMOS
+        // =====================================================
+
         configureConsumptionTable();
 
-        // Tipo de consumo:
-        // 1 = Producto
-        // 2 = Servicio
+
+        // =====================================================
+        // TIPO CONSUMO
+        // =====================================================
+
         cmbConsumptionType.setItems(
-                FXCollections.observableArrayList(1, 2)
+                FXCollections.observableArrayList(
+                        1,
+                        2
+                )
         );
+
 
         cmbConsumptionType.setOnAction(event -> {
 
@@ -207,82 +470,84 @@ public class NewReservationController {
                     cmbConsumptionType.getValue();
 
             if (tipo == null) {
+
                 cmbProduct.setDisable(true);
                 cmbService.setDisable(true);
+
                 return;
             }
 
+
             if (tipo == 1) {
 
+                // Producto
+
                 cmbProduct.setDisable(false);
+
                 cmbService.setDisable(true);
+
                 cmbService.setValue(null);
 
             } else if (tipo == 2) {
 
+                // Servicio
+
                 cmbProduct.setDisable(true);
+
                 cmbService.setDisable(false);
+
                 cmbProduct.setValue(null);
             }
         });
 
-        // Cargamos los datos de los ComboBox
+
+        // =====================================================
+        // CARGAR COMBOS
+        // =====================================================
+
         loadReservationStatuses();
+
         loadReservationTypes();
 
         loadPaymentMethods();
+
         loadPaymentStatuses();
 
         loadProducts();
+
         loadServices();
 
         loadCustomers();
 
-        loadRooms();
 
-        cmbRoom.setOnAction(event -> {
-
-            Room room = cmbRoom.getValue();
-
-            if (room == null) {
-                limpiarDatosHabitacion();
-                return;
-            }
-
-            txtRoomFloor.setText(String.valueOf(room.getFloor()));
-            txtRoomType.setText(room.getType());
-            txtRoomView.setText(room.getView());
-            txtRoomCapacity.setText(String.valueOf(room.getCapacity()));
-
-            // La habitación no se puede seleccionar si está fuera de servicio
-            if (room.getOutOfService()) {
-
-                mostrarError(
-                        "La habitación " + room.getNumber() +
-                                " está fuera de servicio."
-                );
-
-                cmbRoom.setValue(null);
-                limpiarDatosHabitacion();
-            }
-        });
+        // =====================================================
+        // CONSUMOS
+        // =====================================================
 
         txtConsumptionTotal.setText("0.00");
+
         txtConsumptionTotal.setEditable(false);
 
         cmbProduct.setDisable(true);
-        cmbService.setDisable(true);
 
-        // El total comienza en 0
-        txtConsumptionTotal.setText("0.00");
-        txtConsumptionTotal.setEditable(false);
-
-        cmbProduct.setDisable(true);
         cmbService.setDisable(true);
     }
 
+
     // =========================================================
-    // Customers
+    // DASHBOARD
+    // =========================================================
+
+    public void setDashboardController(
+            DashboardController dashboardController) {
+
+        this.dashboardController =
+                dashboardController;
+    }
+
+
+    // =========================================================
+    // CUSTOMERS
     // =========================================================
 
     private void loadCustomers() {
@@ -293,76 +558,52 @@ public class NewReservationController {
                     customerDAO.listAll();
 
             cmbCustomer.getItems().clear();
-            cmbCustomer.getItems().addAll(customers);
 
-            System.out.println("Clientes encontrados: " + customers.size());
+            cmbCustomer.getItems().addAll(
+                    customers
+            );
 
-            for (Customer customer : customers) {
-                System.out.println(
-                        customer.getIdCustomer() + " - " +
-                                customer.getName() + " " +
-                                customer.getSurname()
-                );
-            }
+            System.out.println(
+                    "Clientes encontrados: "
+                            + customers.size()
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando clientes: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
+
 
     // =========================================================
     // RESERVATION STATUS
     // =========================================================
-
-    private void loadRooms() {
-
-        try {
-
-            List<Room> rooms = roomDAO.listAll();
-
-            cmbRoom.getItems().clear();
-
-            for (Room room : rooms) {
-
-                if (!room.getOutOfService()) {
-                    cmbRoom.getItems().add(room);
-                }
-            }
-
-            System.out.println(
-                    "Habitaciones encontradas: " +
-                            cmbRoom.getItems().size()
-            );
-
-        } catch (Exception e) {
-
-            System.err.println(
-                    "Error cargando habitaciones: " +
-                            e.getMessage()
-            );
-        }
-    }
 
     private void loadReservationStatuses() {
 
         try {
 
             List<ReservationStatus> statuses =
-                    reservationStatusRepo.getReservationStatuses();
+                    reservationStatusRepo
+                            .getReservationStatuses();
 
             cmbReservationStatus.getItems().clear();
-            cmbReservationStatus.getItems().addAll(statuses);
+
+            cmbReservationStatus.getItems().addAll(
+                    statuses
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando estados de reserva: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
 
@@ -376,17 +617,22 @@ public class NewReservationController {
         try {
 
             List<ReservationType> types =
-                    reservationTypeRepo.getReservationTypes();
+                    reservationTypeRepo
+                            .getReservationTypes();
 
             cmbReservationType.getItems().clear();
-            cmbReservationType.getItems().addAll(types);
+
+            cmbReservationType.getItems().addAll(
+                    types
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando tipos de reserva: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
 
@@ -400,25 +646,22 @@ public class NewReservationController {
         try {
 
             List<PaymentMethod> methods =
-                    paymentMethodRepo.getPaymentMethods();
+                    paymentMethodRepo
+                            .getPaymentMethods();
 
             cmbPaymentMethod.getItems().clear();
-            cmbPaymentMethod.getItems().addAll(methods);
 
-            System.out.println("Métodos de pago encontrados: " + methods.size());
-
-            for (PaymentMethod method : methods) {
-                System.out.println(
-                        method.getIdPaymentMethod() + " - " + method.getName()
-                );
-            }
+            cmbPaymentMethod.getItems().addAll(
+                    methods
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando métodos de pago: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
 
@@ -432,25 +675,22 @@ public class NewReservationController {
         try {
 
             List<PaymentStatus> statuses =
-                    paymentStatusRepo.getPaymentStatuses();
+                    paymentStatusRepo
+                            .getPaymentStatuses();
 
             cmbPaymentStatus.getItems().clear();
-            cmbPaymentStatus.getItems().addAll(statuses);
 
-            System.out.println("Estados de pago encontrados: " + statuses.size());
-
-            for (PaymentStatus status : statuses) {
-                System.out.println(
-                        status.getIdPaymentStatus() + " - " + status.getName()
-                );
-            }
+            cmbPaymentStatus.getItems().addAll(
+                    statuses
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando estados de pago: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
 
@@ -467,14 +707,18 @@ public class NewReservationController {
                     productRepo.getActiveProducts();
 
             cmbProduct.getItems().clear();
-            cmbProduct.getItems().addAll(products);
+
+            cmbProduct.getItems().addAll(
+                    products
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando productos: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
 
@@ -491,20 +735,24 @@ public class NewReservationController {
                     serviceRepo.getActiveServices();
 
             cmbService.getItems().clear();
-            cmbService.getItems().addAll(services);
+
+            cmbService.getItems().addAll(
+                    services
+            );
 
         } catch (Exception e) {
 
             System.err.println(
                     "Error cargando servicios: "
-                            + e.getMessage()
             );
+
+            e.printStackTrace();
         }
     }
 
 
     // =========================================================
-    // CONFIGURAR TABLA DE CONSUMOS
+    // TABLA CONSUMOS
     // =========================================================
 
     private void configureConsumptionTable() {
@@ -521,9 +769,10 @@ public class NewReservationController {
                 new PropertyValueFactory<>("total")
         );
 
-        // =========================
+
+        // =====================================================
         // TIPO
-        // =========================
+        // =====================================================
 
         colConsumptionType.setCellValueFactory(
                 cellData -> {
@@ -534,21 +783,28 @@ public class NewReservationController {
                     String tipo;
 
                     if (consumption.getIdConsumptionType() == 1) {
+
                         tipo = "Producto";
-                    } else if (consumption.getIdConsumptionType() == 2) {
+
+                    } else if (
+                            consumption.getIdConsumptionType() == 2) {
+
                         tipo = "Servicio";
+
                     } else {
+
                         tipo = "Desconocido";
                     }
 
-                    return new javafx.beans.property.SimpleStringProperty(tipo);
+                    return new javafx.beans.property
+                            .SimpleStringProperty(tipo);
                 }
         );
 
 
-        // =========================
+        // =====================================================
         // NOMBRE
-        // =========================
+        // =====================================================
 
         colConsumptionName.setCellValueFactory(
                 cellData -> {
@@ -558,45 +814,48 @@ public class NewReservationController {
 
                     String nombre = "";
 
+
                     if (consumption.getIdConsumptionType() == 1) {
 
                         for (Product product :
                                 cmbProduct.getItems()) {
 
-                            if (product.getIdProduct() ==
-                                    consumption.getIdProduct()) {
+                            if (product.getIdProduct()
+                                    == consumption.getIdProduct()) {
 
-                                nombre = product.getName();
+                                nombre =
+                                        product.getName();
+
                                 break;
                             }
                         }
 
-                    } else if (consumption.getIdConsumptionType() == 2) {
+                    } else if (
+                            consumption.getIdConsumptionType() == 2) {
 
                         for (Service service :
                                 cmbService.getItems()) {
 
-                            if (service.getIdService() ==
-                                    consumption.getIdService()) {
+                            if (service.getIdService()
+                                    == consumption.getIdService()) {
 
-                                nombre = service.getName();
+                                nombre =
+                                        service.getName();
+
                                 break;
                             }
                         }
                     }
 
-                    return new javafx.beans.property.SimpleStringProperty(
-                            nombre
-                    );
+                    return new javafx.beans.property
+                            .SimpleStringProperty(nombre);
                 }
         );
 
 
-        // =========================
-        // TABLA
-        // =========================
-
-        tblConsumptions.setItems(consumptions);
+        tblConsumptions.setItems(
+                consumptions
+        );
     }
 
 
@@ -621,7 +880,10 @@ public class NewReservationController {
 
 
         String textoQuantity =
-                txtConsumptionQuantity.getText().trim();
+                txtConsumptionQuantity
+                        .getText()
+                        .trim();
+
 
         if (textoQuantity.isEmpty()) {
 
@@ -638,7 +900,9 @@ public class NewReservationController {
         try {
 
             quantity =
-                    Integer.parseInt(textoQuantity);
+                    Integer.parseInt(
+                            textoQuantity
+                    );
 
         } catch (NumberFormatException e) {
 
@@ -663,6 +927,7 @@ public class NewReservationController {
         BigDecimal unitPrice;
 
         int idProduct = 0;
+
         int idService = 0;
 
 
@@ -684,13 +949,6 @@ public class NewReservationController {
                 return;
             }
 
-            System.out.println(
-                    "PRODUCTO: " +
-                            product.getName() +
-                            " | ID: " +
-                            product.getIdProduct()
-            );
-
             idProduct =
                     product.getIdProduct();
 
@@ -702,7 +960,7 @@ public class NewReservationController {
             // SERVICIO
             // =====================================================
 
-        } else if (consumptionType == 2) {
+        } else {
 
             Service service =
                     cmbService.getValue();
@@ -716,26 +974,11 @@ public class NewReservationController {
                 return;
             }
 
-            System.out.println(
-                    "SERVICIO: " +
-                            service.getName() +
-                            " | ID: " +
-                            service.getIdService()
-            );
-
             idService =
                     service.getIdService();
 
             unitPrice =
                     service.getPrice();
-
-        } else {
-
-            mostrarError(
-                    "El tipo de consumo seleccionado no es válido."
-            );
-
-            return;
         }
 
 
@@ -768,12 +1011,19 @@ public class NewReservationController {
                 );
 
 
-        consumptions.add(consumption);
+        // =====================================================
+        // AGREGAR A LA TABLA
+        // =====================================================
+
+        consumptions.add(
+                consumption
+        );
 
         updateConsumptionTotal();
 
 
         cmbProduct.setValue(null);
+
         cmbService.setValue(null);
 
         txtConsumptionQuantity.clear();
@@ -781,7 +1031,7 @@ public class NewReservationController {
 
 
     // =========================================================
-    // ACTUALIZAR TOTAL CONSUMOS
+    // TOTAL CONSUMOS
     // =========================================================
 
     private void updateConsumptionTotal() {
@@ -789,7 +1039,8 @@ public class NewReservationController {
         BigDecimal total =
                 BigDecimal.ZERO;
 
-        for (Consumption consumption : consumptions) {
+        for (Consumption consumption :
+                consumptions) {
 
             if (consumption.getTotal() != null) {
 
@@ -807,7 +1058,7 @@ public class NewReservationController {
 
 
     // =========================================================
-    // GUARDAR RESERVA
+    // GUARDAR
     // =========================================================
 
     @FXML
@@ -833,6 +1084,7 @@ public class NewReservationController {
                 return;
             }
 
+
             int idCustomer =
                     customer.getIdCustomer();
 
@@ -844,6 +1096,10 @@ public class NewReservationController {
             LocalDate checkIn =
                     dpCheckIn.getValue();
 
+            LocalDate checkOut =
+                    dpCheckOut.getValue();
+
+
             if (checkIn == null) {
 
                 mostrarError(
@@ -853,9 +1109,6 @@ public class NewReservationController {
                 return;
             }
 
-
-            LocalDate checkOut =
-                    dpCheckOut.getValue();
 
             if (checkOut == null) {
 
@@ -883,7 +1136,9 @@ public class NewReservationController {
             // =================================================
 
             String textoGuests =
-                    txtNumberOfGuests.getText().trim();
+                    txtNumberOfGuests
+                            .getText()
+                            .trim();
 
             if (textoGuests.isEmpty()) {
 
@@ -900,13 +1155,14 @@ public class NewReservationController {
             try {
 
                 numberOfGuests =
-                        Integer.parseInt(textoGuests);
+                        Integer.parseInt(
+                                textoGuests
+                        );
 
             } catch (NumberFormatException e) {
 
                 mostrarError(
-                        "La cantidad de huéspedes debe contener " +
-                                "solamente números."
+                        "La cantidad de huéspedes debe contener solamente números."
                 );
 
                 return;
@@ -928,7 +1184,9 @@ public class NewReservationController {
             // =================================================
 
             String textoRate =
-                    txtTotalRate.getText().trim();
+                    txtTotalRate
+                            .getText()
+                            .trim();
 
             if (textoRate.isEmpty()) {
 
@@ -945,7 +1203,9 @@ public class NewReservationController {
             try {
 
                 totalRate =
-                        new BigDecimal(textoRate);
+                        new BigDecimal(
+                                textoRate
+                        );
 
             } catch (NumberFormatException e) {
 
@@ -957,7 +1217,8 @@ public class NewReservationController {
             }
 
 
-            if (totalRate.compareTo(BigDecimal.ZERO) < 0) {
+            if (totalRate.compareTo(
+                    BigDecimal.ZERO) < 0) {
 
                 mostrarError(
                         "La tarifa total no puede ser negativa."
@@ -968,7 +1229,7 @@ public class NewReservationController {
 
 
             // =================================================
-            // ESTADO RESERVA
+            // ESTADO
             // =================================================
 
             ReservationStatus reservationStatus =
@@ -985,7 +1246,7 @@ public class NewReservationController {
 
 
             // =================================================
-            // TIPO RESERVA
+            // TIPO
             // =================================================
 
             ReservationType reservationType =
@@ -1006,10 +1267,14 @@ public class NewReservationController {
             // =================================================
 
             String reservationObservations =
-                    txtReservationObservations.getText();
+                    txtReservationObservations
+                            .getText();
+
 
             if (reservationObservations != null &&
-                    reservationObservations.trim().isEmpty()) {
+                    reservationObservations
+                            .trim()
+                            .isEmpty()) {
 
                 reservationObservations = null;
             }
@@ -1025,8 +1290,10 @@ public class NewReservationController {
                             LocalDateTime.now(),
                             checkIn,
                             checkOut,
-                            reservationStatus.getIdReservationStatus(),
-                            reservationType.getIdReservationType(),
+                            reservationStatus
+                                    .getIdReservationStatus(),
+                            reservationType
+                                    .getIdReservationType(),
                             numberOfGuests,
                             totalRate,
                             reservationObservations
@@ -1039,6 +1306,7 @@ public class NewReservationController {
 
             conn =
                     ConexionDB.getConnection();
+
 
             if (conn == null) {
 
@@ -1054,63 +1322,138 @@ public class NewReservationController {
 
 
             // =================================================
-            // CREAR RESERVA
+            // RESERVA
             // =================================================
 
-            int idReservation =
-                    reservationRepo.createReservation(
-                            conn,
-                            reservation
+            int idReservation;
+
+
+            if (reservationToEdit == null) {
+
+                // =============================================
+                // NUEVA RESERVA
+                // =============================================
+
+                idReservation =
+                        reservationRepo.createReservation(
+                                conn,
+                                reservation
+                        );
+
+            } else {
+
+                // =============================================
+                // MODIFICAR RESERVA
+                // =============================================
+
+                reservation.setIdReservation(
+                        reservationToEdit
+                                .getIdReservation()
+                );
+
+
+                boolean updated =
+                        reservationRepo.updateReservation(
+                                conn,
+                                reservation
+                        );
+
+
+                if (!updated) {
+
+                    conn.rollback();
+
+                    mostrarError(
+                            "No se pudo actualizar la reserva."
                     );
 
+                    return;
+                }
+
+
+                idReservation =
+                        reservationToEdit
+                                .getIdReservation();
+            }
+
+
+            // =================================================
+            // VALIDAR ID
+            // =================================================
 
             if (idReservation <= 0) {
 
                 conn.rollback();
 
                 mostrarError(
-                        "No se pudo crear la reserva."
+                        reservationToEdit == null
+                                ? "No se pudo crear la reserva."
+                                : "No se pudo actualizar la reserva."
                 );
 
                 return;
             }
 
-            // =========================
-            // CONSUMPTIONS
-            // =========================
 
-            for (Consumption consumption : consumptions) {
+            // =================================================
+            // CONSUMOS
+            // =================================================
 
-                consumption.setIdReservation(idReservation);
+            /*
+             * IMPORTANTE:
+             *
+             * Los consumos que ya estaban en BD tienen
+             * idConsumption > 0.
+             *
+             * Los nuevos consumos agregados desde esta pantalla
+             * tienen idConsumption = 0.
+             *
+             * Por eso solamente guardamos los nuevos.
+             */
 
-                boolean consumptionCreated =
-                        consumptionRepo.createConsumption(
-                                conn,
-                                consumption
-                        );
+            for (Consumption consumption :
+                    consumptions) {
 
-                if (!consumptionCreated) {
+                if (consumption.getIdConsumption() == 0) {
 
-                    conn.rollback();
-
-                    mostrarError(
-                            "No se pudo registrar uno de los consumos. " +
-                                    "La reserva tampoco fue guardada."
+                    consumption.setIdReservation(
+                            idReservation
                     );
 
-                    return;
+
+                    boolean consumptionCreated =
+                            consumptionRepo.createConsumption(
+                                    conn,
+                                    consumption
+                            );
+
+
+                    if (!consumptionCreated) {
+
+                        conn.rollback();
+
+                        mostrarError(
+                                "No se pudo registrar uno de los consumos."
+                        );
+
+                        return;
+                    }
                 }
             }
+
 
             // =================================================
             // PAYMENT
             // =================================================
 
             String textoPayment =
-                    txtPaymentAmount.getText().trim();
+                    txtPaymentAmount
+                            .getText()
+                            .trim();
 
 
             // El pago es opcional
+
             if (!textoPayment.isEmpty()) {
 
                 BigDecimal paymentAmount;
@@ -1118,22 +1461,24 @@ public class NewReservationController {
                 try {
 
                     paymentAmount =
-                            new BigDecimal(textoPayment);
+                            new BigDecimal(
+                                    textoPayment
+                            );
 
                 } catch (NumberFormatException e) {
 
                     conn.rollback();
 
                     mostrarError(
-                            "El importe del pago debe contener " +
-                                    "solamente números."
+                            "El importe del pago debe contener solamente números."
                     );
 
                     return;
                 }
 
 
-                if (paymentAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                if (paymentAmount.compareTo(
+                        BigDecimal.ZERO) <= 0) {
 
                     conn.rollback();
 
@@ -1188,15 +1533,20 @@ public class NewReservationController {
 
 
                 LocalDateTime paymentDate =
-                        dpPaymentDate.getValue()
+                        dpPaymentDate
+                                .getValue()
                                 .atStartOfDay();
 
 
                 String paymentObservations =
-                        txtPaymentObservations.getText();
+                        txtPaymentObservations
+                                .getText();
+
 
                 if (paymentObservations != null &&
-                        paymentObservations.trim().isEmpty()) {
+                        paymentObservations
+                                .trim()
+                                .isEmpty()) {
 
                     paymentObservations = null;
                 }
@@ -1207,29 +1557,107 @@ public class NewReservationController {
                                 idReservation,
                                 paymentAmount,
                                 paymentDate,
-                                paymentMethod.getIdPaymentMethod(),
-                                paymentStatus.getIdPaymentStatus(),
+                                paymentMethod
+                                        .getIdPaymentMethod(),
+                                paymentStatus
+                                        .getIdPaymentStatus(),
                                 paymentObservations
                         );
 
 
-                boolean paymentCreated =
-                        paymentRepo.createPayment(
-                                conn,
-                                payment
+                // =============================================
+                // SI ES MODIFICACIÓN
+                // =============================================
+
+                if (reservationToEdit != null) {
+
+                    List<Payment> payments =
+                            paymentRepo
+                                    .getPaymentsByReservation(
+                                            idReservation
+                                    );
+
+
+                    if (!payments.isEmpty()) {
+
+                        // Actualizar pago existente
+
+                        Payment existingPayment =
+                                payments.get(0);
+
+
+                        payment.setIdPayment(
+                                existingPayment
+                                        .getIdPayment()
                         );
 
 
-                if (!paymentCreated) {
+                        boolean paymentUpdated =
+                                paymentRepo.updatePayment(
+                                        conn,
+                                        payment
+                                );
 
-                    conn.rollback();
 
-                    mostrarError(
-                            "No se pudo registrar el pago. " +
-                                    "La reserva tampoco fue guardada."
-                    );
+                        if (!paymentUpdated) {
 
-                    return;
+                            conn.rollback();
+
+                            mostrarError(
+                                    "No se pudo actualizar el pago."
+                            );
+
+                            return;
+                        }
+
+                    } else {
+
+                        // No existía pago:
+                        // crear uno nuevo
+
+                        boolean paymentCreated =
+                                paymentRepo.createPayment(
+                                        conn,
+                                        payment
+                                );
+
+
+                        if (!paymentCreated) {
+
+                            conn.rollback();
+
+                            mostrarError(
+                                    "No se pudo registrar el pago."
+                            );
+
+                            return;
+                        }
+                    }
+
+
+                } else {
+
+                    // =========================================
+                    // NUEVA RESERVA
+                    // =========================================
+
+                    boolean paymentCreated =
+                            paymentRepo.createPayment(
+                                    conn,
+                                    payment
+                            );
+
+
+                    if (!paymentCreated) {
+
+                        conn.rollback();
+
+                        mostrarError(
+                                "No se pudo registrar el pago."
+                        );
+
+                        return;
+                    }
                 }
             }
 
@@ -1242,7 +1670,11 @@ public class NewReservationController {
 
 
             mostrarExito(
-                    "La reserva se creó correctamente.\n" +
+                    reservationToEdit == null
+                            ? "La reserva se creó correctamente.\n" +
+                            "Número de reserva: " +
+                            idReservation
+                            : "La reserva se modificó correctamente.\n" +
                             "Número de reserva: " +
                             idReservation
             );
@@ -1256,26 +1688,27 @@ public class NewReservationController {
             try {
 
                 if (conn != null) {
+
                     conn.rollback();
                 }
 
             } catch (SQLException rollbackException) {
 
                 System.err.println(
-                        "Error al hacer rollback: " +
-                                rollbackException.getMessage()
+                        "Error al hacer rollback: "
+                                + rollbackException.getMessage()
                 );
             }
 
 
-            mostrarError(
-                    "Ocurrió un error en la transacción."
+            System.err.println(
+                    "Error SQL: "
+                            + e.getMessage()
             );
 
 
-            System.err.println(
-                    "Error SQL: " +
-                            e.getMessage()
+            mostrarError(
+                    "Ocurrió un error en la transacción."
             );
 
 
@@ -1284,26 +1717,30 @@ public class NewReservationController {
             try {
 
                 if (conn != null) {
+
                     conn.rollback();
                 }
 
             } catch (SQLException rollbackException) {
 
                 System.err.println(
-                        "Error al hacer rollback: " +
-                                rollbackException.getMessage()
+                        "Error al hacer rollback: "
+                                + rollbackException.getMessage()
                 );
             }
 
 
-            mostrarError(
-                    "Ocurrió un error al guardar la reserva."
+            System.err.println(
+                    "Error: "
+                            + e.getMessage()
             );
 
 
-            System.err.println(
-                    "Error: " +
-                            e.getMessage()
+            e.printStackTrace();
+
+
+            mostrarError(
+                    "Ocurrió un error al guardar la reserva."
             );
 
 
@@ -1314,6 +1751,7 @@ public class NewReservationController {
                 if (conn != null) {
 
                     conn.setAutoCommit(true);
+
                     conn.close();
                 }
 
@@ -1324,6 +1762,28 @@ public class NewReservationController {
                                 + e.getMessage()
                 );
             }
+        }
+    }
+
+
+    // =========================================================
+    // VOLVER
+    // =========================================================
+
+    @FXML
+    private void handleVolver() {
+
+        if (dashboardController != null) {
+
+            dashboardController.loadView(
+                    "/views/Reservations.fxml"
+            );
+
+        } else {
+
+            System.err.println(
+                    "DashboardController no está conectado."
+            );
         }
     }
 
@@ -1348,12 +1808,15 @@ public class NewReservationController {
         cmbCustomer.setValue(null);
 
         dpCheckIn.setValue(null);
+
         dpCheckOut.setValue(null);
 
         txtNumberOfGuests.clear();
+
         txtTotalRate.clear();
 
         cmbReservationStatus.setValue(null);
+
         cmbReservationType.setValue(null);
 
         txtReservationObservations.clear();
@@ -1366,17 +1829,18 @@ public class NewReservationController {
         dpPaymentDate.setValue(null);
 
         cmbPaymentMethod.setValue(null);
+
         cmbPaymentStatus.setValue(null);
 
         txtPaymentObservations.clear();
 
 
-        // CONSUMPTION
+        // CONSUMPTIONS
 
-        // Limpiar consumos
         consumptions.clear();
 
         if (tblConsumptions != null) {
+
             tblConsumptions.refresh();
         }
 
@@ -1385,36 +1849,38 @@ public class NewReservationController {
         cmbConsumptionType.setValue(null);
 
         cmbProduct.setValue(null);
+
         cmbService.setValue(null);
 
         txtConsumptionQuantity.clear();
 
-        consumptions.clear();
-
-        txtConsumptionTotal.setText("0.00");
+        txtConsumptionTotal.setText(
+                "0.00"
+        );
     }
 
-    private void limpiarDatosHabitacion() {
-
-        txtRoomFloor.clear();
-        txtRoomType.clear();
-        txtRoomView.clear();
-        txtRoomCapacity.clear();
-    }
 
     // =========================================================
     // ERROR
     // =========================================================
 
-    private void mostrarError(String mensaje) {
+    private void mostrarError(
+            String mensaje) {
 
         Alert alert =
-                new Alert(Alert.AlertType.ERROR);
+                new Alert(
+                        Alert.AlertType.ERROR
+                );
 
         alert.setTitle("Error");
-        alert.setHeaderText("No se pudo guardar");
 
-        alert.setContentText(mensaje);
+        alert.setHeaderText(
+                "No se pudo guardar"
+        );
+
+        alert.setContentText(
+                mensaje
+        );
 
         alert.showAndWait();
     }
@@ -1424,15 +1890,25 @@ public class NewReservationController {
     // ÉXITO
     // =========================================================
 
-    private void mostrarExito(String mensaje) {
+    private void mostrarExito(
+            String mensaje) {
 
         Alert alert =
-                new Alert(Alert.AlertType.INFORMATION);
+                new Alert(
+                        Alert.AlertType.INFORMATION
+                );
 
-        alert.setTitle("Reserva creada");
-        alert.setHeaderText("Operación exitosa");
+        alert.setTitle(
+                "Operación exitosa"
+        );
 
-        alert.setContentText(mensaje);
+        alert.setHeaderText(
+                "Operación realizada correctamente"
+        );
+
+        alert.setContentText(
+                mensaje
+        );
 
         alert.showAndWait();
     }

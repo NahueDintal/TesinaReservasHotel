@@ -503,6 +503,113 @@ public class ReservationRepo {
         }
     }
 
+    // =========================================================
+    // UPDATE para transacción
+    // =========================================================
+
+    public boolean updateReservation(
+            Connection conn,
+            Reservation reservation) {
+
+        if (!validateReservation(reservation)) {
+            return false;
+        }
+
+        if (reservation.getIdReservation() <= 0) {
+            System.err.println(
+                    "El ID de la reserva no es válido."
+            );
+            return false;
+        }
+
+        String sql =
+                "UPDATE Reservation SET " +
+                        "idCustomer = ?, " +
+                        "checkIn = ?, " +
+                        "checkOut = ?, " +
+                        "idReservationStatus = ?, " +
+                        "idReservationType = ?, " +
+                        "numberOfGuests = ?, " +
+                        "totalRate = ?, " +
+                        "observations = ? " +
+                        "WHERE idReservation = ?";
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setInt(
+                    1,
+                    reservation.getIdCustomer()
+            );
+
+            stmt.setDate(
+                    2,
+                    Date.valueOf(
+                            reservation.getCheckIn()
+                    )
+            );
+
+            stmt.setDate(
+                    3,
+                    Date.valueOf(
+                            reservation.getCheckOut()
+                    )
+            );
+
+            stmt.setInt(
+                    4,
+                    reservation.getIdReservationStatus()
+            );
+
+            stmt.setInt(
+                    5,
+                    reservation.getIdReservationType()
+            );
+
+            stmt.setInt(
+                    6,
+                    reservation.getNumberOfGuests()
+            );
+
+            stmt.setBigDecimal(
+                    7,
+                    reservation.getTotalRate()
+            );
+
+            stmt.setString(
+                    8,
+                    reservation.getObservations()
+            );
+
+            stmt.setInt(
+                    9,
+                    reservation.getIdReservation()
+            );
+
+            int rowsAffected =
+                    stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+
+                System.out.println(
+                        "Reserva actualizada dentro de la transacción."
+                );
+
+                return true;
+            }
+
+            return false;
+
+        } catch (SQLException e) {
+
+            System.err.println(
+                    "Error al actualizar la reserva dentro de la transacción: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
+    }
 
     // =========================================================
     // UPDATE STATUS

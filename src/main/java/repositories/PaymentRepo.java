@@ -216,6 +216,78 @@ public class PaymentRepo {
         return null;
     }
 
+
+    public List<Payment> getPaymentsByReservation(
+            int idReservation) {
+
+        List<Payment> payments = new ArrayList<>();
+
+        String sql =
+                "SELECT idPayment, idReservation, amount, paymentDate, " +
+                        "idPaymentMethod, idPaymentStatus, observations " +
+                        "FROM payment " +
+                        "WHERE idReservation = ? " +
+                        "ORDER BY idPayment";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idReservation);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                while (rs.next()) {
+
+                    Payment payment = new Payment();
+
+                    payment.setIdPayment(
+                            rs.getInt("idPayment")
+                    );
+
+                    payment.setIdReservation(
+                            rs.getInt("idReservation")
+                    );
+
+                    payment.setAmount(
+                            rs.getBigDecimal("amount")
+                    );
+
+                    if (rs.getTimestamp("paymentDate") != null) {
+
+                        payment.setPaymentDate(
+                                rs.getTimestamp("paymentDate")
+                                        .toLocalDateTime()
+                        );
+                    }
+
+                    payment.setIdPaymentMethod(
+                            rs.getInt("idPaymentMethod")
+                    );
+
+                    payment.setIdPaymentStatus(
+                            rs.getInt("idPaymentStatus")
+                    );
+
+                    payment.setObservations(
+                            rs.getString("observations")
+                    );
+
+                    payments.add(payment);
+                }
+            }
+
+        } catch (SQLException e) {
+
+            System.err.println(
+                    "Error al obtener los pagos de la reserva: "
+                            + e.getMessage()
+            );
+        }
+
+        return payments;
+    }
+
+
     public boolean updatePaymentStatus(int idPayment, int idPaymentStatus) {
 
         if (idPayment <= 0) {
@@ -302,6 +374,95 @@ public class PaymentRepo {
         } catch (SQLException e) {
             System.err.println("Error al actualizar el pago: "
                     + e.getMessage());
+
+            return false;
+        }
+
+    }
+
+    // =========================================================
+    // UPDATE para transacción
+    // =========================================================
+
+    public boolean updatePayment(
+            Connection conn,
+            Payment payment) {
+
+        if (!validatePayment(payment)) {
+            return false;
+        }
+
+        if (payment.getIdPayment() <= 0) {
+            System.err.println(
+                    "El ID del pago no es válido."
+            );
+            return false;
+        }
+
+        String sql =
+                "UPDATE payment SET " +
+                        "amount = ?, " +
+                        "paymentDate = ?, " +
+                        "idPaymentMethod = ?, " +
+                        "idPaymentStatus = ?, " +
+                        "observations = ? " +
+                        "WHERE idPayment = ?";
+
+        try (PreparedStatement stmt =
+                     conn.prepareStatement(sql)) {
+
+            stmt.setBigDecimal(
+                    1,
+                    payment.getAmount()
+            );
+
+            stmt.setTimestamp(
+                    2,
+                    Timestamp.valueOf(
+                            payment.getPaymentDate()
+                    )
+            );
+
+            stmt.setInt(
+                    3,
+                    payment.getIdPaymentMethod()
+            );
+
+            stmt.setInt(
+                    4,
+                    payment.getIdPaymentStatus()
+            );
+
+            stmt.setString(
+                    5,
+                    payment.getObservations()
+            );
+
+            stmt.setInt(
+                    6,
+                    payment.getIdPayment()
+            );
+
+            int rowsAffected =
+                    stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+
+                System.out.println(
+                        "Pago actualizado dentro de la transacción."
+                );
+
+                return true;
+            }
+
+            return false;
+
+        } catch (SQLException e) {
+
+            System.err.println(
+                    "Error al actualizar el pago dentro de la transacción: "
+                            + e.getMessage()
+            );
 
             return false;
         }

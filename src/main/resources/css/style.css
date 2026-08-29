@@ -443,3 +443,578 @@
     -fx-text-fill: #7f8c8d;
     -fx-font-size: 13px;
 }
+
+
+       /* =========================================================
+          NUEVA RESERVA
+          ========================================================= */
+
+   .new-reservation-scroll {
+       -fx-background-color: #f5f7fa;
+       -fx-border-color: transparent;
+   }
+
+.new-reservation-scroll > .viewport {
+    -fx-background-color: #f5f7fa;
+}
+
+.new-reservation-container {
+    -fx-background-color: #f5f7fa;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.reservation-page-header {
+    -fx-padding: 0 0 6 0;
+}
+
+.reservation-page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #245c32;
+}
+
+.reservation-page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+}
+
+
+/* =========================================================
+   BOTÓN VOLVER
+   ========================================================= */
+
+.reservation-back-button {
+    -fx-background-color: #f1f5f2;
+    -fx-border-color: #d8e0db;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+    -fx-text-fill: #245c32;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.reservation-back-button:hover {
+    -fx-background-color: #eaf7ed;
+    -fx-border-color: #3E864D;
+}
+
+
+/* =========================================================
+   TARJETAS
+   ========================================================= */
+
+.reservation-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e5e2;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 17px;
+}
+
+.reservation-card-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #245c32;
+}
+
+.reservation-card-description {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-text-fill: #7f8c8d;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.reservation-form-grid {
+    -fx-padding: 2 0 2 0;
+}
+
+.reservation-field-label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+
+/* =========================================================
+   CAMPOS
+   ========================================================= */
+
+.reservation-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d8dfdb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 7px 9px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+}
+
+.reservation-field:hover {
+    -fx-border-color: #aebbb2;
+}
+
+.reservation-field:focused {
+    -fx-border-color: #3E864D;
+    -fx-border-width: 1.5px;
+}
+
+
+/* =========================================================
+   TEXT AREA
+   ========================================================= */
+
+.reservation-textarea {
+    -fx-background-color: white;
+    -fx-border-color: #d8dfdb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+}
+
+.reservation-textarea:focused {
+    -fx-border-color: #3E864D;
+}
+
+
+/* =========================================================
+   COMBOBOX
+   ========================================================= */
+
+.reservation-field .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #d8dfdb;
+}
+
+.combo-box-popup .list-cell {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-padding: 7px 9px;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #eaf7ed;
+}
+
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #245c32;
+}
+
+
+/* =========================================================
+   DATE PICKER
+   ========================================================= */
+
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #eaf7ed;
+}
+
+
+/* =========================================================
+   BOTÓN AGREGAR CONSUMO
+   ========================================================= */
+
+.reservation-secondary-button {
+    -fx-background-color: white;
+    -fx-border-color: #3E864D;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-text-fill: #2E6D3D;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.reservation-secondary-button:hover {
+    -fx-background-color: #eaf7ed;
+}
+
+
+/* =========================================================
+   TABLA NUEVA RESERVA
+   ========================================================= */
+
+.reservation-table {
+    -fx-background-color: white;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.reservation-table .column-header-background {
+    -fx-background-color: #f0f4f1;
+}
+
+.reservation-table .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 7px 5px;
+}
+
+.reservation-table .column-header .label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+.reservation-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #eef1ef;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.reservation-table .table-row-cell:hover {
+    -fx-background-color: #f4faf5;
+}
+
+.reservation-table .table-row-cell:selected {
+    -fx-background-color: #d4edda;
+}
+
+.reservation-table .table-cell {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-text-fill: #34495e;
+    -fx-padding: 6px;
+}
+
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.reservation-total-container {
+    -fx-padding: 5px 0 0 0;
+}
+
+.reservation-total-label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+.reservation-total-field {
+    -fx-background-color: #edf6ef;
+    -fx-border-color: #d0e3d4;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #245c32;
+    -fx-alignment: CENTER-RIGHT;
+}
+
+
+/* =========================================================
+   BOTONES FINALES
+   ========================================================= */
+
+.reservation-actions {
+    -fx-padding: 2px 0 0 0;
+}
+
+.reservation-cancel-button {
+    -fx-background-color: white;
+    -fx-border-color: #d1d8d4;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-text-fill: #34495e;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.reservation-cancel-button:hover {
+    -fx-background-color: #f1f3f3;
+}
+
+.reservation-primary-button {
+    -fx-background-color: #3E864D;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.reservation-primary-button:hover {
+    -fx-background-color: #2E6D3D;
+}
+
+.reservation-primary-button:pressed {
+    -fx-background-color: #245c32;
+}
+
+
+/* =========================================================
+   PANTALLA - PLANILLA DE RESERVAS
+   ========================================================= */
+
+.reservations-page {
+    -fx-background-color: #f7f9f8;
+}
+
+.reservations-container {
+    -fx-background-color: #f7f9f8;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+   ========================================================= */
+
+.reservations-header {
+    -fx-padding: 0 0 4 0;
+}
+
+.reservations-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #245c32;
+}
+
+.reservations-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #737b76;
+}
+
+
+/* =========================================================
+   BOTÓN NUEVA RESERVA
+   ========================================================= */
+
+.btn-new-reservation {
+    -fx-background-color: #1f5b32;
+    -fx-background-radius: 7px;
+    -fx-border-radius: 7px;
+    -fx-text-fill: white;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-cursor: hand;
+}
+
+.btn-new-reservation:hover {
+    -fx-background-color: #2e6d3d;
+}
+
+.btn-new-reservation:pressed {
+    -fx-background-color: #184a28;
+}
+
+
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+.search-container {
+    -fx-background-color: transparent;
+}
+
+.reservation-search {
+    -fx-background-color: white;
+    -fx-border-color: #d8dfdb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+    -fx-padding: 8px 12px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-prompt-text-fill: #929a95;
+}
+
+.reservation-search:hover {
+    -fx-border-color: #bdc9c1;
+}
+
+.reservation-search:focused {
+    -fx-border-color: #3E864D;
+    -fx-border-width: 1.5px;
+}
+
+
+/* =========================================================
+   CONTENEDOR DE TABLA
+   ========================================================= */
+
+.table-container {
+    -fx-background-color: white;
+    -fx-border-color: #dfe5e1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.reservations-table {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-table-cell-border-color: transparent;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE TABLA
+   ========================================================= */
+
+.reservations-table .column-header-background {
+    -fx-background-color: #f1f5f2;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.reservations-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: #dfe5e1;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 9px 6px;
+}
+
+.reservations-table .column-header .label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #263d2c;
+    -fx-alignment: CENTER_LEFT;
+}
+
+
+/* =========================================================
+   FILAS
+   ========================================================= */
+
+.reservations-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #edf0ee;
+    -fx-border-width: 0 0 1px 0;
+    -fx-cell-size: 48px;
+}
+
+.reservations-table .table-row-cell:hover {
+    -fx-background-color: #f5faf6;
+}
+
+.reservations-table .table-row-cell:selected {
+    -fx-background-color: #e3f1e6;
+}
+
+.reservations-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #245c32;
+}
+
+
+/* =========================================================
+   CELDAS
+   ========================================================= */
+
+.reservations-table .table-cell {
+    -fx-background-color: transparent;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-text-fill: #34443a;
+    -fx-padding: 7px 8px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+
+/* =========================================================
+   SCROLLBAR DE TABLA
+   ========================================================= */
+
+.reservations-table .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.reservations-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.reservations-table .scroll-bar .thumb {
+    -fx-background-color: #c7d1ca;
+    -fx-background-radius: 5px;
+}
+
+.reservations-table .scroll-bar .thumb:hover {
+    -fx-background-color: #aebbb2;
+}
+
+.reservations-table .scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+
+/* =========================================================
+   BOTONES DE ACCIONES
+   ========================================================= */
+
+.boton-accion {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3E864D;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+    -fx-padding: 4px 7px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.boton-accion:hover {
+    -fx-background-color: #eaf5ec;
+    -fx-text-fill: #245c32;
+}
+
+
+/* =========================================================
+   BOTÓN ELIMINAR
+   ========================================================= */
+
+.boton-accion-eliminar {
+    -fx-text-fill: #c0392b;
+}
+
+.boton-accion-eliminar:hover {
+    -fx-background-color: #fbeaea;
+    -fx-text-fill: #a93226;
+}
+
