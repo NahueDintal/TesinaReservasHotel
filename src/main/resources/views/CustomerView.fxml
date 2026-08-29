@@ -7,123 +7,99 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane stylesheets="@/css/style.css"
+<AnchorPane stylesheets="@/css/style.css"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.CustomerController">
 
-    <!-- ==================== SIDEBAR ==================== -->
-    <left>
-        <VBox styleClass="sidebar" prefWidth="280.0" spacing="5">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20" />
-            </padding>
-            <ImageView fitHeight="80.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                <Image url="@../images/hotel-icon.png" />
-            </ImageView>
-            <Label text="SISTEMA HOTEL" styleClass="sidebar-titulo" />
-            <VBox spacing="10" VBox.vgrow="ALWAYS">
-                <ToggleButton text="Planilla de reserva" styleClass="sidebar-btn" />
-                <ToggleButton text="Reservas" styleClass="sidebar-btn" />
-                <ToggleButton text="Habitaciones" styleClass="sidebar-btn" />
-                <ToggleButton text="Clientes" styleClass="sidebar-btn" style="-fx-background-color: #2E6D3D;" />
-                <ToggleButton text="Reportes" styleClass="sidebar-btn" />
-                <ToggleButton text="Configuración" styleClass="sidebar-btn" />
+    <VBox styleClass="content-main" spacing="15"
+          AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20" />
+        </padding>
+
+        <!-- Título y botones -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Label text="Clientes" styleClass="section-title">
+                <font><Font size="24.0" /></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="btnNewCustomer" text="+ Nuevo Cliente" styleClass="btn-primary" />
+            <Button fx:id="btnViewInactive" text="📁 Ver eliminados" styleClass="btn-secondary" />
+        </HBox>
+
+        <!-- Buscador -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <TextField fx:id="txtSearch" promptText="🔍 Buscar por nombre, apellido, email, teléfono..." styleClass="search-field" HBox.hgrow="ALWAYS" />
+            <!-- Para despues -->
+            <!--<Button text="Limpiar filtros" onAction="#clearFilters" styleClass="btn-secondary" />-->
+            <!--<Button text="📤 Exportar" styleClass="btn-secondary" />-->
+        </HBox>
+
+        <!-- SplitPane: Tabla + Detalle -->
+        <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS" styleClass="split-pane">
+            <VBox spacing="10">
+                <TableView fx:id="tableCustomers" styleClass="customer-table" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colFirstName" text="Nombres" prefWidth="120" />
+                        <TableColumn fx:id="colLastName" text="Apellidos" prefWidth="120" />
+                        <TableColumn fx:id="colDocumentType" text="Tipo Documento" prefWidth="120" />
+                        <TableColumn fx:id="colOrigin" text="Origen" prefWidth="100" />
+                        <TableColumn fx:id="colCountry" text="País" prefWidth="100" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+                <Label fx:id="lblTotalCustomers" text="Mostrando 0 clientes" styleClass="footer-info" />
             </VBox>
-            <VBox spacing="5">
-                <Label text="👤 Admin" styleClass="sidebar-usuario" />
-                <Button text="Cerrar sesión" styleClass="sidebar-logout" />
+
+            <!-- Panel de detalle -->
+            <VBox spacing="12" styleClass="detail-panel" prefWidth="280.0" maxWidth="280.0">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15" />
+                </padding>
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label fx:id="lblDetailFullName" text="Nombre Completo" styleClass="detail-name" wrapText="true" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="lblDetailStatus" text="Activo" styleClass="detail-status" />
+                </HBox>
+
+                <Label text="Tipo de Documento:" styleClass="detail-label" />
+                <Label fx:id="lblDetailDocumentType" text="--" styleClass="detail-value" />
+
+                <Label text="Número:" styleClass="detail-label" />
+                <Label fx:id="lblDetailDocumentNumber" text="--" styleClass="detail-value" />
+
+                <Label text="Teléfono:" styleClass="detail-label" />
+                <Label fx:id="lblDetailPhone" text="--" styleClass="detail-value" />
+
+                <Label text="Email:" styleClass="detail-label" />
+                <Label fx:id="lblDetailEmail" text="--" styleClass="detail-value" />
+
+                <Label text="País:" styleClass="detail-label" />
+                <Label fx:id="lblDetailCountry" text="--" styleClass="detail-value" />
+
+                <Label text="Origen:" styleClass="detail-label" />
+                <Label fx:id="lblDetailOrigin" text="--" styleClass="detail-value" />
+
+                <Region VBox.vgrow="ALWAYS" />
+
+                <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity" />
+                <Button fx:id="btnDeactivate" text="Eliminar" styleClass="btn-detail-danger" maxWidth="Infinity" />
+                <!--Para despues-->
+                <!--<Button text="Ver Reservas" styleClass="btn-detail" maxWidth="Infinity" />-->
             </VBox>
-        </VBox>
-    </left>
-
-    <!-- ==================== CENTRO ==================== -->
-    <center>
-        <VBox styleClass="content-main" spacing="15">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20" />
-            </padding>
-
-            <!-- Título y botones -->
-            <HBox alignment="CENTER_LEFT" spacing="15">
-                <Label text="Clientes" styleClass="section-title">
-                    <font><Font size="24.0" /></font>
-                </Label>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="btnNewCustomer" text="+ Nuevo Cliente" styleClass="btn-primary" />
-                <Button fx:id="btnViewInactive" text="📁 Ver eliminados" styleClass="btn-secondary" />
-            </HBox>
-
-            <!-- Buscador -->
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <TextField fx:id="txtSearch" promptText="🔍 Buscar por nombre, apellido, email, teléfono..." styleClass="search-field" HBox.hgrow="ALWAYS" />
-            </HBox>
-
-            <!-- SplitPane: Tabla + Detalle -->
-            <SplitPane dividerPositions="0.75" VBox.vgrow="ALWAYS" styleClass="split-pane">
-                <VBox spacing="10">
-                    <TableView fx:id="tableCustomers" styleClass="customer-table" VBox.vgrow="ALWAYS">
-                        <columns>
-                            <TableColumn fx:id="colFirstName" text="Nombres" prefWidth="120" />
-                            <TableColumn fx:id="colLastName" text="Apellidos" prefWidth="120" />
-                            <TableColumn fx:id="colDocumentType" text="Tipo Documento" prefWidth="120" />
-                            <TableColumn fx:id="colOrigin" text="Origen" prefWidth="100" />
-                            <TableColumn fx:id="colCountry" text="País" prefWidth="100" />
-                        </columns>
-                        <columnResizePolicy>
-                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                        </columnResizePolicy>
-                    </TableView>
-                    <Label fx:id="lblTotalCustomers" text="Mostrando 0 clientes" styleClass="footer-info" />
-                </VBox>
-
-                <!-- Panel de detalle -->
-                <VBox spacing="12" styleClass="detail-panel" prefWidth="280.0" maxWidth="280.0">
-                    <padding>
-                        <Insets top="15" right="15" bottom="15" left="15" />
-                    </padding>
-
-                    <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Label fx:id="lblDetailFullName" text="Nombre Completo" styleClass="detail-name" wrapText="true" />
-                        <Region HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblDetailStatus" text="Activo" styleClass="detail-status" />
-                    </HBox>
-
-                    <Label text="Tipo de Documento:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailDocumentType" text="--" styleClass="detail-value" />
-
-                    <Label text="Número:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailDocumentNumber" text="--" styleClass="detail-value" />
-
-                    <Label text="Teléfono:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailPhone" text="--" styleClass="detail-value" />
-
-                    <Label text="Email:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailEmail" text="--" styleClass="detail-value" />
-
-                    <Label text="País:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailCountry" text="--" styleClass="detail-value" />
-
-                    <Label text="Origen:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailOrigin" text="--" styleClass="detail-value" />
-
-                    <Region VBox.vgrow="ALWAYS" />
-
-                    <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity" />
-                    <Button fx:id="btnDeactivate" text="Eliminar" styleClass="btn-detail-danger" maxWidth="Infinity" />
-                    <!--Para despues-->
-                    <!--<Button text="Ver Reservas" styleClass="btn-detail" maxWidth="Infinity" />-->
-                </VBox>
-            </SplitPane>
-        </VBox>
-    </center>
-</BorderPane>
+        </SplitPane>
+    </VBox>
+</AnchorPane>

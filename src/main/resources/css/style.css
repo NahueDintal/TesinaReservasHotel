@@ -1,232 +1,23 @@
+/* ======================================================
+   1. ESTILOS GLOBALES Y DE LA VENTANA PRINCIPAL
+   ====================================================== */
+
+/* Fondo general y fuente de la aplicación */
 .root {
-    -fx-font-family: "Segoe UI", sans-serif;
-}
-
-.stats-card {
-    -fx-background-color: #34495e;
-    -fx-background-radius: 10;
-    -fx-padding: 15;
-}
-
-.stats-title {
-    -fx-text-fill: #bdc3c7;
-    -fx-font-size: 14px;
-}
-
-.stats-value {
-    -fx-text-fill: white;
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-}
-
-.day-cell {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-width: 1;
-    -fx-padding: 5;
-}
-
-.slot-morning { -fx-background-color: rgba(144, 238, 144, 0.8); }
-.slot-afternoon { -fx-background-color: rgba(173, 216, 230, 0.8); }
-.slot-night { -fx-background-color: rgba(255, 200, 0, 0.8); }
-.slot-empty { -fx-background-color: lightgray; }
-/* ========== SIDEBAR ========== */
-.sidebar {
-    -fx-background-color: #3E864D;
-    -fx-padding: 20;
-}
-
-.sidebar-titulo {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 10 0 20 0;
-}
-
-.sidebar-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-padding: 12 15;
-    -fx-background-radius: 5;
-    -fx-alignment: CENTER_LEFT;
-    -fx-pref-width: Infinity;
-}
-
-.sidebar-btn:hover {
-    -fx-background-color: #2E6D3D;
-}
-
-.sidebar-usuario {
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10 0 5 0;
-}
-
-.sidebar-logout {
-    -fx-background-color: #c0392b;
-    -fx-text-fill: white;
-    -fx-background-radius: 5;
-    -fx-padding: 8 15;
-    -fx-pref-width: Infinity;
-}
-
-.sidebar-logout:hover {
-    -fx-background-color: #e74c3c;
-}
-
-/* ========== CONTENIDO PRINCIPAL ========== */
-.contenido-principal {
+    -fx-font-family: "Adwaita Sans", "Segoe UI", sans-serif;
     -fx-background-color: #f5f7fa;
 }
 
-.titulo-seccion {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-}
+/* ======================================================
+   2. SIDEBAR (Panel izquierdo)
+   ====================================================== */
 
-.subtitulo-seccion {
-    -fx-text-fill: #7f8c8d;
-    -fx-font-size: 14px;
-}
-
-/* ========== BOTONES ========== */
-.btn-primario {
-    -fx-background-color: #3E864D;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-padding: 10 20;
-    -fx-font-size: 14px;
-}
-
-.btn-primario:hover {
-    -fx-background-color: #2E6D3D;
-}
-
-.btn-secundario {
-    -fx-background-color: #ecf0f1;
-    -fx-text-fill: #2c3e50;
-    -fx-background-radius: 5;
-    -fx-padding: 10 20;
-    -fx-font-size: 14px;
-}
-
-.btn-secundario:hover {
-    -fx-background-color: #d5dbdb;
-}
-
-/* ========== CAMPOS DE BÚSQUEDA Y FILTROS ========== */
-.campo-busqueda {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-border-color: #dcdde1;
-    -fx-padding: 10 15;
-    -fx-font-size: 14px;
-    -fx-background-color: white;
-}
-
-.campo-busqueda:focused {
-    -fx-border-color: #3E864D;
-}
-
-.combo-filtro {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-border-color: #dcdde1;
-    -fx-padding: 8 12;
-    -fx-font-size: 14px;
-    -fx-background-color: white;
-}
-
-/* ========== TABLA ========== */
-.tabla-clientes {
-    -fx-border-color: #dcdde1;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-background-color: white;
-}
-
-.tabla-clientes .column-header {
-    -fx-background-color: #ecf0f1;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-text-fill: #2c3e50;
-    -fx-padding: 10 0;
-}
-
-.tabla-clientes .column-header-background {
-    -fx-background-color: #ecf0f1;
-    -fx-border-color: #dcdde1;
-    -fx-border-width: 0 0 1 0;
-}
-
-.tabla-clientes .table-row-cell {
-    -fx-border-color: #f0f0f0;
-    -fx-border-width: 0 0 1 0;
-}
-
-.tabla-clientes .table-row-cell:hover {
-    -fx-background-color: #eaf7ed;
-}
-
-.tabla-clientes .table-row-cell:selected {
-    -fx-background-color: #d4edda;
-}
-
-/* ========== BOTONES DE ACCIÓN EN LA TABLA ========== */
-.boton-accion {
-    -fx-background-color: transparent;
-    -fx-text-fill: #3E864D;
-    -fx-font-size: 16px;
-    -fx-padding: 5 10;
-    -fx-cursor: hand;
-}
-
-.boton-accion:hover {
-    -fx-text-fill: #2E6D3D;
-}
-
-.boton-accion-eliminar {
-    -fx-text-fill: #c0392b;
-}
-
-.boton-accion-eliminar:hover {
-    -fx-text-fill: #e74c3c;
-}
-
-/* ========== PIE DE TABLA ========== */
-.info-pie {
-    -fx-text-fill: #7f8c8d;
-    -fx-font-size: 13px;
-}
-/* ========== FORM CONTAINER (para ventanas emergentes) ========== */
-.form-container {
-    -fx-background-color: white;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #dcdde1;
-    -fx-border-width: 1;
-}
-
-.form-title {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-}
-
-.form-label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-    -fx-font-size: 13px;
-}
-
-/* ========== SIDEBAR (ya existente, mantener) ========== */
 .sidebar {
     -fx-background-color: #3E864D;
-    -fx-padding: 20;
+    -fx-padding: 20px 20px 20px 20px;
 }
 
+/* Título del sistema en la sidebar */
 .sidebar-titulo {
     -fx-text-fill: white;
     -fx-font-size: 16px;
@@ -234,10 +25,11 @@
     -fx-padding: 10 0 20 0;
 }
 
+/* Botones de navegación de la sidebar */
 .sidebar-btn {
     -fx-background-color: transparent;
     -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-font-size: 16px;
     -fx-padding: 12 15;
     -fx-background-radius: 5;
     -fx-alignment: CENTER_LEFT;
@@ -245,9 +37,14 @@
 }
 
 .sidebar-btn:hover {
-    -fx-background-color: #2E6D3D;
+    -fx-background-color: #2E6D3D; /* Color más oscuro al pasar el mouse */
 }
 
+.sidebar-btn:selected {
+    -fx-background-color: #2E6D3D; /* Resaltado al estar seleccionado */
+}
+
+/* Datos del usuario y botón de logout */
 .sidebar-usuario {
     -fx-text-fill: white;
     -fx-font-size: 14px;
@@ -266,17 +63,24 @@
     -fx-background-color: #e74c3c;
 }
 
-/* ========== CONTENIDO PRINCIPAL ========== */
+/* ======================================================
+   3. CONTENIDO PRINCIPAL (Donde se cargan los módulos)
+   ====================================================== */
+
 .content-main {
-    -fx-background-color: #f5f7fa;
+    -fx-background-color: white;
 }
 
 .section-title {
     -fx-font-weight: bold;
     -fx-text-fill: #2c3e50;
+    -fx-font-size: 24px;
 }
 
-/* ========== BOTONES ========== */
+/* ======================================================
+   4. BOTONES PRINCIPALES
+   ====================================================== */
+
 .btn-primary {
     -fx-background-color: #3E864D;
     -fx-text-fill: white;
@@ -302,20 +106,20 @@
     -fx-background-color: #d5dbdb;
 }
 
-.btn-filter {
-    -fx-background-color: white;
-    -fx-text-fill: #2c3e50;
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
     -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-border-color: #dcdde1;
-    -fx-padding: 10 15;
+    -fx-padding: 10 20;
     -fx-font-size: 14px;
 }
 
-.btn-filter:hover {
-    -fx-background-color: #f0f0f0;
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
 }
 
+/* Botones dentro del panel de detalle */
 .btn-detail {
     -fx-background-color: #ecf0f1;
     -fx-text-fill: #2c3e50;
@@ -340,7 +144,10 @@
     -fx-background-color: #f5c6cb;
 }
 
-/* ========== CAMPOS DE BÚSQUEDA Y FILTROS ========== */
+/* ======================================================
+   5. CAMPOS DE BÚSQUEDA Y FILTROS
+   ====================================================== */
+
 .search-field {
     -fx-background-radius: 5;
     -fx-border-radius: 5;
@@ -354,7 +161,24 @@
     -fx-border-color: #3E864D;
 }
 
-/* ========== TABLA ========== */
+.btn-filter {
+    -fx-background-color: white;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+}
+
+.btn-filter:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+/* ======================================================
+   6. TABLAS (Grillas)
+   ====================================================== */
+
 .customer-table {
     -fx-border-color: #dcdde1;
     -fx-border-width: 1;
@@ -390,12 +214,14 @@
     -fx-background-color: #d4edda;
 }
 
-/* ========== PANEL DE DETALLE ========== */
+/* ======================================================
+   7. PANEL DE DETALLE (Lado derecho)
+   ====================================================== */
+
 .detail-panel {
     -fx-background-color: white;
     -fx-border-color: #dcdde1;
     -fx-border-width: 0 0 0 1;
-    -fx-background-radius: 0;
 }
 
 .detail-name {
@@ -428,7 +254,10 @@
     -fx-font-weight: normal;
 }
 
-/* ========== SPLITPANE ========== */
+/* ======================================================
+   8. SPLITPANE (Divisor entre tabla y detalle)
+   ====================================================== */
+
 .split-pane {
     -fx-background-color: transparent;
 }
@@ -438,8 +267,35 @@
     -fx-padding: 0 3;
 }
 
-/* ========== PIE DE TABLA ========== */
+/* ======================================================
+   9. PIE DE TABLA (Contador de clientes)
+   ====================================================== */
+
 .footer-info {
     -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+}
+
+/* ======================================================
+   10. FORMULARIOS (Ventanas emergentes)
+   ====================================================== */
+
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1;
+}
+
+.form-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 20px;
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
     -fx-font-size: 13px;
 }
