@@ -17,16 +17,6 @@ public class MainApp extends Application {
     primaryStage.show();
   }
 
-  public void start(Stage stage) throws Exception {
-    FXMLLoader loader = new FXMLLoader(
-        getClass().getResource("/views/CustomerView.fxml"));
-
-    Scene scene = new Scene(loader.load());
-    stage.setTitle("Gestión de Clientes - Hotel");
-    stage.setScene(scene);
-    stage.show();
-  }
-
   public static void main(String[] args) {
     launch(args);
   }
