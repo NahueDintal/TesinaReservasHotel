@@ -115,9 +115,9 @@ public class RoomFormController {
       try {
         int n = Integer.parseInt(txtNumber.getText().trim());
         if (n <= 0)
-          errors.append("El número debe ser positivo.\n");
+          errors.append("El número de habitación debe ser positivo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El número debe ser numérico.\n");
+        errors.append("El número de habitación debe ser un número entero.\n");
       }
 
     if (txtFloor.getText().trim().isEmpty())
@@ -128,7 +128,7 @@ public class RoomFormController {
         if (f < 0)
           errors.append("El piso no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El piso debe ser numérico.\n");
+        errors.append("El piso debe ser un número entero.\n");
       }
 
     if (comboType.getValue() == null)
@@ -141,7 +141,7 @@ public class RoomFormController {
         if (c <= 0)
           errors.append("La capacidad debe ser positiva.\n");
       } catch (NumberFormatException e) {
-        errors.append("La capacidad debe ser numérica.\n");
+        errors.append("La capacidad debe ser un número entero.\n");
       }
 
     if (comboView.getValue() == null)
@@ -156,7 +156,7 @@ public class RoomFormController {
         if (p < 0)
           errors.append("El precio no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El precio debe ser numérico.\n");
+        errors.append("El precio debe ser un número entero.\n");
       }
 
     if (errors.length() > 0) {
