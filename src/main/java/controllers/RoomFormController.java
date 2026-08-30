@@ -3,164 +3,179 @@ package controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 import models.Room;
 import repositories.RoomDAO;
 
+import java.sql.SQLException;
+
 public class RoomFormController {
 
-  private final ObservableList<String> typeRoomList = FXCollections.observableArrayList(
-      "simple", "doble", "suite", "familiar");
-  private final ObservableList<String> viewRoomList = FXCollections.observableArrayList(
-      "vista al lago", "vista al jardín", "vista a las montañas");
-
+  @FXML
+  private Label lblFormTitle;
   @FXML
   private TextField txtNumber;
   @FXML
   private TextField txtFloor;
   @FXML
-  private ChoiceBox<String> chbType;
+  private ComboBox<String> comboType;
   @FXML
   private TextField txtCapacity;
   @FXML
-  private ChoiceBox<String> chbView;
+  private ComboBox<String> comboView;
   @FXML
   private TextField txtFeatures;
   @FXML
   private TextField txtPrice;
   @FXML
   private TextField txtDescription;
+  @FXML
+  private Button btnSave;
+  @FXML
+  private Button btnCancel;
 
   private RoomDAO roomDAO = new RoomDAO();
-  private DashboardController dashboardController;
+  private Room editingRoom; // null si es nueva
 
-  public void setDashboardController(DashboardController dashboardController) {
-    this.dashboardController = dashboardController;
-  }
+  private final ObservableList<String> typeList = FXCollections.observableArrayList(
+      "simple", "doble", "suite", "familiar");
+  private final ObservableList<String> viewList = FXCollections.observableArrayList(
+      "vista al lago", "vista al jardín", "vista a las montañas");
 
   @FXML
   public void initialize() {
-    chbType.setItems(typeRoomList);
-    chbView.setItems(viewRoomList);
+    comboType.setItems(typeList);
+    comboView.setItems(viewList);
+    setupButtonActions();
   }
 
-  @FXML
-  private void handleSave() {
-    String errores = validarCampos();
-    if (errores != null) {
-      mostrarAlertaError("Datos inválidos", errores);
+  private void setupButtonActions() {
+    btnCancel.setOnAction(e -> closeWindow());
+    btnSave.setOnAction(e -> saveRoom());
+  }
+
+  public void setRoom(Room room) {
+    this.editingRoom = room;
+    lblFormTitle.setText("Editar Habitación");
+    txtNumber.setText(String.valueOf(room.getNumber()));
+    txtFloor.setText(String.valueOf(room.getFloor()));
+    comboType.getSelectionModel().select(room.getType());
+    txtCapacity.setText(String.valueOf(room.getCapacity()));
+    comboView.getSelectionModel().select(room.getView());
+    txtFeatures.setText(room.getFeatures());
+    txtPrice.setText(String.valueOf(room.getPrice()));
+    txtDescription.setText(room.getDescription());
+  }
+
+  private void saveRoom() {
+    if (!validateFields())
       return;
-    }
+
+    Room room = editingRoom != null ? editingRoom : new Room();
+    loadDataFromForm(room);
+
     try {
-      String type = chbType.getValue() != null ? chbType.getValue().trim() : "";
-      String view = chbView.getValue() != null ? chbView.getValue().trim() : "";
-
-      Room room = new Room(
-          txtNumber.getText().trim(),
-          txtFloor.getText().trim(),
-          type,
-          txtCapacity.getText().trim(),
-          view,
-          txtFeatures.getText().trim(),
-          txtPrice.getText().trim(),
-          txtDescription.getText().trim().toLowerCase());
-
-      roomDAO.insert(room);
-
-      mostrarAlertaInfo("Éxito", "Habitación creada correctamente.");
-      if (dashboardController != null) {
-        dashboardController.loadView("/views/Room.fxml");
+      boolean success;
+      if (editingRoom != null) {
+        success = roomDAO.update(room);
+      } else {
+        success = roomDAO.insert(room);
       }
 
-    } catch (Exception e) {
-      mostrarAlertaError("Error inesperado", "No se pudo guardar la habitación: " + e.getMessage());
+      if (success) {
+        showAlert("Éxito", "Habitación guardada",
+            editingRoom != null ? "La habitación ha sido actualizada correctamente."
+                : "La habitación se ha creado correctamente.");
+        closeWindow();
+      }
+    } catch (RuntimeException e) {
+      showAlert("Error", "No se pudo guardar la habitación", e.getMessage());
     }
   }
 
-  private void mostrarAlertaError(String titulo, String mensaje) {
-    Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle(titulo);
-    alert.setHeaderText(null);
-    alert.setContentText(mensaje);
-    alert.showAndWait();
+  private void loadDataFromForm(Room room) {
+    room.setNumber(txtNumber.getText().trim());
+    room.setFloor(txtFloor.getText().trim());
+    room.setType(comboType.getValue());
+    room.setCapacity(txtCapacity.getText().trim());
+    room.setView(comboView.getValue());
+    room.setFeatures(txtFeatures.getText().trim());
+    room.setPrice(txtPrice.getText().trim());
+    room.setDescription(txtDescription.getText().trim().toLowerCase());
+    room.setAvailable(true); // por defecto al crear/editar
   }
 
-  private void mostrarAlertaInfo(String titulo, String mensaje) {
+  private boolean validateFields() {
+    StringBuilder errors = new StringBuilder();
+
+    if (txtNumber.getText().trim().isEmpty())
+      errors.append("El número es obligatorio.\n");
+    else
+      try {
+        int n = Integer.parseInt(txtNumber.getText().trim());
+        if (n <= 0)
+          errors.append("El número debe ser positivo.\n");
+      } catch (NumberFormatException e) {
+        errors.append("El número debe ser numérico.\n");
+      }
+
+    if (txtFloor.getText().trim().isEmpty())
+      errors.append("El piso es obligatorio.\n");
+    else
+      try {
+        int f = Integer.parseInt(txtFloor.getText().trim());
+        if (f < 0)
+          errors.append("El piso no puede ser negativo.\n");
+      } catch (NumberFormatException e) {
+        errors.append("El piso debe ser numérico.\n");
+      }
+
+    if (comboType.getValue() == null)
+      errors.append("Seleccione un tipo.\n");
+    if (txtCapacity.getText().trim().isEmpty())
+      errors.append("La capacidad es obligatoria.\n");
+    else
+      try {
+        int c = Integer.parseInt(txtCapacity.getText().trim());
+        if (c <= 0)
+          errors.append("La capacidad debe ser positiva.\n");
+      } catch (NumberFormatException e) {
+        errors.append("La capacidad debe ser numérica.\n");
+      }
+
+    if (comboView.getValue() == null)
+      errors.append("Seleccione una vista.\n");
+    if (txtFeatures.getText().trim().isEmpty())
+      errors.append("Las características son obligatorias.\n");
+    if (txtPrice.getText().trim().isEmpty())
+      errors.append("El precio es obligatorio.\n");
+    else
+      try {
+        double p = Double.parseDouble(txtPrice.getText().trim());
+        if (p < 0)
+          errors.append("El precio no puede ser negativo.\n");
+      } catch (NumberFormatException e) {
+        errors.append("El precio debe ser numérico.\n");
+      }
+
+    if (errors.length() > 0) {
+      showAlert("Validación", "Corrija los siguientes errores", errors.toString());
+      return false;
+    }
+    return true;
+  }
+
+  private void closeWindow() {
+    Stage stage = (Stage) btnCancel.getScene().getWindow();
+    stage.close();
+  }
+
+  private void showAlert(String title, String header, String content) {
     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle(titulo);
-    alert.setHeaderText(null);
-    alert.setContentText(mensaje);
+    alert.setTitle(title);
+    alert.setHeaderText(header);
+    alert.setContentText(content);
     alert.showAndWait();
-  }
-
-  private String validarCampos() {
-    StringBuilder errores = new StringBuilder();
-
-    if (txtNumber.getText().trim().isEmpty()) {
-      errores.append("El número de habitación es obligatorio.\n");
-    }
-    if (txtFloor.getText().trim().isEmpty()) {
-      errores.append("El piso es obligatorio.\n");
-    }
-    if (chbType.getValue() == null || chbType.getValue().trim().isEmpty()) {
-      errores.append("El tipo de habitación es obligatorio.\n");
-    }
-    if (txtCapacity.getText().trim().isEmpty()) {
-      errores.append("La capacidad de la habitación es obligatoria.\n");
-    }
-    if (chbView.getValue() == null || chbView.getValue().trim().isEmpty()) {
-      errores.append("La vista es obligatoria.\n");
-    }
-    if (txtFeatures.getText().trim().isEmpty()) {
-      errores.append("Las características de habitación son obligatorias.\n");
-    }
-    if (txtPrice.getText().trim().isEmpty()) {
-      errores.append("El precio de la habitación es obligatorio.\n");
-    }
-    // Validación de capacidad numérica y positiva
-    try {
-      int number = Integer.parseInt(txtNumber.getText().trim());
-      if (number < 0) {
-        errores.append("El número debe ser un número positivo.\n");
-      }
-    } catch (NumberFormatException e) {
-      errores.append("El número de habitación debe ser un número válido.\n");
-    }
-    try {
-      int floor = Integer.parseInt(txtFloor.getText().trim());
-      if (floor < 0) {
-        errores.append("El piso debe ser un número positivo.\n");
-      }
-    } catch (NumberFormatException e) {
-      errores.append("El piso debe ser un número válido.\n");
-    }
-    try {
-      int capacidad = Integer.parseInt(txtCapacity.getText().trim());
-      if (capacidad <= 0) {
-        errores.append("La capacidad debe ser un número positivo.\n");
-      }
-    } catch (NumberFormatException e) {
-      errores.append("La capacidad debe ser un número válido.\n");
-    }
-    // Validación de precio numérico y no negativo
-    try {
-      double precio = Double.parseDouble(txtPrice.getText().trim());
-      if (precio < 0) {
-        errores.append("El precio no puede ser negativo.\n");
-      }
-    } catch (NumberFormatException e) {
-      errores.append("El precio debe ser un número válido.\n");
-    }
-
-    return errores.length() == 0 ? null : errores.toString();
-  }
-
-  @FXML
-  private void handleCancel() {
-    if (dashboardController != null) {
-      dashboardController.loadView("/views/Room.fxml");
-    }
   }
 }
