@@ -27,6 +27,8 @@ public class DashboardController {
   @FXML
   private ToggleButton btnReportes;
   @FXML
+  private ToggleButton btnPersonal;
+  @FXML
   private ToggleButton btnConfiguracion;
 
   private ToggleGroup menuGroup;
@@ -40,6 +42,7 @@ public class DashboardController {
     btnHabitaciones.setToggleGroup(menuGroup);
     btnClientes.setToggleGroup(menuGroup);
     btnReportes.setToggleGroup(menuGroup);
+    btnPersonal.setToggleGroup(menuGroup);
     btnConfiguracion.setToggleGroup(menuGroup);
 
     // 2. Seleccionar "Clientes" por defecto
@@ -65,6 +68,10 @@ public class DashboardController {
     btnReportes.setOnAction(e -> {
       selectButton(btnReportes);
       loadView("/views/.fxml");
+    });
+    btnPersonal.setOnAction(e -> {
+      selectButton(btnPersonal);
+      loadView("/views/StaffView.fxml");
     });
     btnConfiguracion.setOnAction(e -> {
       selectButton(btnConfiguracion);
