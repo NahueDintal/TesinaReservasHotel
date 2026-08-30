@@ -18,7 +18,6 @@ import java.sql.SQLException;
 
 public class RoomController {
 
-  // ========== TABLE ==========
   @FXML
   private TableView<Room> tableRooms;
   @FXML
@@ -36,7 +35,6 @@ public class RoomController {
   @FXML
   private TableColumn<Room, Boolean> colAvailable;
 
-  // ========== BUTTONS ==========
   @FXML
   private Button btnNewRoom;
   @FXML
@@ -46,7 +44,6 @@ public class RoomController {
   @FXML
   private Button btnDeactivate;
 
-  // ========== DETAIL ==========
   @FXML
   private Label lblDetailNumber;
   @FXML
@@ -66,20 +63,17 @@ public class RoomController {
   @FXML
   private Label lblDetailStatus;
 
-  // ========== SEARCH ==========
   @FXML
   private TextField txtSearch;
   @FXML
   private Label lblTotalRooms;
 
-  // ========== DATA ==========
   private RoomDAO roomDAO = new RoomDAO();
   private ObservableList<Room> masterRoomList = FXCollections.observableArrayList();
   private FilteredList<Room> filteredRooms;
 
   @FXML
   public void initialize() {
-    // Configurar columnas
     colNumber.setCellValueFactory(new PropertyValueFactory<>("number"));
     colFloor.setCellValueFactory(new PropertyValueFactory<>("floor"));
     colType.setCellValueFactory(new PropertyValueFactory<>("type"));
@@ -88,7 +82,6 @@ public class RoomController {
     colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
     colAvailable.setCellValueFactory(new PropertyValueFactory<>("isAvailable"));
 
-    // Formatear columna de precio y disponibilidad
     colPrice.setCellFactory(tc -> new TableCell<>() {
       @Override
       protected void updateItem(Double price, boolean empty) {
@@ -105,10 +98,8 @@ public class RoomController {
       }
     });
 
-    // Cargar habitaciones disponibles (activas)
     loadRooms(true);
 
-    // Buscador
     txtSearch.textProperty().addListener((obs, oldVal, newVal) -> {
       filteredRooms.setPredicate(room -> {
         if (newVal == null || newVal.isEmpty())
@@ -126,7 +117,6 @@ public class RoomController {
       updateCounter();
     });
 
-    // Selección en tabla
     tableRooms.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
       if (newVal != null)
         showDetail(newVal);
@@ -134,7 +124,6 @@ public class RoomController {
         clearDetail();
     });
 
-    // Botones de edición/eliminación
     btnEdit.setDisable(true);
     btnDeactivate.setDisable(true);
     tableRooms.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
@@ -143,7 +132,6 @@ public class RoomController {
       btnDeactivate.setDisable(!selected);
     });
 
-    // Acciones
     btnNewRoom.setOnAction(e -> openRoomForm(null));
     btnViewUnavailable.setOnAction(e -> openUnavailableRoomsWindow());
     btnEdit.setOnAction(e -> openRoomForm(tableRooms.getSelectionModel().getSelectedItem()));

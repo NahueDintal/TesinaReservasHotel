@@ -103,7 +103,7 @@ public class RoomFormController {
     room.setFeatures(txtFeatures.getText().trim());
     room.setPrice(txtPrice.getText().trim());
     room.setDescription(txtDescription.getText().trim().toLowerCase());
-    room.setAvailable(true); // por defecto al crear/editar
+    room.setAvailable(true);
   }
 
   private boolean validateFields() {
