@@ -121,6 +121,22 @@ public class RoomFormController {
     }
     // Validación de capacidad numérica y positiva
     try {
+      int number = Integer.parseInt(txtNumber.getText().trim());
+      if (number < 0) {
+        errores.append("El número debe ser un número positivo.\n");
+      }
+    } catch (NumberFormatException e) {
+      errores.append("El número de habitación debe ser un número válido.\n");
+    }
+    try {
+      int floor = Integer.parseInt(txtFloor.getText().trim());
+      if (floor < 0) {
+        errores.append("El piso debe ser un número positivo.\n");
+      }
+    } catch (NumberFormatException e) {
+      errores.append("El piso debe ser un número válido.\n");
+    }
+    try {
       int capacidad = Integer.parseInt(txtCapacity.getText().trim());
       if (capacidad <= 0) {
         errores.append("La capacidad debe ser un número positivo.\n");
