@@ -139,6 +139,10 @@ public class NewReservationController {
     private final ObservableList<Consumption> consumptions =
             FXCollections.observableArrayList();
 
+    private final List<Consumption> consumptionsModificados =
+            new java.util.ArrayList<>();
+
+    private Consumption consumoEnEdicion = null;
 
     // =========================================================
     // CONSTRUCTOR
@@ -1032,6 +1036,316 @@ public class NewReservationController {
         txtConsumptionQuantity.clear();
     }
 
+    // =========================================================
+// MODIFICAR CONSUMO
+// =========================================================
+
+    @FXML
+    private void handleModifyConsumption() {
+
+        // =====================================================
+        // SI YA ESTAMOS EDITANDO → GUARDAR CAMBIOS
+        // =====================================================
+
+        if (consumoEnEdicion != null) {
+
+            Integer consumptionType =
+                    cmbConsumptionType.getValue();
+
+            if (consumptionType == null) {
+
+                mostrarError(
+                        "Debe seleccionar el tipo de consumo."
+                );
+
+                return;
+            }
+
+
+            String textoQuantity =
+                    txtConsumptionQuantity.getText().trim();
+
+            if (textoQuantity.isEmpty()) {
+
+                mostrarError(
+                        "Debe ingresar la cantidad."
+                );
+
+                return;
+            }
+
+
+            int quantity;
+
+            try {
+
+                quantity =
+                        Integer.parseInt(textoQuantity);
+
+            } catch (NumberFormatException e) {
+
+                mostrarError(
+                        "La cantidad debe contener solamente números."
+                );
+
+                return;
+            }
+
+
+            if (quantity <= 0) {
+
+                mostrarError(
+                        "La cantidad debe ser mayor que 0."
+                );
+
+                return;
+            }
+
+
+            int idProduct = 0;
+            int idService = 0;
+            BigDecimal unitPrice;
+
+
+            // =================================================
+            // PRODUCTO
+            // =================================================
+
+            if (consumptionType == 1) {
+
+                Product product =
+                        cmbProduct.getValue();
+
+                if (product == null) {
+
+                    mostrarError(
+                            "Debe seleccionar un producto."
+                    );
+
+                    return;
+                }
+
+                idProduct =
+                        product.getIdProduct();
+
+                unitPrice =
+                        product.getPrice();
+
+
+                // =================================================
+                // SERVICIO
+                // =================================================
+
+            } else {
+
+                Service service =
+                        cmbService.getValue();
+
+                if (service == null) {
+
+                    mostrarError(
+                            "Debe seleccionar un servicio."
+                    );
+
+                    return;
+                }
+
+                idService =
+                        service.getIdService();
+
+                unitPrice =
+                        service.getPrice();
+            }
+
+
+            // =================================================
+            // CALCULAR TOTAL
+            // =================================================
+
+            BigDecimal total =
+                    unitPrice.multiply(
+                            BigDecimal.valueOf(quantity)
+                    );
+
+
+            // =================================================
+            // ACTUALIZAR OBJETO
+            // =================================================
+
+            consumoEnEdicion.setIdConsumptionType(
+                    consumptionType
+            );
+
+            consumoEnEdicion.setIdProduct(
+                    idProduct
+            );
+
+            consumoEnEdicion.setIdService(
+                    idService
+            );
+
+            consumoEnEdicion.setQuantity(
+                    quantity
+            );
+
+            consumoEnEdicion.setUnitPrice(
+                    unitPrice
+            );
+
+            consumoEnEdicion.setTotal(
+                    total
+            );
+
+            if (consumoEnEdicion.getIdConsumption() > 0 &&
+                    !consumptionsModificados.contains(consumoEnEdicion)) {
+
+                consumptionsModificados.add(
+                        consumoEnEdicion
+                );
+            }
+
+            // =================================================
+            // ACTUALIZAR TABLA
+            // =================================================
+
+            tblConsumptions.refresh();
+
+            updateConsumptionTotal();
+
+
+            // =================================================
+            // TERMINAR EDICIÓN
+            // =================================================
+
+            consumoEnEdicion = null;
+
+            cmbConsumptionType.setValue(null);
+
+            cmbProduct.setValue(null);
+
+            cmbService.setValue(null);
+
+            txtConsumptionQuantity.clear();
+
+            cmbProduct.setDisable(true);
+            cmbService.setDisable(true);
+
+
+            showAlert(
+                    Alert.AlertType.INFORMATION,
+                    "Consumo",
+                    "El consumo fue modificado correctamente."
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // COMENZAR EDICIÓN
+        // =====================================================
+
+        Consumption selected =
+                tblConsumptions.getSelectionModel()
+                        .getSelectedItem();
+
+        if (selected == null) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Consumo",
+                    "Seleccione un consumo para modificar."
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // NO PERMITIR MODIFICAR CONSUMOS ANULADOS
+        // =====================================================
+
+        if (selected.getIdConsumptionStatus() != 1) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Consumo",
+                    "No se puede modificar un consumo que está anulado."
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // CARGAR DATOS EN EL FORMULARIO
+        // =====================================================
+
+        cmbConsumptionType.setValue(
+                selected.getIdConsumptionType()
+        );
+
+        txtConsumptionQuantity.setText(
+                String.valueOf(
+                        selected.getQuantity()
+                )
+        );
+
+
+        if (selected.getIdConsumptionType() == 1) {
+
+            Product product =
+                    cmbProduct.getItems()
+                            .stream()
+                            .filter(p ->
+                                    p.getIdProduct()
+                                            == selected.getIdProduct()
+                            )
+                            .findFirst()
+                            .orElse(null);
+
+            cmbProduct.setValue(product);
+
+            cmbService.setValue(null);
+
+            cmbProduct.setDisable(false);
+            cmbService.setDisable(true);
+
+        } else {
+
+            Service service =
+                    cmbService.getItems()
+                            .stream()
+                            .filter(s ->
+                                    s.getIdService()
+                                            == selected.getIdService()
+                            )
+                            .findFirst()
+                            .orElse(null);
+
+            cmbService.setValue(service);
+
+            cmbProduct.setValue(null);
+
+            cmbProduct.setDisable(true);
+            cmbService.setDisable(false);
+        }
+
+
+        // =====================================================
+        // GUARDAR CONSUMO EN EDICIÓN
+        // =====================================================
+
+        consumoEnEdicion = selected;
+
+
+        showAlert(
+                Alert.AlertType.INFORMATION,
+                "Modificar consumo",
+                "Modifique los datos y presione nuevamente " +
+                        "\"Modificar consumo\" para aplicar los cambios."
+        );
+    }
 
     // =========================================================
     // TOTAL CONSUMOS
@@ -1440,22 +1754,23 @@ public class NewReservationController {
                 return;
             }
 
-
-            // =================================================
-            // CONSUMOS
-            // =================================================
+ // =================================================
+// CONSUMOS
+// =================================================
 
             /*
-             * IMPORTANTE:
+             * Los consumos nuevos tienen idConsumption = 0.
              *
-             * Los consumos que ya estaban en BD tienen
+             * Los consumos que ya existían en BD tienen
              * idConsumption > 0.
              *
-             * Los nuevos consumos agregados desde esta pantalla
-             * tienen idConsumption = 0.
-             *
-             * Por eso solamente guardamos los nuevos.
+             * Los modificados se encuentran en
+             * consumptionsModificados.
              */
+
+// =================================================
+// CREAR CONSUMOS NUEVOS
+// =================================================
 
             for (Consumption consumption :
                     consumptions) {
@@ -1487,6 +1802,32 @@ public class NewReservationController {
                 }
             }
 
+
+// =================================================
+// ACTUALIZAR CONSUMOS MODIFICADOS
+// =================================================
+
+            for (Consumption consumption :
+                    consumptionsModificados) {
+
+                boolean consumptionUpdated =
+                        consumptionRepo.updateConsumption(
+                                conn,
+                                consumption
+                        );
+
+
+                if (!consumptionUpdated) {
+
+                    conn.rollback();
+
+                    mostrarError(
+                            "No se pudo actualizar uno de los consumos."
+                    );
+
+                    return;
+                }
+            }
 
             // =================================================
             // PAYMENT
@@ -1885,10 +2226,15 @@ public class NewReservationController {
 
         consumptions.clear();
 
+        consumptionsModificados.clear();
+
+        consumoEnEdicion = null;
+
         if (tblConsumptions != null) {
 
             tblConsumptions.refresh();
         }
+
 
         updateConsumptionTotal();
 

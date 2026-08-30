@@ -97,28 +97,26 @@ public class DashboardController {
 
         try {
 
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/views/NewReservation.fxml"
-                            )
-                    );
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/NewReservation.fxml")
+            );
 
             Parent view = loader.load();
 
-            NewReservationController controller =
-                    loader.getController();
+            NewReservationController controller = loader.getController();
 
             controller.setDashboardController(this);
+            controller.setReservationToEdit(reservation);
 
-            controller.setReservationToEdit(
-                    reservation
-            );
-
+            // Colocar la vista exactamente igual que las demás
             centerPane.getChildren().setAll(view);
 
-        } catch (IOException e) {
+            AnchorPane.setTopAnchor(view, 0.0);
+            AnchorPane.setBottomAnchor(view, 0.0);
+            AnchorPane.setLeftAnchor(view, 0.0);
+            AnchorPane.setRightAnchor(view, 0.0);
 
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
