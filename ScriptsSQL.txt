@@ -46,29 +46,6 @@ CREATE TABLE Customer (
         REFERENCES CustomerOrigin(idCustomerOrigin)
 );
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-CREATE TABLE IF NOT EXISTS room (
-    number INT PRIMARY KEY,
-    floor INT NOT NULL,
-    type VARCHAR(20) NOT NULL,
-    capacity INT NOT NULL,
-    view VARCHAR(50),
-    available TINYINT(1) NOT NULL DEFAULT 1,
-    out_of_service TINYINT(1) NOT NULL DEFAULT 0,
-    features VARCHAR(255),
-    price DECIMAL(10,2) NOT NULL,
-    description TEXT
-);
-=======
->>>>>>> nahue
-
-
-
-
-
-
 //carga de datos
 -- Tabla: DocumentType
 INSERT INTO DocumentType (name) VALUES
@@ -116,5 +93,66 @@ INSERT INTO CustomerOrigin (name) VALUES
 ('walk-in');
 =======
 ('walk-in');
->>>>>>> b30a62b (ScriptsSQL Actualizados || mainApp limpiado || archivos relacionados a Customer Actualizados)
->>>>>>> nahue
+
+-- =============================================
+-- ESQUEMA NORMALIZADO PARA HABITACIONES
+-- =============================================
+
+-- Eliminar tablas existentes (en orden inverso)
+DROP TABLE IF EXISTS room_feature;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS room_type;
+DROP TABLE IF EXISTS room_view;
+DROP TABLE IF EXISTS feature;
+
+-- 1. Catálogo de tipos de habitación
+CREATE TABLE room_type (
+    id_room_type INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Catálogo de vistas
+CREATE TABLE room_view (
+    id_room_view INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. Catálogo de características
+CREATE TABLE feature (
+    id_feature INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. Tabla principal de habitaciones
+CREATE TABLE room (
+    number INT PRIMARY KEY,
+    floor INT NOT NULL,
+    id_room_type INT NOT NULL,
+    capacity INT NOT NULL,
+    id_room_view INT NOT NULL,
+    available BOOLEAN NOT NULL DEFAULT TRUE,
+    out_of_service BOOLEAN NOT NULL DEFAULT FALSE,
+    price DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    FOREIGN KEY (id_room_type) REFERENCES room_type(id_room_type),
+    FOREIGN KEY (id_room_view) REFERENCES room_view(id_room_view)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 5. Tabla intermedia habitación-características
+CREATE TABLE room_feature (
+    number INT NOT NULL,
+    id_feature INT NOT NULL,
+    PRIMARY KEY (number, id_feature),
+    FOREIGN KEY (number) REFERENCES room(number) ON DELETE CASCADE,
+    FOREIGN KEY (id_feature) REFERENCES feature(id_feature) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insertar datos iniciales en catálogos
+INSERT INTO room_type (name) VALUES
+('simple'), ('doble'), ('suite'), ('familiar');
+
+INSERT INTO room_view (name) VALUES
+('vista al lago'), ('vista al jardín'), ('vista a las montañas'), ('sin vista');
+
+INSERT INTO feature (name) VALUES
+('WiFi'), ('TV'), ('Aire acondicionado'), ('Calefacción'), ('Minibar'), ('Caja fuerte');
