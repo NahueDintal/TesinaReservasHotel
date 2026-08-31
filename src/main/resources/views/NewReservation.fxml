@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+        <?import javafx.geometry.Insets?>
+        <?import javafx.scene.control.Button?>
+        <?import javafx.scene.control.ComboBox?>
+        <?import javafx.scene.control.DatePicker?>
+        <?import javafx.scene.control.Label?>
+        <?import javafx.scene.control.ScrollPane?>
+        <?import javafx.scene.control.TableColumn?>
+        <?import javafx.scene.control.TableView?>
+        <?import javafx.scene.control.TextArea?>
+        <?import javafx.scene.control.TextField?>
+        <?import javafx.scene.layout.ColumnConstraints?>
+        <?import javafx.scene.layout.GridPane?>
+        <?import javafx.scene.layout.HBox?>
+        <?import javafx.scene.layout.VBox?>
+
+<ScrollPane
+        fitToWidth="true"
+        hbarPolicy="NEVER"
+        vbarPolicy="AS_NEEDED"
+        pannable="true"
+        styleClass="new-reservation-scroll"
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controllers.NewReservationController">
+
+    <content>
+
+        <VBox
+                spacing="10.0"
+                maxWidth="900.0"
+                styleClass="new-reservation-container">
+
+            <padding>
+                <Insets
+                        top="12.0"
+                        right="25.0"
+                        bottom="15.0"
+                        left="25.0"/>
+            </padding>
+
+
+            <!-- ================================================= -->
+            <!-- ENCABEZADO -->
+            <!-- ================================================= -->
+
+            <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="8.0"
+                    maxWidth="Infinity"
+                    styleClass="reservation-page-header">
+
+                <Button
+                        text="←"
+                        onAction="#handleVolver"
+                        prefWidth="34.0"
+                        prefHeight="34.0"
+                        styleClass="reservation-back-button"/>
+
+                <VBox spacing="0.0">
+
+                    <Label
+                            text="Nueva Reserva"
+                            styleClass="reservation-page-title"/>
+
+                    <Label
+                            text="Completa los datos para crear una nueva reserva."
+                            styleClass="reservation-page-subtitle"/>
+
+                </VBox>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- DATOS DE LA RESERVA -->
+            <!-- ================================================= -->
+
+            <VBox
+                    spacing="8.0"
+                    maxWidth="Infinity"
+                    styleClass="reservation-card">
+
+                <Label
+                        text="Datos de la reserva"
+                        styleClass="reservation-card-title"/>
+
+                <GridPane
+                        hgap="12.0"
+                        vgap="6.0"
+                        maxWidth="Infinity"
+                        styleClass="reservation-form-grid">
+
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="145.0"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label
+                            text="Cliente:"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbCustomer"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Check-in:"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <DatePicker
+                            fx:id="dpCheckIn"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Check-out:"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <DatePicker
+                            fx:id="dpCheckOut"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Cantidad de huéspedes:"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <TextField
+                            fx:id="txtNumberOfGuests"
+                            promptText="Ej: 2"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Tarifa total:"
+                            GridPane.rowIndex="4"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <TextField
+                            fx:id="txtTotalRate"
+                            promptText="Ej: 50000"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="4"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Estado:"
+                            GridPane.rowIndex="5"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbReservationStatus"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="5"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Tipo de reserva:"
+                            GridPane.rowIndex="6"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbReservationType"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="6"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+                </GridPane>
+
+
+                <VBox spacing="3.0" maxWidth="Infinity">
+
+                    <Label
+                            text="Observaciones de la reserva:"
+                            styleClass="reservation-field-label"/>
+
+                    <TextArea
+                            fx:id="txtReservationObservations"
+                            prefRowCount="1"
+                            prefHeight="40.0"
+                            maxHeight="45.0"
+                            promptText="Ingrese observaciones..."
+                            wrapText="true"
+                            maxWidth="Infinity"
+                            styleClass="reservation-textarea"/>
+
+                </VBox>
+
+            </VBox>
+
+
+            <!-- ================================================= -->
+            <!-- PAGO -->
+            <!-- ================================================= -->
+
+            <VBox
+                    spacing="8.0"
+                    maxWidth="Infinity"
+                    styleClass="reservation-card">
+
+                <VBox spacing="0.0">
+
+                    <Label
+                            text="Pago"
+                            styleClass="reservation-card-title"/>
+
+                    <Label
+                            text="El pago es opcional."
+                            styleClass="reservation-card-description"/>
+
+                </VBox>
+
+
+                <GridPane
+                        hgap="12.0"
+                        vgap="6.0"
+                        maxWidth="Infinity"
+                        styleClass="reservation-form-grid">
+
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="145.0"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label
+                            text="Importe:"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <TextField
+                            fx:id="txtPaymentAmount"
+                            promptText="Ej: 25000"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Fecha de pago:"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <DatePicker
+                            fx:id="dpPaymentDate"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Método de pago:"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbPaymentMethod"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Estado del pago:"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbPaymentStatus"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+                </GridPane>
+
+
+                <VBox spacing="3.0" maxWidth="Infinity">
+
+                    <Label
+                            text="Observaciones del pago:"
+                            styleClass="reservation-field-label"/>
+
+                    <TextArea
+                            fx:id="txtPaymentObservations"
+                            prefRowCount="1"
+                            prefHeight="40.0"
+                            maxHeight="45.0"
+                            promptText="Ingrese observaciones del pago..."
+                            wrapText="true"
+                            maxWidth="Infinity"
+                            styleClass="reservation-textarea"/>
+
+                </VBox>
+
+            </VBox>
+
+
+            <!-- ================================================= -->
+            <!-- CONSUMOS -->
+            <!-- ================================================= -->
+
+            <VBox
+                    spacing="8.0"
+                    maxWidth="Infinity"
+                    styleClass="reservation-card">
+
+                <Label
+                        text="Consumos"
+                        styleClass="reservation-card-title"/>
+
+
+                <GridPane
+                        hgap="12.0"
+                        vgap="6.0"
+                        maxWidth="Infinity"
+                        styleClass="reservation-form-grid">
+
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="145.0"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <Label
+                            text="Tipo de consumo:"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbConsumptionType"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            promptText="1 - Producto / 2 - Servicio"
+                            GridPane.rowIndex="0"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Producto:"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbProduct"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            promptText="Seleccione un producto"
+                            GridPane.rowIndex="1"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Servicio:"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <ComboBox
+                            fx:id="cmbService"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            promptText="Seleccione un servicio"
+                            GridPane.rowIndex="2"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+
+                    <Label
+                            text="Cantidad:"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="0"
+                            styleClass="reservation-field-label"/>
+
+                    <TextField
+                            fx:id="txtConsumptionQuantity"
+                            prefHeight="30.0"
+                            maxWidth="Infinity"
+                            promptText="Ej: 2"
+                            GridPane.rowIndex="3"
+                            GridPane.columnIndex="1"
+                            styleClass="reservation-field"/>
+
+                </GridPane>
+
+
+                <HBox
+                        alignment="CENTER_RIGHT"
+                        maxWidth="Infinity">
+
+                    <Button
+                            text="Agregar consumo"
+                            onAction="#handleAddConsumption"
+                            prefWidth="150.0"
+                            prefHeight="32.0"
+                            styleClass="reservation-secondary-button"/>
+
+                </HBox>
+
+
+                <!-- ================================================= -->
+                <!-- TABLA DE CONSUMOS -->
+                <!-- ================================================= -->
+
+                <TableView
+                        fx:id="tblConsumptions"
+                        prefHeight="120.0"
+                        maxHeight="120.0"
+                        maxWidth="Infinity"
+                        styleClass="reservation-table">
+
+                    <columns>
+
+                        <TableColumn
+                                fx:id="colConsumptionType"
+                                text="Tipo"
+                                prefWidth="80.0"/>
+
+                        <TableColumn
+                                fx:id="colConsumptionName"
+                                text="Nombre"
+                                prefWidth="150.0"/>
+
+                        <TableColumn
+                                fx:id="colConsumptionQuantity"
+                                text="Cantidad"
+                                prefWidth="80.0"/>
+
+                        <TableColumn
+                                fx:id="colConsumptionUnitPrice"
+                                text="Precio unitario"
+                                prefWidth="110.0"/>
+
+                        <TableColumn
+                                fx:id="colConsumptionTotal"
+                                text="Total"
+                                prefWidth="100.0"/>
+
+                    </columns>
+
+                </TableView>
+
+
+                <!-- ================================================= -->
+                <!-- ACCIONES DE CONSUMOS -->
+                <!-- ================================================= -->
+
+                <HBox
+                        spacing="8.0"
+                        alignment="CENTER_LEFT">
+
+                    <Button
+                            text="Modificar consumo"
+                            onAction="#handleModifyConsumption"
+                            prefWidth="155.0"
+                            prefHeight="32.0"/>
+
+                    <Button
+                            text="Anular consumo"
+                            onAction="#handleDeleteConsumption"
+                            prefWidth="135.0"
+                            prefHeight="32.0"/>
+
+                </HBox>
+
+
+                <!-- ================================================= -->
+                <!-- TOTAL CONSUMOS -->
+                <!-- ================================================= -->
+
+                <HBox
+                        spacing="8.0"
+                        alignment="CENTER_RIGHT"
+                        maxWidth="Infinity"
+                        styleClass="reservation-total-container">
+
+                    <Label
+                            text="Total consumos:"
+                            styleClass="reservation-total-label"/>
+
+                    <TextField
+                            fx:id="txtConsumptionTotal"
+                            text="0.00"
+                            editable="false"
+                            prefWidth="100.0"
+                            prefHeight="30.0"
+                            styleClass="reservation-total-field"/>
+
+                </HBox>
+
+            </VBox>
+
+
+            <!-- ================================================= -->
+            <!-- ACCIONES FINALES -->
+            <!-- ================================================= -->
+
+            <HBox
+                    spacing="8.0"
+                    alignment="CENTER_RIGHT"
+                    maxWidth="Infinity"
+                    styleClass="reservation-actions">
+
+                <Button
+                        text="Cancelar"
+                        onAction="#handleCancel"
+                        prefWidth="100.0"
+                        prefHeight="34.0"
+                        styleClass="reservation-cancel-button"/>
+
+                <Button
+                        text="Guardar reserva"
+                        onAction="#handleSave"
+                        prefWidth="145.0"
+                        prefHeight="34.0"
+                        styleClass="reservation-primary-button"/>
+
+            </HBox>
+
+        </VBox>
+
+    </content>
+
+</ScrollPane>
+
+

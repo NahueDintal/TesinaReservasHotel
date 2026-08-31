@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<GridPane
+        xmlns="http://javafx.com/javafx/26"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controllers.PaymentController"
+        hgap="15.0"
+        vgap="10.0"
+        maxWidth="Infinity">
+
+    <columnConstraints>
+        <ColumnConstraints
+                minWidth="120.0"
+                prefWidth="140.0"
+                halignment="LEFT"/>
+
+        <ColumnConstraints
+                hgrow="ALWAYS"
+                minWidth="180.0"/>
+    </columnConstraints>
+
+    <rowConstraints>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="30.0"/>
+        <RowConstraints minHeight="60.0"/>
+    </rowConstraints>
+
+    <children>
+
+        <!-- IMPORTE -->
+        <Label
+                text="Importe:"
+                GridPane.rowIndex="0"/>
+
+        <TextField
+                fx:id="txtAmount"
+                promptText="Ingrese el importe"
+                maxWidth="Infinity"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="0"/>
+
+
+        <!-- FECHA -->
+        <Label
+                text="Fecha de pago:"
+                GridPane.rowIndex="1"/>
+
+        <DatePicker
+                fx:id="dpPaymentDate"
+                maxWidth="Infinity"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="1"/>
+
+
+        <!-- MÉTODO -->
+        <Label
+                text="Método de pago:"
+                GridPane.rowIndex="2"/>
+
+        <ComboBox
+                fx:id="cmbPaymentMethod"
+                maxWidth="Infinity"
+                promptText="Seleccione un método"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="2"/>
+
+
+        <!-- ESTADO -->
+        <Label
+                text="Estado del pago:"
+                GridPane.rowIndex="3"/>
+
+        <ComboBox
+                fx:id="cmbPaymentStatus"
+                maxWidth="Infinity"
+                promptText="Seleccione un estado"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="3"/>
+
+
+        <!-- OBSERVACIONES -->
+        <Label
+                text="Observaciones:"
+                GridPane.rowIndex="4"/>
+
+        <TextArea
+                fx:id="txtObservations"
+                promptText="Observaciones del pago..."
+                prefRowCount="3"
+                wrapText="true"
+                maxWidth="Infinity"
+                GridPane.columnIndex="1"
+                GridPane.rowIndex="4"/>
+
+    </children>
+
+</GridPane>
