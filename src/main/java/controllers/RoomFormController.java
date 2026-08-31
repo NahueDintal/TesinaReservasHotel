@@ -87,7 +87,6 @@ public class RoomFormController {
     txtPrice.setText(String.valueOf(room.getPrice()));
     txtDescription.setText(room.getDescription());
 
-    // Seleccionar características existentes
     for (String feature : room.getFeatures()) {
       listFeatures.getSelectionModel().select(feature);
     }
@@ -126,7 +125,6 @@ public class RoomFormController {
     room.setPrice(txtPrice.getText().trim());
     room.setDescription(txtDescription.getText().trim());
 
-    // Obtener características seleccionadas
     List<String> selectedFeatures = new ArrayList<>(listFeatures.getSelectionModel().getSelectedItems());
     room.setFeatures(selectedFeatures);
   }
@@ -152,7 +150,7 @@ public class RoomFormController {
         if (n <= 0)
           errors.append("El número debe ser positivo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El número debe ser numérico.\n");
+        errors.append("El Ingrese un valor que sea un número entero.\n");
       }
 
     if (txtFloor.getText().trim().isEmpty())
@@ -163,7 +161,7 @@ public class RoomFormController {
         if (f < 0)
           errors.append("El piso no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El piso debe ser numérico.\n");
+        errors.append("El piso debe ser un número entero.\n");
       }
 
     if (comboType.getValue() == null)
@@ -176,7 +174,7 @@ public class RoomFormController {
         if (c <= 0)
           errors.append("La capacidad debe ser positiva.\n");
       } catch (NumberFormatException e) {
-        errors.append("La capacidad debe ser numérica.\n");
+        errors.append("La capacidad debe ser un número entero.\n");
       }
 
     if (comboView.getValue() == null)
@@ -189,7 +187,7 @@ public class RoomFormController {
         if (p < 0)
           errors.append("El precio no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El precio debe ser numérico.\n");
+        errors.append("El precio debe ser un número, puede ser decimal.\n");
       }
 
     if (errors.length() > 0) {
