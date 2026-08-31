@@ -3,7 +3,6 @@ package repositories;
 import models.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +76,6 @@ public class RoomDAO {
         stmt.executeUpdate();
       }
 
-      // Insertar características
       insertFeatures(conn, room.getNumber(), room.getFeatures());
 
       conn.commit();
@@ -115,7 +113,6 @@ public class RoomDAO {
         stmt.executeUpdate();
       }
 
-      // Actualizar características: eliminar las anteriores y agregar las nuevas
       deleteFeatures(conn, room.getNumber());
       insertFeatures(conn, room.getNumber(), room.getFeatures());
 
@@ -142,8 +139,6 @@ public class RoomDAO {
       logger.info("Habitación eliminada correctamente: número {}", number);
     }
   }
-
-  // Métodos auxiliares privados
 
   private Room mapRoom(ResultSet rs) throws SQLException {
     Room room = new Room();

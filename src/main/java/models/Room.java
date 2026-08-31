@@ -2,7 +2,6 @@ package models;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,22 +11,20 @@ public class Room {
 
   private int number;
   private int floor;
-  private int idRoomType; // FK a room_type
-  private String typeName; // solo para mostrar en la tabla (no persistente)
+  private int idRoomType;
+  private String typeName;
   private int capacity;
-  private int idRoomView; // FK a room_view
-  private String viewName; // solo para mostrar en la tabla (no persistente)
+  private int idRoomView;
+  private String viewName;
   private boolean available = true;
   private boolean outOfService = false;
-  private List<String> features = new ArrayList<>(); // nombres de características
+  private List<String> features = new ArrayList<>();
   private double price;
   private String description;
 
-  // Constructor vacío
   public Room() {
   }
 
-  // Constructor con parámetros básicos (para creación desde formulario)
   public Room(String numberStr, String floorStr, String idRoomTypeStr, String capacityStr,
       String idRoomViewStr, List<String> features, String priceStr, String description) {
     setNumber(numberStr);
@@ -39,8 +36,6 @@ public class Room {
     setPrice(priceStr);
     setDescription(description);
   }
-
-  // Getters y setters...
 
   public int getNumber() {
     return number;
