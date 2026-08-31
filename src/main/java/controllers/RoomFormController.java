@@ -6,9 +6,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.Room;
-import repositories.RoomDAO;
+import repositories.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class RoomFormController {
 
@@ -25,7 +28,7 @@ public class RoomFormController {
   @FXML
   private ComboBox<String> comboView;
   @FXML
-  private TextField txtFeatures;
+  private ListView<String> listFeatures;
   @FXML
   private TextField txtPrice;
   @FXML
@@ -36,21 +39,39 @@ public class RoomFormController {
   private Button btnCancel;
 
   private RoomDAO roomDAO = new RoomDAO();
-  private Room editingRoom; // null si es nueva
+  private RoomTypeDAO roomTypeDAO = new RoomTypeDAO();
+  private RoomViewDAO roomViewDAO = new RoomViewDAO();
+  private FeatureDAO featureDAO = new FeatureDAO();
 
-  private final ObservableList<String> typeList = FXCollections.observableArrayList(
-      "simple", "doble", "suite", "familiar");
-  private final ObservableList<String> viewList = FXCollections.observableArrayList(
-      "vista al lago", "vista al jardín", "vista a las montañas");
+  private Map<Integer, String> roomTypes;
+  private Map<Integer, String> roomViews;
+  private Map<Integer, String> featuresMap;
+
+  private Room editingRoom;
 
   @FXML
   public void initialize() {
-    comboType.setItems(typeList);
-    comboView.setItems(viewList);
-    setupButtonActions();
+    loadCatalogs();
+    setupActions();
+    listFeatures.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
   }
 
-  private void setupButtonActions() {
+  private void loadCatalogs() {
+    try {
+      roomTypes = roomTypeDAO.listAll();
+      comboType.getItems().setAll(roomTypes.values());
+
+      roomViews = roomViewDAO.listAll();
+      comboView.getItems().setAll(roomViews.values());
+
+      featuresMap = featureDAO.listAll();
+      listFeatures.getItems().setAll(featuresMap.values());
+    } catch (SQLException e) {
+      showAlert("Error", "No se pudieron cargar los catálogos", e.getMessage());
+    }
+  }
+
+  private void setupActions() {
     btnCancel.setOnAction(e -> closeWindow());
     btnSave.setOnAction(e -> saveRoom());
   }
@@ -60,12 +81,16 @@ public class RoomFormController {
     lblFormTitle.setText("Editar Habitación");
     txtNumber.setText(String.valueOf(room.getNumber()));
     txtFloor.setText(String.valueOf(room.getFloor()));
-    comboType.getSelectionModel().select(room.getType());
+    comboType.getSelectionModel().select(room.getTypeName());
     txtCapacity.setText(String.valueOf(room.getCapacity()));
-    comboView.getSelectionModel().select(room.getView());
-    txtFeatures.setText(room.getFeatures());
+    comboView.getSelectionModel().select(room.getViewName());
     txtPrice.setText(String.valueOf(room.getPrice()));
     txtDescription.setText(room.getDescription());
+
+    // Seleccionar características existentes
+    for (String feature : room.getFeatures()) {
+      listFeatures.getSelectionModel().select(feature);
+    }
   }
 
   private void saveRoom() {
@@ -84,12 +109,10 @@ public class RoomFormController {
       }
 
       if (success) {
-        showAlert("Éxito", "Habitación guardada",
-            editingRoom != null ? "La habitación ha sido actualizada correctamente."
-                : "La habitación se ha creado correctamente.");
+        showAlert("Éxito", "Habitación guardada", "La habitación se ha guardado correctamente.");
         closeWindow();
       }
-    } catch (RuntimeException e) {
+    } catch (SQLException e) {
       showAlert("Error", "No se pudo guardar la habitación", e.getMessage());
     }
   }
@@ -97,13 +120,25 @@ public class RoomFormController {
   private void loadDataFromForm(Room room) {
     room.setNumber(txtNumber.getText().trim());
     room.setFloor(txtFloor.getText().trim());
-    room.setType(comboType.getValue());
+    room.setIdRoomType(getIdBySelection(comboType, roomTypes));
     room.setCapacity(txtCapacity.getText().trim());
-    room.setView(comboView.getValue());
-    room.setFeatures(txtFeatures.getText().trim());
+    room.setIdRoomView(getIdBySelection(comboView, roomViews));
     room.setPrice(txtPrice.getText().trim());
-    room.setDescription(txtDescription.getText().trim().toLowerCase());
-    room.setAvailable(true);
+    room.setDescription(txtDescription.getText().trim());
+
+    // Obtener características seleccionadas
+    List<String> selectedFeatures = new ArrayList<>(listFeatures.getSelectionModel().getSelectedItems());
+    room.setFeatures(selectedFeatures);
+  }
+
+  private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {
+    String selected = combo.getSelectionModel().getSelectedItem();
+    for (Map.Entry<Integer, String> entry : map.entrySet()) {
+      if (entry.getValue().equals(selected)) {
+        return entry.getKey();
+      }
+    }
+    return 0;
   }
 
   private boolean validateFields() {
@@ -115,9 +150,9 @@ public class RoomFormController {
       try {
         int n = Integer.parseInt(txtNumber.getText().trim());
         if (n <= 0)
-          errors.append("El número de habitación debe ser positivo.\n");
+          errors.append("El número debe ser positivo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El número de habitación debe ser un número entero.\n");
+        errors.append("El número debe ser numérico.\n");
       }
 
     if (txtFloor.getText().trim().isEmpty())
@@ -128,7 +163,7 @@ public class RoomFormController {
         if (f < 0)
           errors.append("El piso no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El piso debe ser un número entero.\n");
+        errors.append("El piso debe ser numérico.\n");
       }
 
     if (comboType.getValue() == null)
@@ -141,13 +176,11 @@ public class RoomFormController {
         if (c <= 0)
           errors.append("La capacidad debe ser positiva.\n");
       } catch (NumberFormatException e) {
-        errors.append("La capacidad debe ser un número entero.\n");
+        errors.append("La capacidad debe ser numérica.\n");
       }
 
     if (comboView.getValue() == null)
       errors.append("Seleccione una vista.\n");
-    if (txtFeatures.getText().trim().isEmpty())
-      errors.append("Las características son obligatorias.\n");
     if (txtPrice.getText().trim().isEmpty())
       errors.append("El precio es obligatorio.\n");
     else
@@ -156,7 +189,7 @@ public class RoomFormController {
         if (p < 0)
           errors.append("El precio no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El precio debe ser un número entero.\n");
+        errors.append("El precio debe ser numérico.\n");
       }
 
     if (errors.length() > 0) {
