@@ -46,220 +46,6 @@ CREATE TABLE Customer (
         REFERENCES CustomerOrigin(idCustomerOrigin)
 );
 
-
--- ==========================================
--- Tabla: ReservationStatus
--- ==========================================
-CREATE TABLE `reservationstatus` (
-    `idReservationStatus` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(30) NOT NULL,
-    PRIMARY KEY (`idReservationStatus`)
-);
-
--- ==========================================
--- Tabla: ReservationType
--- ==========================================
-
-CREATE TABLE ReservationType (
-    idReservationType INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-
--- ==========================================
--- Tabla: Reservation
--- ==========================================
-
-CREATE TABLE Reservation (
-    idReservation INT AUTO_INCREMENT PRIMARY KEY,
-    idCustomer INT NOT NULL,
-    creationDate DATETIME NOT NULL,
-    checkIn DATE NOT NULL,
-    checkOut DATE NOT NULL,
-    idReservationStatus INT NOT NULL,
-    idReservationType INT NOT NULL,
-    numberOfGuests INT NOT NULL,
-    totalRate DECIMAL(10,2) NOT NULL,
-    observations VARCHAR(500),
-
-    CONSTRAINT fk_reservation_customer
-        FOREIGN KEY (idCustomer)
-        REFERENCES Customer(idCustomer),
-
-    CONSTRAINT fk_reservation_status
-        FOREIGN KEY (idReservationStatus)
-        REFERENCES ReservationStatus(idReservationStatus),
-
-    CONSTRAINT fk_reservation_type
-        FOREIGN KEY (idReservationType)
-        REFERENCES ReservationType(idReservationType)
-);
-
--- ==========================================
--- Tabla: PaymentMethod
--- ==========================================
-
-CREATE TABLE `paymentmethod` (
-    `idPaymentMethod` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
-    PRIMARY KEY (`idPaymentMethod`)
-);
-
--- ==========================================
--- Tabla: PaymentStatus
--- ==========================================
-
-CREATE TABLE `paymentstatus` (
-    `idPaymentStatus` int NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
-    PRIMARY KEY (`idPaymentStatus`)
-);
-
--- ==========================================
--- Tabla: Payment
--- ==========================================
-
-CREATE TABLE `payment` (
-    `idPayment` int NOT NULL AUTO_INCREMENT,
-    `idReservation` int NOT NULL,
-    `amount` decimal(10,2) NOT NULL,
-    `paymentDate` datetime NOT NULL,
-    `idPaymentMethod` int NOT NULL,
-    `idPaymentStatus` int NOT NULL,
-    `observations` text,
-
-    PRIMARY KEY (`idPayment`),
-
-    KEY `idReservation` (`idReservation`),
-    KEY `idPaymentMethod` (`idPaymentMethod`),
-    KEY `idPaymentStatus` (`idPaymentStatus`),
-
-    CONSTRAINT `payment_ibfk_1`
-        FOREIGN KEY (`idReservation`)
-        REFERENCES `reservation` (`idReservation`),
-
-    CONSTRAINT `payment_ibfk_2`
-        FOREIGN KEY (`idPaymentMethod`)
-        REFERENCES `paymentmethod` (`idPaymentMethod`),
-
-    CONSTRAINT `payment_ibfk_3`
-        FOREIGN KEY (`idPaymentStatus`)
-        REFERENCES `paymentstatus` (`idPaymentStatus`)
-);
-
--- ==========================================
--- Tabla: Service
--- ==========================================
-
-CREATE TABLE Service (
-    idService INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description VARCHAR(255),
-    price DECIMAL(10,2) NOT NULL,
-    active BOOLEAN NOT NULL DEFAULT TRUE
-);
-
--- ==========================================
--- Tabla: Product
--- ==========================================
-
-CREATE TABLE Product (
-    idProduct INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description VARCHAR(255),
-    price DECIMAL(10,2) NOT NULL,
-    active BOOLEAN NOT NULL DEFAULT TRUE
-);
-
--- ==========================================
--- Tabla: ConsumptionType
--- ==========================================
-
-CREATE TABLE ConsumptionType (
-    idConsumptionType INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
-);
-
--- ==========================================
--- Tabla: Consumption
--- ==========================================
-
-CREATE TABLE Consumption (
-    idConsumption INT AUTO_INCREMENT PRIMARY KEY,
-
-    idReservation INT NOT NULL,
-    idConsumptionType INT NOT NULL,
-
-    idProduct INT NULL,
-    idService INT NULL,
-
-    quantity INT NOT NULL,
-    unitPrice DECIMAL(10,2) NOT NULL,
-    total DECIMAL(10,2) NOT NULL,
-
-    consumptionDate DATETIME NOT NULL,
-
-    idPaymentStatus INT NOT NULL,
-
-    observations VARCHAR(500) NULL,
-
-    CONSTRAINT fk_consumption_reservation
-        FOREIGN KEY (idReservation)
-        REFERENCES Reservation(idReservation),
-
-    CONSTRAINT fk_consumption_type
-        FOREIGN KEY (idConsumptionType)
-        REFERENCES ConsumptionType(idConsumptionType),
-
-    CONSTRAINT fk_consumption_product
-        FOREIGN KEY (idProduct)
-        REFERENCES Product(idProduct),
-
-    CONSTRAINT fk_consumption_service
-        FOREIGN KEY (idService)
-        REFERENCES Service(idService),
-
-    CONSTRAINT fk_consumption_payment_status
-        FOREIGN KEY (idPaymentStatus)
-        REFERENCES PaymentStatus(idPaymentStatus)
-);
-
-CREATE TABLE ConsumptionStatus (
-    idConsumptionStatus INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL
-);
-
-INSERT INTO ConsumptionStatus (name)
-VALUES
-('Activo'),
-('Anulado');
-
-ALTER TABLE Consumption
-ADD COLUMN idConsumptionStatus INT NOT NULL DEFAULT 1,
-ADD CONSTRAINT fk_consumption_status
-FOREIGN KEY (idConsumptionStatus)
-REFERENCES ConsumptionStatus(idConsumptionStatus);
-
-//----------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS room (
-    number INT PRIMARY KEY,
-    floor INT NOT NULL,
-    type VARCHAR(20) NOT NULL,
-    capacity INT NOT NULL,
-    view VARCHAR(50),
-    available TINYINT(1) NOT NULL DEFAULT 1,
-    out_of_service TINYINT(1) NOT NULL DEFAULT 0,
-    features VARCHAR(255),
-    price DECIMAL(10,2) NOT NULL,
-    description TEXT
-);
-
-
-
-
-
-
-
 //carga de datos
 -- Tabla: DocumentType
 INSERT INTO DocumentType (name) VALUES
@@ -303,8 +89,70 @@ INSERT INTO CustomerOrigin (name) VALUES
 ('airbnb'),
 ('booking'),
 ('particular'),
-
+<<<<<<< HEAD
+('walk-in');
+=======
 ('walk-in');
 
-('walk-in');
+-- =============================================
+-- ESQUEMA NORMALIZADO PARA HABITACIONES
+-- =============================================
 
+-- Eliminar tablas existentes (en orden inverso)
+DROP TABLE IF EXISTS room_feature;
+DROP TABLE IF EXISTS room;
+DROP TABLE IF EXISTS room_type;
+DROP TABLE IF EXISTS room_view;
+DROP TABLE IF EXISTS feature;
+
+-- 1. Catálogo de tipos de habitación
+CREATE TABLE room_type (
+    id_room_type INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Catálogo de vistas
+CREATE TABLE room_view (
+    id_room_view INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 3. Catálogo de características
+CREATE TABLE feature (
+    id_feature INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. Tabla principal de habitaciones
+CREATE TABLE room (
+    number INT PRIMARY KEY,
+    floor INT NOT NULL,
+    id_room_type INT NOT NULL,
+    capacity INT NOT NULL,
+    id_room_view INT NOT NULL,
+    available BOOLEAN NOT NULL DEFAULT TRUE,
+    out_of_service BOOLEAN NOT NULL DEFAULT FALSE,
+    price DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    FOREIGN KEY (id_room_type) REFERENCES room_type(id_room_type),
+    FOREIGN KEY (id_room_view) REFERENCES room_view(id_room_view)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 5. Tabla intermedia habitación-características
+CREATE TABLE room_feature (
+    number INT NOT NULL,
+    id_feature INT NOT NULL,
+    PRIMARY KEY (number, id_feature),
+    FOREIGN KEY (number) REFERENCES room(number) ON DELETE CASCADE,
+    FOREIGN KEY (id_feature) REFERENCES feature(id_feature) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Insertar datos iniciales en catálogos
+INSERT INTO room_type (name) VALUES
+('simple'), ('doble'), ('suite'), ('familiar');
+
+INSERT INTO room_view (name) VALUES
+('vista al lago'), ('vista al jardín'), ('vista a las montañas'), ('sin vista');
+
+INSERT INTO feature (name) VALUES
+('WiFi'), ('TV'), ('Aire acondicionado'), ('Calefacción'), ('Minibar'), ('Caja fuerte');

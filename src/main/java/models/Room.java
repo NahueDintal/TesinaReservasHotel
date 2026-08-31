@@ -3,93 +3,54 @@ package models;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Room {
 
   private static final Logger logger = LoggerFactory.getLogger(Room.class);
 
   private int number;
   private int floor;
-  private String type;
+  private int idRoomType; // FK a room_type
+  private String typeName; // solo para mostrar en la tabla (no persistente)
   private int capacity;
-  private String view;
-  private boolean available = true; // disponibilidad directa
-  private boolean outOfService = false; // mantenimiento o fuera de servicio
-  private String features;
+  private int idRoomView; // FK a room_view
+  private String viewName; // solo para mostrar en la tabla (no persistente)
+  private boolean available = true;
+  private boolean outOfService = false;
+  private List<String> features = new ArrayList<>(); // nombres de características
   private double price;
   private String description;
 
-  // ---------- CONSTRUCTOR VACÍO ----------
+  // Constructor vacío
   public Room() {
-    // Se usa para crear una habitación sin datos iniciales y luego setearlos
   }
 
-  // ---------- CONSTRUCTOR CON PARÁMETROS STRING ----------
-  public Room(String numberStr, String floorStr, String type, String capacityStr,
-      String view, String features, String priceStr, String description) {
+  // Constructor con parámetros básicos (para creación desde formulario)
+  public Room(String numberStr, String floorStr, String idRoomTypeStr, String capacityStr,
+      String idRoomViewStr, List<String> features, String priceStr, String description) {
     setNumber(numberStr);
     setFloor(floorStr);
-    setType(type);
+    setIdRoomType(Integer.parseInt(idRoomTypeStr));
     setCapacity(capacityStr);
-    setView(view);
-    setFeatures(features);
+    setIdRoomView(Integer.parseInt(idRoomViewStr));
+    setFeatures(features != null ? features : new ArrayList<>());
     setPrice(priceStr);
     setDescription(description);
   }
 
-  // ========== GETTERS ==========
+  // Getters y setters...
+
   public int getNumber() {
     return number;
   }
 
-  public int getFloor() {
-    return floor;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public int getCapacity() {
-    return capacity;
-  }
-
-  public String getView() {
-    return view;
-  }
-
-  public String getFeatures() {
-    return features;
-  }
-
-  public double getPrice() {
-    return price;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public boolean getOutOfService() {
-    return outOfService;
-  }
-
-  /**
-   * Disponibilidad efectiva: solo true si no está fuera de servicio y available
-   * es true.
-   */
-  public boolean isAvailable() {
-    return !outOfService && available;
-  }
-
-  // ========== SETTERS (lanza IllegalArgumentException si el dato es inválido)
-  // ==========
-
   public void setNumber(String numberStr) {
     try {
       int parsed = Integer.parseInt(numberStr);
-      if (parsed < 0) {
-        throw new NumberFormatException("El número debe ser un entero positivo.");
-      }
+      if (parsed < 0)
+        throw new NumberFormatException("El número debe ser positivo.");
       this.number = parsed;
     } catch (NumberFormatException e) {
       logger.error("Número de habitación inválido: '{}'", numberStr, e);
@@ -97,12 +58,15 @@ public class Room {
     }
   }
 
+  public int getFloor() {
+    return floor;
+  }
+
   public void setFloor(String floorStr) {
     try {
       int parsed = Integer.parseInt(floorStr);
-      if (parsed < 0) {
-        throw new NumberFormatException("El piso debe ser un entero positivo.");
-      }
+      if (parsed < 0)
+        throw new NumberFormatException("El piso debe ser positivo.");
       this.floor = parsed;
     } catch (NumberFormatException e) {
       logger.error("Piso inválido: '{}'", floorStr, e);
@@ -110,20 +74,31 @@ public class Room {
     }
   }
 
-  public void setType(String type) {
-    if (type == null || type.isBlank()) {
-      logger.error("Tipo de habitación vacío");
-      throw new IllegalArgumentException("El tipo no puede estar vacío.");
-    }
-    this.type = type.trim().toLowerCase();
+  public int getIdRoomType() {
+    return idRoomType;
+  }
+
+  public void setIdRoomType(int idRoomType) {
+    this.idRoomType = idRoomType;
+  }
+
+  public String getTypeName() {
+    return typeName;
+  }
+
+  public void setTypeName(String typeName) {
+    this.typeName = typeName;
+  }
+
+  public int getCapacity() {
+    return capacity;
   }
 
   public void setCapacity(String capacityStr) {
     try {
       int parsed = Integer.parseInt(capacityStr);
-      if (parsed <= 0) {
+      if (parsed <= 0)
         throw new NumberFormatException("La capacidad debe ser mayor a cero.");
-      }
       this.capacity = parsed;
     } catch (NumberFormatException e) {
       logger.error("Capacidad inválida: '{}'", capacityStr, e);
@@ -131,28 +106,60 @@ public class Room {
     }
   }
 
-  public void setView(String view) {
-    if (view == null || view.isBlank()) {
-      logger.error("Vista vacía");
-      throw new IllegalArgumentException("La vista no puede estar vacía.");
-    }
-    this.view = view.trim();
+  public int getIdRoomView() {
+    return idRoomView;
   }
 
-  public void setFeatures(String features) {
-    if (features == null || features.isBlank()) {
-      logger.error("Características vacías");
-      throw new IllegalArgumentException("Las características no pueden estar vacías.");
+  public void setIdRoomView(int idRoomView) {
+    this.idRoomView = idRoomView;
+  }
+
+  public String getViewName() {
+    return viewName;
+  }
+
+  public void setViewName(String viewName) {
+    this.viewName = viewName;
+  }
+
+  public boolean isAvailable() {
+    return !outOfService && available;
+  }
+
+  public void setAvailable(boolean available) {
+    if (available && outOfService) {
+      throw new IllegalArgumentException("Habitación fuera de servicio, no puede estar disponible.");
     }
-    this.features = features.trim();
+    this.available = available;
+  }
+
+  public boolean getOutOfService() {
+    return outOfService;
+  }
+
+  public void setOutOfService(boolean outOfService) {
+    this.outOfService = outOfService;
+    if (outOfService)
+      this.available = false;
+  }
+
+  public List<String> getFeatures() {
+    return features;
+  }
+
+  public void setFeatures(List<String> features) {
+    this.features = features;
+  }
+
+  public double getPrice() {
+    return price;
   }
 
   public void setPrice(String priceStr) {
     try {
       double parsed = Double.parseDouble(priceStr);
-      if (parsed < 0) {
+      if (parsed < 0)
         throw new NumberFormatException("El precio no puede ser negativo.");
-      }
       this.price = parsed;
     } catch (NumberFormatException e) {
       logger.error("Precio inválido: '{}'", priceStr, e);
@@ -160,35 +167,11 @@ public class Room {
     }
   }
 
+  public String getDescription() {
+    return description;
+  }
+
   public void setDescription(String description) {
-    if (description == null || description.isBlank()) {
-      logger.warn("Descripción vacía, se asigna cadena vacía");
-      this.description = "";
-    } else {
-      this.description = description.trim();
-    }
-  }
-
-  /**
-   * Establece la disponibilidad directa.
-   * No permite marcar como disponible si la habitación está fuera de servicio.
-   */
-  public void setAvailable(boolean available) {
-    if (available && this.outOfService) {
-      logger.warn("Intento de marcar como disponible una habitación fuera de servicio (número: {})", this.number);
-      throw new IllegalArgumentException("Habitación fuera de servicio, no puede estar disponible.");
-    }
-    this.available = available;
-  }
-
-  /**
-   * Marca la habitación como fuera de servicio o no.
-   * Si se marca fuera de servicio, automáticamente queda no disponible.
-   */
-  public void setOutOfService(boolean outOfService) {
-    this.outOfService = outOfService;
-    if (outOfService) {
-      this.available = false;
-    }
+    this.description = (description == null || description.isBlank()) ? "" : description.trim();
   }
 }

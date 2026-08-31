@@ -42,7 +42,7 @@ public class UnavailableRoomsController {
   public void initialize() {
     colNumber.setCellValueFactory(new PropertyValueFactory<>("number"));
     colFloor.setCellValueFactory(new PropertyValueFactory<>("floor"));
-    colType.setCellValueFactory(new PropertyValueFactory<>("type"));
+    colType.setCellValueFactory(new PropertyValueFactory<>("typeName")); // <-- corregido
     colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
     colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
@@ -50,21 +50,20 @@ public class UnavailableRoomsController {
 
     txtSearch.textProperty().addListener((obs, old, newVal) -> {
       filteredUnavailable.setPredicate(room -> {
-        if (newVal == null || newVal.isEmpty())
-          return true;
+        if (newVal == null || newVal.isEmpty()) return true;
         String lower = newVal.toLowerCase();
         return String.valueOf(room.getNumber()).contains(lower) ||
-            String.valueOf(room.getFloor()).contains(lower) ||
-            room.getType().toLowerCase().contains(lower) ||
-            String.valueOf(room.getCapacity()).contains(lower) ||
-            String.valueOf(room.getPrice()).contains(lower);
+                String.valueOf(room.getFloor()).contains(lower) ||
+                (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) || // <-- corregido
+                String.valueOf(room.getCapacity()).contains(lower) ||
+                String.valueOf(room.getPrice()).contains(lower);
       });
       updateCounter();
     });
 
     btnReactivate.setDisable(true);
     tableUnavailableRooms.getSelectionModel().selectedItemProperty().addListener(
-        (obs, old, newVal) -> btnReactivate.setDisable(newVal == null));
+            (obs, old, newVal) -> btnReactivate.setDisable(newVal == null));
 
     btnReactivate.setOnAction(e -> reactivateRoom());
   }
@@ -83,8 +82,7 @@ public class UnavailableRoomsController {
 
   private void reactivateRoom() {
     Room selected = tableUnavailableRooms.getSelectionModel().getSelectedItem();
-    if (selected == null)
-      return;
+    if (selected == null) return;
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Reactivar habitación");
@@ -103,7 +101,7 @@ public class UnavailableRoomsController {
             Stage stage = (Stage) tableUnavailableRooms.getScene().getWindow();
             stage.close();
           }
-        } catch (RuntimeException e) {
+        } catch (SQLException e) {
           showAlert("Error", "No se pudo reactivar la habitación", e.getMessage());
         }
       }
