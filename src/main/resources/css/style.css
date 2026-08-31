@@ -1,39 +1,19 @@
+/* ======================================================
+   1. ESTILOS GLOBALES Y DE LA VENTANA PRINCIPAL
+   ====================================================== */
+
 .root {
-    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-family: "Segoe UI", "Adwaita Sans", sans-serif;
+    -fx-background-color: #f5f7fa;
 }
 
-.stats-card {
-    -fx-background-color: #34495e;
-    -fx-background-radius: 10;
-    -fx-padding: 15;
-}
+/* ======================================================
+   2. SIDEBAR (Panel izquierdo)
+   ====================================================== */
 
-.stats-title {
-    -fx-text-fill: #bdc3c7;
-    -fx-font-size: 14px;
-}
-
-.stats-value {
-    -fx-text-fill: white;
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-}
-
-.day-cell {
-    -fx-background-color: white;
-    -fx-border-color: #bdc3c7;
-    -fx-border-width: 1;
-    -fx-padding: 5;
-}
-
-.slot-morning { -fx-background-color: rgba(144, 238, 144, 0.8); }
-.slot-afternoon { -fx-background-color: rgba(173, 216, 230, 0.8); }
-.slot-night { -fx-background-color: rgba(255, 200, 0, 0.8); }
-.slot-empty { -fx-background-color: lightgray; }
-/* ========== SIDEBAR ========== */
 .sidebar {
     -fx-background-color: #3E864D;
-    -fx-padding: 20;
+    -fx-padding: 20px;
 }
 
 .sidebar-titulo {
@@ -57,6 +37,10 @@
     -fx-background-color: #2E6D3D;
 }
 
+.sidebar-btn:selected {
+    -fx-background-color: #2E6D3D;
+}
+
 .sidebar-usuario {
     -fx-text-fill: white;
     -fx-font-size: 14px;
@@ -75,9 +59,22 @@
     -fx-background-color: #e74c3c;
 }
 
-/* ========== CONTENIDO PRINCIPAL ========== */
+/* ======================================================
+   3. CONTENIDO PRINCIPAL
+   ====================================================== */
+
+.content-main {
+    -fx-background-color: #f5f7fa;
+}
+
 .contenido-principal {
     -fx-background-color: #f5f7fa;
+}
+
+.section-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 24px;
 }
 
 .titulo-seccion {
@@ -90,193 +87,10 @@
     -fx-font-size: 14px;
 }
 
-/* ========== BOTONES ========== */
-.btn-primario {
-    -fx-background-color: #3E864D;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 5;
-    -fx-padding: 10 20;
-    -fx-font-size: 14px;
-}
+/* ======================================================
+   4. BOTONES PRINCIPALES
+   ====================================================== */
 
-.btn-primario:hover {
-    -fx-background-color: #2E6D3D;
-}
-
-.btn-secundario {
-    -fx-background-color: #ecf0f1;
-    -fx-text-fill: #2c3e50;
-    -fx-background-radius: 5;
-    -fx-padding: 10 20;
-    -fx-font-size: 14px;
-}
-
-.btn-secundario:hover {
-    -fx-background-color: #d5dbdb;
-}
-
-/* ========== CAMPOS DE BÚSQUEDA Y FILTROS ========== */
-.campo-busqueda {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-border-color: #dcdde1;
-    -fx-padding: 10 15;
-    -fx-font-size: 14px;
-    -fx-background-color: white;
-}
-
-.campo-busqueda:focused {
-    -fx-border-color: #3E864D;
-}
-
-.combo-filtro {
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-    -fx-border-color: #dcdde1;
-    -fx-padding: 8 12;
-    -fx-font-size: 14px;
-    -fx-background-color: white;
-}
-
-/* ========== TABLA ========== */
-.tabla-clientes {
-    -fx-border-color: #dcdde1;
-    -fx-border-width: 1;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-background-color: white;
-}
-
-.tabla-clientes .column-header {
-    -fx-background-color: #ecf0f1;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-text-fill: #2c3e50;
-    -fx-padding: 10 0;
-}
-
-.tabla-clientes .column-header-background {
-    -fx-background-color: #ecf0f1;
-    -fx-border-color: #dcdde1;
-    -fx-border-width: 0 0 1 0;
-}
-
-.tabla-clientes .table-row-cell {
-    -fx-border-color: #f0f0f0;
-    -fx-border-width: 0 0 1 0;
-}
-
-.tabla-clientes .table-row-cell:hover {
-    -fx-background-color: #eaf7ed;
-}
-
-.tabla-clientes .table-row-cell:selected {
-    -fx-background-color: #d4edda;
-}
-
-/* ========== BOTONES DE ACCIÓN EN LA TABLA ========== */
-.boton-accion {
-    -fx-background-color: transparent;
-    -fx-text-fill: #3E864D;
-    -fx-font-size: 16px;
-    -fx-padding: 5 10;
-    -fx-cursor: hand;
-}
-
-.boton-accion:hover {
-    -fx-text-fill: #2E6D3D;
-}
-
-.boton-accion-eliminar {
-    -fx-text-fill: #c0392b;
-}
-
-.boton-accion-eliminar:hover {
-    -fx-text-fill: #e74c3c;
-}
-
-/* ========== PIE DE TABLA ========== */
-.info-pie {
-    -fx-text-fill: #7f8c8d;
-    -fx-font-size: 13px;
-}
-/* ========== FORM CONTAINER (para ventanas emergentes) ========== */
-.form-container {
-    -fx-background-color: white;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #dcdde1;
-    -fx-border-width: 1;
-}
-
-.form-title {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-}
-
-.form-label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-    -fx-font-size: 13px;
-}
-
-/* ========== SIDEBAR (ya existente, mantener) ========== */
-.sidebar {
-    -fx-background-color: #3E864D;
-    -fx-padding: 20;
-}
-
-.sidebar-titulo {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 10 0 20 0;
-}
-
-.sidebar-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-padding: 12 15;
-    -fx-background-radius: 5;
-    -fx-alignment: CENTER_LEFT;
-    -fx-pref-width: Infinity;
-}
-
-.sidebar-btn:hover {
-    -fx-background-color: #2E6D3D;
-}
-
-.sidebar-usuario {
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10 0 5 0;
-}
-
-.sidebar-logout {
-    -fx-background-color: #c0392b;
-    -fx-text-fill: white;
-    -fx-background-radius: 5;
-    -fx-padding: 8 15;
-    -fx-pref-width: Infinity;
-}
-
-.sidebar-logout:hover {
-    -fx-background-color: #e74c3c;
-}
-
-/* ========== CONTENIDO PRINCIPAL ========== */
-.content-main {
-    -fx-background-color: #f5f7fa;
-}
-
-.section-title {
-    -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
-}
-
-/* ========== BOTONES ========== */
 .btn-primary {
     -fx-background-color: #3E864D;
     -fx-text-fill: white;
@@ -299,6 +113,44 @@
 }
 
 .btn-secondary:hover {
+    -fx-background-color: #d5dbdb;
+}
+
+.btn-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+.btn-primario {
+    -fx-background-color: #3E864D;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-primario:hover {
+    -fx-background-color: #2E6D3D;
+}
+
+.btn-secundario {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+}
+
+.btn-secundario:hover {
     -fx-background-color: #d5dbdb;
 }
 
@@ -340,7 +192,10 @@
     -fx-background-color: #f5c6cb;
 }
 
-/* ========== CAMPOS DE BÚSQUEDA Y FILTROS ========== */
+/* ======================================================
+   5. CAMPOS DE BÚSQUEDA Y FILTROS
+   ====================================================== */
+
 .search-field {
     -fx-background-radius: 5;
     -fx-border-radius: 5;
@@ -354,7 +209,32 @@
     -fx-border-color: #3E864D;
 }
 
-/* ========== TABLA ========== */
+.campo-busqueda {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 10 15;
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+}
+
+.campo-busqueda:focused {
+    -fx-border-color: #3E864D;
+}
+
+.combo-filtro {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #dcdde1;
+    -fx-padding: 8 12;
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+}
+
+/* ======================================================
+   6. TABLAS (Grillas)
+   ====================================================== */
+
 .customer-table {
     -fx-border-color: #dcdde1;
     -fx-border-width: 1;
@@ -390,12 +270,49 @@
     -fx-background-color: #d4edda;
 }
 
-/* ========== PANEL DE DETALLE ========== */
+.tabla-clientes {
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-background-color: white;
+}
+
+.tabla-clientes .column-header {
+    -fx-background-color: #ecf0f1;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 10 0;
+}
+
+.tabla-clientes .column-header-background {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tabla-clientes .table-row-cell {
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tabla-clientes .table-row-cell:hover {
+    -fx-background-color: #eaf7ed;
+}
+
+.tabla-clientes .table-row-cell:selected {
+    -fx-background-color: #d4edda;
+}
+
+/* ======================================================
+   7. PANEL DE DETALLE
+   ====================================================== */
+
 .detail-panel {
     -fx-background-color: white;
     -fx-border-color: #dcdde1;
     -fx-border-width: 0 0 0 1;
-    -fx-background-radius: 0;
 }
 
 .detail-name {
@@ -428,7 +345,10 @@
     -fx-font-weight: normal;
 }
 
-/* ========== SPLITPANE ========== */
+/* ======================================================
+   8. SPLITPANE
+   ====================================================== */
+
 .split-pane {
     -fx-background-color: transparent;
 }
@@ -438,21 +358,128 @@
     -fx-padding: 0 3;
 }
 
-/* ========== PIE DE TABLA ========== */
+/* ======================================================
+   9. PIE DE TABLA
+   ====================================================== */
+
 .footer-info {
     -fx-text-fill: #7f8c8d;
     -fx-font-size: 13px;
 }
 
+.info-pie {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 13px;
+}
 
-       /* =========================================================
-          NUEVA RESERVA
-          ========================================================= */
+/* ======================================================
+   10. FORMULARIOS
+   ====================================================== */
 
-   .new-reservation-scroll {
-       -fx-background-color: #f5f7fa;
-       -fx-border-color: transparent;
-   }
+.form-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dcdde1;
+    -fx-border-width: 1;
+}
+
+.form-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 20px;
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+}
+
+/* ======================================================
+   11. ESTADÍSTICAS (cards)
+   ====================================================== */
+
+.stats-card {
+    -fx-background-color: #34495e;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+}
+
+.stats-title {
+    -fx-text-fill: #bdc3c7;
+    -fx-font-size: 14px;
+}
+
+.stats-value {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+/* ======================================================
+   12. CELDAS DE DÍA Y TURNOS
+   ====================================================== */
+
+.day-cell {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1;
+    -fx-padding: 5;
+}
+
+.slot-morning {
+    -fx-background-color: rgba(144, 238, 144, 0.8);
+}
+
+.slot-afternoon {
+    -fx-background-color: rgba(173, 216, 230, 0.8);
+}
+
+.slot-night {
+    -fx-background-color: rgba(255, 200, 0, 0.8);
+}
+
+.slot-empty {
+    -fx-background-color: lightgray;
+}
+
+/* ======================================================
+   13. BOTONES DE ACCIÓN EN TABLA
+   ====================================================== */
+
+.boton-accion {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3E864D;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 16px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.boton-accion:hover {
+    -fx-background-color: #eaf5ec;
+    -fx-text-fill: #245c32;
+}
+
+.boton-accion-eliminar {
+    -fx-text-fill: #c0392b;
+}
+
+.boton-accion-eliminar:hover {
+    -fx-background-color: #fbeaea;
+    -fx-text-fill: #a93226;
+}
+
+/* ======================================================
+   14. NUEVA RESERVA
+   ====================================================== */
+
+.new-reservation-scroll {
+    -fx-background-color: #f5f7fa;
+    -fx-border-color: transparent;
+}
 
 .new-reservation-scroll > .viewport {
     -fx-background-color: #f5f7fa;
@@ -462,11 +489,7 @@
     -fx-background-color: #f5f7fa;
 }
 
-
-/* =========================================================
-   ENCABEZADO
-   ========================================================= */
-
+/* Encabezado */
 .reservation-page-header {
     -fx-padding: 0 0 6 0;
 }
@@ -484,11 +507,7 @@
     -fx-text-fill: #7f8c8d;
 }
 
-
-/* =========================================================
-   BOTÓN VOLVER
-   ========================================================= */
-
+/* Botón volver */
 .reservation-back-button {
     -fx-background-color: #f1f5f2;
     -fx-border-color: #d8e0db;
@@ -506,11 +525,7 @@
     -fx-border-color: #3E864D;
 }
 
-
-/* =========================================================
-   TARJETAS
-   ========================================================= */
-
+/* Tarjetas */
 .reservation-card {
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -533,11 +548,7 @@
     -fx-text-fill: #7f8c8d;
 }
 
-
-/* =========================================================
-   FORMULARIO
-   ========================================================= */
-
+/* Formulario */
 .reservation-form-grid {
     -fx-padding: 2 0 2 0;
 }
@@ -549,11 +560,7 @@
     -fx-text-fill: #34495e;
 }
 
-
-/* =========================================================
-   CAMPOS
-   ========================================================= */
-
+/* Campos */
 .reservation-field {
     -fx-background-color: #ffffff;
     -fx-border-color: #d8dfdb;
@@ -574,11 +581,7 @@
     -fx-border-width: 1.5px;
 }
 
-
-/* =========================================================
-   TEXT AREA
-   ========================================================= */
-
+/* TextArea */
 .reservation-textarea {
     -fx-background-color: white;
     -fx-border-color: #d8dfdb;
@@ -593,11 +596,7 @@
     -fx-border-color: #3E864D;
 }
 
-
-/* =========================================================
-   COMBOBOX
-   ========================================================= */
-
+/* Combobox */
 .reservation-field .arrow-button {
     -fx-background-color: transparent;
 }
@@ -622,11 +621,7 @@
     -fx-text-fill: #245c32;
 }
 
-
-/* =========================================================
-   DATE PICKER
-   ========================================================= */
-
+/* DatePicker */
 .date-picker .arrow-button {
     -fx-background-color: transparent;
 }
@@ -635,11 +630,7 @@
     -fx-background-color: #eaf7ed;
 }
 
-
-/* =========================================================
-   BOTÓN AGREGAR CONSUMO
-   ========================================================= */
-
+/* Botón agregar consumo */
 .reservation-secondary-button {
     -fx-background-color: white;
     -fx-border-color: #3E864D;
@@ -657,11 +648,7 @@
     -fx-background-color: #eaf7ed;
 }
 
-
-/* =========================================================
-   TABLA NUEVA RESERVA
-   ========================================================= */
-
+/* Tabla de nueva reserva */
 .reservation-table {
     -fx-background-color: white;
     -fx-border-color: #dcdde1;
@@ -707,11 +694,7 @@
     -fx-padding: 6px;
 }
 
-
-/* =========================================================
-   TOTAL
-   ========================================================= */
-
+/* Total */
 .reservation-total-container {
     -fx-padding: 5px 0 0 0;
 }
@@ -735,11 +718,7 @@
     -fx-alignment: CENTER-RIGHT;
 }
 
-
-/* =========================================================
-   BOTONES FINALES
-   ========================================================= */
-
+/* Botones finales */
 .reservation-actions {
     -fx-padding: 2px 0 0 0;
 }
@@ -780,10 +759,9 @@
     -fx-background-color: #245c32;
 }
 
-
-/* =========================================================
-   PANTALLA - PLANILLA DE RESERVAS
-   ========================================================= */
+/* ======================================================
+   15. PLANILLA DE RESERVAS
+   ====================================================== */
 
 .reservations-page {
     -fx-background-color: #f7f9f8;
@@ -793,11 +771,7 @@
     -fx-background-color: #f7f9f8;
 }
 
-
-/* =========================================================
-   ENCABEZADO
-   ========================================================= */
-
+/* Encabezado */
 .reservations-header {
     -fx-padding: 0 0 4 0;
 }
@@ -815,11 +789,7 @@
     -fx-text-fill: #737b76;
 }
 
-
-/* =========================================================
-   BOTÓN NUEVA RESERVA
-   ========================================================= */
-
+/* Botón nueva reserva */
 .btn-new-reservation {
     -fx-background-color: #1f5b32;
     -fx-background-radius: 7px;
@@ -840,11 +810,7 @@
     -fx-background-color: #184a28;
 }
 
-
-/* =========================================================
-   BUSCADOR
-   ========================================================= */
-
+/* Buscador */
 .search-container {
     -fx-background-color: transparent;
 }
@@ -870,11 +836,7 @@
     -fx-border-width: 1.5px;
 }
 
-
-/* =========================================================
-   CONTENEDOR DE TABLA
-   ========================================================= */
-
+/* Contenedor de tabla */
 .table-container {
     -fx-background-color: white;
     -fx-border-color: #dfe5e1;
@@ -883,22 +845,13 @@
     -fx-background-radius: 8px;
 }
 
-
-/* =========================================================
-   TABLA
-   ========================================================= */
-
+/* Tabla de reservas */
 .reservations-table {
     -fx-background-color: white;
     -fx-border-color: transparent;
     -fx-background-radius: 8px;
     -fx-table-cell-border-color: transparent;
 }
-
-
-/* =========================================================
-   ENCABEZADO DE TABLA
-   ========================================================= */
 
 .reservations-table .column-header-background {
     -fx-background-color: #f1f5f2;
@@ -920,11 +873,6 @@
     -fx-alignment: CENTER_LEFT;
 }
 
-
-/* =========================================================
-   FILAS
-   ========================================================= */
-
 .reservations-table .table-row-cell {
     -fx-background-color: white;
     -fx-border-color: #edf0ee;
@@ -944,11 +892,6 @@
     -fx-text-fill: #245c32;
 }
 
-
-/* =========================================================
-   CELDAS
-   ========================================================= */
-
 .reservations-table .table-cell {
     -fx-background-color: transparent;
     -fx-font-family: "Segoe UI";
@@ -958,11 +901,7 @@
     -fx-alignment: CENTER_LEFT;
 }
 
-
-/* =========================================================
-   SCROLLBAR DE TABLA
-   ========================================================= */
-
+/* Scrollbar de tabla */
 .reservations-table .scroll-bar:vertical {
     -fx-background-color: transparent;
 }
@@ -983,38 +922,3 @@
 .reservations-table .scroll-bar .track {
     -fx-background-color: transparent;
 }
-
-
-/* =========================================================
-   BOTONES DE ACCIONES
-   ========================================================= */
-
-.boton-accion {
-    -fx-background-color: transparent;
-    -fx-text-fill: #3E864D;
-    -fx-font-family: "Segoe UI";
-    -fx-font-size: 14px;
-    -fx-padding: 4px 7px;
-    -fx-background-radius: 5px;
-    -fx-cursor: hand;
-}
-
-.boton-accion:hover {
-    -fx-background-color: #eaf5ec;
-    -fx-text-fill: #245c32;
-}
-
-
-/* =========================================================
-   BOTÓN ELIMINAR
-   ========================================================= */
-
-.boton-accion-eliminar {
-    -fx-text-fill: #c0392b;
-}
-
-.boton-accion-eliminar:hover {
-    -fx-background-color: #fbeaea;
-    -fx-text-fill: #a93226;
-}
-

@@ -2,124 +2,154 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import models.Reservation;
 import javafx.scene.Parent;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import models.Reservation;
-
 import java.io.IOException;
 
 public class DashboardController {
 
-    @FXML
-    private VBox leftMenu;
+  @FXML
+  private VBox leftMenu;
+  @FXML
+  private AnchorPane centerPane;
 
-    @FXML
-    private AnchorPane centerPane;
+  @FXML
+  private ToggleButton btnPlanilla;
+  @FXML
+  private ToggleButton btnReservas;
+  @FXML
+  private ToggleButton btnHabitaciones;
+  @FXML
+  private ToggleButton btnClientes;
+  @FXML
+  private ToggleButton btnReportes;
+  @FXML
+  private ToggleButton btnPersonal;
+  @FXML
+  private ToggleButton btnConfiguracion;
 
-    @FXML
-    private ToggleButton btnPlanilla;
+  private ToggleGroup menuGroup;
 
-    @FXML
-    private ToggleButton btnReservas;
+  @FXML
+  public void initialize() {
+    // 1. Crear un ToggleGroup para que solo un botón esté seleccionado a la vez
+    menuGroup = new ToggleGroup();
+    btnPlanilla.setToggleGroup(menuGroup);
+    btnReservas.setToggleGroup(menuGroup);
+    btnHabitaciones.setToggleGroup(menuGroup);
+    btnClientes.setToggleGroup(menuGroup);
+    btnReportes.setToggleGroup(menuGroup);
+    btnPersonal.setToggleGroup(menuGroup);
+    btnConfiguracion.setToggleGroup(menuGroup);
 
-    @FXML
-    private ToggleButton btnHabitaciones;
+    // 2. Seleccionar "Planilla" por defecto
+    btnPlanilla.setSelected(true);
 
-    @FXML
-    private ToggleButton btnClientes;
+    // 3. Asignar acciones a los botones
+    btnPlanilla.setOnAction(e -> {
+      selectButton(btnPlanilla);
+      loadView("/views/.fxml");
+    });
+    btnReservas.setOnAction(e -> {
+      selectButton(btnReservas);
+      loadView("/views/reservations.fxml");
+    });
+    btnHabitaciones.setOnAction(e -> {
+      selectButton(btnHabitaciones);
+      loadView("/views/RoomView.fxml");
+    });
+    btnClientes.setOnAction(e -> {
+      selectButton(btnClientes);
+      loadView("/views/CustomerView.fxml");
+    });
+    btnReportes.setOnAction(e -> {
+      selectButton(btnReportes);
+      loadView("/views/.fxml");
+    });
+    btnPersonal.setOnAction(e -> {
+      selectButton(btnPersonal);
+      loadView("/views/StaffView.fxml");
+    });
+    btnConfiguracion.setOnAction(e -> {
+      selectButton(btnConfiguracion);
+      loadView("/views/.fxml");
+    });
+  }
 
-    @FXML
-    private ToggleButton btnReportes;
+  /**
+   * Selecciona un botón y deselecciona los demás (a través del ToggleGroup)
+   */
+  private void selectButton(ToggleButton button) {
+    button.setSelected(true);
+  }
 
-    @FXML
-    private ToggleButton btnConfiguracion;
+  /**
+   * Carga un archivo FXML en el panel central.
+   */
+  public void loadView(String fxmlPath) {
+    try {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+      Parent view = loader.load();
 
-    @FXML
-    public void initialize() {
-        // Asignar acciones a los botones
-        btnPlanilla.setOnAction(e -> loadView("/views/.fxml"));
-        btnReservas.setOnAction(e -> loadView("/views/Reservations.fxml"));
-        btnHabitaciones.setOnAction(e -> loadView("/views/Room.fxml"));
-        btnClientes.setOnAction(e -> loadView("/views/CustomerView.fxml"));
-        btnReportes.setOnAction(e -> loadView("/views/.fxml"));
-        btnConfiguracion.setOnAction(e -> loadView("/views/.fxml"));
+      // Si el controlador necesita referencia al Dashboard, se la pasamos
+      // Object controller = loader.getController();
+      // if (controller instanceof RoomController) {
+      // ((RoomController) controller).setDashboardController(this);
+      // } else if (controller instanceof RoomFormController) {
+      // ((RoomFormController) controller).setDashboardController(this);
+      // }
+
+      Object controller = loader.getController();
+
+      if (controller instanceof ReservationsController) {
+
+        ((ReservationsController) controller).setDashboardController(this);
+      }
+
+      // Limpiar el centerPane y agregar la vista
+      centerPane.getChildren().clear();
+      centerPane.getChildren().add(view);
+
+      // === FORZAR QUE LA VISTA SE ESTIRE A TODOS LOS LADOS ===
+      AnchorPane.setTopAnchor(view, 0.0);
+      AnchorPane.setBottomAnchor(view, 0.0);
+      AnchorPane.setLeftAnchor(view, 0.0);
+      AnchorPane.setRightAnchor(view, 0.0);
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      centerPane.getChildren().setAll(new AnchorPane());
     }
+  }
+  public void loadEditReservation(Reservation reservation) {
 
-    /**
-     * Carga un archivo FXML en el panel central.
-     *
-     * @param fxmlPath Ruta del archivo FXML (debe comenzar con "/" y estar en
-     *                 resources/views)
-     */
-    public void loadView(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(fxmlPath)
-            );
+    try {
 
-            Parent view = loader.load();
+      FXMLLoader loader = new FXMLLoader(
+              getClass().getResource("/views/NewReservation.fxml")
+      );
 
-            Object controller = loader.getController();
+      Parent view = loader.load();
 
-            if (controller instanceof RoomController) {
-                ((RoomController) controller).setDashboardController(this);
+      NewReservationController controller = loader.getController();
 
-            } else if (controller instanceof RoomFormController) {
-                ((RoomFormController) controller).setDashboardController(this);
+      controller.setDashboardController(this);
+      controller.setReservationToEdit(reservation);
 
-            } else if (controller instanceof ReservationsController) {
-                ((ReservationsController) controller)
-                        .setDashboardController(this);
+      // Colocar la vista exactamente igual que las demás
+      centerPane.getChildren().setAll(view);
 
-            } else if (controller instanceof NewReservationController) {
-                ((NewReservationController) controller)
-                        .setDashboardController(this);
-            }
+      AnchorPane.setTopAnchor(view, 0.0);
+      AnchorPane.setBottomAnchor(view, 0.0);
+      AnchorPane.setLeftAnchor(view, 0.0);
+      AnchorPane.setRightAnchor(view, 0.0);
 
-            centerPane.getChildren().setAll(view);
-
-            AnchorPane.setTopAnchor(view, 0.0);
-            AnchorPane.setBottomAnchor(view, 0.0);
-            AnchorPane.setLeftAnchor(view, 0.0);
-            AnchorPane.setRightAnchor(view, 0.0);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            AnchorPane errorPane = new AnchorPane();
-            centerPane.getChildren().setAll(errorPane);
-        }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-
-    public void loadEditReservation(Reservation reservation) {
-
-        try {
-
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/views/NewReservation.fxml")
-            );
-
-            Parent view = loader.load();
-
-            NewReservationController controller = loader.getController();
-
-            controller.setDashboardController(this);
-            controller.setReservationToEdit(reservation);
-
-            // Colocar la vista exactamente igual que las demás
-            centerPane.getChildren().setAll(view);
-
-            AnchorPane.setTopAnchor(view, 0.0);
-            AnchorPane.setBottomAnchor(view, 0.0);
-            AnchorPane.setLeftAnchor(view, 0.0);
-            AnchorPane.setRightAnchor(view, 0.0);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+  }
 }
-

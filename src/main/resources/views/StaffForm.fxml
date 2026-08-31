@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20" styleClass="form-container"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.StaffFormController">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25" />
+    </padding>
+
+    <!-- Título -->
+    <Label fx:id="lblFormTitle" text="Nuevo Personal" styleClass="form-title">
+        <font>
+            <Font size="20.0" />
+        </font>
+    </Label>
+
+    <!-- Formulario -->
+    <GridPane hgap="15" vgap="12">
+        <!-- Fila 0 -->
+        <Label text="Nombres *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtFirstName" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250.0" />
+
+        <Label text="Apellidos *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <TextField fx:id="txtLastName" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="250.0" />
+
+        <!-- Fila 1 -->
+        <Label text="DNI *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="txtDni" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="250.0" />
+
+        <Label text="Fecha de Nacimiento" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <DatePicker fx:id="dateBirthDate" GridPane.columnIndex="3" GridPane.rowIndex="1" prefWidth="250.0" />
+
+        <!-- Fila 2 -->
+        <Label text="Teléfono" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="txtPhone" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250.0" />
+
+        <Label text="Email" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+        <TextField fx:id="txtEmail" GridPane.columnIndex="3" GridPane.rowIndex="2" prefWidth="250.0" />
+
+        <!-- Fila 3 -->
+        <Label text="Calle" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <TextField fx:id="txtStreet" GridPane.columnIndex="1" GridPane.rowIndex="3" prefWidth="250.0" />
+
+        <Label text="Número" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+        <TextField fx:id="txtAddressNumber" GridPane.columnIndex="3" GridPane.rowIndex="3" prefWidth="250.0" />
+
+        <!-- Fila 4 -->
+        <Label text="Ciudad" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <TextField fx:id="txtCity" GridPane.columnIndex="1" GridPane.rowIndex="4" prefWidth="250.0" />
+
+        <Label text="Cargo *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+        <ComboBox fx:id="comboPosition" GridPane.columnIndex="3" GridPane.rowIndex="4" prefWidth="250.0" />
+
+        <!-- Fila 5 -->
+        <Label text="Área *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <ComboBox fx:id="comboDepartment" GridPane.columnIndex="1" GridPane.rowIndex="5" prefWidth="250.0" />
+
+        <Label text="Estado *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+        <ComboBox fx:id="comboStatus" GridPane.columnIndex="3" GridPane.rowIndex="5" prefWidth="250.0" />
+
+        <!-- Fila 6 -->
+        <Label text="Fecha de Contratación" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <DatePicker fx:id="dateHireDate" GridPane.columnIndex="1" GridPane.rowIndex="6" prefWidth="250.0" />
+
+        <Label text="Nombre del Turno" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+        <TextField fx:id="txtShiftName" GridPane.columnIndex="3" GridPane.rowIndex="6" prefWidth="250.0" />
+
+        <!-- Fila 7 -->
+        <Label text="Inicio Turno (HH:mm)" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <TextField fx:id="txtShiftStart" GridPane.columnIndex="1" GridPane.rowIndex="7" prefWidth="250.0" />
+
+        <Label text="Fin Turno (HH:mm)" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+        <TextField fx:id="txtShiftEnd" GridPane.columnIndex="3" GridPane.rowIndex="7" prefWidth="250.0" />
+
+        <!-- Fila 8 -->
+        <Label text="Salario" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+        <TextField fx:id="txtSalary" GridPane.columnIndex="1" GridPane.rowIndex="8" prefWidth="250.0" />
+    </GridPane>
+
+    <Region VBox.vgrow="ALWAYS" />
+
+    <!-- Botones -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button fx:id="btnCancel" text="Cancelar" styleClass="btn-secondary" />
+        <Button fx:id="btnSave" text="Guardar" styleClass="btn-primary" />
+    </HBox>
+</VBox>
