@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.TableColumn?>
+
+<?import javafx.scene.control.TableView?>
+
+<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controllers.ReservationsController"
+        styleClass="reservations-page">
+
+    <children>
+
+        <VBox
+                spacing="16.0"
+                AnchorPane.topAnchor="0.0"
+                AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0"
+                styleClass="reservations-container">
+
+            <padding>
+                <Insets
+                        top="24.0"
+                        right="30.0"
+                        bottom="24.0"
+                        left="30.0"/>
+            </padding>
+
+            <!-- ================================================= -->
+            <!-- ENCABEZADO -->
+            <!-- ================================================= -->
+
+            <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="12.0"
+                    styleClass="reservation-page-header">
+
+                <VBox
+                        spacing="3.0"
+                        HBox.hgrow="ALWAYS">
+
+                    <Label
+                            text="Reservas"
+                            styleClass="reservation-page-title"/>
+
+                    <Label
+                            text="Gestioná las reservas del hotel."
+                            styleClass="reservation-page-subtitle"/>
+
+                </VBox>
+
+                <Button
+                        text="+ Nueva reserva"
+                        onAction="#handleNuevaReserva"
+                        prefWidth="145.0"
+                        prefHeight="38.0"
+                        styleClass="reservation-primary-button"/>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- BÚSQUEDA -->
+            <!-- ================================================= -->
+
+            <HBox
+                    alignment="CENTER_LEFT"
+                    spacing="10.0"
+                    styleClass="reservation-search-container">
+
+                <TextField
+                        fx:id="txtBuscarReserva"
+                        promptText="Buscar por número, cliente o estado..."
+                        prefHeight="38.0"
+                        maxWidth="Infinity"
+                        HBox.hgrow="ALWAYS"
+                        styleClass="reservation-search-field"/>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- TABLA -->
+            <!-- ================================================= -->
+
+            <VBox
+                    spacing="8.0"
+                    VBox.vgrow="ALWAYS"
+                    styleClass="reservation-table-card">
+
+                <Label
+                        text="Listado de reservas"
+                        styleClass="reservation-card-title"/>
+
+                <TableView
+                        fx:id="tblReservations"
+                        VBox.vgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        maxHeight="Infinity"
+                        styleClass="reservation-table">
+
+                    <columns>
+
+                        <TableColumn
+                                fx:id="colIdReservation"
+                                text="N°"
+                                prefWidth="65.0"
+                                minWidth="55.0"/>
+
+                        <TableColumn
+                                fx:id="colCustomer"
+                                text="Cliente"
+                                prefWidth="190.0"
+                                minWidth="140.0"
+                                maxWidth="300.0"/>
+
+                        <TableColumn
+                                fx:id="colCheckIn"
+                                text="Check-in"
+                                prefWidth="105.0"
+                                minWidth="90.0"/>
+
+                        <TableColumn
+                                fx:id="colCheckOut"
+                                text="Check-out"
+                                prefWidth="105.0"
+                                minWidth="90.0"/>
+
+                        <TableColumn
+                                fx:id="colGuests"
+                                text="Huéspedes"
+                                prefWidth="90.0"
+                                minWidth="80.0"/>
+
+                        <TableColumn
+                                fx:id="colTotalRate"
+                                text="Tarifa"
+                                prefWidth="105.0"
+                                minWidth="90.0"/>
+
+                        <TableColumn
+                                fx:id="colStatus"
+                                text="Estado"
+                                prefWidth="110.0"
+                                minWidth="90.0"/>
+
+                        <TableColumn
+                                fx:id="colActions"
+                                text="Acciones"
+                                prefWidth="185.0"
+                                minWidth="175.0"
+                                sortable="false"/>
+
+                    </columns>
+
+                </TableView>
+
+            </VBox>
+
+        </VBox>
+
+    </children>
+
+</AnchorPane>

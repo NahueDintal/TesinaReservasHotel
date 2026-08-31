@@ -56,7 +56,7 @@ public class DashboardController {
     });
     btnReservas.setOnAction(e -> {
       selectButton(btnReservas);
-      loadView("/views/ReservationsView.fxml");
+      loadView("/views/reservations.fxml");
     });
     btnHabitaciones.setOnAction(e -> {
       selectButton(btnHabitaciones);
@@ -102,6 +102,13 @@ public class DashboardController {
       // } else if (controller instanceof RoomFormController) {
       // ((RoomFormController) controller).setDashboardController(this);
       // }
+
+      Object controller = loader.getController();
+
+      if (controller instanceof ReservationsController) {
+
+        ((ReservationsController) controller).setDashboardController(this);
+      }
 
       // Limpiar el centerPane y agregar la vista
       centerPane.getChildren().clear();
