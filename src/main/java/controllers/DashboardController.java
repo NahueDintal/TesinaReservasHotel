@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import models.Reservation;
 import javafx.scene.Parent;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -45,7 +46,7 @@ public class DashboardController {
     btnPersonal.setToggleGroup(menuGroup);
     btnConfiguracion.setToggleGroup(menuGroup);
 
-    // 2. Seleccionar "Clientes" por defecto
+    // 2. Seleccionar "Planilla" por defecto
     btnPlanilla.setSelected(true);
 
     // 3. Asignar acciones a los botones
@@ -55,7 +56,7 @@ public class DashboardController {
     });
     btnReservas.setOnAction(e -> {
       selectButton(btnReservas);
-      loadView("/views/.fxml");
+      loadView("/views/ReservationsView.fxml");
     });
     btnHabitaciones.setOnAction(e -> {
       selectButton(btnHabitaciones);
@@ -115,6 +116,33 @@ public class DashboardController {
     } catch (IOException e) {
       e.printStackTrace();
       centerPane.getChildren().setAll(new AnchorPane());
+    }
+  }
+  public void loadEditReservation(Reservation reservation) {
+
+    try {
+
+      FXMLLoader loader = new FXMLLoader(
+              getClass().getResource("/views/NewReservation.fxml")
+      );
+
+      Parent view = loader.load();
+
+      NewReservationController controller = loader.getController();
+
+      controller.setDashboardController(this);
+      controller.setReservationToEdit(reservation);
+
+      // Colocar la vista exactamente igual que las demás
+      centerPane.getChildren().setAll(view);
+
+      AnchorPane.setTopAnchor(view, 0.0);
+      AnchorPane.setBottomAnchor(view, 0.0);
+      AnchorPane.setLeftAnchor(view, 0.0);
+      AnchorPane.setRightAnchor(view, 0.0);
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }
