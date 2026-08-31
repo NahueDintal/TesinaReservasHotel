@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-        <?import javafx.geometry.Insets?>
-        <?import javafx.scene.control.Button?>
-        <?import javafx.scene.control.ComboBox?>
-        <?import javafx.scene.control.DatePicker?>
-        <?import javafx.scene.control.Label?>
-        <?import javafx.scene.control.ScrollPane?>
-        <?import javafx.scene.control.TableColumn?>
-        <?import javafx.scene.control.TableView?>
-        <?import javafx.scene.control.TextArea?>
-        <?import javafx.scene.control.TextField?>
-        <?import javafx.scene.layout.ColumnConstraints?>
-        <?import javafx.scene.layout.GridPane?>
-        <?import javafx.scene.layout.HBox?>
-        <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.ComboBox?>
+
+<?import javafx.scene.control.DatePicker?>
+
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.ScrollPane?>
+
+<?import javafx.scene.control.TableColumn?>
+
+<?import javafx.scene.control.TableView?>
+
+<?import javafx.scene.control.TextArea?>
+
+<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.layout.Priority?>
+
+<?import javafx.scene.layout.VBox?>
 
 <ScrollPane
         fitToWidth="true"
@@ -28,16 +45,16 @@
     <content>
 
         <VBox
-                spacing="10.0"
-                maxWidth="900.0"
+                spacing="12.0"
+                maxWidth="950.0"
                 styleClass="new-reservation-container">
 
             <padding>
                 <Insets
-                        top="12.0"
-                        right="25.0"
-                        bottom="15.0"
-                        left="25.0"/>
+                        top="20.0"
+                        right="30.0"
+                        bottom="20.0"
+                        left="30.0"/>
             </padding>
 
 
@@ -47,25 +64,27 @@
 
             <HBox
                     alignment="CENTER_LEFT"
-                    spacing="8.0"
+                    spacing="12.0"
                     maxWidth="Infinity"
                     styleClass="reservation-page-header">
 
                 <Button
                         text="←"
                         onAction="#handleVolver"
-                        prefWidth="34.0"
-                        prefHeight="34.0"
+                        prefWidth="38.0"
+                        prefHeight="38.0"
                         styleClass="reservation-back-button"/>
 
-                <VBox spacing="0.0">
+                <VBox
+                        spacing="2.0"
+                        HBox.hgrow="ALWAYS">
 
                     <Label
                             text="Nueva Reserva"
                             styleClass="reservation-page-title"/>
 
                     <Label
-                            text="Completa los datos para crear una nueva reserva."
+                            text="Completa los datos para crear o modificar una reserva."
                             styleClass="reservation-page-subtitle"/>
 
                 </VBox>
@@ -78,7 +97,7 @@
             <!-- ================================================= -->
 
             <VBox
-                    spacing="8.0"
+                    spacing="10.0"
                     maxWidth="Infinity"
                     styleClass="reservation-card">
 
@@ -87,15 +106,22 @@
                         styleClass="reservation-card-title"/>
 
                 <GridPane
-                        hgap="12.0"
-                        vgap="6.0"
+                        hgap="14.0"
+                        vgap="9.0"
                         maxWidth="Infinity"
                         styleClass="reservation-form-grid">
 
                     <columnConstraints>
-                        <ColumnConstraints minWidth="145.0"/>
-                        <ColumnConstraints hgrow="ALWAYS"/>
+                        <ColumnConstraints
+                                minWidth="170.0"
+                                prefWidth="170.0"/>
+
+                        <ColumnConstraints
+                                hgrow="ALWAYS"/>
                     </columnConstraints>
+
+
+                    <!-- CLIENTE -->
 
                     <Label
                             text="Cliente:"
@@ -105,12 +131,15 @@
 
                     <ComboBox
                             fx:id="cmbCustomer"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione un cliente"
                             GridPane.rowIndex="0"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- CHECK-IN -->
 
                     <Label
                             text="Check-in:"
@@ -120,12 +149,15 @@
 
                     <DatePicker
                             fx:id="dpCheckIn"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione la fecha"
                             GridPane.rowIndex="1"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- CHECK-OUT -->
 
                     <Label
                             text="Check-out:"
@@ -135,12 +167,15 @@
 
                     <DatePicker
                             fx:id="dpCheckOut"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione la fecha"
                             GridPane.rowIndex="2"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- HUÉSPEDES -->
 
                     <Label
                             text="Cantidad de huéspedes:"
@@ -150,13 +185,15 @@
 
                     <TextField
                             fx:id="txtNumberOfGuests"
-                            promptText="Ej: 2"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Ej: 2"
                             GridPane.rowIndex="3"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- TARIFA -->
 
                     <Label
                             text="Tarifa total:"
@@ -166,13 +203,15 @@
 
                     <TextField
                             fx:id="txtTotalRate"
-                            promptText="Ej: 50000"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Ej: 50000.00"
                             GridPane.rowIndex="4"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- ESTADO -->
 
                     <Label
                             text="Estado:"
@@ -182,12 +221,15 @@
 
                     <ComboBox
                             fx:id="cmbReservationStatus"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione el estado"
                             GridPane.rowIndex="5"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- TIPO -->
 
                     <Label
                             text="Tipo de reserva:"
@@ -197,8 +239,9 @@
 
                     <ComboBox
                             fx:id="cmbReservationType"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione el tipo"
                             GridPane.rowIndex="6"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
@@ -206,7 +249,11 @@
                 </GridPane>
 
 
-                <VBox spacing="3.0" maxWidth="Infinity">
+                <!-- OBSERVACIONES -->
+
+                <VBox
+                        spacing="4.0"
+                        maxWidth="Infinity">
 
                     <Label
                             text="Observaciones de la reserva:"
@@ -214,12 +261,11 @@
 
                     <TextArea
                             fx:id="txtReservationObservations"
-                            prefRowCount="1"
-                            prefHeight="40.0"
-                            maxHeight="45.0"
+                            prefRowCount="2"
+                            prefHeight="55.0"
+                            maxWidth="Infinity"
                             promptText="Ingrese observaciones..."
                             wrapText="true"
-                            maxWidth="Infinity"
                             styleClass="reservation-textarea"/>
 
                 </VBox>
@@ -232,33 +278,40 @@
             <!-- ================================================= -->
 
             <VBox
-                    spacing="8.0"
+                    spacing="10.0"
                     maxWidth="Infinity"
                     styleClass="reservation-card">
 
-                <VBox spacing="0.0">
+                <VBox spacing="2.0">
 
                     <Label
                             text="Pago"
                             styleClass="reservation-card-title"/>
 
                     <Label
-                            text="El pago es opcional."
+                            text="El registro del pago es opcional."
                             styleClass="reservation-card-description"/>
 
                 </VBox>
 
 
                 <GridPane
-                        hgap="12.0"
-                        vgap="6.0"
+                        hgap="14.0"
+                        vgap="9.0"
                         maxWidth="Infinity"
                         styleClass="reservation-form-grid">
 
                     <columnConstraints>
-                        <ColumnConstraints minWidth="145.0"/>
-                        <ColumnConstraints hgrow="ALWAYS"/>
+                        <ColumnConstraints
+                                minWidth="170.0"
+                                prefWidth="170.0"/>
+
+                        <ColumnConstraints
+                                hgrow="ALWAYS"/>
                     </columnConstraints>
+
+
+                    <!-- IMPORTE -->
 
                     <Label
                             text="Importe:"
@@ -268,13 +321,15 @@
 
                     <TextField
                             fx:id="txtPaymentAmount"
-                            promptText="Ej: 25000"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Ej: 25000.00"
                             GridPane.rowIndex="0"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- FECHA -->
 
                     <Label
                             text="Fecha de pago:"
@@ -284,12 +339,15 @@
 
                     <DatePicker
                             fx:id="dpPaymentDate"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione la fecha"
                             GridPane.rowIndex="1"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- MÉTODO -->
 
                     <Label
                             text="Método de pago:"
@@ -299,12 +357,15 @@
 
                     <ComboBox
                             fx:id="cmbPaymentMethod"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione el método"
                             GridPane.rowIndex="2"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- ESTADO -->
 
                     <Label
                             text="Estado del pago:"
@@ -314,8 +375,9 @@
 
                     <ComboBox
                             fx:id="cmbPaymentStatus"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
+                            promptText="Seleccione el estado"
                             GridPane.rowIndex="3"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
@@ -323,7 +385,11 @@
                 </GridPane>
 
 
-                <VBox spacing="3.0" maxWidth="Infinity">
+                <!-- OBSERVACIONES PAGO -->
+
+                <VBox
+                        spacing="4.0"
+                        maxWidth="Infinity">
 
                     <Label
                             text="Observaciones del pago:"
@@ -331,12 +397,11 @@
 
                     <TextArea
                             fx:id="txtPaymentObservations"
-                            prefRowCount="1"
-                            prefHeight="40.0"
-                            maxHeight="45.0"
+                            prefRowCount="2"
+                            prefHeight="55.0"
+                            maxWidth="Infinity"
                             promptText="Ingrese observaciones del pago..."
                             wrapText="true"
-                            maxWidth="Infinity"
                             styleClass="reservation-textarea"/>
 
                 </VBox>
@@ -349,25 +414,42 @@
             <!-- ================================================= -->
 
             <VBox
-                    spacing="8.0"
+                    spacing="10.0"
                     maxWidth="Infinity"
                     styleClass="reservation-card">
 
-                <Label
-                        text="Consumos"
-                        styleClass="reservation-card-title"/>
+                <VBox spacing="2.0">
 
+                    <Label
+                            text="Consumos"
+                            styleClass="reservation-card-title"/>
+
+                    <Label
+                            text="Agregue productos o servicios asociados a la reserva."
+                            styleClass="reservation-card-description"/>
+
+                </VBox>
+
+
+                <!-- FORMULARIO DE CONSUMO -->
 
                 <GridPane
-                        hgap="12.0"
-                        vgap="6.0"
+                        hgap="14.0"
+                        vgap="9.0"
                         maxWidth="Infinity"
                         styleClass="reservation-form-grid">
 
                     <columnConstraints>
-                        <ColumnConstraints minWidth="145.0"/>
-                        <ColumnConstraints hgrow="ALWAYS"/>
+                        <ColumnConstraints
+                                minWidth="170.0"
+                                prefWidth="170.0"/>
+
+                        <ColumnConstraints
+                                hgrow="ALWAYS"/>
                     </columnConstraints>
+
+
+                    <!-- TIPO -->
 
                     <Label
                             text="Tipo de consumo:"
@@ -377,13 +459,15 @@
 
                     <ComboBox
                             fx:id="cmbConsumptionType"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
-                            promptText="1 - Producto / 2 - Servicio"
+                            promptText="Producto / Servicio"
                             GridPane.rowIndex="0"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- PRODUCTO -->
 
                     <Label
                             text="Producto:"
@@ -393,13 +477,15 @@
 
                     <ComboBox
                             fx:id="cmbProduct"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
                             promptText="Seleccione un producto"
                             GridPane.rowIndex="1"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- SERVICIO -->
 
                     <Label
                             text="Servicio:"
@@ -409,13 +495,15 @@
 
                     <ComboBox
                             fx:id="cmbService"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
                             promptText="Seleccione un servicio"
                             GridPane.rowIndex="2"
                             GridPane.columnIndex="1"
                             styleClass="reservation-field"/>
 
+
+                    <!-- CANTIDAD -->
 
                     <Label
                             text="Cantidad:"
@@ -425,7 +513,7 @@
 
                     <TextField
                             fx:id="txtConsumptionQuantity"
-                            prefHeight="30.0"
+                            prefHeight="34.0"
                             maxWidth="Infinity"
                             promptText="Ej: 2"
                             GridPane.rowIndex="3"
@@ -435,28 +523,32 @@
                 </GridPane>
 
 
+                <!-- BOTÓN AGREGAR -->
+
                 <HBox
+                        spacing="8.0"
                         alignment="CENTER_RIGHT"
                         maxWidth="Infinity">
 
                     <Button
-                            text="Agregar consumo"
+                            text="+  Agregar consumo"
                             onAction="#handleAddConsumption"
-                            prefWidth="150.0"
-                            prefHeight="32.0"
+                            prefWidth="170.0"
+                            prefHeight="36.0"
                             styleClass="reservation-secondary-button"/>
 
                 </HBox>
 
 
                 <!-- ================================================= -->
-                <!-- TABLA DE CONSUMOS -->
+                <!-- TABLA -->
                 <!-- ================================================= -->
 
                 <TableView
                         fx:id="tblConsumptions"
-                        prefHeight="120.0"
-                        maxHeight="120.0"
+                        prefHeight="150.0"
+                        minHeight="150.0"
+                        maxHeight="150.0"
                         maxWidth="Infinity"
                         styleClass="reservation-table">
 
@@ -465,27 +557,32 @@
                         <TableColumn
                                 fx:id="colConsumptionType"
                                 text="Tipo"
-                                prefWidth="80.0"/>
+                                prefWidth="100.0"
+                                minWidth="80.0"/>
 
                         <TableColumn
                                 fx:id="colConsumptionName"
                                 text="Nombre"
-                                prefWidth="150.0"/>
+                                prefWidth="200.0"
+                                minWidth="120.0"/>
 
                         <TableColumn
                                 fx:id="colConsumptionQuantity"
                                 text="Cantidad"
-                                prefWidth="80.0"/>
+                                prefWidth="100.0"
+                                minWidth="80.0"/>
 
                         <TableColumn
                                 fx:id="colConsumptionUnitPrice"
                                 text="Precio unitario"
-                                prefWidth="110.0"/>
+                                prefWidth="140.0"
+                                minWidth="110.0"/>
 
                         <TableColumn
                                 fx:id="colConsumptionTotal"
                                 text="Total"
-                                prefWidth="100.0"/>
+                                prefWidth="130.0"
+                                minWidth="100.0"/>
 
                     </columns>
 
@@ -493,24 +590,27 @@
 
 
                 <!-- ================================================= -->
-                <!-- ACCIONES DE CONSUMOS -->
+                <!-- BOTONES DE CONSUMOS -->
                 <!-- ================================================= -->
 
                 <HBox
-                        spacing="8.0"
-                        alignment="CENTER_LEFT">
+                        spacing="10.0"
+                        alignment="CENTER_LEFT"
+                        maxWidth="Infinity">
 
                     <Button
                             text="Modificar consumo"
                             onAction="#handleModifyConsumption"
-                            prefWidth="155.0"
-                            prefHeight="32.0"/>
+                            prefWidth="170.0"
+                            prefHeight="36.0"
+                            styleClass="reservation-secondary-button"/>
 
                     <Button
                             text="Anular consumo"
                             onAction="#handleDeleteConsumption"
-                            prefWidth="135.0"
-                            prefHeight="32.0"/>
+                            prefWidth="150.0"
+                            prefHeight="36.0"
+                            styleClass="reservation-danger-button"/>
 
                 </HBox>
 
@@ -520,7 +620,7 @@
                 <!-- ================================================= -->
 
                 <HBox
-                        spacing="8.0"
+                        spacing="10.0"
                         alignment="CENTER_RIGHT"
                         maxWidth="Infinity"
                         styleClass="reservation-total-container">
@@ -533,8 +633,9 @@
                             fx:id="txtConsumptionTotal"
                             text="0.00"
                             editable="false"
-                            prefWidth="100.0"
-                            prefHeight="30.0"
+                            focusTraversable="false"
+                            prefWidth="120.0"
+                            prefHeight="34.0"
                             styleClass="reservation-total-field"/>
 
                 </HBox>
@@ -543,11 +644,11 @@
 
 
             <!-- ================================================= -->
-            <!-- ACCIONES FINALES -->
+            <!-- BOTONES FINALES -->
             <!-- ================================================= -->
 
             <HBox
-                    spacing="8.0"
+                    spacing="10.0"
                     alignment="CENTER_RIGHT"
                     maxWidth="Infinity"
                     styleClass="reservation-actions">
@@ -555,15 +656,15 @@
                 <Button
                         text="Cancelar"
                         onAction="#handleCancel"
-                        prefWidth="100.0"
-                        prefHeight="34.0"
+                        prefWidth="110.0"
+                        prefHeight="38.0"
                         styleClass="reservation-cancel-button"/>
 
                 <Button
                         text="Guardar reserva"
                         onAction="#handleSave"
-                        prefWidth="145.0"
-                        prefHeight="34.0"
+                        prefWidth="170.0"
+                        prefHeight="38.0"
                         styleClass="reservation-primary-button"/>
 
             </HBox>
@@ -573,5 +674,4 @@
     </content>
 
 </ScrollPane>
-
 
