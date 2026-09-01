@@ -2,6 +2,7 @@ package models;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,24 +10,26 @@ public class Room {
 
   private static final Logger logger = LoggerFactory.getLogger(Room.class);
 
-  private int idRoom;
+  private int idRoom; // Clave primaria autogenerada
   private int number;
   private int floor;
-  private int idRoomType;
-  private String typeName;
+  private int idRoomType; // FK a room_type
+  private String typeName; // Solo para mostrar (no persistente)
   private int capacity;
-  private int idRoomView;
-  private String viewName;
+  private int idRoomView; // FK a room_view
+  private String viewName; // Solo para mostrar (no persistente)
   private boolean available = true;
   private boolean outOfService = false;
-  private boolean active = true;
-  private List<String> features = new ArrayList<>();
+  private boolean active = true; // Soft delete: true = activa, false = inactiva
+  private List<String> features = new ArrayList<>(); // Nombres de características
   private double price;
   private String description;
 
+  // Constructor vacío
   public Room() {
   }
 
+  // Constructor con parámetros básicos (para creación desde formulario)
   public Room(String numberStr, String floorStr, String idRoomTypeStr, String capacityStr,
       String idRoomViewStr, List<String> features, String priceStr, String description) {
     setNumber(numberStr);
@@ -39,8 +42,14 @@ public class Room {
     setDescription(description);
   }
 
+  // ========== GETTERS Y SETTERS ==========
+
   public int getIdRoom() {
     return idRoom;
+  }
+
+  public void setIdRoom(int idRoom) {
+    this.idRoom = idRoom;
   }
 
   public int getNumber() {
@@ -50,8 +59,9 @@ public class Room {
   public void setNumber(String numberStr) {
     try {
       int parsed = Integer.parseInt(numberStr);
-      if (parsed < 0)
-        throw new NumberFormatException("El número debe ser positivo.");
+      if (parsed < 0) {
+        throw new NumberFormatException("El número debe ser un entero positivo.");
+      }
       this.number = parsed;
     } catch (NumberFormatException e) {
       logger.error("Número de habitación inválido: '{}'", numberStr, e);
@@ -66,8 +76,9 @@ public class Room {
   public void setFloor(String floorStr) {
     try {
       int parsed = Integer.parseInt(floorStr);
-      if (parsed < 0)
-        throw new NumberFormatException("El piso debe ser positivo.");
+      if (parsed < 0) {
+        throw new NumberFormatException("El piso debe ser un entero positivo.");
+      }
       this.floor = parsed;
     } catch (NumberFormatException e) {
       logger.error("Piso inválido: '{}'", floorStr, e);
@@ -98,8 +109,9 @@ public class Room {
   public void setCapacity(String capacityStr) {
     try {
       int parsed = Integer.parseInt(capacityStr);
-      if (parsed <= 0)
+      if (parsed <= 0) {
         throw new NumberFormatException("La capacidad debe ser mayor a cero.");
+      }
       this.capacity = parsed;
     } catch (NumberFormatException e) {
       logger.error("Capacidad inválida: '{}'", capacityStr, e);
@@ -140,11 +152,12 @@ public class Room {
 
   public void setOutOfService(boolean outOfService) {
     this.outOfService = outOfService;
-    if (outOfService)
+    if (outOfService) {
       this.available = false;
+    }
   }
 
-  public boolean getIsActive() {
+  public boolean isActive() {
     return active;
   }
 
@@ -157,7 +170,7 @@ public class Room {
   }
 
   public void setFeatures(List<String> features) {
-    this.features = features;
+    this.features = features != null ? features : new ArrayList<>();
   }
 
   public double getPrice() {
@@ -167,8 +180,9 @@ public class Room {
   public void setPrice(String priceStr) {
     try {
       double parsed = Double.parseDouble(priceStr);
-      if (parsed < 0)
+      if (parsed < 0) {
         throw new NumberFormatException("El precio no puede ser negativo.");
+      }
       this.price = parsed;
     } catch (NumberFormatException e) {
       logger.error("Precio inválido: '{}'", priceStr, e);

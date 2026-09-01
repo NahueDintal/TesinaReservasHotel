@@ -111,8 +111,8 @@ public class RoomFormController {
         showAlert("Éxito", "Habitación guardada", "La habitación se ha guardado correctamente.");
         closeWindow();
       }
-    } catch (SQLException e) {
-      showAlert("Error", "No se pudo guardar la habitación", e.getMessage());
+    } catch (RuntimeException e) {
+      showAlert("Error", "No se pudo actualizar", e.getMessage());
     }
   }
 

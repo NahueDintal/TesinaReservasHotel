@@ -101,7 +101,7 @@ public class UnavailableRoomsController {
             Stage stage = (Stage) tableUnavailableRooms.getScene().getWindow();
             stage.close();
           }
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
           showAlert("Error", "No se pudo reactivar la habitación", e.getMessage());
         }
       }

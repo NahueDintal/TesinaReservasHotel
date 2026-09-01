@@ -245,7 +245,7 @@ public class RoomController {
             updateCounter();
             showAlert("Éxito", "Habitación actualizada", "");
           }
-        } catch (SQLException e) {
+        } catch (RuntimeException e) {
           showAlert("Error", "No se pudo actualizar", e.getMessage());
         }
       }
