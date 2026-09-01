@@ -11,23 +11,50 @@ public class RoomDAO {
 
   private static final Logger logger = LoggerFactory.getLogger(RoomDAO.class);
 
-  public List<Room> listAll() {
+  public List<Room> listActive() {
     List<Room> rooms = new ArrayList<>();
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
-        "JOIN room_view rv ON r.id_room_view = rv.id_room_view";
+        "JOIN room_view rv ON r.id_room_view = rv.id_room_view " +
+        "WHERE r.active = TRUE";
+
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery()) {
+
       while (rs.next()) {
         Room room = mapRoom(rs);
-        room.setFeatures(loadFeaturesForRoom(conn, room.getNumber()));
+        room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom())); // usa idRoom
         rooms.add(room);
       }
     } catch (SQLException e) {
-      logger.error("Error al listar habitaciones", e);
-      throw new RuntimeException("Error al listar habitaciones", e);
+      logger.error("Error al listar habitaciones activas", e);
+      throw new RuntimeException("Error al listar habitaciones activas", e);
+    }
+    return rooms;
+  }
+
+  public List<Room> listInactive() {
+    List<Room> rooms = new ArrayList<>();
+    String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
+        "FROM room r " +
+        "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
+        "JOIN room_view rv ON r.id_room_view = rv.id_room_view " +
+        "WHERE r.active = FALSE";
+
+    try (Connection conn = ConexionDB.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery()) {
+
+      while (rs.next()) {
+        Room room = mapRoom(rs);
+        room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom()));
+        rooms.add(room);
+      }
+    } catch (SQLException e) {
+      logger.error("Error al listar habitaciones inactivas", e);
+      throw new RuntimeException("Error al listar habitaciones inactivas", e);
     }
     return rooms;
   }
@@ -130,13 +157,24 @@ public class RoomDAO {
     }
   }
 
-  public void delete(int number) throws SQLException {
-    String sql = "DELETE FROM room WHERE number = ?";
+  public boolean delete(int idRoom) {
+    String sql = "UPDATE room SET active = FALSE WHERE idRoom = ?";
+
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setInt(1, number);
-      stmt.executeUpdate();
-      logger.info("Habitación eliminada correctamente: número {}", number);
+
+      stmt.setInt(1, idRoom);
+      int affected = stmt.executeUpdate();
+      if (affected > 0) {
+        logger.info("Habitación con idRoom {} marcada como inactiva (soft delete).", idRoom);
+        return true;
+      } else {
+        logger.warn("No se encontró habitación con idRoom {} para soft delete.", idRoom);
+        return false;
+      }
+    } catch (SQLException e) {
+      logger.error("Error al realizar soft delete de habitación idRoom {}", idRoom, e);
+      throw new RuntimeException("Error al eliminar lógicamente la habitación", e);
     }
   }
 

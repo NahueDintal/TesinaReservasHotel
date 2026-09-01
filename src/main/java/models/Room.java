@@ -9,6 +9,7 @@ public class Room {
 
   private static final Logger logger = LoggerFactory.getLogger(Room.class);
 
+  private int idRoom;
   private int number;
   private int floor;
   private int idRoomType;
@@ -18,6 +19,7 @@ public class Room {
   private String viewName;
   private boolean available = true;
   private boolean outOfService = false;
+  private boolean active = true;
   private List<String> features = new ArrayList<>();
   private double price;
   private String description;
@@ -35,6 +37,10 @@ public class Room {
     setFeatures(features != null ? features : new ArrayList<>());
     setPrice(priceStr);
     setDescription(description);
+  }
+
+  public int idRoom() {
+    return idRoom;
   }
 
   public int getNumber() {
@@ -136,6 +142,14 @@ public class Room {
     this.outOfService = outOfService;
     if (outOfService)
       this.available = false;
+  }
+
+  public boolean getIsActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
   }
 
   public List<String> getFeatures() {
