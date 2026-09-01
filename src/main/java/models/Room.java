@@ -10,26 +10,24 @@ public class Room {
 
   private static final Logger logger = LoggerFactory.getLogger(Room.class);
 
-  private int idRoom; // Clave primaria autogenerada
+  private int idRoom;
   private int number;
   private int floor;
-  private int idRoomType; // FK a room_type
-  private String typeName; // Solo para mostrar (no persistente)
+  private int idRoomType;
+  private String typeName;
   private int capacity;
-  private int idRoomView; // FK a room_view
-  private String viewName; // Solo para mostrar (no persistente)
+  private int idRoomView;
+  private String viewName;
   private boolean available = true;
   private boolean outOfService = false;
-  private boolean active = true; // Soft delete: true = activa, false = inactiva
-  private List<String> features = new ArrayList<>(); // Nombres de características
+  private boolean active = true;
+  private List<String> features = new ArrayList<>();
   private double price;
   private String description;
 
-  // Constructor vacío
   public Room() {
   }
 
-  // Constructor con parámetros básicos (para creación desde formulario)
   public Room(String numberStr, String floorStr, String idRoomTypeStr, String capacityStr,
       String idRoomViewStr, List<String> features, String priceStr, String description) {
     setNumber(numberStr);
@@ -37,7 +35,7 @@ public class Room {
     setIdRoomType(Integer.parseInt(idRoomTypeStr));
     setCapacity(capacityStr);
     setIdRoomView(Integer.parseInt(idRoomViewStr));
-    setFeatures(features != null ? features : new ArrayList<>());
+    setFeatures(features);
     setPrice(priceStr);
     setDescription(description);
   }
@@ -56,13 +54,16 @@ public class Room {
     return number;
   }
 
+  public void setNumber(int number) {
+    if (number < 0) {
+      throw new IllegalArgumentException("El número de habitación debe ser un entero positivo.");
+    }
+    this.number = number;
+  }
+
   public void setNumber(String numberStr) {
     try {
-      int parsed = Integer.parseInt(numberStr);
-      if (parsed < 0) {
-        throw new NumberFormatException("El número debe ser un entero positivo.");
-      }
-      this.number = parsed;
+      setNumber(Integer.parseInt(numberStr));
     } catch (NumberFormatException e) {
       logger.error("Número de habitación inválido: '{}'", numberStr, e);
       throw new IllegalArgumentException("Número de habitación inválido", e);
@@ -73,13 +74,16 @@ public class Room {
     return floor;
   }
 
+  public void setFloor(int floor) {
+    if (floor < 0) {
+      throw new IllegalArgumentException("El piso debe ser un entero positivo.");
+    }
+    this.floor = floor;
+  }
+
   public void setFloor(String floorStr) {
     try {
-      int parsed = Integer.parseInt(floorStr);
-      if (parsed < 0) {
-        throw new NumberFormatException("El piso debe ser un entero positivo.");
-      }
-      this.floor = parsed;
+      setFloor(Integer.parseInt(floorStr));
     } catch (NumberFormatException e) {
       logger.error("Piso inválido: '{}'", floorStr, e);
       throw new IllegalArgumentException("Piso inválido", e);
@@ -106,13 +110,16 @@ public class Room {
     return capacity;
   }
 
+  public void setCapacity(int capacity) {
+    if (capacity <= 0) {
+      throw new IllegalArgumentException("La capacidad debe ser mayor a cero.");
+    }
+    this.capacity = capacity;
+  }
+
   public void setCapacity(String capacityStr) {
     try {
-      int parsed = Integer.parseInt(capacityStr);
-      if (parsed <= 0) {
-        throw new NumberFormatException("La capacidad debe ser mayor a cero.");
-      }
-      this.capacity = parsed;
+      setCapacity(Integer.parseInt(capacityStr));
     } catch (NumberFormatException e) {
       logger.error("Capacidad inválida: '{}'", capacityStr, e);
       throw new IllegalArgumentException("Capacidad inválida", e);
@@ -136,7 +143,7 @@ public class Room {
   }
 
   public boolean isAvailable() {
-    return !outOfService && available;
+    return available;
   }
 
   public void setAvailable(boolean available) {
@@ -146,7 +153,7 @@ public class Room {
     this.available = available;
   }
 
-  public boolean getOutOfService() {
+  public boolean isOutOfService() {
     return outOfService;
   }
 
@@ -170,20 +177,23 @@ public class Room {
   }
 
   public void setFeatures(List<String> features) {
-    this.features = features != null ? features : new ArrayList<>();
+    this.features = (features != null) ? features : new ArrayList<>();
   }
 
   public double getPrice() {
     return price;
   }
 
+  public void setPrice(double price) {
+    if (price < 0) {
+      throw new IllegalArgumentException("El precio no puede ser negativo.");
+    }
+    this.price = price;
+  }
+
   public void setPrice(String priceStr) {
     try {
-      double parsed = Double.parseDouble(priceStr);
-      if (parsed < 0) {
-        throw new NumberFormatException("El precio no puede ser negativo.");
-      }
-      this.price = parsed;
+      setPrice(Double.parseDouble(priceStr));
     } catch (NumberFormatException e) {
       logger.error("Precio inválido: '{}'", priceStr, e);
       throw new IllegalArgumentException("Precio inválido", e);

@@ -14,50 +14,35 @@ public class RoomDAO {
 
   // ========== LISTAR ACTIVAS ==========
   public List<Room> listActive() {
-    List<Room> rooms = new ArrayList<>();
-    String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
-        "FROM room r " +
-        "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
-        "JOIN room_view rv ON r.id_room_view = rv.id_room_view " +
-        "WHERE r.active = TRUE";
-
-    try (Connection conn = ConexionDB.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery()) {
-
-      while (rs.next()) {
-        Room room = mapRoom(rs);
-        room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom())); // usa idRoom
-        rooms.add(room);
-      }
-    } catch (SQLException e) {
-      logger.error("Error al listar habitaciones activas", e);
-      throw new RuntimeException("Error al listar habitaciones activas", e);
-    }
-    return rooms;
+    return listByActive(true);
   }
 
   // ========== LISTAR INACTIVAS ==========
   public List<Room> listInactive() {
+    return listByActive(false);
+  }
+
+  private List<Room> listByActive(boolean active) {
     List<Room> rooms = new ArrayList<>();
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
         "JOIN room_view rv ON r.id_room_view = rv.id_room_view " +
-        "WHERE r.active = FALSE";
+        "WHERE r.active = ?";
 
     try (Connection conn = ConexionDB.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery()) {
-
-      while (rs.next()) {
-        Room room = mapRoom(rs);
-        room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom()));
-        rooms.add(room);
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setBoolean(1, active);
+      try (ResultSet rs = stmt.executeQuery()) {
+        while (rs.next()) {
+          Room room = mapRoom(rs);
+          room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom()));
+          rooms.add(room);
+        }
       }
     } catch (SQLException e) {
-      logger.error("Error al listar habitaciones inactivas", e);
-      throw new RuntimeException("Error al listar habitaciones inactivas", e);
+      logger.error("Error al listar habitaciones (active={})", active, e);
+      throw new RuntimeException("Error al listar habitaciones", e);
     }
     return rooms;
   }
@@ -75,7 +60,7 @@ public class RoomDAO {
       try (ResultSet rs = stmt.executeQuery()) {
         if (rs.next()) {
           Room room = mapRoom(rs);
-          room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom())); // antes usaba number
+          room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom()));
           return room;
         }
       }
@@ -89,7 +74,8 @@ public class RoomDAO {
   // ========== INSERTAR ==========
   public boolean insert(Room room) {
     String sqlRoom = "INSERT INTO room (number, floor, id_room_type, capacity, id_room_view, " +
-        "available, out_of_service, active, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?)";
+        "available, out_of_service, active, price, description) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?)";
     Connection conn = null;
     try {
       conn = ConexionDB.getConnection();
@@ -103,7 +89,7 @@ public class RoomDAO {
         stmt.setInt(4, room.getCapacity());
         stmt.setInt(5, room.getIdRoomView());
         stmt.setBoolean(6, room.isAvailable());
-        stmt.setBoolean(7, room.getOutOfService());
+        stmt.setBoolean(7, room.isOutOfService());
         stmt.setDouble(8, room.getPrice());
         stmt.setString(9, room.getDescription());
         stmt.executeUpdate();
@@ -111,43 +97,31 @@ public class RoomDAO {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
           if (generatedKeys.next()) {
             generatedIdRoom = generatedKeys.getInt(1);
-            room.setIdRoom(generatedIdRoom); // asignar al objeto
+            room.setIdRoom(generatedIdRoom);
           } else {
             throw new SQLException("No se pudo obtener el idRoom generado.");
           }
         }
       }
 
-      insertFeatures(conn, generatedIdRoom, room.getFeatures()); // usar idRoom
-
+      insertFeatures(conn, generatedIdRoom, room.getFeatures());
       conn.commit();
       logger.info("Habitación insertada correctamente: idRoom {}", generatedIdRoom);
       return true;
     } catch (SQLException e) {
-      if (conn != null) {
-        try {
-          conn.rollback();
-        } catch (SQLException ex) {
-          logger.error("Error al hacer rollback", ex);
-        }
-      }
+      rollback(conn);
       logger.error("Error al insertar habitación", e);
       throw new RuntimeException("Error al insertar habitación", e);
     } finally {
-      if (conn != null) {
-        try {
-          conn.setAutoCommit(true);
-        } catch (SQLException ex) {
-          logger.error("Error al restaurar autocommit", ex);
-        }
-      }
+      restoreAutoCommit(conn);
     }
   }
 
   // ========== ACTUALIZAR ==========
   public boolean update(Room room) {
-    String sqlRoom = "UPDATE room SET number = ?, floor = ?, id_room_type = ?, capacity = ?, id_room_view = ?, " +
-        "available = ?, out_of_service = ?, active = ?, price = ?, description = ? WHERE idRoom = ?";
+    String sqlRoom = "UPDATE room SET number = ?, floor = ?, id_room_type = ?, capacity = ?, " +
+        "id_room_view = ?, available = ?, out_of_service = ?, active = ?, " +
+        "price = ?, description = ? WHERE idRoom = ?";
     Connection conn = null;
     try {
       conn = ConexionDB.getConnection();
@@ -160,7 +134,7 @@ public class RoomDAO {
         stmt.setInt(4, room.getCapacity());
         stmt.setInt(5, room.getIdRoomView());
         stmt.setBoolean(6, room.isAvailable());
-        stmt.setBoolean(7, room.getOutOfService());
+        stmt.setBoolean(7, room.isOutOfService());
         stmt.setBoolean(8, room.isActive());
         stmt.setDouble(9, room.getPrice());
         stmt.setString(10, room.getDescription());
@@ -175,23 +149,11 @@ public class RoomDAO {
       logger.info("Habitación actualizada correctamente: idRoom {}", room.getIdRoom());
       return true;
     } catch (SQLException e) {
-      if (conn != null) {
-        try {
-          conn.rollback();
-        } catch (SQLException ex) {
-          logger.error("Error al hacer rollback", ex);
-        }
-      }
+      rollback(conn);
       logger.error("Error al actualizar habitación idRoom {}", room.getIdRoom(), e);
       throw new RuntimeException("Error al actualizar habitación", e);
     } finally {
-      if (conn != null) {
-        try {
-          conn.setAutoCommit(true);
-        } catch (SQLException ex) {
-          logger.error("Error al restaurar autocommit", ex);
-        }
-      }
+      restoreAutoCommit(conn);
     }
   }
 
@@ -219,17 +181,17 @@ public class RoomDAO {
   private Room mapRoom(ResultSet rs) throws SQLException {
     Room room = new Room();
     room.setIdRoom(rs.getInt("idRoom"));
-    room.setNumber(String.valueOf(rs.getInt("number")));
-    room.setFloor(String.valueOf(rs.getInt("floor")));
+    room.setNumber(rs.getInt("number"));
+    room.setFloor(rs.getInt("floor"));
     room.setIdRoomType(rs.getInt("id_room_type"));
     room.setTypeName(rs.getString("type_name"));
-    room.setCapacity(String.valueOf(rs.getInt("capacity")));
+    room.setCapacity(rs.getInt("capacity"));
     room.setIdRoomView(rs.getInt("id_room_view"));
     room.setViewName(rs.getString("view_name"));
     room.setAvailable(rs.getBoolean("available"));
     room.setOutOfService(rs.getBoolean("out_of_service"));
     room.setActive(rs.getBoolean("active"));
-    room.setPrice(String.valueOf(rs.getDouble("price")));
+    room.setPrice(rs.getDouble("price"));
     room.setDescription(rs.getString("description"));
     return room;
   }
@@ -239,7 +201,7 @@ public class RoomDAO {
     List<String> features = new ArrayList<>();
     String sql = "SELECT f.name FROM feature f " +
         "JOIN room_feature rf ON f.id_feature = rf.id_feature " +
-        "WHERE rf.idRoom = ?"; // <-- ahora usa idRoom
+        "WHERE rf.idRoom = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
       try (ResultSet rs = stmt.executeQuery()) {
@@ -252,7 +214,8 @@ public class RoomDAO {
   }
 
   private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) throws SQLException {
-    String sql = "INSERT INTO room_feature (idRoom, id_feature) SELECT ?, id_feature FROM feature WHERE name = ?";
+    String sql = "INSERT INTO room_feature (idRoom, id_feature) " +
+        "SELECT ?, id_feature FROM feature WHERE name = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       for (String featureName : featureNames) {
         stmt.setInt(1, idRoom);
@@ -268,6 +231,27 @@ public class RoomDAO {
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
       stmt.executeUpdate();
+    }
+  }
+
+  // ========== UTILIDADES PARA TRANSACCIONES ==========
+  private void rollback(Connection conn) {
+    if (conn != null) {
+      try {
+        conn.rollback();
+      } catch (SQLException ex) {
+        logger.error("Error al hacer rollback", ex);
+      }
+    }
+  }
+
+  private void restoreAutoCommit(Connection conn) {
+    if (conn != null) {
+      try {
+        conn.setAutoCommit(true);
+      } catch (SQLException ex) {
+        logger.error("Error al restaurar autocommit", ex);
+      }
     }
   }
 }
