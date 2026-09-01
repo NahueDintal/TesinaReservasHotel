@@ -143,51 +143,65 @@ public class RoomFormController {
     StringBuilder errors = new StringBuilder();
 
     if (txtNumber.getText().trim().isEmpty())
-      errors.append("El número es obligatorio.\n");
+      errors.append("El valor de habitación es obligatorio.\n");
     else
       try {
         int n = Integer.parseInt(txtNumber.getText().trim());
-        if (n <= 0)
-          errors.append("El número debe ser positivo.\n");
+        if (n <= 0) {
+          errors.append("El valor de habitación debe ser positivo.\n");
+        }
+        if (n > 9999) {
+          errors.append("El valor de habitación no puede ser mayor a 9999.\n");
+        }
       } catch (NumberFormatException e) {
-        errors.append("El Ingrese un valor que sea un número entero.\n");
+        errors.append("El valor de habitación tiene que ser entero.\n");
       }
 
     if (txtFloor.getText().trim().isEmpty())
-      errors.append("El piso es obligatorio.\n");
+      errors.append("El valor de piso es obligatorio.\n");
     else
       try {
         int f = Integer.parseInt(txtFloor.getText().trim());
-        if (f < 0)
-          errors.append("El piso no puede ser negativo.\n");
+        if (f < 0) {
+          errors.append("El valor de piso no puede ser negativo.\n");
+        }
+        if (f > 999) {
+          errors.append("El valor de piso no puede ser mayor a 999.\n");
+        }
       } catch (NumberFormatException e) {
-        errors.append("El piso debe ser un número entero.\n");
+        errors.append("El valor de 'Piso' debe ser un número entero.\n");
       }
 
     if (comboType.getValue() == null)
-      errors.append("Seleccione un tipo.\n");
+      errors.append("Seleccione un tipo de habitación.\n");
+
     if (txtCapacity.getText().trim().isEmpty())
-      errors.append("La capacidad es obligatoria.\n");
+      errors.append("La 'Capacidad' es obligatoria.\n");
     else
       try {
         int c = Integer.parseInt(txtCapacity.getText().trim());
-        if (c <= 0)
-          errors.append("La capacidad debe ser positiva.\n");
+        if (c <= 0) {
+          errors.append("El valor de 'Capacidad' debe ser positivo.\n");
+        }
+        if (c > 999) {
+          errors.append("El valor de 'Capacidad' no puede ser mayor a 999.\n");
+        }
       } catch (NumberFormatException e) {
-        errors.append("La capacidad debe ser un número entero.\n");
+        errors.append("El valor de 'Capacidad' debe ser un número entero.\n");
       }
 
     if (comboView.getValue() == null)
       errors.append("Seleccione una vista.\n");
     if (txtPrice.getText().trim().isEmpty())
-      errors.append("El precio es obligatorio.\n");
+      errors.append("El 'Precio' es obligatorio.\n");
     else
       try {
         double p = Double.parseDouble(txtPrice.getText().trim());
-        if (p < 0)
-          errors.append("El precio no puede ser negativo.\n");
+        if (p < 0) {
+          errors.append("El valor 'Precio' no puede ser negativo.\n");
+        }
       } catch (NumberFormatException e) {
-        errors.append("El precio debe ser un número, puede ser decimal.\n");
+        errors.append("El valor de 'Precio' debe ser un número, puede ser decimal.\n");
       }
 
     if (errors.length() > 0) {
