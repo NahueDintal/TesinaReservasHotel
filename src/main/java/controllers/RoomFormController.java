@@ -143,37 +143,37 @@ public class RoomFormController {
     StringBuilder errors = new StringBuilder();
 
     if (txtNumber.getText().trim().isEmpty())
-      errors.append("El valor de habitación es obligatorio.\n");
+      errors.append("El valor de 'Habitación' es obligatorio.\n");
     else
       try {
         int n = Integer.parseInt(txtNumber.getText().trim());
         if (n <= 0) {
-          errors.append("El valor de habitación debe ser positivo.\n");
+          errors.append("El valor de 'Habitación' debe ser positivo.\n");
         }
         if (n > 9999) {
-          errors.append("El valor de habitación no puede ser mayor a 9999.\n");
+          errors.append("El valor de 'Habitación' no puede ser mayor a 9999.\n");
         }
       } catch (NumberFormatException e) {
-        errors.append("El valor de habitación tiene que ser entero.\n");
+        errors.append("El valor de 'Habitación' tiene que ser entero.\n");
       }
 
     if (txtFloor.getText().trim().isEmpty())
-      errors.append("El valor de piso es obligatorio.\n");
+      errors.append("El valor de 'Piso' es obligatorio.\n");
     else
       try {
         int f = Integer.parseInt(txtFloor.getText().trim());
         if (f < 0) {
-          errors.append("El valor de piso no puede ser negativo.\n");
+          errors.append("El valor de 'Piso' no puede ser negativo.\n");
         }
         if (f > 999) {
-          errors.append("El valor de piso no puede ser mayor a 999.\n");
+          errors.append("El valor de 'Piso' no puede ser mayor a 999.\n");
         }
       } catch (NumberFormatException e) {
         errors.append("El valor de 'Piso' debe ser un número entero.\n");
       }
 
     if (comboType.getValue() == null)
-      errors.append("Seleccione un tipo de habitación.\n");
+      errors.append("Seleccione un 'Tipo' de habitación.\n");
 
     if (txtCapacity.getText().trim().isEmpty())
       errors.append("La 'Capacidad' es obligatoria.\n");
@@ -191,7 +191,7 @@ public class RoomFormController {
       }
 
     if (comboView.getValue() == null)
-      errors.append("Seleccione una vista.\n");
+      errors.append("Seleccione una 'Vista'.\n");
     if (txtPrice.getText().trim().isEmpty())
       errors.append("El 'Precio' es obligatorio.\n");
     else
