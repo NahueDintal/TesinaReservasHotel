@@ -70,7 +70,7 @@ public class UnavailableRoomsController {
 
   private void loadUnavailableRooms() {
     try {
-      unavailableRooms.setAll(roomDAO.listAll());
+      unavailableRooms.setAll(roomDAO.listActive());
       unavailableRooms.removeIf(Room::isAvailable); // solo no disponibles
       filteredUnavailable = new FilteredList<>(unavailableRooms, p -> true);
       tableUnavailableRooms.setItems(filteredUnavailable);

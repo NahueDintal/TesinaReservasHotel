@@ -25,7 +25,7 @@ public class RoomDAO {
 
       while (rs.next()) {
         Room room = mapRoom(rs);
-        room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom())); // usa idRoom
+        room.setFeatures(loadFeaturesForRoom(conn, room.getIdRoom()));
         rooms.add(room);
       }
     } catch (SQLException e) {

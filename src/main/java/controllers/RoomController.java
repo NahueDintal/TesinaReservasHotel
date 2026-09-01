@@ -149,7 +149,7 @@ public class RoomController {
 
   private void loadRooms(boolean onlyAvailable) {
     try {
-      masterRoomList.setAll(roomDAO.listAll());
+      masterRoomList.setAll(roomDAO.listActive());
       if (onlyAvailable) {
         masterRoomList.removeIf(room -> !room.isAvailable());
       }

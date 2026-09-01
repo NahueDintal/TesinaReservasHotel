@@ -39,7 +39,7 @@ public class Room {
     setDescription(description);
   }
 
-  public int idRoom() {
+  public int getIdRoom() {
     return idRoom;
   }
 

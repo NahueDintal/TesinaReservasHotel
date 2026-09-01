@@ -166,7 +166,7 @@ CREATE TABLE department (
 
 
 -- ==========================================
--- Tabla: RoomType (NUEVO - desde el script normalizado)
+-- Tabla: RoomType
 -- ==========================================
 
 CREATE TABLE room_type (
@@ -176,7 +176,7 @@ CREATE TABLE room_type (
 
 
 -- ==========================================
--- Tabla: RoomView (NUEVO - desde el script normalizado)
+-- Tabla: RoomView
 -- ==========================================
 
 CREATE TABLE room_view (
@@ -186,7 +186,7 @@ CREATE TABLE room_view (
 
 
 -- ==========================================
--- Tabla: Feature (NUEVO - desde el script normalizado)
+-- Tabla: Feature
 -- ==========================================
 
 CREATE TABLE feature (
@@ -223,17 +223,19 @@ CREATE TABLE Customer (
 
 
 -- ==========================================
--- Tabla: Room (VERSIÓN NORMALIZADA)
+-- Tabla: Room (MODIFICADA con idRoom y active)
 -- ==========================================
 
 CREATE TABLE room (
-    number INT PRIMARY KEY,
+    idRoom INT AUTO_INCREMENT PRIMARY KEY,
+    number INT NOT NULL UNIQUE,
     floor INT NOT NULL,
     id_room_type INT NOT NULL,
     capacity INT NOT NULL,
     id_room_view INT NOT NULL,
     available BOOLEAN NOT NULL DEFAULT TRUE,
     out_of_service BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     price DECIMAL(10,2) NOT NULL,
     description TEXT,
     FOREIGN KEY (id_room_type) REFERENCES room_type(id_room_type),
@@ -242,14 +244,14 @@ CREATE TABLE room (
 
 
 -- ==========================================
--- Tabla: RoomFeature (NUEVO - relación muchos a muchos)
+-- Tabla: RoomFeature (MODIFICADA para usar idRoom)
 -- ==========================================
 
 CREATE TABLE room_feature (
-    number INT NOT NULL,
+    idRoom INT NOT NULL,
     id_feature INT NOT NULL,
-    PRIMARY KEY (number, id_feature),
-    FOREIGN KEY (number) REFERENCES room(number) ON DELETE CASCADE,
+    PRIMARY KEY (idRoom, id_feature),
+    FOREIGN KEY (idRoom) REFERENCES room(idRoom) ON DELETE CASCADE,
     FOREIGN KEY (id_feature) REFERENCES feature(id_feature) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -372,6 +374,7 @@ INSERT INTO DocumentType (name) VALUES
 ('pasaporte'),
 ('cedula de identidad');
 
+
 -- ==========================================
 -- Country
 -- ==========================================
@@ -484,7 +487,7 @@ INSERT INTO ConsumptionStatus (name) VALUES
 
 
 -- ==========================================
--- room_type (desde script normalizado)
+-- room_type
 -- ==========================================
 
 INSERT INTO room_type (name) VALUES
@@ -492,7 +495,7 @@ INSERT INTO room_type (name) VALUES
 
 
 -- ==========================================
--- room_view (desde script normalizado)
+-- room_view
 -- ==========================================
 
 INSERT INTO room_view (name) VALUES
@@ -500,7 +503,7 @@ INSERT INTO room_view (name) VALUES
 
 
 -- ==========================================
--- feature (desde script normalizado)
+-- feature
 -- ==========================================
 
 INSERT INTO feature (name) VALUES
@@ -546,35 +549,37 @@ VALUES
 
 
 -- ==========================================
--- ROOMS (VERSIÓN NORMALIZADA)
+-- ROOMS (MODIFICADA con active)
 -- ==========================================
 
 INSERT INTO room
-(number, floor, id_room_type, capacity, id_room_view, available, out_of_service, price, description)
+(number, floor, id_room_type, capacity, id_room_view, available, out_of_service, active, price, description)
 VALUES
-(101, 1, 1, 2, 4, 1, 0, 50.00, 'Habitacion simple'),
-(102, 1, 2, 4, 4, 1, 0, 80.00, 'Habitacion doble'),
-(201, 2, 3, 2, 1, 0, 0, 150.00, 'Suite de lujo'),
-(202, 2, 4, 6, 2, 1, 0, 120.00, 'Habitacion familiar'),
-(301, 3, 1, 1, 4, 0, 1, 40.00, 'Habitacion en mantenimiento');
+(101, 1, 1, 2, 4, 1, 0, 1, 50.00, 'Habitacion simple'),
+(102, 1, 2, 4, 4, 1, 0, 1, 80.00, 'Habitacion doble'),
+(201, 2, 3, 2, 1, 0, 0, 1, 150.00, 'Suite de lujo'),
+(202, 2, 4, 6, 2, 1, 0, 1, 120.00, 'Habitacion familiar'),
+(301, 3, 1, 1, 4, 0, 1, 1, 40.00, 'Habitacion en mantenimiento');
 
 
 -- ==========================================
--- room_feature (relaciones habitación - característica)
+-- room_feature (MODIFICADA con idRoom)
 -- ==========================================
 
-INSERT INTO room_feature (number, id_feature) VALUES
-(101, 1), -- WiFi
-(101, 2), -- TV
-(102, 1), -- WiFi
-(102, 2), -- TV
-(102, 3), -- Aire acondicionado
-(201, 1), -- WiFi
-(201, 2), -- TV
-(201, 5), -- Minibar
-(202, 1), -- WiFi
-(202, 2), -- TV
-(202, 3); -- Aire acondicionado
+-- Ahora que idRoom es autoincremental, no podemos saber los IDs con certeza.
+-- Asumiremos que los IDs generados son 1,2,3,4,5 según el orden de inserción.
+INSERT INTO room_feature (idRoom, id_feature) VALUES
+(1, 1), -- WiFi
+(1, 2), -- TV
+(2, 1), -- WiFi
+(2, 2), -- TV
+(2, 3), -- Aire acondicionado
+(3, 1), -- WiFi
+(3, 2), -- TV
+(3, 5), -- Minibar
+(4, 1), -- WiFi
+(4, 2), -- TV
+(4, 3); -- Aire acondicionado
 
 
 -- ==========================================
