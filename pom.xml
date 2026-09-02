@@ -60,17 +60,33 @@
             <version>8.2.0</version>
         </dependency>
 
-        <!-- Para logging (opcional pero recomendado) -->
+        <!-- Dotenv para variables de entorno -->
+        <dependency>
+            <groupId>io.github.cdimascio</groupId>
+            <artifactId>dotenv-java</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- SLF4J API (solo la API, sin implementación) -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <artifactId>slf4j-api</artifactId>
             <version>2.0.9</version>
         </dependency>
-      <dependency>
-          <groupId>io.github.cdimascio</groupId>
-          <artifactId>dotenv-java</artifactId>
-          <version>3.0.0</version>
-      </dependency>
+
+        <!-- Logback Classic (implementación de SLF4J) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
+        </dependency>
+
+        <!-- Logback Core (transitiva, pero se puede agregar explícitamente) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.4.14</version>
+        </dependency>
     </dependencies>
 
     <build>

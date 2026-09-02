@@ -30,6 +30,8 @@ public class Room {
 
   public Room(String numberStr, String floorStr, String idRoomTypeStr, String capacityStr,
       String idRoomViewStr, List<String> features, String priceStr, String description) {
+    logger.debug("Creando Room desde Strings: number={}, floor={}, type={}, capacity={}, view={}, price={}",
+        numberStr, floorStr, idRoomTypeStr, capacityStr, idRoomViewStr, priceStr);
     setNumber(numberStr);
     setFloor(floorStr);
     setIdRoomType(Integer.parseInt(idRoomTypeStr));
@@ -38,9 +40,8 @@ public class Room {
     setFeatures(features);
     setPrice(priceStr);
     setDescription(description);
+    logger.debug("Room creado exitosamente con idRoom temporal {}", idRoom);
   }
-
-  // ========== GETTERS Y SETTERS ==========
 
   public int getIdRoom() {
     return idRoom;
@@ -56,9 +57,11 @@ public class Room {
 
   public void setNumber(int number) {
     if (number < 0) {
+      logger.warn("Intento de asignar un número negativo {}", number);
       throw new IllegalArgumentException("El número de habitación debe ser un entero positivo.");
     }
     this.number = number;
+    logger.warn("Número de habitación establecido {}", number);
   }
 
   public void setNumber(String numberStr) {
@@ -76,9 +79,11 @@ public class Room {
 
   public void setFloor(int floor) {
     if (floor < 0) {
+      logger.warn("Intento de asignar un número negativo {}", floor);
       throw new IllegalArgumentException("El piso debe ser un entero positivo.");
     }
     this.floor = floor;
+    logger.warn("Número de piso establecido {}", floor);
   }
 
   public void setFloor(String floorStr) {
