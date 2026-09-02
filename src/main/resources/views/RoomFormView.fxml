@@ -2,61 +2,76 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="20" styleClass="form-container"
-      xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controllers.RoomFormController">
+<VBox prefHeight="559.0" prefWidth="637.0" spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomFormController">
 
     <padding>
-        <Insets top="25" right="25" bottom="25" left="25" />
+        <Insets bottom="25" left="25" right="25" top="25" />
     </padding>
 
-    <Label fx:id="lblFormTitle" text="Nueva Habitación" styleClass="form-title">
+    <Label fx:id="lblFormTitle" styleClass="form-title" text="Nueva Habitación">
         <font><Font size="20.0" /></font>
     </Label>
 
-    <GridPane hgap="15" vgap="12">
-        <Label text="Número *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtNumber" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="150.0" />
+    <GridPane hgap="15" prefHeight="173.0" prefWidth="587.0" vgap="12">
+        <Label styleClass="form-label" text="Número *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtNumber" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Piso *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <TextField fx:id="txtFloor" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="150.0" />
+        <Label prefHeight="15.0" prefWidth="41.0" styleClass="form-label" text="Piso *" GridPane.columnIndex="3" />
+        <TextField fx:id="txtFloor" prefWidth="150.0" GridPane.columnIndex="4" />
 
-        <Label text="Tipo *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <ComboBox fx:id="comboType" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="150.0" />
+        <Label styleClass="form-label" text="Tipo *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <ComboBox fx:id="comboType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-        <Label text="Capacidad *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-        <TextField fx:id="txtCapacity" GridPane.columnIndex="3" GridPane.rowIndex="1" prefWidth="150.0" />
+        <Label styleClass="form-label" text="Capacidad *" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+        <TextField fx:id="txtCapacity" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
 
-        <Label text="Vista *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <ComboBox fx:id="comboView" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="150.0" />
+        <Label styleClass="form-label" text="Vista *" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <ComboBox fx:id="comboView" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <Label text="Precio *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-        <TextField fx:id="txtPrice" GridPane.columnIndex="3" GridPane.rowIndex="2" prefWidth="150.0" />
+        <Label styleClass="form-label" text="Precio *" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+        <TextField fx:id="txtPrice" prefWidth="150.0" GridPane.columnIndex="4" GridPane.rowIndex="2" />
 
-        <Label text="Características" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ListView fx:id="listFeatures" GridPane.columnIndex="1" GridPane.rowIndex="3"
-                  GridPane.columnSpan="3" prefHeight="120.0" />
+        <Label styleClass="form-label" text="Características" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-        <Label text="Descripción" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <TextField fx:id="txtDescription" GridPane.columnIndex="1" GridPane.rowIndex="4"
-                   GridPane.columnSpan="3" prefWidth="250.0" />
+        <Label styleClass="form-label" text="Descripción" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <TextField fx:id="txtDescription" prefHeight="23.0" prefWidth="428.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+      <CheckBox fx:id="chkWifi" mnemonicParsing="false" prefHeight="18.0" prefWidth="85.0" text="Wifi" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <CheckBox fx:id="chkTv" mnemonicParsing="false" text="TV" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+      <CheckBox fx:id="chkAc" mnemonicParsing="false" text="AC" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <CheckBox fx:id="chkMiniBar" mnemonicParsing="false" prefHeight="18.0" prefWidth="96.0" text="Mini Bar" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints maxWidth="152.0" minWidth="87.0" prefWidth="87.0" />
+         <ColumnConstraints maxWidth="116.0" minWidth="28.0" prefWidth="68.0" />
+         <ColumnConstraints maxWidth="80.0" minWidth="0.0" prefWidth="80.0" />
+         <ColumnConstraints maxWidth="150.0" minWidth="115.0" prefWidth="150.0" />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints maxHeight="38.0" minHeight="13.0" prefHeight="22.0" />
+         <RowConstraints maxHeight="41.0" minHeight="0.0" prefHeight="32.0" />
+         <RowConstraints maxHeight="16.0" minHeight="0.0" prefHeight="0.0" />
+      </rowConstraints>
     </GridPane>
 
-    <Region VBox.vgrow="ALWAYS" />
+    <Region prefHeight="92.0" prefWidth="587.0" VBox.vgrow="ALWAYS" />
 
-    <HBox spacing="15" alignment="CENTER_RIGHT">
-        <Button fx:id="btnCancel" text="Cancelar" styleClass="btn-secondary" />
-        <Button fx:id="btnSave" text="Guardar" styleClass="btn-primary" />
+    <HBox alignment="CENTER_RIGHT" spacing="15">
+        <Button fx:id="btnCancel" styleClass="btn-secondary" text="Cancelar" />
+        <Button fx:id="btnSave" styleClass="btn-primary" text="Guardar" />
     </HBox>
 </VBox>
