@@ -117,9 +117,11 @@ public class Room {
 
   public void setCapacity(int capacity) {
     if (capacity <= 0) {
+      logger.warn("Intento de asignar un número negativo o nulo {}", floor);
       throw new IllegalArgumentException("La capacidad debe ser mayor a cero.");
     }
     this.capacity = capacity;
+    logger.warn("Número de capacidad establecido {}", capacity);
   }
 
   public void setCapacity(String capacityStr) {
@@ -153,9 +155,11 @@ public class Room {
 
   public void setAvailable(boolean available) {
     if (available && outOfService) {
+      logger.error("Imposibilidad para cambiar a modo disponible '{}'", available);
       throw new IllegalArgumentException("Habitación fuera de servicio, no puede estar disponible.");
     }
     this.available = available;
+    logger.warn("Cambiar de estado disponibilidad {}", available);
   }
 
   public boolean isOutOfService() {
@@ -164,8 +168,10 @@ public class Room {
 
   public void setOutOfService(boolean outOfService) {
     this.outOfService = outOfService;
+    logger.warn("Cambiar de estado a fuera de servicio {}", outOfService);
     if (outOfService) {
       this.available = false;
+      logger.warn("Cambia de estado disponibilidad {}", outOfService);
     }
   }
 
@@ -191,9 +197,11 @@ public class Room {
 
   public void setPrice(double price) {
     if (price < 0) {
+      logger.error("Intento de poner un precio con valor negarivo {}", price);
       throw new IllegalArgumentException("El precio no puede ser negativo.");
     }
     this.price = price;
+    logger.warn("Precio establecido {}", price);
   }
 
   public void setPrice(String priceStr) {

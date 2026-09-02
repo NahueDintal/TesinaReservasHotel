@@ -12,12 +12,10 @@ public class RoomDAO {
 
   private static final Logger logger = LoggerFactory.getLogger(RoomDAO.class);
 
-  // ========== LISTAR ACTIVAS ==========
   public List<Room> listActive() {
     return listByActive(true);
   }
 
-  // ========== LISTAR INACTIVAS ==========
   public List<Room> listInactive() {
     return listByActive(false);
   }
@@ -47,7 +45,6 @@ public class RoomDAO {
     return rooms;
   }
 
-  // ========== BUSCAR POR NÚMERO ==========
   public Room searchByNumber(int number) {
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
@@ -71,7 +68,6 @@ public class RoomDAO {
     return null;
   }
 
-  // ========== INSERTAR ==========
   public boolean insert(Room room) {
     String sqlRoom = "INSERT INTO room (number, floor, id_room_type, capacity, id_room_view, " +
         "available, out_of_service, active, price, description) " +
@@ -117,7 +113,6 @@ public class RoomDAO {
     }
   }
 
-  // ========== ACTUALIZAR ==========
   public boolean update(Room room) {
     String sqlRoom = "UPDATE room SET number = ?, floor = ?, id_room_type = ?, capacity = ?, " +
         "id_room_view = ?, available = ?, out_of_service = ?, active = ?, " +
@@ -157,7 +152,6 @@ public class RoomDAO {
     }
   }
 
-  // ========== SOFT DELETE ==========
   public boolean delete(int idRoom) {
     String sql = "UPDATE room SET active = FALSE WHERE idRoom = ?";
     try (Connection conn = ConexionDB.getConnection();
@@ -177,7 +171,6 @@ public class RoomDAO {
     }
   }
 
-  // ========== MAPEO ==========
   private Room mapRoom(ResultSet rs) throws SQLException {
     Room room = new Room();
     room.setIdRoom(rs.getInt("idRoom"));
@@ -196,7 +189,6 @@ public class RoomDAO {
     return room;
   }
 
-  // ========== CARACTERÍSTICAS ==========
   private List<String> loadFeaturesForRoom(Connection conn, int idRoom) throws SQLException {
     List<String> features = new ArrayList<>();
     String sql = "SELECT f.name FROM feature f " +
@@ -234,7 +226,6 @@ public class RoomDAO {
     }
   }
 
-  // ========== UTILIDADES PARA TRANSACCIONES ==========
   private void rollback(Connection conn) {
     if (conn != null) {
       try {
