@@ -75,7 +75,6 @@ public class RoomController {
 
   @FXML
   public void initialize() {
-    // Configurar columnas (usar nombres correctos del modelo)
     colNumber.setCellValueFactory(new PropertyValueFactory<>("number"));
     colFloor.setCellValueFactory(new PropertyValueFactory<>("floor"));
     colType.setCellValueFactory(new PropertyValueFactory<>("typeName"));
@@ -84,7 +83,6 @@ public class RoomController {
     colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
     colAvailable.setCellValueFactory(new PropertyValueFactory<>("available"));
 
-    // Formato de precio
     colPrice.setCellFactory(tc -> new TableCell<>() {
       @Override
       protected void updateItem(Double price, boolean empty) {
@@ -93,7 +91,6 @@ public class RoomController {
       }
     });
 
-    // Formato de disponibilidad
     colAvailable.setCellFactory(tc -> new TableCell<>() {
       @Override
       protected void updateItem(Boolean available, boolean empty) {
@@ -103,35 +100,34 @@ public class RoomController {
       }
     });
 
-    // Cargar habitaciones (solo disponibles inicialmente)
     loadRooms(true);
 
-    // Buscador
     txtSearch.textProperty().addListener((obs, oldVal, newVal) -> {
       filteredRooms.setPredicate(room -> {
-        if (newVal == null || newVal.isEmpty()) return true;
+        if (newVal == null || newVal.isEmpty())
+          return true;
         String lower = newVal.toLowerCase();
         // Convertir lista de características a una sola cadena para buscar
         String featuresStr = room.getFeatures() != null ? String.join(" ", room.getFeatures()).toLowerCase() : "";
         return String.valueOf(room.getNumber()).contains(lower) ||
-                String.valueOf(room.getFloor()).contains(lower) ||
-                (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) ||
-                String.valueOf(room.getCapacity()).contains(lower) ||
-                (room.getViewName() != null && room.getViewName().toLowerCase().contains(lower)) ||
-                String.valueOf(room.getPrice()).contains(lower) ||
-                featuresStr.contains(lower) ||
-                (room.getDescription() != null && room.getDescription().toLowerCase().contains(lower));
+            String.valueOf(room.getFloor()).contains(lower) ||
+            (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) ||
+            String.valueOf(room.getCapacity()).contains(lower) ||
+            (room.getViewName() != null && room.getViewName().toLowerCase().contains(lower)) ||
+            String.valueOf(room.getPrice()).contains(lower) ||
+            featuresStr.contains(lower) ||
+            (room.getDescription() != null && room.getDescription().toLowerCase().contains(lower));
       });
       updateCounter();
     });
 
-    // Selección en tabla
     tableRooms.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
-      if (newVal != null) showDetail(newVal);
-      else clearDetail();
+      if (newVal != null)
+        showDetail(newVal);
+      else
+        clearDetail();
     });
 
-    // Habilitar/deshabilitar botones de edición y desactivación
     btnEdit.setDisable(true);
     btnDeactivate.setDisable(true);
     tableRooms.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
@@ -140,7 +136,6 @@ public class RoomController {
       btnDeactivate.setDisable(!selected);
     });
 
-    // Acciones
     btnNewRoom.setOnAction(e -> openRoomForm(null));
     btnViewUnavailable.setOnAction(e -> openUnavailableRoomsWindow());
     btnEdit.setOnAction(e -> openRoomForm(tableRooms.getSelectionModel().getSelectedItem()));
@@ -172,7 +167,7 @@ public class RoomController {
     lblDetailDescription.setText(r.getDescription() != null ? r.getDescription() : "--");
     lblDetailStatus.setText(r.isAvailable() ? "Disponible" : "No disponible");
     lblDetailStatus.setStyle(r.isAvailable() ? "-fx-text-fill: green; -fx-font-weight: bold;"
-            : "-fx-text-fill: red; -fx-font-weight: bold;");
+        : "-fx-text-fill: red; -fx-font-weight: bold;");
   }
 
   private void clearDetail() {
@@ -197,7 +192,8 @@ public class RoomController {
       stage.setTitle(room == null ? "Nueva Habitación" : "Editar Habitación");
 
       RoomFormController controller = loader.getController();
-      if (room != null) controller.setRoom(room);
+      if (room != null)
+        controller.setRoom(room);
 
       stage.showAndWait();
       loadRooms(true);
@@ -227,7 +223,8 @@ public class RoomController {
 
   private void deactivateRoom() {
     Room selected = tableRooms.getSelectionModel().getSelectedItem();
-    if (selected == null) return;
+    if (selected == null)
+      return;
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Marcar como no disponible");
