@@ -13,6 +13,7 @@ public class RoomDAO {
   private static final Logger logger = LoggerFactory.getLogger(RoomDAO.class);
 
   public List<Room> listActive() {
+    logger.debug("Listando habitaciones activas");
     return listByActive(true);
   }
 
@@ -21,7 +22,9 @@ public class RoomDAO {
   }
 
   private List<Room> listByActive(boolean active) {
+    logger.debug("Ejecutando listByActive con active={}", active);
     List<Room> rooms = new ArrayList<>();
+    logger.debug("Ejecutando consulta SELECT");
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
@@ -42,10 +45,12 @@ public class RoomDAO {
       logger.error("Error al listar habitaciones (active={})", active, e);
       throw new RuntimeException("Error al listar habitaciones", e);
     }
+    logger.info("Se listaron habitaciones {} (active={})", rooms.size(), active);
     return rooms;
   }
 
   public Room searchByNumber(int number) {
+    logger.debug("Ejecutando searchByNumber con number {}", number);
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
@@ -65,10 +70,13 @@ public class RoomDAO {
       logger.error("Error al obtener habitación por número: {}", number, e);
       throw new RuntimeException("Error al obtener habitación", e);
     }
+    logger.info("No se encontro resultados con number {}", number);
     return null;
   }
 
   public boolean insert(Room room) {
+    logger.debug("Ejecutando insert con room {}, price {}, type {}, price {}", room.getNumber(), room.getFloor(),
+        room.getPrice(), room.getTypeName(), room.getPrice());
     String sqlRoom = "INSERT INTO room (number, floor, id_room_type, capacity, id_room_view, " +
         "available, out_of_service, active, price, description) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?)";
@@ -94,7 +102,9 @@ public class RoomDAO {
           if (generatedKeys.next()) {
             generatedIdRoom = generatedKeys.getInt(1);
             room.setIdRoom(generatedIdRoom);
+            logger.info("Habitacion insertada correctamente idRoom {}, number {} ", room.getIdRoom(), room.getNumber());
           } else {
+            logger.error("No se pudo obtener el idRoom generado en DB con room {}", room);
             throw new SQLException("No se pudo obtener el idRoom generado.");
           }
         }
@@ -114,6 +124,7 @@ public class RoomDAO {
   }
 
   public boolean update(Room room) {
+    logger.debug("ejecutando update de room {}", room.getIdRoom());
     String sqlRoom = "UPDATE room SET number = ?, floor = ?, id_room_type = ?, capacity = ?, " +
         "id_room_view = ?, available = ?, out_of_service = ?, active = ?, " +
         "price = ?, description = ? WHERE idRoom = ?";
@@ -153,6 +164,7 @@ public class RoomDAO {
   }
 
   public boolean delete(int idRoom) {
+    logger.debug("ejecutando Soft Delete para room {} ", idRoom);
     String sql = "UPDATE room SET active = FALSE WHERE idRoom = ?";
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -172,6 +184,7 @@ public class RoomDAO {
   }
 
   private Room mapRoom(ResultSet rs) throws SQLException {
+    logger.debug("Ejecutando mapRoom");
     Room room = new Room();
     room.setIdRoom(rs.getInt("idRoom"));
     room.setNumber(rs.getInt("number"));
@@ -186,10 +199,12 @@ public class RoomDAO {
     room.setActive(rs.getBoolean("active"));
     room.setPrice(rs.getDouble("price"));
     room.setDescription(rs.getString("description"));
+    logger.info("Entregado de resultado del mapeo");
     return room;
   }
 
-  private List<String> loadFeaturesForRoom(Connection conn, int idRoom) throws SQLException {
+  private List<String> loadFeaturesForRoom(Connection conn, int idRoom) {
+    logger.debug("Ejecutando loadFeaturesForRoom para room {}", idRoom);
     List<String> features = new ArrayList<>();
     String sql = "SELECT f.name FROM feature f " +
         "JOIN room_feature rf ON f.id_feature = rf.id_feature " +
@@ -201,11 +216,16 @@ public class RoomDAO {
           features.add(rs.getString("name"));
         }
       }
+    } catch (SQLException e) {
+      logger.error("No se pudo cargar features para room {}", idRoom);
+      throw new RuntimeException("No se pudo cargar las caracteristicas de habitacion", e);
     }
+    logger.info("Entregado de features para room {}", idRoom);
     return features;
   }
 
-  private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) throws SQLException {
+  private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) {
+    logger.debug("ejecutando insertFeatures para room {}", idRoom);
     String sql = "INSERT INTO room_feature (idRoom, id_feature) " +
         "SELECT ?, id_feature FROM feature WHERE name = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -215,18 +235,28 @@ public class RoomDAO {
         stmt.addBatch();
       }
       stmt.executeBatch();
+      logger.info("insertando features para room {}", idRoom);
+    } catch (SQLException e) {
+      logger.error("No se pudo insertar features para room {}", idRoom);
+      throw new RuntimeException("No se pude insertar features", e);
     }
   }
 
-  private void deleteFeatures(Connection conn, int idRoom) throws SQLException {
+  private void deleteFeatures(Connection conn, int idRoom) {
+    logger.debug("Ejecutando deleteFeatures para room {}", idRoom);
     String sql = "DELETE FROM room_feature WHERE idRoom = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
       stmt.executeUpdate();
+      logger.info("Borrado de feature para la room {}", idRoom);
+    } catch (SQLException e) {
+      logger.error("No se pudo borrar las features para la room {}", idRoom);
+      throw new RuntimeException("No se pudo borrar las features.", e);
     }
   }
 
   private void rollback(Connection conn) {
+    logger.debug("Ejecutando rollback para conexion {}", conn);
     if (conn != null) {
       try {
         conn.rollback();
@@ -237,6 +267,7 @@ public class RoomDAO {
   }
 
   private void restoreAutoCommit(Connection conn) {
+    logger.debug("ejecutando restoreAutoCommit para conexion {}", conn);
     if (conn != null) {
       try {
         conn.setAutoCommit(true);
