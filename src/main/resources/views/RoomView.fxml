@@ -26,7 +26,7 @@
                 <font><Font size="24.0" /></font>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnNewRoom" styleClass="btn-primary" text="+ Habitación" />
+            <Button fx:id="btnNewRoom" styleClass="btn-primary" text="Nuevo" />
             <Button fx:id="btnViewUnavailable" styleClass="btn-secondary" text="Ver no disponibles" />
         </HBox>
 
@@ -40,7 +40,7 @@
             <VBox spacing="10">
                 <TableView fx:id="tableRooms" styleClass="room-table" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colNumber" prefWidth="80" text="Número" />
+                        <TableColumn fx:id="colNumber" prefWidth="80" sortType="DESCENDING" text="Número" />
                         <TableColumn fx:id="colFloor" prefWidth="60" text="Piso" />
                         <TableColumn fx:id="colType" prefWidth="100" text="Tipo" />
                         <TableColumn fx:id="colCapacity" prefWidth="80" text="Capacidad" />
