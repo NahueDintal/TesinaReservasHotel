@@ -75,6 +75,10 @@ public class RoomDAO {
   }
 
   public boolean insert(Room room) {
+    if (existsActiveByNumber(room.getNumber())) {
+      logger.warn("Ya existe una habitación activa con el número {}", room.getNumber());
+      throw new IllegalArgumentException("Ya existe una habitación activa con ese número");
+    }
     logger.debug("Ejecutando insert con room {}, price {}, type {}, price {}", room.getNumber(), room.getFloor(),
         room.getPrice(), room.getTypeName(), room.getPrice());
     String sqlRoom = "INSERT INTO room (number, floor, id_room_type, capacity, id_room_view, " +
@@ -199,12 +203,10 @@ public class RoomDAO {
     room.setActive(rs.getBoolean("active"));
     room.setPrice(rs.getDouble("price"));
     room.setDescription(rs.getString("description"));
-    logger.info("Entregado de resultado del mapeo");
     return room;
   }
 
   private List<String> loadFeaturesForRoom(Connection conn, int idRoom) {
-    logger.debug("Ejecutando loadFeaturesForRoom para room {}", idRoom);
     List<String> features = new ArrayList<>();
     String sql = "SELECT f.name FROM feature f " +
         "JOIN room_feature rf ON f.id_feature = rf.id_feature " +
@@ -220,12 +222,10 @@ public class RoomDAO {
       logger.error("No se pudo cargar features para room {}", idRoom);
       throw new RuntimeException("No se pudo cargar las caracteristicas de habitacion", e);
     }
-    logger.info("Entregado de features para room {}", idRoom);
     return features;
   }
 
   private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) {
-    logger.debug("ejecutando insertFeatures para room {}", idRoom);
     String sql = "INSERT INTO room_feature (idRoom, id_feature) " +
         "SELECT ?, id_feature FROM feature WHERE name = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -235,7 +235,6 @@ public class RoomDAO {
         stmt.addBatch();
       }
       stmt.executeBatch();
-      logger.info("insertando features para room {}", idRoom);
     } catch (SQLException e) {
       logger.error("No se pudo insertar features para room {}", idRoom);
       throw new RuntimeException("No se pude insertar features", e);
@@ -243,12 +242,10 @@ public class RoomDAO {
   }
 
   private void deleteFeatures(Connection conn, int idRoom) {
-    logger.debug("Ejecutando deleteFeatures para room {}", idRoom);
     String sql = "DELETE FROM room_feature WHERE idRoom = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
       stmt.executeUpdate();
-      logger.info("Borrado de feature para la room {}", idRoom);
     } catch (SQLException e) {
       logger.error("No se pudo borrar las features para la room {}", idRoom);
       throw new RuntimeException("No se pudo borrar las features.", e);
@@ -256,7 +253,6 @@ public class RoomDAO {
   }
 
   private void rollback(Connection conn) {
-    logger.debug("Ejecutando rollback para conexion {}", conn);
     if (conn != null) {
       try {
         conn.rollback();
@@ -267,7 +263,6 @@ public class RoomDAO {
   }
 
   private void restoreAutoCommit(Connection conn) {
-    logger.debug("ejecutando restoreAutoCommit para conexion {}", conn);
     if (conn != null) {
       try {
         conn.setAutoCommit(true);
@@ -275,5 +270,22 @@ public class RoomDAO {
         logger.error("Error al restaurar autocommit", ex);
       }
     }
+  }
+
+  public boolean existsActiveByNumber(int number) {
+    String sql = "SELECT COUNT(*) FROM room WHERE number = ? AND active = TRUE";
+    try (Connection conn = ConexionDB.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setInt(1, number);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          return rs.getInt(1) > 0;
+        }
+      }
+    } catch (SQLException e) {
+      logger.error("Error al verificar número activo {}", number, e);
+      throw new RuntimeException("Error al verificar número de habitación", e);
+    }
+    return false;
   }
 }

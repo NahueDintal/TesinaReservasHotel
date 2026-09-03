@@ -9,12 +9,11 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="559.0" prefWidth="637.0" spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomFormController">
+<VBox prefHeight="416.0" prefWidth="775.0" spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomFormController">
 
     <padding>
         <Insets bottom="25" left="25" right="25" top="25" />
@@ -24,12 +23,12 @@
         <font><Font size="20.0" /></font>
     </Label>
 
-    <GridPane hgap="15" prefHeight="173.0" prefWidth="587.0" vgap="12">
+    <GridPane hgap="30.0" prefHeight="327.0" prefWidth="670.0" vgap="30.0">
         <Label styleClass="form-label" text="Número *" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtNumber" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <TextField fx:id="txtNumber" prefHeight="23.0" prefWidth="83.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
 
         <Label prefHeight="15.0" prefWidth="41.0" styleClass="form-label" text="Piso *" GridPane.columnIndex="3" />
-        <TextField fx:id="txtFloor" prefWidth="150.0" GridPane.columnIndex="4" />
+        <TextField fx:id="txtFloor" prefHeight="23.0" prefWidth="236.0" GridPane.columnIndex="4" />
 
         <Label styleClass="form-label" text="Tipo *" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <ComboBox fx:id="comboType" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
@@ -53,22 +52,20 @@
       <CheckBox fx:id="chkMiniBar" mnemonicParsing="false" prefHeight="18.0" prefWidth="96.0" text="Mini Bar" GridPane.columnIndex="4" GridPane.rowIndex="3" />
       <columnConstraints>
          <ColumnConstraints />
-         <ColumnConstraints maxWidth="152.0" minWidth="87.0" prefWidth="87.0" />
-         <ColumnConstraints maxWidth="116.0" minWidth="28.0" prefWidth="68.0" />
-         <ColumnConstraints maxWidth="80.0" minWidth="0.0" prefWidth="80.0" />
-         <ColumnConstraints maxWidth="150.0" minWidth="115.0" prefWidth="150.0" />
+         <ColumnConstraints maxWidth="152.0" minWidth="85.0" prefWidth="117.0" />
+         <ColumnConstraints maxWidth="120.0" minWidth="28.0" prefWidth="110.0" />
+         <ColumnConstraints maxWidth="114.0" minWidth="0.0" prefWidth="114.0" />
+         <ColumnConstraints maxWidth="150.0" minWidth="115.0" prefWidth="132.0" />
       </columnConstraints>
       <rowConstraints>
-         <RowConstraints />
-         <RowConstraints />
+         <RowConstraints maxHeight="32.0" minHeight="19.0" prefHeight="22.0" />
+         <RowConstraints maxHeight="27.0" minHeight="14.0" prefHeight="24.0" />
          <RowConstraints />
          <RowConstraints maxHeight="38.0" minHeight="13.0" prefHeight="22.0" />
          <RowConstraints maxHeight="41.0" minHeight="0.0" prefHeight="32.0" />
          <RowConstraints maxHeight="16.0" minHeight="0.0" prefHeight="0.0" />
       </rowConstraints>
     </GridPane>
-
-    <Region prefHeight="92.0" prefWidth="587.0" VBox.vgrow="ALWAYS" />
 
     <HBox alignment="CENTER_RIGHT" spacing="15">
         <Button fx:id="btnCancel" styleClass="btn-secondary" text="Cancelar" />
