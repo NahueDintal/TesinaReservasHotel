@@ -1,5 +1,8 @@
 package controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -18,6 +21,8 @@ import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 public class RoomController {
+
+  private static final Logger logger = LoggerFactory.getLogger(Room.class);
 
   @FXML
   private TableView<Room> tableRooms;
@@ -107,7 +112,6 @@ public class RoomController {
         if (newVal == null || newVal.isEmpty())
           return true;
         String lower = newVal.toLowerCase();
-        // Convertir lista de características a una sola cadena para buscar
         String featuresStr = room.getFeatures() != null ? String.join(" ", room.getFeatures()).toLowerCase() : "";
         return String.valueOf(room.getNumber()).contains(lower) ||
             String.valueOf(room.getFloor()).contains(lower) ||
@@ -183,6 +187,7 @@ public class RoomController {
   }
 
   private void openRoomForm(Room room) {
+    Logger.debug("Ejecutando openRoomForm para room {}", room);
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/RoomFormView.fxml"));
       Stage stage = new Stage();
@@ -200,6 +205,7 @@ public class RoomController {
       tableRooms.refresh();
       updateCounter();
     } catch (IOException e) {
+      logger.error("No se pudo abrir el formulario para room {}", room);
       showAlert("Error", "No se pudo abrir el formulario", e.getMessage());
     }
   }
