@@ -13,92 +13,86 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@/css/style.css"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.RoomController">
+<AnchorPane stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomController">
 
-    <VBox styleClass="content-main" spacing="15"
-          AnchorPane.topAnchor="0"
-          AnchorPane.bottomAnchor="0"
-          AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0">
+    <VBox spacing="15" styleClass="content-main" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
         <padding>
-            <Insets top="20" right="20" bottom="20" left="20" />
+            <Insets bottom="20" left="20" right="20" top="20" />
         </padding>
 
         <!-- Título y botones -->
         <HBox alignment="CENTER_LEFT" spacing="15">
-            <Label text="Habitaciones" styleClass="section-title">
+            <Label styleClass="section-title" text="Habitaciones">
                 <font><Font size="24.0" /></font>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnNewRoom" text="+ Nueva Habitación" styleClass="btn-primary" />
-            <Button fx:id="btnViewUnavailable" text="📁 Ver no disponibles" styleClass="btn-secondary" />
+            <Button fx:id="btnNewRoom" styleClass="btn-primary" text="+ Nueva Habitación" />
+            <Button fx:id="btnViewUnavailable" styleClass="btn-secondary" text="📁 Ver no disponibles" />
         </HBox>
 
         <!-- Buscador -->
-        <HBox spacing="15" alignment="CENTER_LEFT">
+        <HBox alignment="CENTER_LEFT" spacing="15">
             <TextField fx:id="txtSearch" promptText="🔍 Buscar por número, tipo, vista, precio..." styleClass="search-field" HBox.hgrow="ALWAYS" />
         </HBox>
 
         <!-- SplitPane: Tabla + Detalle -->
-        <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS" styleClass="split-pane">
+        <SplitPane dividerPositions="0.7" styleClass="split-pane" VBox.vgrow="ALWAYS">
             <VBox spacing="10">
                 <TableView fx:id="tableRooms" styleClass="room-table" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colNumber" text="Número" prefWidth="80" />
-                        <TableColumn fx:id="colFloor" text="Piso" prefWidth="60" />
-                        <TableColumn fx:id="colType" text="Tipo" prefWidth="100" />
-                        <TableColumn fx:id="colCapacity" text="Capacidad" prefWidth="80" />
-                        <TableColumn fx:id="colView" text="Vista" prefWidth="120" />
-                        <TableColumn fx:id="colPrice" text="Precio" prefWidth="90" />
-                        <TableColumn fx:id="colAvailable" text="Disponible" prefWidth="100" />
+                        <TableColumn fx:id="colNumber" prefWidth="80" text="Número" />
+                        <TableColumn fx:id="colFloor" prefWidth="60" text="Piso" />
+                        <TableColumn fx:id="colType" prefWidth="100" text="Tipo" />
+                        <TableColumn fx:id="colCapacity" prefWidth="80" text="Capacidad" />
+                        <TableColumn fx:id="colView" prefWidth="120" text="Vista" />
+                        <TableColumn fx:id="colPrice" prefWidth="90" text="Precio" />
+                        <TableColumn fx:id="colAvailable" prefWidth="100" text="Disponible" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                 </TableView>
-                <Label fx:id="lblTotalRooms" text="Mostrando 0 habitaciones" styleClass="footer-info" />
+                <Label fx:id="lblTotalRooms" styleClass="footer-info" text="Mostrando 0 habitaciones" />
             </VBox>
 
             <!-- Panel de detalle -->
-            <VBox spacing="12" styleClass="detail-panel" prefWidth="280.0" maxWidth="280.0">
+            <VBox maxWidth="280.0" prefHeight="693.0" prefWidth="264.0" spacing="12" styleClass="detail-panel">
                 <padding>
-                    <Insets top="15" right="15" bottom="15" left="15" />
+                    <Insets bottom="15" left="15" right="15" top="15" />
                 </padding>
 
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label fx:id="lblDetailNumber" text="--" styleClass="detail-name" wrapText="true" />
+                    <Label fx:id="lblDetailNumber" styleClass="detail-name" text="--" wrapText="true" />
                     <Region HBox.hgrow="ALWAYS" />
-                    <Label fx:id="lblDetailStatus" text="" styleClass="detail-status" />
+                    <Label fx:id="lblDetailStatus" styleClass="detail-status" text="" />
                 </HBox>
 
-                <Label text="Piso:" styleClass="detail-label" />
-                <Label fx:id="lblDetailFloor" text="--" styleClass="detail-value" />
+                <Label styleClass="detail-label" text="Piso:" />
+                <Label fx:id="lblDetailFloor" styleClass="detail-value" text="--" />
 
-                <Label text="Tipo:" styleClass="detail-label" />
-                <Label fx:id="lblDetailType" text="--" styleClass="detail-value" />
+                <Label styleClass="detail-label" text="Tipo:" />
+                <Label fx:id="lblDetailType" styleClass="detail-value" text="--" />
 
-                <Label text="Capacidad:" styleClass="detail-label" />
-                <Label fx:id="lblDetailCapacity" text="--" styleClass="detail-value" />
+                <Label styleClass="detail-label" text="Capacidad:" />
+                <Label fx:id="lblDetailCapacity" styleClass="detail-value" text="--" />
 
-                <Label text="Vista:" styleClass="detail-label" />
-                <Label fx:id="lblDetailView" text="--" styleClass="detail-value" />
+                <Label styleClass="detail-label" text="Vista:" />
+                <Label fx:id="lblDetailView" styleClass="detail-value" text="--" />
 
-                <Label text="Precio:" styleClass="detail-label" />
-                <Label fx:id="lblDetailPrice" text="--" styleClass="detail-value" />
+                <Label styleClass="detail-label" text="Precio:" />
+                <Label fx:id="lblDetailPrice" styleClass="detail-value" text="--" />
 
-                <Label text="Características:" styleClass="detail-label" />
-                <Label fx:id="lblDetailFeatures" text="--" styleClass="detail-value" wrapText="true" />
+                <Label styleClass="detail-label" text="Características:" />
+                <Label fx:id="lblDetailFeatures" styleClass="detail-value" text="--" wrapText="true" />
 
-                <Label text="Descripción:" styleClass="detail-label" />
-                <Label fx:id="lblDetailDescription" text="--" styleClass="detail-value" wrapText="true" />
+                <Label styleClass="detail-label" text="Descripción:" />
+                <Label fx:id="lblDetailDescription" styleClass="detail-value" text="--" wrapText="true" />
 
-                <Region VBox.vgrow="ALWAYS" />
+                <Region prefHeight="74.0" prefWidth="238.0" VBox.vgrow="ALWAYS" />
 
-                <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity" />
-                <Button fx:id="btnDeactivate" text="Marcar no disponible" styleClass="btn-detail-danger" maxWidth="Infinity" />
+                <Button fx:id="btnEdit" maxWidth="Infinity" styleClass="btn-detail" text="Editar" />
+                <Button fx:id="btnDeactivate" maxWidth="Infinity" styleClass="btn-detail-danger" text="Marcar no disponible" />
+            <Button fx:id="btnDelete" maxWidth="Infinity" styleClass="btn-detail-danger" text="Eliminar" />
             </VBox>
         </SplitPane>
     </VBox>

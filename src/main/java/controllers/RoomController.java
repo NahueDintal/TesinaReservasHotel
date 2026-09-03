@@ -17,8 +17,6 @@ import models.Room;
 import repositories.RoomDAO;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.stream.Collectors;
 
 public class RoomController {
 
@@ -49,6 +47,8 @@ public class RoomController {
   private Button btnEdit;
   @FXML
   private Button btnDeactivate;
+  @FXML
+  private Button btnDelete;
 
   @FXML
   private Label lblDetailNumber;
@@ -138,12 +138,14 @@ public class RoomController {
       boolean selected = newVal != null;
       btnEdit.setDisable(!selected);
       btnDeactivate.setDisable(!selected);
+      btnDelete.setDisable(!selected);
     });
 
     btnNewRoom.setOnAction(e -> openRoomForm(null));
     btnViewUnavailable.setOnAction(e -> openUnavailableRoomsWindow());
     btnEdit.setOnAction(e -> openRoomForm(tableRooms.getSelectionModel().getSelectedItem()));
     btnDeactivate.setOnAction(e -> deactivateRoom());
+    btnDelete.setOnAction(e -> deleteRoom());
   }
 
   private void loadRooms(boolean onlyAvailable) {
@@ -187,7 +189,6 @@ public class RoomController {
   }
 
   private void openRoomForm(Room room) {
-    Logger.debug("Ejecutando openRoomForm para room {}", room);
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/RoomFormView.fxml"));
       Stage stage = new Stage();
@@ -249,6 +250,36 @@ public class RoomController {
             showAlert("Éxito", "Habitación actualizada", "");
           }
         } catch (RuntimeException e) {
+          showAlert("Error", "No se pudo actualizar", e.getMessage());
+        }
+      }
+    });
+  }
+
+  private void deleteRoom() {
+    logger.debug("Ejecutando deleteRoom");
+    Room selected = tableRooms.getSelectionModel().getSelectedItem();
+    if (selected == null)
+      return;
+
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Borrar habitación");
+    alert.setHeaderText("¿Desea borrar esta habitación?");
+    alert.showAndWait().ifPresent(response -> {
+      if (response == ButtonType.OK) {
+        try {
+          selected.setActive(false);
+          if (roomDAO.update(selected)) {
+            masterRoomList.remove(selected);
+            filteredRooms.remove(selected);
+            tableRooms.refresh();
+            clearDetail();
+            updateCounter();
+            showAlert("Éxito", "Habitación eliminada", "");
+            logger.info("Habitacion eliminada...");
+          }
+        } catch (RuntimeException e) {
+          logger.error("No se pudo eliminar habitacion");
           showAlert("Error", "No se pudo actualizar", e.getMessage());
         }
       }
