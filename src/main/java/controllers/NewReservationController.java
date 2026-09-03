@@ -26,6 +26,9 @@ public class NewReservationController {
     // =========================================================
 
     @FXML
+    private Label lblReservationTitle;
+
+    @FXML
     private ComboBox<Customer> cmbCustomer;
 
     @FXML
@@ -142,6 +145,9 @@ public class NewReservationController {
     private final List<Consumption> consumptionsModificados =
             new java.util.ArrayList<>();
 
+    private final List<Consumption> consumptionsAnulados =
+            new java.util.ArrayList<>();
+
     private Consumption consumoEnEdicion = null;
 
     // =========================================================
@@ -193,6 +199,9 @@ public class NewReservationController {
         if (reservation == null) {
             return;
         }
+
+        //cambio d etitulo
+        lblReservationTitle.setText("Editar reserva");
 
         // =====================================================
         // CLIENTE
@@ -612,7 +621,7 @@ public class NewReservationController {
 
             e.printStackTrace();
         }
-    }
+    } //?????
 
 
     // =========================================================
@@ -699,7 +708,7 @@ public class NewReservationController {
 
             e.printStackTrace();
         }
-    }
+    } ///??
 
 
     // =========================================================
@@ -1395,24 +1404,80 @@ public class NewReservationController {
             return;
         }
 
+        // No permitir anular un consumo que ya está anulado
+        if (selected.getIdConsumptionStatus() != 1) {
+
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Consumo",
+                    "El consumo seleccionado ya está anulado."
+            );
+
+            return;
+        }
+
         Alert confirmation =
                 new Alert(Alert.AlertType.CONFIRMATION);
 
         confirmation.setTitle("Anular consumo");
+
         confirmation.setHeaderText(
                 "¿Está seguro de anular este consumo?"
         );
+
         confirmation.setContentText(
-                "El consumo no será eliminado de la base de datos."
+                "El consumo desaparecerá de la lista, " +
+                        "pero no será eliminado de la base de datos."
         );
 
         confirmation.showAndWait().ifPresent(response -> {
 
             if (response == ButtonType.OK) {
 
-                // Acá posteriormente llamaremos al repository
-                // para hacer el soft delete.
+                // =============================================
+                // CONSUMO NUEVO
+                // =============================================
 
+                if (selected.getIdConsumption() == 0) {
+
+                    // Todavía no existe en BD.
+                    // Simplemente lo quitamos de la lista.
+
+                    consumptions.remove(selected);
+
+                }
+
+                // =============================================
+                // CONSUMO EXISTENTE
+                // =============================================
+
+                else {
+
+                    // Cambiar estado a ANULADO
+                    selected.setIdConsumptionStatus(2);
+
+                    // Guardarlo para actualizarlo al hacer Guardar
+                    if (!consumptionsAnulados.contains(selected)) {
+
+                        consumptionsAnulados.add(selected);
+                    }
+
+                    // Sacarlo inmediatamente de la tabla
+                    consumptions.remove(selected);
+                }
+
+                // Actualizar total
+                updateConsumptionTotal();
+
+                // Limpiar selección
+                tblConsumptions.getSelectionModel()
+                        .clearSelection();
+
+                showAlert(
+                        Alert.AlertType.INFORMATION,
+                        "Consumo",
+                        "El consumo fue anulado correctamente."
+                );
             }
         });
     }
@@ -1830,6 +1895,31 @@ public class NewReservationController {
             }
 
             // =================================================
+// ANULAR CONSUMOS
+// =================================================
+
+            for (Consumption consumption :
+                    consumptionsAnulados) {
+
+                boolean consumptionUpdated =
+                        consumptionRepo.updateConsumption(
+                                conn,
+                                consumption
+                        );
+
+                if (!consumptionUpdated) {
+
+                    conn.rollback();
+
+                    mostrarError(
+                            "No se pudo anular uno de los consumos."
+                    );
+
+                    return;
+                }
+            }
+
+            // =================================================
             // PAYMENT
             // =================================================
 
@@ -2163,7 +2253,7 @@ public class NewReservationController {
         if (dashboardController != null) {
 
             dashboardController.loadView(
-                    "/views/Reservations.fxml"
+                    "/views/reservations.fxml"
             );
 
         } else {
@@ -2227,6 +2317,8 @@ public class NewReservationController {
         consumptions.clear();
 
         consumptionsModificados.clear();
+
+        consumptionsAnulados.clear();
 
         consumoEnEdicion = null;
 

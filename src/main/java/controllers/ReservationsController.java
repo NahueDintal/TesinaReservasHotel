@@ -452,14 +452,15 @@ public class ReservationsController {
 
         colActions.setCellFactory(param -> new TableCell<Reservation, Void>() {
 
-            private final Button btnModificar = new Button("Modificar");
-            private final Button btnConsumo = new Button("Consumo");
-            private final HBox botones = new HBox(8);
+            private final Button btnModificar =
+                    new Button("Modificar");
+
+            private final HBox botones =
+                    new HBox(8);
 
             {
-                botones.getChildren().addAll(
-                        btnModificar,
-                        btnConsumo
+                botones.getChildren().add(
+                        btnModificar
                 );
 
                 botones.setAlignment(Pos.CENTER);
@@ -467,22 +468,18 @@ public class ReservationsController {
                 btnModificar.setOnAction(event -> {
 
                     Reservation reservation =
-                            getTableView().getItems().get(getIndex());
+                            getTableView()
+                                    .getItems()
+                                    .get(getIndex());
 
                     handleModificar(reservation);
-                });
-
-                btnConsumo.setOnAction(event -> {
-
-                    Reservation reservation =
-                            getTableView().getItems().get(getIndex());
-
-                    handleAgregarConsumo(reservation);
                 });
             }
 
             @Override
-            protected void updateItem(Void item, boolean empty) {
+            protected void updateItem(
+                    Void item,
+                    boolean empty) {
 
                 super.updateItem(item, empty);
 
@@ -494,6 +491,8 @@ public class ReservationsController {
             }
         });
     }
+
+
 
     // =========================================================
     // MODIFICAR RESERVA
@@ -518,20 +517,6 @@ public class ReservationsController {
             );
         }
     }
-
-    // =========================================================
-    // GESTIONAR CONSUMOS
-    // =========================================================
-
-    private void handleAgregarConsumo(
-            Reservation reservation) {
-
-        System.out.println(
-                "Agregar consumo a reserva: " +
-                        reservation.getIdReservation()
-        );
-    }
-
 
     // =========================================================
     // CONECTAR CON DASHBOARD
