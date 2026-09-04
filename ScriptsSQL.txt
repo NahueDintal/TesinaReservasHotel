@@ -228,7 +228,7 @@ CREATE TABLE Customer (
 
 CREATE TABLE room (
     idRoom INT AUTO_INCREMENT PRIMARY KEY,
-    number INT NOT NULL UNIQUE,
+    number INT NOT NULL,
     floor INT NOT NULL,
     id_room_type INT NOT NULL,
     capacity INT NOT NULL,
