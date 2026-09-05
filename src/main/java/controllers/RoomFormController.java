@@ -1,12 +1,15 @@
 package controllers;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.Room;
-import repositories.*;
+import repositories.RoomDAO;
+import repositories.RoomTypeDAO;
+import repositories.RoomViewDAO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 public class RoomFormController {
+
+  private static final String SAFE_FEATURE = "Caja fuerte";
+
+  private static final Logger logger = LoggerFactory.getLogger(RoomFormController.class);
 
   @FXML
   private Label lblFormTitle;
@@ -28,24 +35,28 @@ public class RoomFormController {
   @FXML
   private ComboBox<String> comboView;
   @FXML
-  private ListView<String> listFeatures;
-  @FXML
   private TextField txtPrice;
   @FXML
   private TextField txtDescription;
+  @FXML
+  private CheckBox chkWifi;
+  @FXML
+  private CheckBox chkTv;
+  @FXML
+  private CheckBox chkAc;
+  @FXML
+  private CheckBox chkMiniBar;
   @FXML
   private Button btnSave;
   @FXML
   private Button btnCancel;
 
-  private RoomDAO roomDAO = new RoomDAO();
-  private RoomTypeDAO roomTypeDAO = new RoomTypeDAO();
-  private RoomViewDAO roomViewDAO = new RoomViewDAO();
-  private FeatureDAO featureDAO = new FeatureDAO();
+  private final RoomDAO roomDAO = new RoomDAO();
+  private final RoomTypeDAO roomTypeDAO = new RoomTypeDAO();
+  private final RoomViewDAO roomViewDAO = new RoomViewDAO();
 
   private Map<Integer, String> roomTypes;
   private Map<Integer, String> roomViews;
-  private Map<Integer, String> featuresMap;
 
   private Room editingRoom;
 
@@ -53,7 +64,6 @@ public class RoomFormController {
   public void initialize() {
     loadCatalogs();
     setupActions();
-    listFeatures.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
   }
 
   private void loadCatalogs() {
@@ -63,10 +73,8 @@ public class RoomFormController {
 
       roomViews = roomViewDAO.listAll();
       comboView.getItems().setAll(roomViews.values());
-
-      featuresMap = featureDAO.listAll();
-      listFeatures.getItems().setAll(featuresMap.values());
     } catch (SQLException e) {
+      logger.error("No se pudieron cargar los catalogos. {}", e.getMessage());
       showAlert("Error", "No se pudieron cargar los catálogos", e.getMessage());
     }
   }
@@ -77,6 +85,7 @@ public class RoomFormController {
   }
 
   public void setRoom(Room room) {
+    logger.debug("Ejecutando setRoom para room {}", room);
     this.editingRoom = room;
     lblFormTitle.setText("Editar Habitación");
     txtNumber.setText(String.valueOf(room.getNumber()));
@@ -87,12 +96,14 @@ public class RoomFormController {
     txtPrice.setText(String.valueOf(room.getPrice()));
     txtDescription.setText(room.getDescription());
 
-    for (String feature : room.getFeatures()) {
-      listFeatures.getSelectionModel().select(feature);
-    }
+    chkWifi.setSelected(room.getFeatures().contains("WiFi"));
+    chkTv.setSelected(room.getFeatures().contains("TV"));
+    chkAc.setSelected(room.getFeatures().contains("Aire acondicionado"));
+    chkMiniBar.setSelected(room.getFeatures().contains("Minibar"));
   }
 
   private void saveRoom() {
+    logger.debug("Ejecutando saveRoom");
     if (!validateFields())
       return;
 
@@ -111,21 +122,38 @@ public class RoomFormController {
         showAlert("Éxito", "Habitación guardada", "La habitación se ha guardado correctamente.");
         closeWindow();
       }
+    } catch (IllegalArgumentException e) {
+      logger.error("Numero de habitación duplicado");
+      showAlert("Error", "Número de habitación duplicado", e.getMessage());
     } catch (RuntimeException e) {
-      showAlert("Error", "No se pudo actualizar", e.getMessage());
+      logger.error("No se puede guardar la habitación");
+      showAlert("Error", "No se pudo guardar la habitación", e.getMessage());
     }
   }
 
   private void loadDataFromForm(Room room) {
-    room.setNumber(txtNumber.getText().trim());
-    room.setFloor(txtFloor.getText().trim());
+    room.setNumber(Integer.parseInt(txtNumber.getText().trim()));
+    room.setFloor(Integer.parseInt(txtFloor.getText().trim()));
     room.setIdRoomType(getIdBySelection(comboType, roomTypes));
-    room.setCapacity(txtCapacity.getText().trim());
+    room.setCapacity(Integer.parseInt(txtCapacity.getText().trim()));
     room.setIdRoomView(getIdBySelection(comboView, roomViews));
-    room.setPrice(txtPrice.getText().trim());
+    room.setPrice(Double.parseDouble(txtPrice.getText().trim()));
     room.setDescription(txtDescription.getText().trim());
 
-    List<String> selectedFeatures = new ArrayList<>(listFeatures.getSelectionModel().getSelectedItems());
+    List<String> selectedFeatures = new ArrayList<>();
+    if (chkWifi.isSelected())
+      selectedFeatures.add("WiFi");
+    if (chkTv.isSelected())
+      selectedFeatures.add("TV");
+    if (chkAc.isSelected())
+      selectedFeatures.add("Aire acondicionado");
+    if (chkMiniBar.isSelected())
+      selectedFeatures.add("Minibar");
+
+    if (!selectedFeatures.contains(SAFE_FEATURE)) {
+      selectedFeatures.add(SAFE_FEATURE);
+    }
+
     room.setFeatures(selectedFeatures);
   }
 
@@ -142,67 +170,90 @@ public class RoomFormController {
   private boolean validateFields() {
     StringBuilder errors = new StringBuilder();
 
-    if (txtNumber.getText().trim().isEmpty())
-      errors.append("El valor de habitación es obligatorio.\n");
-    else
+    if (txtNumber.getText().trim().isEmpty()) {
+      logger.warn("Intento de no insertar numero de habitación");
+      errors.append("El número de habitación es obligatorio.\n");
+    } else {
       try {
         int n = Integer.parseInt(txtNumber.getText().trim());
-        if (n <= 0) {
-          errors.append("El valor de habitación debe ser positivo.\n");
+        if (n < 0) {
+          logger.warn("Intento de insertar valor '{}' menor que 1", txtNumber.getText());
+          errors.append("El número debe ser positivo.\n");
         }
         if (n > 9999) {
-          errors.append("El valor de habitación no puede ser mayor a 9999.\n");
+          logger.warn("Intento de insertar valor '{}' mayor que 9999", txtNumber.getText());
+          errors.append("El número no puede ser mayor a 9999.\n");
         }
       } catch (NumberFormatException e) {
-        errors.append("El valor de habitación tiene que ser entero.\n");
+        logger.error("Ingreso de valor '{}' que no es un numero", txtNumber.getText());
+        errors.append("El número debe ser un entero.\n");
       }
+    }
 
-    if (txtFloor.getText().trim().isEmpty())
-      errors.append("El valor de piso es obligatorio.\n");
-    else
+    if (txtFloor.getText().trim().isEmpty()) {
+      logger.warn("Intento de no insertar piso");
+      errors.append("El piso es obligatorio.\n");
+    } else {
       try {
         int f = Integer.parseInt(txtFloor.getText().trim());
         if (f < 0) {
-          errors.append("El valor de piso no puede ser negativo.\n");
+          logger.warn("Intento de insertar valor '{}' menor que 1", txtFloor.getText());
+          errors.append("El piso no puede ser negativo.\n");
         }
         if (f > 999) {
-          errors.append("El valor de piso no puede ser mayor a 999.\n");
+          logger.warn("Intento de insertar valor '{}' mayor que 999", txtFloor.getText());
+          errors.append("El piso no puede ser mayor a 999.\n");
         }
       } catch (NumberFormatException e) {
-        errors.append("El valor de 'Piso' debe ser un número entero.\n");
+        logger.error("Ingreso de valor '{}' que no es un número", txtFloor.getText());
+        errors.append("El piso debe ser un número entero.\n");
       }
+    }
 
-    if (comboType.getValue() == null)
+    if (comboType.getValue() == null) {
+      logger.warn("Intento de no insertar ningun tipo de habitación");
       errors.append("Seleccione un tipo de habitación.\n");
+    }
 
-    if (txtCapacity.getText().trim().isEmpty())
-      errors.append("La 'Capacidad' es obligatoria.\n");
-    else
+    if (txtCapacity.getText().trim().isEmpty()) {
+      logger.warn("Intento de no insertar capacidad");
+      errors.append("La capacidad es obligatoria.\n");
+    } else {
       try {
         int c = Integer.parseInt(txtCapacity.getText().trim());
-        if (c <= 0) {
-          errors.append("El valor de 'Capacidad' debe ser positivo.\n");
+        if (c < 0) {
+          logger.warn("Intento de insertar valor '{}' menor que 1", txtCapacity.getText());
+          errors.append("La capacidad debe ser positiva.\n");
         }
         if (c > 999) {
-          errors.append("El valor de 'Capacidad' no puede ser mayor a 999.\n");
+          logger.warn("Intento de insertar valor '{}' mayor que 999", txtCapacity.getText());
+          errors.append("La capacidad no puede ser mayor a 999.\n");
         }
       } catch (NumberFormatException e) {
-        errors.append("El valor de 'Capacidad' debe ser un número entero.\n");
+        logger.error("Intento de insertar valor '{}' que no es un número", txtCapacity.getText());
+        errors.append("La capacidad debe ser un número entero.\n");
       }
+    }
 
-    if (comboView.getValue() == null)
+    if (comboView.getValue() == null) {
+      logger.warn("Intento de no insertar vista");
       errors.append("Seleccione una vista.\n");
-    if (txtPrice.getText().trim().isEmpty())
-      errors.append("El 'Precio' es obligatorio.\n");
-    else
+    }
+
+    if (txtPrice.getText().trim().isEmpty()) {
+      logger.warn("Intento de no insertar precio");
+      errors.append("El precio es obligatorio.\n");
+    } else {
       try {
         double p = Double.parseDouble(txtPrice.getText().trim());
-        if (p < 0) {
-          errors.append("El valor 'Precio' no puede ser negativo.\n");
-        }
+        if (p < 0)
+          logger.warn("Intento de insertar valor '{}' menor que 1", txtPrice.getText());
+        errors.append("El precio no puede ser negativo.\n");
       } catch (NumberFormatException e) {
-        errors.append("El valor de 'Precio' debe ser un número, puede ser decimal.\n");
+        errors.append("El precio debe ser un número (puede ser decimal).\n");
+        logger.error("Intento de insertar valor '{}' que no es un número", txtPrice.getText());
       }
+    }
 
     if (errors.length() > 0) {
       showAlert("Validación", "Corrija los siguientes errores", errors.toString());

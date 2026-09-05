@@ -1,4 +1,5 @@
 package repositories;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.sql.Connection;
@@ -8,8 +9,8 @@ import java.sql.SQLException;
 public class ConexionDB {
 
   private static final Dotenv dotenv = Dotenv.configure()
-          .ignoreIfMissing()
-          .load();
+      .ignoreIfMissing()
+      .load();
 
   private static final String URL = dotenv.get("DB_URL");
   private static final String USER = dotenv.get("DB_USER");
@@ -34,16 +35,14 @@ public class ConexionDB {
     } catch (ClassNotFoundException e) {
 
       throw new SQLException(
-              "Driver de MySQL no encontrado.",
-              e
-      );
+          "Driver de MySQL no encontrado.",
+          e);
     }
 
     return DriverManager.getConnection(
-            URL,
-            USER,
-            PASSWORD
-    );
+        URL,
+        USER,
+        PASSWORD);
   }
 
   public static void main(String[] args) {
@@ -51,17 +50,15 @@ public class ConexionDB {
     try (Connection conn = ConexionDB.getConnection()) {
 
       System.out.println(
-              "✅ ¡Conexión exitosa a "
-                      + conn.getCatalog()
-                      + "!"
-      );
+          "✅ ¡Conexión exitosa a "
+              + conn.getCatalog()
+              + "!");
 
     } catch (SQLException e) {
 
       System.err.println(
-              "❌ Error: "
-                      + e.getMessage()
-      );
+          "❌ Error: "
+              + e.getMessage());
     }
   }
 }

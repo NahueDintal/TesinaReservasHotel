@@ -82,3 +82,15 @@ sistema-reservas-hoteles/
 ├── pom.xml                                       (si usas Maven)
 ├── README.md
 └── .gitignore
+
+
+Nomenclatura para Logs!
+
+DEBUG: detalles para desarrollo (valores de variables, flujo interno).
+
+INFO: eventos importantes del negocio (habitación creada, actualizada, etc.).
+
+WARN: situaciones anómalas pero no críticas (ej. intentar establecer un valor inválido que se corrige).
+
+ERROR: errores que requieren atención (excepciones, fallos de BD).
+

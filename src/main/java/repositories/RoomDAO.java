@@ -1,6 +1,7 @@
 package repositories;
 
 import models.Room;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,18 +13,19 @@ public class RoomDAO {
 
   private static final Logger logger = LoggerFactory.getLogger(RoomDAO.class);
 
-  // ========== LISTAR ACTIVAS ==========
   public List<Room> listActive() {
+    logger.debug("Listando habitaciones activas");
     return listByActive(true);
   }
 
-  // ========== LISTAR INACTIVAS ==========
   public List<Room> listInactive() {
     return listByActive(false);
   }
 
   private List<Room> listByActive(boolean active) {
+    logger.debug("Ejecutando listByActive con active={}", active);
     List<Room> rooms = new ArrayList<>();
+    logger.debug("Ejecutando consulta SELECT");
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
@@ -44,11 +46,12 @@ public class RoomDAO {
       logger.error("Error al listar habitaciones (active={})", active, e);
       throw new RuntimeException("Error al listar habitaciones", e);
     }
+    logger.info("Se listaron habitaciones {} (active={})", rooms.size(), active);
     return rooms;
   }
 
-  // ========== BUSCAR POR NÚMERO ==========
   public Room searchByNumber(int number) {
+    logger.debug("Ejecutando searchByNumber con number {}", number);
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
@@ -68,11 +71,17 @@ public class RoomDAO {
       logger.error("Error al obtener habitación por número: {}", number, e);
       throw new RuntimeException("Error al obtener habitación", e);
     }
+    logger.info("No se encontro resultados con number {}", number);
     return null;
   }
 
-  // ========== INSERTAR ==========
   public boolean insert(Room room) {
+    if (existsActiveByNumber(room.getNumber())) {
+      logger.warn("Ya existe una habitación activa con el número {}", room.getNumber());
+      throw new IllegalArgumentException("Ya existe una habitación activa con ese número");
+    }
+    logger.debug("Ejecutando insert con room {}, price {}, type {}, price {}", room.getNumber(), room.getFloor(),
+        room.getPrice(), room.getTypeName(), room.getPrice());
     String sqlRoom = "INSERT INTO room (number, floor, id_room_type, capacity, id_room_view, " +
         "available, out_of_service, active, price, description) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?)";
@@ -98,7 +107,9 @@ public class RoomDAO {
           if (generatedKeys.next()) {
             generatedIdRoom = generatedKeys.getInt(1);
             room.setIdRoom(generatedIdRoom);
+            logger.info("Habitacion insertada correctamente idRoom {}, number {} ", room.getIdRoom(), room.getNumber());
           } else {
+            logger.error("No se pudo obtener el idRoom generado en DB con room {}", room);
             throw new SQLException("No se pudo obtener el idRoom generado.");
           }
         }
@@ -117,8 +128,8 @@ public class RoomDAO {
     }
   }
 
-  // ========== ACTUALIZAR ==========
   public boolean update(Room room) {
+    logger.debug("ejecutando update de room {}", room.getIdRoom());
     String sqlRoom = "UPDATE room SET number = ?, floor = ?, id_room_type = ?, capacity = ?, " +
         "id_room_view = ?, available = ?, out_of_service = ?, active = ?, " +
         "price = ?, description = ? WHERE idRoom = ?";
@@ -157,8 +168,8 @@ public class RoomDAO {
     }
   }
 
-  // ========== SOFT DELETE ==========
   public boolean delete(int idRoom) {
+    logger.debug("ejecutando Soft Delete para room {} ", idRoom);
     String sql = "UPDATE room SET active = FALSE WHERE idRoom = ?";
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -177,8 +188,8 @@ public class RoomDAO {
     }
   }
 
-  // ========== MAPEO ==========
   private Room mapRoom(ResultSet rs) throws SQLException {
+    logger.debug("Ejecutando mapRoom");
     Room room = new Room();
     room.setIdRoom(rs.getInt("idRoom"));
     room.setNumber(rs.getInt("number"));
@@ -196,8 +207,7 @@ public class RoomDAO {
     return room;
   }
 
-  // ========== CARACTERÍSTICAS ==========
-  private List<String> loadFeaturesForRoom(Connection conn, int idRoom) throws SQLException {
+  private List<String> loadFeaturesForRoom(Connection conn, int idRoom) {
     List<String> features = new ArrayList<>();
     String sql = "SELECT f.name FROM feature f " +
         "JOIN room_feature rf ON f.id_feature = rf.id_feature " +
@@ -209,11 +219,14 @@ public class RoomDAO {
           features.add(rs.getString("name"));
         }
       }
+    } catch (SQLException e) {
+      logger.error("No se pudo cargar features para room {}", idRoom);
+      throw new RuntimeException("No se pudo cargar las caracteristicas de habitacion", e);
     }
     return features;
   }
 
-  private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) throws SQLException {
+  private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) {
     String sql = "INSERT INTO room_feature (idRoom, id_feature) " +
         "SELECT ?, id_feature FROM feature WHERE name = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -223,18 +236,23 @@ public class RoomDAO {
         stmt.addBatch();
       }
       stmt.executeBatch();
+    } catch (SQLException e) {
+      logger.error("No se pudo insertar features para room {}", idRoom);
+      throw new RuntimeException("No se pude insertar features", e);
     }
   }
 
-  private void deleteFeatures(Connection conn, int idRoom) throws SQLException {
+  private void deleteFeatures(Connection conn, int idRoom) {
     String sql = "DELETE FROM room_feature WHERE idRoom = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
       stmt.executeUpdate();
+    } catch (SQLException e) {
+      logger.error("No se pudo borrar las features para la room {}", idRoom);
+      throw new RuntimeException("No se pudo borrar las features.", e);
     }
   }
 
-  // ========== UTILIDADES PARA TRANSACCIONES ==========
   private void rollback(Connection conn) {
     if (conn != null) {
       try {
@@ -253,5 +271,22 @@ public class RoomDAO {
         logger.error("Error al restaurar autocommit", ex);
       }
     }
+  }
+
+  public boolean existsActiveByNumber(int number) {
+    String sql = "SELECT COUNT(*) FROM room WHERE number = ? AND active = TRUE";
+    try (Connection conn = ConexionDB.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setInt(1, number);
+      try (ResultSet rs = stmt.executeQuery()) {
+        if (rs.next()) {
+          return rs.getInt(1) > 0;
+        }
+      }
+    } catch (SQLException e) {
+      logger.error("Error al verificar número activo {}", number, e);
+      throw new RuntimeException("Error al verificar número de habitación", e);
+    }
+    return false;
   }
 }
