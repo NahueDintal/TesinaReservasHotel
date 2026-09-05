@@ -38,6 +38,7 @@ public class CustomerFormController {
     private Map<Integer, String> statuses;
 
     private Customer editingCustomer; // null if creating new
+    private boolean isEditing = false;
 
     // ========== INITIALIZATION ==========
     @FXML
@@ -45,6 +46,14 @@ public class CustomerFormController {
         loadCatalogs();
         setupButtonActions();
 
+        if (editingCustomer == null) {
+            btnSave.setText("Guardar");
+        }
+        setMaxLength(txtFirstName, 100);
+        setMaxLength(txtLastName, 100);
+        setMaxLength(txtDocumentNumber, 30);
+        setMaxLength(txtPhone, 30);
+        setMaxLength(txtEmail, 255);
     }
 
     // ========== LOAD METHODS ==========
@@ -74,7 +83,11 @@ public class CustomerFormController {
     // ========== PUBLIC METHOD TO SET CUSTOMER FOR EDITING ==========
     public void setCustomer(Customer customer) {
         this.editingCustomer = customer;
-        lblFormTitle.setText("Editar Cliente");
+        this.isEditing = true;
+
+        lblFormTitle.setText("Edite el Formulario");
+        btnSave.setText("Actualizar");
+
         txtFirstName.setText(customer.getName());
         txtLastName.setText(customer.getSurname());
         txtDocumentNumber.setText(customer.getDocumentNumber());
@@ -225,5 +238,13 @@ public class CustomerFormController {
         }
         // Si no encuentra "Activo", devuelve 1
         return 1;
+    }
+    private void setMaxLength(TextField field, int maxLength) {
+        field.setTextFormatter(new TextFormatter<>(change -> {
+            if (change.getControlNewText().length() <= maxLength) {
+                return change;
+            }
+            return null;
+        }));
     }
 }

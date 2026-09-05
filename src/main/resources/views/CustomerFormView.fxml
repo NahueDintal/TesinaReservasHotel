@@ -17,9 +17,9 @@
     </padding>
 
     <!-- Title -->
-    <Label fx:id="lblFormTitle" text="Nuevo Cliente" styleClass="form-title">
+    <Label fx:id="lblFormTitle" text="Complete el Formulario" styleClass="form-title">
         <font>
-            <Font size="20.0" />
+            <Font size="15.0" />
         </font>
     </Label>
 

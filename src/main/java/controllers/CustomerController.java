@@ -181,10 +181,14 @@ public class CustomerController {
             stage.setScene(new Scene(loader.load()));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
-            stage.setTitle(customer == null ? "Nuevo Cliente" : "Editar Cliente");
 
             CustomerFormController controller = loader.getController();
-            if (customer != null) controller.setCustomer(customer);
+            if (customer != null) {
+                controller.setCustomer(customer);
+                stage.setTitle("Modificación de Cliente");
+            } else {
+                stage.setTitle("Registro de Cliente");
+            }
 
             stage.showAndWait();
             loadActiveCustomers();
@@ -200,7 +204,7 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InactiveCustomersView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Clientes Inactivos");
+            stage.setTitle("Vista de Inactivos");
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
             stage.showAndWait();
