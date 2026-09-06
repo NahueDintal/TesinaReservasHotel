@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.*;
 import repositories.*;
+import utils.Utils;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -54,6 +55,14 @@ public class CustomerFormController {
         setMaxLength(txtDocumentNumber, 30);
         setMaxLength(txtPhone, 30);
         setMaxLength(txtEmail, 255);
+        txtPhone.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            // Solo permitimos números, espacios, +, -, paréntesis y guiones (para que el usuario pueda escribir sin que salte)
+            if (newText.matches("[0-9+\\-\\s()]*")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     // ========== LOAD METHODS ==========
@@ -156,7 +165,14 @@ public class CustomerFormController {
         customer.setName(txtFirstName.getText().trim());
         customer.setSurname(txtLastName.getText().trim());
         customer.setDocumentNumber(txtDocumentNumber.getText().trim());
-        customer.setPhoneNumber(txtPhone.getText().trim());
+        String cleanPhone = Utils.cleanAndValidatePhone(txtPhone.getText().trim());
+        if (cleanPhone == null) {
+            showAlert("Dato inválido", "Teléfono incorrecto",
+                    "El número de teléfono no es válido. Debe tener entre 7 y 15 dígitos.\n" +
+                            "Se permiten espacios, guiones y paréntesis, y el prefijo '+'.");
+            return; // ❌ Salir del método sin guardar
+        }
+        customer.setPhoneNumber(cleanPhone);
         customer.setEmail(txtEmail.getText().trim());
 
         // Obtener IDs de los combos
