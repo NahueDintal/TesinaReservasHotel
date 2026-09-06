@@ -124,7 +124,9 @@ public class NewReservationController {
                             reservation.getIdCustomer()
                     );
             if (customer != null) {
-                cmbCustomer.setValue(customer);
+                selectedCustomer = customer;
+
+                txtCustomerSearch.setText(customer.getName() + " " + customer.getSurname());
             }
         } catch (Exception e) {
             System.err.println(
@@ -925,7 +927,14 @@ public class NewReservationController {
         try {
             List<String> errors = new ArrayList<>();
 
-            
+            Customer customer = selectedCustomer;
+            int idCustomer = 0;
+
+            if (customer == null) {
+                errors.add("Debe seleccionar un cliente.");
+            } else {
+                idCustomer = customer.getIdCustomer();
+            }
 
             LocalDate checkIn = dpCheckIn.getValue();
             LocalDate checkOut = dpCheckOut.getValue();
@@ -1141,7 +1150,10 @@ public class NewReservationController {
     }
     // LIMPIAR
     private void clearForm() {
-        cmbCustomer.setValue(null);
+        selectedCustomer = null;
+        txtCustomerSearch.clear();
+        lstCustomers.setVisible(false);
+        lstCustomers.setManaged(false);
         dpCheckIn.setValue(null);
         dpCheckOut.setValue(null);
         txtNumberOfGuests.clear();
