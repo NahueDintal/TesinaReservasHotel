@@ -23,13 +23,13 @@ public class StaffController {
 
     // ---------- Tabla principal ----------
     @FXML private TableView<Staff> tableStaff;
-    @FXML private TableColumn<Staff, String> colId;
     @FXML private TableColumn<Staff, String> colFullName;
-    @FXML private TableColumn<Staff, String> colDni;
     @FXML private TableColumn<Staff, String> colPosition;
     @FXML private TableColumn<Staff, String> colDepartment;
     @FXML private TableColumn<Staff, String> colPhone;
-    @FXML private TableColumn<Staff, String> colStatus;
+    // colId, colDni y colStatus ya no son columnas visibles en esta pantalla,
+    // pero los datos siguen existiendo en el modelo Staff (id, dni, status)
+    // y se ven en el panel de detalle y en el formulario.
 
     // ---------- Buscador y filtro ----------
     @FXML private TextField txtSearch;
@@ -63,15 +63,11 @@ public class StaffController {
     }
 
     private void configurarColumnas() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colFullName.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getFullName()));
-        colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
         colPosition.setCellValueFactory(new PropertyValueFactory<>("positionName"));
         colDepartment.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        colStatus.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getStatus().toString()));
     }
 
     // Trae todos los empleados desde la base de datos y los carga en la tabla
@@ -203,7 +199,27 @@ public class StaffController {
 
     @FXML
     private void handleViewHistory() {
-        mostrarAlerta("La funcionalidad de historial todavía no está implementada.");
+        Staff seleccionado = tableStaff.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Seleccioná un empleado de la tabla primero.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/StaffHistory.fxml"));
+            Parent root = loader.load();
+
+            StaffHistoryController historyController = loader.getController();
+            historyController.loadHistory(seleccionado.getId());
+
+            Stage stage = new Stage();
+            stage.setTitle("Historial de " + seleccionado.getFullName());
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            mostrarAlerta("No se pudo abrir el historial: " + e.getMessage());
+        }
     }
 
     private void mostrarAlerta(String mensaje) {

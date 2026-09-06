@@ -103,7 +103,7 @@ public class Staff {
     public void setPositionName(String positionName) { this.positionName = positionName; }
     public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
 
-    // Método de conveniencia, igual que usás getFullName-style en otras pantallas
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
