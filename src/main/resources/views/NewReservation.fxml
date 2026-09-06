@@ -70,7 +70,7 @@
 
                 <Button
                         text="←"
-                        onAction="#handleVolver"
+                        onAction="#handleBack"
                         prefWidth="38.0"
                         prefHeight="38.0"
                         styleClass="reservation-back-button"/>
