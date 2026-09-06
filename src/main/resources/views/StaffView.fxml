@@ -50,13 +50,10 @@
             <VBox spacing="10">
                 <TableView fx:id="tableStaff" styleClass="staff-table" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colId" text="ID" prefWidth="50" />
                         <TableColumn fx:id="colFullName" text="Nombre Completo" prefWidth="150" />
-                        <TableColumn fx:id="colDni" text="DNI" prefWidth="100" />
                         <TableColumn fx:id="colPosition" text="Cargo" prefWidth="120" />
                         <TableColumn fx:id="colDepartment" text="Área" prefWidth="120" />
                         <TableColumn fx:id="colPhone" text="Teléfono" prefWidth="100" />
-                        <TableColumn fx:id="colStatus" text="Estado" prefWidth="100" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
