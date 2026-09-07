@@ -80,6 +80,7 @@
                         HBox.hgrow="ALWAYS">
 
                     <Label
+                            fx:id="lblReservationTitle"
                             text="Nueva Reserva"
                             styleClass="reservation-page-title"/>
 
