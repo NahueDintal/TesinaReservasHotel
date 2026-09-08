@@ -120,7 +120,7 @@ public class Room {
       throw new IllegalArgumentException("La capacidad debe ser mayor a cero.");
     }
     this.capacity = capacity;
-    logger.warn("Número de capacidad establecido {}", capacity);
+    logger.info("Número de capacidad establecido {}", capacity);
   }
 
   public void setCapacity(String capacityStr) {
