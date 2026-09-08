@@ -246,9 +246,10 @@ public class RoomFormController {
     } else {
       try {
         double p = Double.parseDouble(txtPrice.getText().trim());
-        if (p > 0)
+        if (p < 0) {
           logger.warn("Intento de insertar valor '{}' menor que 1", txtPrice.getText());
-        errors.append("El precio no puede ser negativo.\n");
+          errors.append("El precio no puede ser negativo.\n");
+        }
       } catch (NumberFormatException e) {
         errors.append("El precio debe ser un número (puede ser decimal).\n");
         logger.error("Intento de insertar valor '{}' que no es un número", txtPrice.getText());
