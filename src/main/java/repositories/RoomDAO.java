@@ -25,7 +25,6 @@ public class RoomDAO {
   private List<Room> listByActive(boolean active) {
     logger.debug("Ejecutando listByActive con active={}", active);
     List<Room> rooms = new ArrayList<>();
-    logger.debug("Ejecutando consulta SELECT");
     String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
         "FROM room r " +
         "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
@@ -46,7 +45,6 @@ public class RoomDAO {
       logger.error("Error al listar habitaciones (active={})", active, e);
       throw new RuntimeException("Error al listar habitaciones", e);
     }
-    logger.info("Se listaron habitaciones {} (active={})", rooms.size(), active);
     return rooms;
   }
 
@@ -71,7 +69,6 @@ public class RoomDAO {
       logger.error("Error al obtener habitación por número: {}", number, e);
       throw new RuntimeException("Error al obtener habitación", e);
     }
-    logger.info("No se encontro resultados con number {}", number);
     return null;
   }
 
@@ -107,7 +104,6 @@ public class RoomDAO {
           if (generatedKeys.next()) {
             generatedIdRoom = generatedKeys.getInt(1);
             room.setIdRoom(generatedIdRoom);
-            logger.info("Habitacion insertada correctamente idRoom {}, number {} ", room.getIdRoom(), room.getNumber());
           } else {
             logger.error("No se pudo obtener el idRoom generado en DB con room {}", room);
             throw new SQLException("No se pudo obtener el idRoom generado.");
@@ -117,7 +113,6 @@ public class RoomDAO {
 
       insertFeatures(conn, generatedIdRoom, room.getFeatures());
       conn.commit();
-      logger.info("Habitación insertada correctamente: idRoom {}", generatedIdRoom);
       return true;
     } catch (SQLException e) {
       rollback(conn);
@@ -157,7 +152,6 @@ public class RoomDAO {
       insertFeatures(conn, room.getIdRoom(), room.getFeatures());
 
       conn.commit();
-      logger.info("Habitación actualizada correctamente: idRoom {}", room.getIdRoom());
       return true;
     } catch (SQLException e) {
       rollback(conn);
@@ -176,7 +170,6 @@ public class RoomDAO {
       stmt.setInt(1, idRoom);
       int affected = stmt.executeUpdate();
       if (affected > 0) {
-        logger.info("Habitación con idRoom {} marcada como inactiva (soft delete).", idRoom);
         return true;
       } else {
         logger.warn("No se encontró habitación con idRoom {} para soft delete.", idRoom);
