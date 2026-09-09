@@ -4,15 +4,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
-
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.control.TableCell;
-
 import models.Customer;
 import models.Reservation;
 import models.ReservationStatus;
@@ -27,23 +22,13 @@ public class ReservationsController {
     private final ReservationRepo reservationRepo;
     private final CustomerDAO customerDAO;
     private final ReservationStatusRepo reservationStatusRepo;
-
     private DashboardController dashboardController;
-
-    // =========================================================
-    // DATOS
-    // =========================================================
 
     private final ObservableList<Reservation> todasLasReservas =
             FXCollections.observableArrayList();
 
     private List<Customer> customers;
     private List<ReservationStatus> reservationStatuses;
-
-
-    // =========================================================
-    // TABLA
-    // =========================================================
 
     @FXML
     private TableView<Reservation> tblReservations;
@@ -72,77 +57,34 @@ public class ReservationsController {
     @FXML
     private TableColumn<Reservation, Void> colActions;
 
-
-    // =========================================================
-    // BÚSQUEDA
-    // =========================================================
-
     @FXML
     private TextField txtBuscarReserva;
 
-
-    // =========================================================
-    // CONSTRUCTOR
-    // =========================================================
-
     public ReservationsController() {
-
         reservationRepo = new ReservationRepo();
         customerDAO = new CustomerDAO();
         reservationStatusRepo = new ReservationStatusRepo();
     }
 
-
-    // =========================================================
-    // INITIALIZE
-    // =========================================================
-
     @FXML
     public void initialize() {
-
-        cargarClientes();
-        cargarEstados();
-
-        configurarTabla();
-        cargarReservas();
-
-        configurarBusqueda();
+        loadCustomers();
+        loadStatuses();
+        configureTable();
+        loadReservations();
+        configureSearch();
     }
 
-
-    // =========================================================
-    // CONFIGURAR TABLA
-    // =========================================================
-
-    private void configurarTabla() {
-
-        // Número de reserva
+    private void configureTable() {
         colIdReservation.setCellValueFactory(
                 new PropertyValueFactory<>("idReservation")
         );
 
-
-        // =====================================================
-        // CLIENTE
-        // =====================================================
-
         colCustomer.setCellValueFactory(cellData -> {
-
-            Reservation reservation =
-                    cellData.getValue();
-
-            String nombreCliente =
-                    obtenerNombreCliente(
-                            reservation.getIdCustomer()
-                    );
-
-            return new SimpleStringProperty(nombreCliente);
+            Reservation reservation = cellData.getValue();
+            String customerName = getCustomerName(reservation.getIdCustomer());
+            return new SimpleStringProperty(customerName);
         });
-
-
-        // =====================================================
-        // FECHAS
-        // =====================================================
 
         colCheckIn.setCellValueFactory(
                 new PropertyValueFactory<>("checkIn")
@@ -152,473 +94,267 @@ public class ReservationsController {
                 new PropertyValueFactory<>("checkOut")
         );
 
-
-        // =====================================================
-        // HUÉSPEDES
-        // =====================================================
-
         colGuests.setCellValueFactory(
                 new PropertyValueFactory<>("numberOfGuests")
         );
-
-
-        // =====================================================
-        // TARIFA
-        // =====================================================
 
         colTotalRate.setCellValueFactory(
                 new PropertyValueFactory<>("totalRate")
         );
 
-
-        // =====================================================
-        // ESTADO
-        // =====================================================
-
         colStatus.setCellValueFactory(cellData -> {
-
-            Reservation reservation =
-                    cellData.getValue();
-
-            String nombreEstado =
-                    obtenerNombreEstado(
-                            reservation.getIdReservationStatus()
-                    );
-
-            return new SimpleStringProperty(nombreEstado);
+            Reservation reservation = cellData.getValue();
+            String statusName = getStatusName(
+                    reservation.getIdReservationStatus()
+            );
+            return new SimpleStringProperty(statusName);
         });
 
-        colStatus.setCellFactory(column -> new TableCell<Reservation, String>() {
+        colStatus.setCellFactory(column ->
+                new TableCell<Reservation, String>() {
+                    @Override
+                    protected void updateItem(String status, boolean empty) {
+                        super.updateItem(status, empty);
 
-            @Override
-            protected void updateItem(String status, boolean empty) {
+                        if (empty || status == null) {
+                            setText(null);
+                            setStyle("");
+                            return;
+                        }
 
-                super.updateItem(status, empty);
+                        setText(status);
 
-                if (empty || status == null) {
-                    setText(null);
-                    setStyle("");
-                    return;
+                        switch (status.toLowerCase()) {
+                            case "pendiente":
+                                setStyle(
+                                        "-fx-background-color: #fdeaea;" +
+                                                "-fx-text-fill: #c0392b;" +
+                                                "-fx-font-weight: bold;" +
+                                                "-fx-alignment: CENTER;"
+                                );
+                                break;
+
+                            case "pagado":
+                                setStyle(
+                                        "-fx-background-color: #fff4cc;" +
+                                                "-fx-text-fill: #b8860b;" +
+                                                "-fx-font-weight: bold;" +
+                                                "-fx-alignment: CENTER;"
+                                );
+                                break;
+
+                            case "cancelado":
+                                setStyle(
+                                        "-fx-background-color: #e3f3e7;" +
+                                                "-fx-text-fill: #2e7d45;" +
+                                                "-fx-font-weight: bold;" +
+                                                "-fx-alignment: CENTER;"
+                                );
+                                break;
+
+                            default:
+                                setStyle("-fx-alignment: CENTER;");
+                        }
+                    }
                 }
+        );
 
-                setText(status);
-
-                switch (status.toLowerCase()) {
-
-                    case "pendiente":
-                        setStyle(
-                                "-fx-background-color: #fdeaea;" +
-                                        "-fx-text-fill: #c0392b;" +
-                                        "-fx-font-weight: bold;" +
-                                        "-fx-alignment: CENTER;"
-                        );
-                        break;
-
-                    case "pagado":
-                        setStyle(
-                                "-fx-background-color: #fff4cc;" +
-                                        "-fx-text-fill: #b8860b;" +
-                                        "-fx-font-weight: bold;" +
-                                        "-fx-alignment: CENTER;"
-                        );
-                        break;
-
-                    case "cancelado":
-                        setStyle(
-                                "-fx-background-color: #e3f3e7;" +
-                                        "-fx-text-fill: #2e7d45;" +
-                                        "-fx-font-weight: bold;" +
-                                        "-fx-alignment: CENTER;"
-                        );
-                        break;
-
-                    default:
-                        setStyle(
-                                "-fx-alignment: CENTER;"
-                        );
-                        break;
-                }
-            }
-        });
-
-
-        // =====================================================
-        // ACCIONES
-        // =====================================================
-
-        configurarColumnaAcciones();
+        configureActionsColumn();
     }
 
-
-    // =========================================================
-    // CLIENTES
-    // =========================================================
-
-    private void cargarClientes() {
-
+    private void loadCustomers() {
         try {
-
-            customers =
-                    customerDAO.listAll();
-
-            System.out.println(
-                    "Clientes cargados: " +
-                            customers.size()
-            );
-
+            customers = customerDAO.listAll();
+            System.out.println("Customers loaded: " + customers.size());
         } catch (Exception e) {
-
-            System.err.println(
-                    "Error cargando clientes: " +
-                            e.getMessage()
-            );
-
+            System.err.println("Error loading customers: " + e.getMessage());
             customers = List.of();
         }
     }
 
-
-    // =========================================================
-    // ESTADOS
-    // =========================================================
-
-    private void cargarEstados() {
-
+    private void loadStatuses() {
         try {
-
             reservationStatuses =
                     reservationStatusRepo.getReservationStatuses();
 
             System.out.println(
-                    "Estados cargados: " +
+                    "Reservation statuses loaded: " +
                             reservationStatuses.size()
             );
-
         } catch (Exception e) {
-
             System.err.println(
-                    "Error cargando estados: " +
+                    "Error loading reservation statuses: " +
                             e.getMessage()
             );
-
             reservationStatuses = List.of();
         }
     }
 
-
-    // =========================================================
-    // OBTENER NOMBRE CLIENTE
-    // =========================================================
-
-    private String obtenerNombreCliente(int idCustomer) {
-
+    private String getCustomerName(int idCustomer) {
         for (Customer customer : customers) {
-
             if (customer.getIdCustomer() == idCustomer) {
-
-                return customer.getName() +
-                        " " +
-                        customer.getSurname();
+                return customer.getName() + " " + customer.getSurname();
             }
         }
 
-        return "Cliente desconocido";
+        return "Unknown customer";
     }
 
-
-    // =========================================================
-    // OBTENER NOMBRE ESTADO
-    // =========================================================
-
-    private String obtenerNombreEstado(
-            int idReservationStatus) {
-
-        for (ReservationStatus status :
-                reservationStatuses) {
-
-            if (status.getIdReservationStatus()
-                    == idReservationStatus) {
-
+    private String getStatusName(int idReservationStatus) {
+        for (ReservationStatus status : reservationStatuses) {
+            if (status.getIdReservationStatus() == idReservationStatus) {
                 return status.getName();
             }
         }
 
-        return "Desconocido";
+        return "Unknown";
     }
 
-
-    // =========================================================
-    // CARGAR RESERVAS
-    // =========================================================
-
-    private void cargarReservas() {
-
+    private void loadReservations() {
         try {
-
             List<Reservation> reservations =
                     reservationRepo.getReservations();
 
             todasLasReservas.setAll(reservations);
-
             tblReservations.setItems(
-                    FXCollections.observableArrayList(
-                            reservations
-                    )
+                    FXCollections.observableArrayList(reservations)
             );
 
             System.out.println(
-                    "Reservas cargadas: " +
-                            reservations.size()
+                    "Reservations loaded: " + reservations.size()
             );
-
         } catch (Exception e) {
-
             System.err.println(
-                    "Error cargando reservas: " +
-                            e.getMessage()
+                    "Error loading reservations: " + e.getMessage()
             );
-
             e.printStackTrace();
         }
     }
 
+    private void configureSearch() {
+        txtBuscarReserva.textProperty().addListener(
+                (observable, oldValue, newValue) -> {
 
-    // =========================================================
-    // BÚSQUEDA
-    // =========================================================
+                    String text = newValue.trim().toLowerCase();
 
-    private void configurarBusqueda() {
-
-        txtBuscarReserva.textProperty()
-                .addListener((observable, oldValue, newValue) -> {
-
-                    String texto =
-                            newValue.trim().toLowerCase();
-
-                    if (texto.isEmpty()) {
-
+                    if (text.isEmpty()) {
                         tblReservations.setItems(
                                 FXCollections.observableArrayList(
                                         todasLasReservas
                                 )
                         );
-
                         return;
                     }
 
-
-                    ObservableList<Reservation> filtradas =
+                    ObservableList<Reservation> filtered =
                             FXCollections.observableArrayList();
 
+                    for (Reservation reservation : todasLasReservas) {
+                        String id = String.valueOf(
+                                reservation.getIdReservation()
+                        );
 
-                    for (Reservation reservation :
-                            todasLasReservas) {
+                        String customer = getCustomerName(
+                                reservation.getIdCustomer()
+                        ).toLowerCase();
 
-                        String id =
-                                String.valueOf(
-                                        reservation.getIdReservation()
-                                );
+                        String status = getStatusName(
+                                reservation.getIdReservationStatus()
+                        ).toLowerCase();
 
-                        String cliente =
-                                obtenerNombreCliente(
-                                        reservation.getIdCustomer()
-                                ).toLowerCase();
-
-                        String estado =
-                                obtenerNombreEstado(
-                                        reservation.getIdReservationStatus()
-                                ).toLowerCase();
-
-
-                        if (id.contains(texto)
-                                || cliente.contains(texto)
-                                || estado.contains(texto)) {
-
-                            filtradas.add(reservation);
+                        if (id.contains(text)
+                                || customer.contains(text)
+                                || status.contains(text)) {
+                            filtered.add(reservation);
                         }
                     }
 
-
-                    tblReservations.setItems(filtradas);
-                });
-    }
-
-
-    // =========================================================
-    // COLUMNA ACCIONES
-    // =========================================================
-
-    private void configurarColumnaAcciones() {
-
-        colActions.setCellFactory(param -> new TableCell<Reservation, Void>() {
-
-            private final Button btnModificar = new Button("Modificar");
-            private final Button btnConsumo = new Button("Consumo");
-            private final HBox botones = new HBox(8);
-
-            {
-                botones.getChildren().addAll(
-                        btnModificar,
-                        btnConsumo
-                );
-
-                botones.setAlignment(Pos.CENTER);
-
-                btnModificar.setOnAction(event -> {
-
-                    Reservation reservation =
-                            getTableView().getItems().get(getIndex());
-
-                    handleModificar(reservation);
-                });
-
-                btnConsumo.setOnAction(event -> {
-
-                    Reservation reservation =
-                            getTableView().getItems().get(getIndex());
-
-                    handleAgregarConsumo(reservation);
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-
-                super.updateItem(item, empty);
-
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(botones);
+                    tblReservations.setItems(filtered);
                 }
-            }
-        });
+        );
     }
 
-    // =========================================================
-    // MODIFICAR RESERVA
-    // =========================================================
+    private void configureActionsColumn() {
+        colActions.setCellFactory(param ->
+                new TableCell<Reservation, Void>() {
 
-    private void handleModificar(Reservation reservation) {
+                    private final Button btnModify =
+                            new Button("Modificar");
 
+                    private final HBox buttons = new HBox(8);
+
+                    {
+                        buttons.getChildren().add(btnModify);
+                        buttons.setAlignment(Pos.CENTER);
+
+                        btnModify.setOnAction(event -> {
+                            Reservation reservation =
+                                    getTableView()
+                                            .getItems()
+                                            .get(getIndex());
+
+                            handleModify(reservation);
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        setGraphic(empty ? null : buttons);
+                    }
+                }
+        );
+    }
+
+    private void handleModify(Reservation reservation) {
         if (reservation == null) {
             return;
         }
 
         if (dashboardController != null) {
-
-            dashboardController.loadEditReservation(
-                    reservation
-            );
-
+            dashboardController.loadEditReservation(reservation);
         } else {
-
             System.err.println(
-                    "DashboardController no está conectado."
+                    "DashboardController is not connected."
             );
         }
     }
-
-    // =========================================================
-    // GESTIONAR CONSUMOS
-    // =========================================================
-
-    private void handleAgregarConsumo(
-            Reservation reservation) {
-
-        System.out.println(
-                "Agregar consumo a reserva: " +
-                        reservation.getIdReservation()
-        );
-    }
-
-
-    // =========================================================
-    // CONECTAR CON DASHBOARD
-    // =========================================================
 
     public void setDashboardController(
             DashboardController dashboardController) {
 
-        this.dashboardController =
-                dashboardController;
+        this.dashboardController = dashboardController;
     }
 
-
-    // =========================================================
-    // NUEVA RESERVA
-    // =========================================================
-
     @FXML
-    private void handleNuevaReserva() {
-
+    private void handleNewReservation() {
         if (dashboardController != null) {
-
             dashboardController.loadView(
                     "/views/NewReservation.fxml"
             );
-
         } else {
-
             System.err.println(
-                    "DashboardController no está conectado."
+                    "DashboardController is not connected."
             );
         }
     }
 
-
-    // =========================================================
-    // CREAR RESERVA
-    // =========================================================
-
-    public int createReservation(
-            Reservation reservation) {
-
-        return reservationRepo.createReservation(
-                reservation
-        );
+    public int createReservation(Reservation reservation) {
+        return reservationRepo.createReservation(reservation);
     }
 
-
-    // =========================================================
-    // OBTENER RESERVAS
-    // =========================================================
-
     public List<Reservation> getReservations() {
-
         return reservationRepo.getReservations();
     }
 
-
-    // =========================================================
-    // OBTENER RESERVA POR ID
-    // =========================================================
-
-    public Reservation getReservationById(
-            int idReservation) {
-
-        return reservationRepo.getReservationById(
-                idReservation
-        );
+    public Reservation getReservationById(int idReservation) {
+        return reservationRepo.getReservationById(idReservation);
     }
 
-
-    // =========================================================
-    // ACTUALIZAR RESERVA
-    // =========================================================
-
-    public boolean updateReservation(
-            Reservation reservation) {
-
-        return reservationRepo.updateReservation(
-                reservation
-        );
+    public boolean updateReservation(Reservation reservation) {
+        return reservationRepo.updateReservation(reservation);
     }
-
-
-    // =========================================================
-    // ACTUALIZAR ESTADO
-    // =========================================================
 
     public boolean updateReservationStatus(
             int idReservation,
@@ -630,7 +366,3 @@ public class ReservationsController {
         );
     }
 }
-
-
-
-

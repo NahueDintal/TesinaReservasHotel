@@ -32,6 +32,7 @@
 
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ListView?>
 <ScrollPane
         fitToWidth="true"
         hbarPolicy="NEVER"
@@ -70,7 +71,7 @@
 
                 <Button
                         text="←"
-                        onAction="#handleVolver"
+                        onAction="#handleBack"
                         prefWidth="38.0"
                         prefHeight="38.0"
                         styleClass="reservation-back-button"/>
@@ -80,6 +81,7 @@
                         HBox.hgrow="ALWAYS">
 
                     <Label
+                            fx:id="lblReservationTitle"
                             text="Nueva Reserva"
                             styleClass="reservation-page-title"/>
 
@@ -129,14 +131,29 @@
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
 
-                    <ComboBox
-                            fx:id="cmbCustomer"
-                            prefHeight="34.0"
+                    <VBox
+                            spacing="4.0"
                             maxWidth="Infinity"
-                            promptText="Seleccione un cliente"
                             GridPane.rowIndex="0"
-                            GridPane.columnIndex="1"
-                            styleClass="reservation-field"/>
+                            GridPane.columnIndex="1">
+
+                        <TextField
+                                fx:id="txtCustomerSearch"
+                                prefHeight="34.0"
+                                maxWidth="Infinity"
+                                promptText="Buscar por nombre, apellido o DNI..."
+                                styleClass="reservation-field"/>
+
+                        <ListView
+                                fx:id="lstCustomers"
+                                prefHeight="100.0"
+                                maxHeight="100.0"
+                                maxWidth="Infinity"
+                                visible="false"
+                                managed="false"
+                                styleClass="reservation-customer-list"/>
+
+                    </VBox>
 
 
                     <!-- CHECK-IN -->

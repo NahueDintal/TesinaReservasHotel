@@ -172,41 +172,41 @@ public class RoomFormController {
 
     if (txtNumber.getText().trim().isEmpty()) {
       logger.warn("Intento de no insertar numero de habitación");
-      errors.append("El número de habitación es obligatorio.\n");
+      errors.append("El número de habitación es un valor obligatorio.\n");
     } else {
       try {
         int n = Integer.parseInt(txtNumber.getText().trim());
         if (n < 0) {
           logger.warn("Intento de insertar valor '{}' menor que 1", txtNumber.getText());
-          errors.append("El número debe ser positivo.\n");
+          errors.append("El número debe ser un valor positivo.\n");
         }
         if (n > 9999) {
           logger.warn("Intento de insertar valor '{}' mayor que 9999", txtNumber.getText());
-          errors.append("El número no puede ser mayor a 9999.\n");
+          errors.append("El número no puede ser un valor mayor a 9999.\n");
         }
       } catch (NumberFormatException e) {
         logger.error("Ingreso de valor '{}' que no es un numero", txtNumber.getText());
-        errors.append("El número debe ser un entero.\n");
+        errors.append("El número debe ser un valor numérico entero.\n");
       }
     }
 
     if (txtFloor.getText().trim().isEmpty()) {
       logger.warn("Intento de no insertar piso");
-      errors.append("El piso es obligatorio.\n");
+      errors.append("El piso es un valor obligatorio.\n");
     } else {
       try {
         int f = Integer.parseInt(txtFloor.getText().trim());
         if (f < 0) {
           logger.warn("Intento de insertar valor '{}' menor que 1", txtFloor.getText());
-          errors.append("El piso no puede ser negativo.\n");
+          errors.append("El piso no puede ser un valor negativo.\n");
         }
         if (f > 999) {
           logger.warn("Intento de insertar valor '{}' mayor que 999", txtFloor.getText());
-          errors.append("El piso no puede ser mayor a 999.\n");
+          errors.append("El piso no puede ser un valor mayor a 999.\n");
         }
       } catch (NumberFormatException e) {
         logger.error("Ingreso de valor '{}' que no es un número", txtFloor.getText());
-        errors.append("El piso debe ser un número entero.\n");
+        errors.append("El piso debe ser un valor numerico entero.\n");
       }
     }
 
@@ -217,21 +217,21 @@ public class RoomFormController {
 
     if (txtCapacity.getText().trim().isEmpty()) {
       logger.warn("Intento de no insertar capacidad");
-      errors.append("La capacidad es obligatoria.\n");
+      errors.append("La capacidad es un valor obligatorio.\n");
     } else {
       try {
         int c = Integer.parseInt(txtCapacity.getText().trim());
         if (c < 0) {
           logger.warn("Intento de insertar valor '{}' menor que 1", txtCapacity.getText());
-          errors.append("La capacidad debe ser positiva.\n");
+          errors.append("La capacidad debe ser un valor positivo.\n");
         }
         if (c > 999) {
           logger.warn("Intento de insertar valor '{}' mayor que 999", txtCapacity.getText());
-          errors.append("La capacidad no puede ser mayor a 999.\n");
+          errors.append("La capacidad no puede ser un valor mayor a 999.\n");
         }
       } catch (NumberFormatException e) {
         logger.error("Intento de insertar valor '{}' que no es un número", txtCapacity.getText());
-        errors.append("La capacidad debe ser un número entero.\n");
+        errors.append("La capacidad debe ser un valor númerico entero.\n");
       }
     }
 
@@ -246,11 +246,12 @@ public class RoomFormController {
     } else {
       try {
         double p = Double.parseDouble(txtPrice.getText().trim());
-        if (p < 0)
+        if (p < 0) {
           logger.warn("Intento de insertar valor '{}' menor que 1", txtPrice.getText());
-        errors.append("El precio no puede ser negativo.\n");
+          errors.append("El precio no puede ser un valor negativo.\n");
+        }
       } catch (NumberFormatException e) {
-        errors.append("El precio debe ser un número (puede ser decimal).\n");
+        errors.append("El precio debe ser un valor número (puede ser decimal).\n");
         logger.error("Intento de insertar valor '{}' que no es un número", txtPrice.getText());
       }
     }

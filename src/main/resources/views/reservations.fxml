@@ -67,7 +67,7 @@
 
                 <Button
                         text="+ Nueva reserva"
-                        onAction="#handleNuevaReserva"
+                        onAction="#handleNewReservation"
                         prefWidth="145.0"
                         prefHeight="38.0"
                         styleClass="reservation-primary-button"/>
