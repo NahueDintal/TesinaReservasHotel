@@ -68,19 +68,21 @@ public class CustomerController {
 
         // Configurar buscador
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredCustomers.setPredicate(customer -> {
-                if (newValue == null || newValue.isEmpty()) return true;
-                String lower = newValue.toLowerCase();
-                return customer.getName().toLowerCase().contains(lower) ||
-                        customer.getSurname().toLowerCase().contains(lower) ||
-                        customer.getEmail().toLowerCase().contains(lower) ||
-                        customer.getPhoneNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentTypeName().toLowerCase().contains(lower) ||
-                        customer.getCountryName().toLowerCase().contains(lower) ||
-                        customer.getOriginName().toLowerCase().contains(lower);
-            });
-            updateCounter();
+            try {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    // Si el buscador está vacío, cargar los últimos 100
+                    loadActiveCustomers();
+                } else {
+                    // Si hay texto, buscar en TODA la base de datos
+                    masterCustomerList.setAll(customerDAO.searchCustomers(newValue.trim()));
+                    filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
+                    tableCustomers.setItems(filteredCustomers);
+                    tableCustomers.refresh();
+                    updateCounter();
+                }
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo realizar la búsqueda", e.getMessage());
+            }
         });
 
         // Selección en tabla
@@ -116,7 +118,6 @@ public class CustomerController {
     private void loadActiveCustomers() {
         try {
             masterCustomerList.setAll(customerDAO.listAll());
-            masterCustomerList.removeIf(c -> !"active".equals(c.getStatusName()));
             filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
             tableCustomers.setItems(filteredCustomers);
             //tableCustomers.refresh();
@@ -125,6 +126,7 @@ public class CustomerController {
             showAlert("Error", "No se pudieron cargar los clientes", e.getMessage());
         }
     }
+
 
     // ========== CLEAR FILTERS ==========
     @FXML
@@ -255,7 +257,19 @@ public class CustomerController {
     }
 
     private void updateCounter() {
-        lblTotalCustomers.setText("Mostrando " + (filteredCustomers != null ? filteredCustomers.size() : 0) + " clientes");
+        int count = filteredCustomers != null ? filteredCustomers.size() : 0;
+
+        // Verificar si hay más de 100 clientes en total (haciendo una consulta rápida)
+        try {
+            int totalInDB = customerDAO.countAll(); // ← Necesitamos este método
+            if (totalInDB > 100) {
+                lblTotalCustomers.setText("Mostrando los últimos 100 de " + totalInDB + " clientes");
+            } else {
+                lblTotalCustomers.setText("Mostrando " + count + " clientes");
+            }
+        } catch (SQLException e) {
+            lblTotalCustomers.setText("Mostrando " + count + " clientes");
+        }
     }
 
     private void showAlert(String title, String header, String content) {

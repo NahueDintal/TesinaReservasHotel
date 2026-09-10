@@ -8,7 +8,6 @@ import java.util.List;
 
 public class CustomerDAO {
 
-    // 1. LIST ALL (WITH JOINS TO GET NAMES)
     public List<Customer> listAll() throws SQLException {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT c.*, " +
@@ -21,7 +20,9 @@ public class CustomerDAO {
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
-                "ORDER BY c.idCustomer DESC";
+                "WHERE cs.name = 'active' " +
+                "ORDER BY c.idCustomer DESC " +
+                "LIMIT 100";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -29,7 +30,6 @@ public class CustomerDAO {
 
             while (rs.next()) {
                 Customer c = new Customer();
-                // Base fields
                 c.setIdCustomer(rs.getInt("idCustomer"));
                 c.setName(rs.getString("name"));
                 c.setSurname(rs.getString("surname"));
@@ -40,13 +40,51 @@ public class CustomerDAO {
                 c.setIdCountry(rs.getInt("idCountry"));
                 c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                 c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-
-                // Names from JOINs (for display purposes)
                 c.setDocumentTypeName(rs.getString("documentTypeName"));
                 c.setCountryName(rs.getString("countryName"));
                 c.setStatusName(rs.getString("statusName"));
                 c.setOriginName(rs.getString("originName"));
+                customers.add(c);
+            }
+        }
+        return customers;
+    }
+    public List<Customer> listAllInactive() throws SQLException {
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT c.*, " +
+                "dt.name AS documentTypeName, " +
+                "co.name AS countryName, " +
+                "cs.name AS statusName, " +
+                "co2.name AS originName " +
+                "FROM Customer c " +
+                "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
+                "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
+                "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
+                "WHERE cs.name = 'inactive' " +  // ← FILTRO POR INACTIVO
+                "ORDER BY c.idCustomer DESC " +
+                "LIMIT 100";
 
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Customer c = new Customer();
+                c.setIdCustomer(rs.getInt("idCustomer"));
+                c.setName(rs.getString("name"));
+                c.setSurname(rs.getString("surname"));
+                c.setIdDocumentType(rs.getInt("idDocumentType"));
+                c.setDocumentNumber(rs.getString("documentNumber"));
+                c.setPhoneNumber(rs.getString("phoneNumber"));
+                c.setEmail(rs.getString("email"));
+                c.setIdCountry(rs.getInt("idCountry"));
+                c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
+                c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
+                c.setDocumentTypeName(rs.getString("documentTypeName"));
+                c.setCountryName(rs.getString("countryName"));
+                c.setStatusName(rs.getString("statusName"));
+                c.setOriginName(rs.getString("originName"));
                 customers.add(c);
             }
         }
@@ -244,21 +282,125 @@ public class CustomerDAO {
         }
         return false;
     }
-    public static void main(String[] args) {
-        try {
-            System.out.println("=== TIPOS DE DOCUMENTO ===");
-            System.out.println(new DocumentTypeDAO().listAll());
-
-            System.out.println("=== PAÍSES ===");
-            System.out.println(new CountryDAO().listAll());
-
-            System.out.println("=== ESTADOS ===");
-            System.out.println(new CustomerStatusDAO().listAll());
-
-            System.out.println("=== ORÍGENES ===");
-            System.out.println(new CustomerOriginDAO().listAll());
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public int countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Customer";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         }
+        return 0;
+    }
+    public List<Customer> searchCustomers(String searchTerm) throws SQLException {
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT c.*, " +
+                "dt.name AS documentTypeName, " +
+                "co.name AS countryName, " +
+                "cs.name AS statusName, " +
+                "co2.name AS originName " +
+                "FROM Customer c " +
+                "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
+                "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
+                "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
+                "WHERE (c.name LIKE ? " +
+                "   OR c.surname LIKE ? " +
+                "   OR c.documentNumber LIKE ? " +
+                "   OR c.phoneNumber LIKE ? " +
+                "   OR c.email LIKE ? " +
+                "   OR dt.name LIKE ? " +
+                "   OR co.name LIKE ? " +
+                "   OR co2.name LIKE ?) " +
+                "AND cs.name = 'active' " +  // Solo activos
+                "ORDER BY c.idCustomer DESC " +
+                "LIMIT 100";  // Seguimos limitando a 100, pero ahora busca en TODA la BD
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String likeTerm = "%" + searchTerm + "%";
+            for (int i = 1; i <= 8; i++) {
+                stmt.setString(i, likeTerm);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Customer c = new Customer();
+                    c.setIdCustomer(rs.getInt("idCustomer"));
+                    c.setName(rs.getString("name"));
+                    c.setSurname(rs.getString("surname"));
+                    c.setIdDocumentType(rs.getInt("idDocumentType"));
+                    c.setDocumentNumber(rs.getString("documentNumber"));
+                    c.setPhoneNumber(rs.getString("phoneNumber"));
+                    c.setEmail(rs.getString("email"));
+                    c.setIdCountry(rs.getInt("idCountry"));
+                    c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
+                    c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
+                    c.setDocumentTypeName(rs.getString("documentTypeName"));
+                    c.setCountryName(rs.getString("countryName"));
+                    c.setStatusName(rs.getString("statusName"));
+                    c.setOriginName(rs.getString("originName"));
+                    customers.add(c);
+                }
+            }
+        }
+        return customers;
+    }
+    public List<Customer> searchInactiveCustomers(String searchTerm) throws SQLException {
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT c.*, " +
+                "dt.name AS documentTypeName, " +
+                "co.name AS countryName, " +
+                "cs.name AS statusName, " +
+                "co2.name AS originName " +
+                "FROM Customer c " +
+                "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
+                "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
+                "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
+                "WHERE (c.name LIKE ? " +
+                "   OR c.surname LIKE ? " +
+                "   OR c.documentNumber LIKE ? " +
+                "   OR c.phoneNumber LIKE ? " +
+                "   OR c.email LIKE ? " +
+                "   OR dt.name LIKE ? " +
+                "   OR co.name LIKE ? " +
+                "   OR co2.name LIKE ?) " +
+                "AND cs.name = 'inactive' " +  // Solo inactivos
+                "ORDER BY c.idCustomer DESC " +
+                "LIMIT 100";  // Seguimos limitando a 100, pero ahora busca en TODA la BD
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            String likeTerm = "%" + searchTerm + "%";
+            for (int i = 1; i <= 8; i++) {
+                stmt.setString(i, likeTerm);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Customer c = new Customer();
+                    c.setIdCustomer(rs.getInt("idCustomer"));
+                    c.setName(rs.getString("name"));
+                    c.setSurname(rs.getString("surname"));
+                    c.setIdDocumentType(rs.getInt("idDocumentType"));
+                    c.setDocumentNumber(rs.getString("documentNumber"));
+                    c.setPhoneNumber(rs.getString("phoneNumber"));
+                    c.setEmail(rs.getString("email"));
+                    c.setIdCountry(rs.getInt("idCountry"));
+                    c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
+                    c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
+                    c.setDocumentTypeName(rs.getString("documentTypeName"));
+                    c.setCountryName(rs.getString("countryName"));
+                    c.setStatusName(rs.getString("statusName"));
+                    c.setOriginName(rs.getString("originName"));
+                    customers.add(c);
+                }
+            }
+        }
+        return customers;
     }
 }

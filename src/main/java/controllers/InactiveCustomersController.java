@@ -47,19 +47,19 @@ public class InactiveCustomersController {
 
         // 3. Setup search filter
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredInactive.setPredicate(customer -> {
-                if (newValue == null || newValue.isEmpty()) return true;
-                String lower = newValue.toLowerCase();
-                return customer.getName().toLowerCase().contains(lower) ||
-                        customer.getSurname().toLowerCase().contains(lower) ||
-                        customer.getEmail().toLowerCase().contains(lower) ||
-                        customer.getPhoneNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentTypeName().toLowerCase().contains(lower) ||
-                        customer.getCountryName().toLowerCase().contains(lower) ||
-                        customer.getOriginName().toLowerCase().contains(lower);
-            });
-            updateCounter();
+            try {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    loadInactiveCustomers(); // Carga los últimos 100 inactivos
+                } else {
+                    inactiveCustomers.setAll(customerDAO.searchInactiveCustomers(newValue.trim()));
+                    filteredInactive = new FilteredList<>(inactiveCustomers, p -> true);
+                    tableInactiveCustomers.setItems(filteredInactive);
+                    tableInactiveCustomers.refresh();
+                    updateCounter();
+                }
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo realizar la búsqueda", e.getMessage());
+            }
         });
 
         // 4. Enable/disable reactivate button based on selection
@@ -75,9 +75,7 @@ public class InactiveCustomersController {
     // ========== LOAD METHODS ==========
     private void loadInactiveCustomers() {
         try {
-            inactiveCustomers.setAll(customerDAO.listAll());
-            // Filter only inactive customers
-            inactiveCustomers.removeIf(c -> !"inactive".equals(c.getStatusName()));
+            inactiveCustomers.setAll(customerDAO.listAllInactive()); // ← Usar el nuevo método
             filteredInactive = new FilteredList<>(inactiveCustomers, p -> true);
             tableInactiveCustomers.setItems(filteredInactive);
             updateCounter();
