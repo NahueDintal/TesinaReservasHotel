@@ -18,7 +18,7 @@ public class InactiveCustomersController {
     // ========== TABLE COMPONENTS ==========
     @FXML private TableView<Customer> tableInactiveCustomers;
     @FXML private TableColumn<Customer, String> colFirstName;
-    @FXML private TableColumn<Customer, String> colLastName;
+    @FXML private TableColumn<Customer, String> colSurname;
     @FXML private TableColumn<Customer, String> colDocumentType;
     @FXML private TableColumn<Customer, String> colOrigin;
     @FXML private TableColumn<Customer, String> colCountry;
@@ -37,7 +37,7 @@ public class InactiveCustomersController {
     public void initialize() {
         // 1. Configure table columns
         colFirstName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colLastName.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
         colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
         colCountry.setCellValueFactory(new PropertyValueFactory<>("countryName"));

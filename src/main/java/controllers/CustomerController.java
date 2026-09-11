@@ -23,7 +23,7 @@ public class CustomerController {
     // ========== TABLE ==========
     @FXML private TableView<Customer> tableCustomers;
     @FXML private TableColumn<Customer, String> colFirstName;
-    @FXML private TableColumn<Customer, String> colLastName;
+    @FXML private TableColumn<Customer, String> colSurname;
     @FXML private TableColumn<Customer, String> colDocumentType;
     @FXML private TableColumn<Customer, String> colOrigin;
     @FXML private TableColumn<Customer, String> colCountry;
@@ -58,7 +58,7 @@ public class CustomerController {
     public void initialize() {
         // Configurar columnas
         colFirstName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colLastName.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
         colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
         colCountry.setCellValueFactory(new PropertyValueFactory<>("countryName"));

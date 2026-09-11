@@ -36,7 +36,7 @@
                 <TableView fx:id="tableCustomers" styleClass="customer-table" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colFirstName" prefWidth="120" text="Nombres" />
-                        <TableColumn fx:id="colLastName" prefWidth="120" text="Apellidos" />
+                        <TableColumn fx:id="colSurname" prefWidth="120" text="Apellidos" />
                         <TableColumn fx:id="colDocumentType" prefWidth="120" text="Tipo Documento" />
                         <TableColumn fx:id="colOrigin" prefWidth="100" text="Origen" />
                         <TableColumn fx:id="colCountry" prefWidth="100" text="País" />
