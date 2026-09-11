@@ -13,62 +13,38 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 public class NewReservationController {
     // RESERVA
-    @FXML
-    private TextField txtCustomerSearch;
-    @FXML
-    private ListView<Customer> lstCustomers;
+    @FXML private TextField txtCustomerSearch;
+    @FXML private ListView<Customer> lstCustomers;
     private final ObservableList<Customer> activeCustomers = FXCollections.observableArrayList();
     private Customer selectedCustomer;
-    @FXML
-    private DatePicker dpCheckIn;
-    @FXML
-    private DatePicker dpCheckOut;
-    @FXML
-    private TextField txtNumberOfGuests;
-    @FXML
-    private TextField txtTotalRate;
-    @FXML
-    private ComboBox<ReservationStatus> cmbReservationStatus;
-    @FXML
-    private ComboBox<ReservationType> cmbReservationType;
-    @FXML
-    private TextArea txtReservationObservations;
+    @FXML private DatePicker dpCheckIn;
+    @FXML private DatePicker dpCheckOut;
+    @FXML private TextField txtNumberOfGuests;
+    @FXML private TextField txtTotalRate;
+    @FXML private ComboBox<ReservationStatus> cmbReservationStatus;
+    @FXML private ComboBox<ReservationType> cmbReservationType;
+    @FXML private TextArea txtReservationObservations;
     // PAYMENT
-    @FXML
-    private TextField txtPaymentAmount;
-    @FXML
-    private DatePicker dpPaymentDate;
-    @FXML
-    private ComboBox<PaymentMethod> cmbPaymentMethod;
-    @FXML
-    private ComboBox<PaymentStatus> cmbPaymentStatus;
-    @FXML
-    private TextArea txtPaymentObservations;
+    @FXML private TextField txtPaymentAmount;
+    @FXML private DatePicker dpPaymentDate;
+    @FXML private ComboBox<PaymentMethod> cmbPaymentMethod;
+    @FXML private ComboBox<PaymentStatus> cmbPaymentStatus;
+    @FXML private TextArea txtPaymentObservations;
     // CONSUMPTION
-    @FXML
-    private ComboBox<Integer> cmbConsumptionType;
-    @FXML
-    private ComboBox<Product> cmbProduct;
-    @FXML
-    private ComboBox<Service> cmbService;
-    @FXML
-    private TextField txtConsumptionQuantity;
-    @FXML
-    private TableView<Consumption> tblConsumptions;
-    @FXML
-    private TableColumn<Consumption, Integer> colConsumptionQuantity;
-    @FXML
-    private TableColumn<Consumption, BigDecimal> colConsumptionUnitPrice;
-    @FXML
-    private TableColumn<Consumption, BigDecimal> colConsumptionTotal;
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionType;
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionName;
-    @FXML
-    private TextField txtConsumptionTotal;
+    @FXML private ComboBox<Integer> cmbConsumptionType;
+    @FXML private ComboBox<Product> cmbProduct;
+    @FXML private ComboBox<Service> cmbService;
+    @FXML private TextField txtConsumptionQuantity;
+    @FXML private TableView<Consumption> tblConsumptions;
+    @FXML private TableColumn<Consumption, Integer> colConsumptionQuantity;
+    @FXML private TableColumn<Consumption, BigDecimal> colConsumptionUnitPrice;
+    @FXML private TableColumn<Consumption, BigDecimal> colConsumptionTotal;
+    @FXML private TableColumn<Consumption, String> colConsumptionType;
+    @FXML private TableColumn<Consumption, String> colConsumptionName;
+    @FXML private TextField txtConsumptionTotal;
     // REPOSITORIES
     private DashboardController dashboardController;
     private Reservation reservationToEdit;
@@ -83,32 +59,21 @@ public class NewReservationController {
     private final ServiceRepo serviceRepo;
     private final CustomerDAO customerDAO;
     // LISTA DE CONSUMOS
-    private final ObservableList<Consumption> consumptions =
-            FXCollections.observableArrayList();
-    private final List<Consumption> modifiedConsumptions =
-            new java.util.ArrayList<>();
+    private final ObservableList<Consumption> consumptions = FXCollections.observableArrayList();
+    private final List<Consumption> modifiedConsumptions = new java.util.ArrayList<>();
     private Consumption consumptionBeingEdited = null;
     // CONSTRUCTOR
     public NewReservationController() {
         reservationRepo = new ReservationRepo();
-        reservationStatusRepo =
-                new ReservationStatusRepo();
-        reservationTypeRepo =
-                new ReservationTypeRepo();
-        paymentRepo =
-                new PaymentRepo();
-        paymentMethodRepo =
-                new PaymentMethodRepo();
-        paymentStatusRepo =
-                new PaymentStatusRepo();
-        consumptionRepo =
-                new ConsumptionRepo();
-        productRepo =
-                new ProductRepo();
-        serviceRepo =
-                new ServiceRepo();
-        customerDAO =
-                new CustomerDAO();
+        reservationStatusRepo = new ReservationStatusRepo();
+        reservationTypeRepo = new ReservationTypeRepo();
+        paymentRepo = new PaymentRepo();
+        paymentMethodRepo = new PaymentMethodRepo();
+        paymentStatusRepo = new PaymentStatusRepo();
+        consumptionRepo = new ConsumptionRepo();
+        productRepo = new ProductRepo();
+        serviceRepo = new ServiceRepo();
+        customerDAO = new CustomerDAO();
     }
     // RECIBIR RESERVA A MODIFICAR
     public void setReservationToEdit(
@@ -1101,7 +1066,7 @@ public class NewReservationController {
                             ? "La reserva se creó correctamente.\nNúmero de reserva: " + idReservation
                             : "La reserva se modificó correctamente.\nNúmero de reserva: " + idReservation
             );
-            clearForm();
+            handleBack();
         } catch (SQLException e) {
             try {
                 if (conn != null) conn.rollback();
@@ -1146,7 +1111,33 @@ public class NewReservationController {
     // CANCELAR
     @FXML
     private void handleCancel() {
-        clearForm();
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Cancelar reserva");
+        confirmation.setHeaderText("¿Está seguro de que desea cancelar?");
+        confirmation.setContentText("Los datos ingresados se perderán.");
+
+        ButtonType yesButton = new ButtonType("Sí");
+        ButtonType noButton = new ButtonType("No");
+        confirmation.getButtonTypes().setAll(yesButton, noButton);
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == yesButton) {
+                Alert secondConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                secondConfirmation.setTitle("Confirmar cancelación");
+                secondConfirmation.setHeaderText("Todos los datos ingresados se perderán.");
+                secondConfirmation.setContentText("¿Desea continuar?");
+
+                ButtonType confirmButton = new ButtonType("Sí, cancelar");
+                ButtonType backButton = new ButtonType("Volver");
+                secondConfirmation.getButtonTypes().setAll(confirmButton, backButton);
+
+                secondConfirmation.showAndWait().ifPresent(secondResponse -> {
+                    if (secondResponse == confirmButton) {
+                        handleBack();
+                    }
+                });
+            }
+        });
     }
     // LIMPIAR
     private void clearForm() {

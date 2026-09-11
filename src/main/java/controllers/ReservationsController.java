@@ -127,8 +127,8 @@ public class ReservationsController {
                         switch (status.toLowerCase()) {
                             case "pendiente":
                                 setStyle(
-                                        "-fx-background-color: #fdeaea;" +
-                                                "-fx-text-fill: #c0392b;" +
+                                        "-fx-background-color: #fdfbea;" +
+                                                "-fx-text-fill: #c0a72b;" +
                                                 "-fx-font-weight: bold;" +
                                                 "-fx-alignment: CENTER;"
                                 );
@@ -137,7 +137,7 @@ public class ReservationsController {
                             case "pagado":
                                 setStyle(
                                         "-fx-background-color: #fff4cc;" +
-                                                "-fx-text-fill: #b8860b;" +
+                                                "-fx-text-fill: #30b80b;" +
                                                 "-fx-font-weight: bold;" +
                                                 "-fx-alignment: CENTER;"
                                 );
@@ -146,7 +146,7 @@ public class ReservationsController {
                             case "cancelado":
                                 setStyle(
                                         "-fx-background-color: #e3f3e7;" +
-                                                "-fx-text-fill: #2e7d45;" +
+                                                "-fx-text-fill: #7d2e3a;" +
                                                 "-fx-font-weight: bold;" +
                                                 "-fx-alignment: CENTER;"
                                 );

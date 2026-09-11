@@ -110,6 +110,10 @@ public class DashboardController {
         ((ReservationsController) controller).setDashboardController(this);
       }
 
+       if (controller instanceof NewReservationController) {
+            ((NewReservationController) controller).setDashboardController(this);
+       }
+
       // Limpiar el centerPane y agregar la vista
       centerPane.getChildren().clear();
       centerPane.getChildren().add(view);
