@@ -1,0 +1,4 @@
+DB_URL=jdbc:mysql://localhost:3306/Nobre de la base de datos
+DB_USER= usuario suele ser 'root'
+DB_PASSWORD= la clave de dicho usuario
+

@@ -17,9 +17,9 @@
     </padding>
 
     <!-- Title -->
-    <Label fx:id="lblFormTitle" text="Nuevo Cliente" styleClass="form-title">
+    <Label fx:id="lblFormTitle" text="Complete el Formulario" styleClass="form-title">
         <font>
-            <Font size="20.0" />
+            <Font size="15.0" />
         </font>
     </Label>
 
@@ -29,9 +29,9 @@
         <Label text="Nombres *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <TextField fx:id="txtFirstName" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250.0" />
 
-        <!-- Last Name -->
+        <!-- Surname -->
         <Label text="Apellidos *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <TextField fx:id="txtLastName" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="250.0" />
+        <TextField fx:id="txtSurname" GridPane.columnIndex="3" GridPane.rowIndex="0" prefWidth="250.0" />
 
         <!-- Document Type -->
         <Label text="Tipo de Documento *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1" />

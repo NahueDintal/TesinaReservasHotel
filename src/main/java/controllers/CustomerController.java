@@ -23,7 +23,7 @@ public class CustomerController {
     // ========== TABLE ==========
     @FXML private TableView<Customer> tableCustomers;
     @FXML private TableColumn<Customer, String> colFirstName;
-    @FXML private TableColumn<Customer, String> colLastName;
+    @FXML private TableColumn<Customer, String> colSurname;
     @FXML private TableColumn<Customer, String> colDocumentType;
     @FXML private TableColumn<Customer, String> colOrigin;
     @FXML private TableColumn<Customer, String> colCountry;
@@ -35,14 +35,13 @@ public class CustomerController {
     @FXML private Button btnDeactivate;
 
     // ========== DETAIL ==========
-    @FXML private Label lblDetailFullName;
-    @FXML private Label lblDetailStatus;
-    @FXML private Label lblDetailDocumentType;
-    @FXML private Label lblDetailDocumentNumber;
-    @FXML private Label lblDetailPhone;
-    @FXML private Label lblDetailEmail;
-    @FXML private Label lblDetailCountry;
-    @FXML private Label lblDetailOrigin;
+    @FXML private TextField txtDetailFullName;
+    @FXML private TextField txtDetailDocumentType;
+    @FXML private TextField txtDetailDocumentNumber;
+    @FXML private TextField txtDetailPhone;
+    @FXML private TextField txtDetailEmail;
+    @FXML private TextField txtDetailCountry;
+    @FXML private TextField txtDetailOrigin;
 
     // ========== SEARCH ==========
     @FXML private TextField txtSearch;
@@ -58,7 +57,7 @@ public class CustomerController {
     public void initialize() {
         // Configurar columnas
         colFirstName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colLastName.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
         colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
         colCountry.setCellValueFactory(new PropertyValueFactory<>("countryName"));
@@ -68,19 +67,21 @@ public class CustomerController {
 
         // Configurar buscador
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredCustomers.setPredicate(customer -> {
-                if (newValue == null || newValue.isEmpty()) return true;
-                String lower = newValue.toLowerCase();
-                return customer.getName().toLowerCase().contains(lower) ||
-                        customer.getSurname().toLowerCase().contains(lower) ||
-                        customer.getEmail().toLowerCase().contains(lower) ||
-                        customer.getPhoneNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentNumber().toLowerCase().contains(lower) ||
-                        customer.getDocumentTypeName().toLowerCase().contains(lower) ||
-                        customer.getCountryName().toLowerCase().contains(lower) ||
-                        customer.getOriginName().toLowerCase().contains(lower);
-            });
-            updateCounter();
+            try {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    // Si el buscador está vacío, cargar los últimos 100
+                    loadActiveCustomers();
+                } else {
+                    // Si hay texto, buscar en TODA la base de datos
+                    masterCustomerList.setAll(customerDAO.searchCustomers(newValue.trim()));
+                    filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
+                    tableCustomers.setItems(filteredCustomers);
+                    tableCustomers.refresh();
+                    updateCounter();
+                }
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo realizar la búsqueda", e.getMessage());
+            }
         });
 
         // Selección en tabla
@@ -116,7 +117,6 @@ public class CustomerController {
     private void loadActiveCustomers() {
         try {
             masterCustomerList.setAll(customerDAO.listAll());
-            masterCustomerList.removeIf(c -> !"active".equals(c.getStatusName()));
             filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
             tableCustomers.setItems(filteredCustomers);
             //tableCustomers.refresh();
@@ -125,6 +125,7 @@ public class CustomerController {
             showAlert("Error", "No se pudieron cargar los clientes", e.getMessage());
         }
     }
+
 
     // ========== CLEAR FILTERS ==========
     @FXML
@@ -137,36 +138,24 @@ public class CustomerController {
     // ========== DETAIL ==========
     private void showDetail(Customer c) {
         // Nombre completo (siempre debería tener, pero por si acaso)
-        lblDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
+        txtDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
 
-        // Estado
-        lblDetailStatus.setText(getDisplayText(c.getStatusName()));
-        // Color según estado
-        if ("Activo".equals(c.getStatusName())) {
-            lblDetailStatus.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
-        } else if ("Inactivo".equals(c.getStatusName())) {
-            lblDetailStatus.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
-        } else {
-            lblDetailStatus.setStyle("-fx-text-fill: #f39c12; -fx-font-weight: bold;");
-        }
-
-        lblDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
-        lblDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
-        lblDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
-        lblDetailEmail.setText(getDisplayText(c.getEmail()));
-        lblDetailCountry.setText(getDisplayText(c.getCountryName()));
-        lblDetailOrigin.setText(getDisplayText(c.getOriginName()));
+        txtDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
+        txtDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
+        txtDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
+        txtDetailEmail.setText(getDisplayText(c.getEmail()));
+        txtDetailCountry.setText(getDisplayText(c.getCountryName()));
+        txtDetailOrigin.setText(getDisplayText(c.getOriginName()));
     }
 
     private void clearDetail() {
-        lblDetailFullName.setText("Seleccione un cliente");
-        lblDetailStatus.setText("");
-        lblDetailDocumentType.setText("--");
-        lblDetailDocumentNumber.setText("--");
-        lblDetailPhone.setText("--");
-        lblDetailEmail.setText("--");
-        lblDetailCountry.setText("--");
-        lblDetailOrigin.setText("--");
+        txtDetailFullName.setText("Seleccione un cliente");
+        txtDetailDocumentType.setText("--");
+        txtDetailDocumentNumber.setText("--");
+        txtDetailPhone.setText("--");
+        txtDetailEmail.setText("--");
+        txtDetailCountry.setText("--");
+        txtDetailOrigin.setText("--");
     }
 
     private String getDisplayText(String value) {
@@ -181,10 +170,14 @@ public class CustomerController {
             stage.setScene(new Scene(loader.load()));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
-            stage.setTitle(customer == null ? "Nuevo Cliente" : "Editar Cliente");
 
             CustomerFormController controller = loader.getController();
-            if (customer != null) controller.setCustomer(customer);
+            if (customer != null) {
+                controller.setCustomer(customer);
+                stage.setTitle("Modificación de Cliente");
+            } else {
+                stage.setTitle("Registro de Cliente");
+            }
 
             stage.showAndWait();
             loadActiveCustomers();
@@ -200,7 +193,7 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InactiveCustomersView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
-            stage.setTitle("Clientes Inactivos");
+            stage.setTitle("Vista de Inactivos");
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
             stage.showAndWait();
@@ -251,7 +244,19 @@ public class CustomerController {
     }
 
     private void updateCounter() {
-        lblTotalCustomers.setText("Mostrando " + (filteredCustomers != null ? filteredCustomers.size() : 0) + " clientes");
+        int count = filteredCustomers != null ? filteredCustomers.size() : 0;
+
+        // Verificar si hay más de 100 clientes en total (haciendo una consulta rápida)
+        try {
+            int totalInDB = customerDAO.countAll(); // ← Necesitamos este método
+            if (totalInDB > 100) {
+                lblTotalCustomers.setText("Mostrando los últimos 100 de " + totalInDB + " clientes");
+            } else {
+                lblTotalCustomers.setText("Mostrando " + count + " clientes");
+            }
+        } catch (SQLException e) {
+            lblTotalCustomers.setText("Mostrando " + count + " clientes");
+        }
     }
 
     private void showAlert(String title, String header, String content) {
