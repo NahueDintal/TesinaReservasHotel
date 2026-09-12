@@ -158,6 +158,7 @@ public class RoomController {
       tableRooms.setItems(filteredRooms);
       updateCounter();
     } catch (RuntimeException e) {
+      logger.error("No se pudieron cargar las habitaciones.");
       showAlert("Error", "No se pudieron cargar las habitaciones", e.getMessage());
     }
   }
@@ -224,11 +225,13 @@ public class RoomController {
       tableRooms.refresh();
       updateCounter();
     } catch (IOException e) {
+      logger.error("No se pudo abrir la ventana de no disponibles.");
       showAlert("Error", "No se pudo abrir la ventana de no disponibles", e.getMessage());
     }
   }
 
   private void deactivateRoom() {
+    logger.debug("Ejecutando deactivateRoom");
     Room selected = tableRooms.getSelectionModel().getSelectedItem();
     if (selected == null)
       return;
@@ -248,8 +251,10 @@ public class RoomController {
             clearDetail();
             updateCounter();
             showAlert("Éxito", "Habitación actualizada", "");
+            logger.debug("Habitación actualizada {} ", selected.getNumber());
           }
         } catch (RuntimeException e) {
+          logger.error("No se pudo actualizar la habitación {} ", selected.getNumber());
           showAlert("Error", "No se pudo actualizar", e.getMessage());
         }
       }
@@ -276,10 +281,10 @@ public class RoomController {
             clearDetail();
             updateCounter();
             showAlert("Éxito", "Habitación eliminada", "");
-            logger.info("Habitacion eliminada...");
+            logger.debug("Habitacion eliminada {}", selected.getNumber());
           }
         } catch (RuntimeException e) {
-          logger.error("No se pudo eliminar habitacion");
+          logger.error("No se pudo eliminar habitacion {}", selected.getNumber());
           showAlert("Error", "No se pudo actualizar", e.getMessage());
         }
       }
