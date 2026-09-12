@@ -355,10 +355,12 @@ public class CustomerFormController {
         customer.setName(txtFirstName.getText().trim());
         customer.setSurname(txtSurname.getText().trim());
         customer.setDocumentNumber(txtDocumentNumber.getText().trim());
-
-        // Limpiar y validar teléfono
-
         customer.setEmail(txtEmail.getText().trim());
+
+        // Limpiar el teléfono antes de guardar
+        String rawPhone = txtPhone.getText().trim();
+        String cleanPhone = rawPhone.replaceAll("[^+0-9]", "");
+        customer.setPhoneNumber(cleanPhone);
 
         int idDocType = getIdBySelection(comboDocumentType, documentTypes);
         int idCountry = getIdBySelection(comboCountry, countries);
