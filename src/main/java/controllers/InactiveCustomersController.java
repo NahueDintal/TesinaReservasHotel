@@ -10,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import models.*;
 import repositories.*;
+import utils.StyleManager;
 
 import java.sql.SQLException;
 
@@ -89,31 +90,31 @@ public class InactiveCustomersController {
         Customer selected = tableInactiveCustomers.getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Reactivar cliente");
-        alert.setHeaderText("¿Desea reactivar este cliente?");
-        alert.setContentText("El cliente " + selected.getName() + " " + selected.getSurname() +
-                " volverá a estar activo y podrá realizar reservas.");
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    selected.setIdCustomerStatus(getStatusIdByName("Activo"));
-                    if (customerDAO.isUpdate(selected)) {
-                        inactiveCustomers.remove(selected);
-                        filteredInactive.remove(selected);
-                        tableInactiveCustomers.refresh();
-                        updateCounter();
-                        showAlert("Éxito", "Cliente reactivado",
-                                "El cliente ha sido reactivado correctamente.");
-                        // ✅ Cerrar la ventana SIN botón
-                        Stage stage = (Stage) tableInactiveCustomers.getScene().getWindow();
-                        stage.close();
-                    }
-                } catch (SQLException e) {
-                    showAlert("Error", "No se pudo reactivar el cliente", e.getMessage());
+        boolean confirmed = StyleManager.showConfirmation(
+                "Reactivar cliente",
+                "¿Desea reactivar este cliente?",
+                "El cliente " + selected.getName() + " " + selected.getSurname() +
+                        " volverá a estar activo y podrá realizar reservas."
+        );
+
+        if (confirmed) {
+            try {
+                selected.setIdCustomerStatus(getStatusIdByName("active"));
+                if (customerDAO.isUpdate(selected)) {
+                    inactiveCustomers.remove(selected);
+                    filteredInactive.remove(selected);
+                    tableInactiveCustomers.refresh();
+                    updateCounter();
+                    showAlert("Éxito", "Cliente reactivado",
+                            "El cliente ha sido reactivado correctamente.");
+                    // ✅ Cerrar la ventana SIN botón
+                    Stage stage = (Stage) tableInactiveCustomers.getScene().getWindow();
+                    stage.close();
                 }
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo reactivar el cliente", e.getMessage());
             }
-        });
+        }
     }
 
     // ========== HELPER METHODS ==========
@@ -143,6 +144,10 @@ public class InactiveCustomersController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+
+        // Aplicar el CSS global a la alerta
+        StyleManager.applyStyles(alert.getDialogPane());
+
         alert.showAndWait();
     }
 }

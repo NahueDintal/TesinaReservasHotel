@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.*;
 import repositories.*;
+import utils.StyleManager;
 import utils.ValidationUtils;
 
 import java.sql.SQLException;
@@ -54,7 +55,6 @@ public class CustomerFormController {
         setupValidations();
 
         if (editingCustomer == null) {
-            lblFormTitle.setText("Registrar Nuevo Cliente");
             btnSave.setText("Guardar");
         }
     }
@@ -253,7 +253,6 @@ public class CustomerFormController {
     // ========== SET CUSTOMER (para edición) ==========
     public void setCustomer(Customer customer) {
         this.editingCustomer = customer;
-        lblFormTitle.setText("Editar Cliente");
         btnSave.setText("Actualizar");
 
         txtFirstName.setText(customer.getName());
@@ -415,6 +414,10 @@ public class CustomerFormController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+
+        // Aplicar el CSS global a la alerta
+        StyleManager.applyStyles(alert.getDialogPane());
+
         alert.showAndWait();
     }
 }

@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.*;
 import repositories.*;
+import utils.StyleManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -168,6 +169,9 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/CustomerFormView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
+            // Aplicar el CSS global
+            StyleManager.applyStyles(stage);
+
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
 
@@ -193,6 +197,10 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InactiveCustomersView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
+
+            // Aplicar el CSS global
+            StyleManager.applyStyles(stage);
+
             stage.setTitle("Vista de Inactivos");
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
@@ -209,27 +217,25 @@ public class CustomerController {
         Customer selected = tableCustomers.getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar cliente");
-        alert.setHeaderText("¿Desea eliminar este cliente?");
-        alert.setContentText("El cliente " + selected.getName() + " " + selected.getSurname() + " no podrá realizar reservas.");
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    selected.setIdCustomerStatus(getStatusIdByName("inactive"));
-                    if (customerDAO.isUpdate(selected)) {
-                        masterCustomerList.remove(selected);
-                        filteredCustomers.remove(selected);
-                        tableCustomers.refresh();
-                        clearDetail();
-                        updateCounter();
-                        showAlert("Éxito", "Cliente eliminado", "");
-                    }
-                } catch (SQLException e) {
-                    showAlert("Error", "No se pudo eliminar", e.getMessage());
+        boolean confirmed = StyleManager.showConfirmation("Eliminar cliente",
+                "¿Desea eliminar este cliente?",
+                "El cliente " + selected.getName() + " " + selected.getSurname() + " no podrá realizar reservas.");
+
+        if (confirmed) {
+            try {
+                selected.setIdCustomerStatus(getStatusIdByName("inactive"));
+                if (customerDAO.isUpdate(selected)) {
+                    masterCustomerList.remove(selected);
+                    filteredCustomers.remove(selected);
+                    tableCustomers.refresh();
+                    clearDetail();
+                    updateCounter();
+                    showAlert("Éxito", "Cliente eliminado", "");
                 }
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo eliminar", e.getMessage());
             }
-        });
+        }
     }
 
     // ========== HELPERS ==========
@@ -264,6 +270,10 @@ public class CustomerController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+
+        // Aplicar el CSS global a la alerta
+        StyleManager.applyStyles(alert.getDialogPane());
+
         alert.showAndWait();
     }
 }
