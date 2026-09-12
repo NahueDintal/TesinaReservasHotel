@@ -357,8 +357,6 @@ public class CustomerFormController {
         customer.setDocumentNumber(txtDocumentNumber.getText().trim());
 
         // Limpiar y validar teléfono
-        String cleanPhone = utils.Utils.cleanAndValidatePhone(txtPhone.getText().trim());
-        customer.setPhoneNumber(cleanPhone != null ? cleanPhone : txtPhone.getText().trim());
 
         customer.setEmail(txtEmail.getText().trim());
 

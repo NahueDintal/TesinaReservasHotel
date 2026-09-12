@@ -35,14 +35,13 @@ public class CustomerController {
     @FXML private Button btnDeactivate;
 
     // ========== DETAIL ==========
-    @FXML private Label lblDetailFullName;
-    @FXML private Label lblDetailStatus;
-    @FXML private Label lblDetailDocumentType;
-    @FXML private Label lblDetailDocumentNumber;
-    @FXML private Label lblDetailPhone;
-    @FXML private Label lblDetailEmail;
-    @FXML private Label lblDetailCountry;
-    @FXML private Label lblDetailOrigin;
+    @FXML private TextField txtDetailFullName;
+    @FXML private TextField txtDetailDocumentType;
+    @FXML private TextField txtDetailDocumentNumber;
+    @FXML private TextField txtDetailPhone;
+    @FXML private TextField txtDetailEmail;
+    @FXML private TextField txtDetailCountry;
+    @FXML private TextField txtDetailOrigin;
 
     // ========== SEARCH ==========
     @FXML private TextField txtSearch;
@@ -139,36 +138,24 @@ public class CustomerController {
     // ========== DETAIL ==========
     private void showDetail(Customer c) {
         // Nombre completo (siempre debería tener, pero por si acaso)
-        lblDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
+        txtDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
 
-        // Estado
-        lblDetailStatus.setText(getDisplayText(c.getStatusName()));
-        // Color según estado
-        if ("Activo".equals(c.getStatusName())) {
-            lblDetailStatus.setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;");
-        } else if ("Inactivo".equals(c.getStatusName())) {
-            lblDetailStatus.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
-        } else {
-            lblDetailStatus.setStyle("-fx-text-fill: #f39c12; -fx-font-weight: bold;");
-        }
-
-        lblDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
-        lblDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
-        lblDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
-        lblDetailEmail.setText(getDisplayText(c.getEmail()));
-        lblDetailCountry.setText(getDisplayText(c.getCountryName()));
-        lblDetailOrigin.setText(getDisplayText(c.getOriginName()));
+        txtDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
+        txtDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
+        txtDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
+        txtDetailEmail.setText(getDisplayText(c.getEmail()));
+        txtDetailCountry.setText(getDisplayText(c.getCountryName()));
+        txtDetailOrigin.setText(getDisplayText(c.getOriginName()));
     }
 
     private void clearDetail() {
-        lblDetailFullName.setText("Seleccione un cliente");
-        lblDetailStatus.setText("");
-        lblDetailDocumentType.setText("--");
-        lblDetailDocumentNumber.setText("--");
-        lblDetailPhone.setText("--");
-        lblDetailEmail.setText("--");
-        lblDetailCountry.setText("--");
-        lblDetailOrigin.setText("--");
+        txtDetailFullName.setText("Seleccione un cliente");
+        txtDetailDocumentType.setText("--");
+        txtDetailDocumentNumber.setText("--");
+        txtDetailPhone.setText("--");
+        txtDetailEmail.setText("--");
+        txtDetailCountry.setText("--");
+        txtDetailOrigin.setText("--");
     }
 
     private String getDisplayText(String value) {

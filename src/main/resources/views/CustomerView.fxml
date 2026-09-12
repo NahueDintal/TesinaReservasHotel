@@ -49,34 +49,33 @@
             </VBox>
 
             <!-- Panel de detalle -->
-            <VBox maxWidth="280.0" prefWidth="280.0" spacing="12" styleClass="detail-panel">
+            <VBox maxWidth="400.0" minWidth="150.0" prefWidth="400.0" spacing="12" styleClass="detail-panel">
                 <padding>
                     <Insets bottom="15" left="15" right="15" top="15" />
                 </padding>
 
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label fx:id="lblDetailFullName" styleClass="detail-name" text="Nombre Completo" wrapText="true" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Label fx:id="lblDetailStatus" styleClass="detail-status" text="Activo" />
+                <HBox alignment="CENTER_LEFT" spacing="10" maxWidth="Infinity">
+                    <TextField fx:id="txtDetailFullName" text="Nombre Completo" styleClass="detail-value-field-name"
+                               editable="false" focusTraversable="false" HBox.hgrow="ALWAYS" />
                 </HBox>
 
-                <Label styleClass="detail-label" text="Tipo de Documento:" />
-                <Label fx:id="lblDetailDocumentType" styleClass="detail-value" text="--" />
+                <Label text="Tipo de Documento:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailDocumentType" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" />
 
-                <Label styleClass="detail-label" text="Número:" />
-                <Label fx:id="lblDetailDocumentNumber" styleClass="detail-value" text="--" />
+                <Label text="Número:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailDocumentNumber" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" maxWidth="Infinity"/>
 
-                <Label styleClass="detail-label" text="Teléfono:" />
-                <Label fx:id="lblDetailPhone" styleClass="detail-value" text="--" />
+                <Label text="Teléfono:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailPhone" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" maxWidth="Infinity"/>
 
-                <Label styleClass="detail-label" text="Email:" />
-                <Label fx:id="lblDetailEmail" styleClass="detail-value" text="--" />
+                <Label text="Email:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailEmail" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" maxWidth="Infinity" />
 
-                <Label styleClass="detail-label" text="País:" />
-                <Label fx:id="lblDetailCountry" styleClass="detail-value" text="--" />
+                <Label text="País:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailCountry" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" maxWidth="Infinity" />
 
-                <Label styleClass="detail-label" text="Origen:" />
-                <Label fx:id="lblDetailOrigin" styleClass="detail-value" text="--" />
+                <Label text="Origen:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailOrigin" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" />
 
                 <Region VBox.vgrow="ALWAYS" />
 
