@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -32,7 +33,7 @@
                 <font><Font size="24.0" /></font>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnNewStaff" text="+ Nuevo Personal" styleClass="btn-primary"
+            <Button fx:id="btnNewStaff" text=" Nuevo " styleClass="btn-primary"
                     onAction="#handleNewStaff" />
             <Button fx:id="btnViewHistory" text="Historial" styleClass="btn-secondary"
                     onAction="#handleViewHistory" />
@@ -62,54 +63,56 @@
             </VBox>
 
             <!-- Panel de detalle -->
-            <VBox spacing="12" styleClass="detail-panel" prefWidth="280.0" maxWidth="280.0">
-                <padding>
-                    <Insets top="15" right="15" bottom="15" left="15" />
-                </padding>
+            <ScrollPane fitToWidth="true" prefWidth="280.0" maxWidth="280.0" styleClass="detail-scroll">
+                <VBox spacing="12" styleClass="detail-panel">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15" />
+                    </padding>
 
-                <Label text="Nombre:" styleClass="detail-label" />
-                <Label fx:id="lblDetailName" text="--" styleClass="detail-value" />
+                    <Label text="Nombre:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailName" text="--" styleClass="detail-value" />
 
-                <Label text="Cargo:" styleClass="detail-label" />
-                <Label fx:id="lblDetailPosition" text="--" styleClass="detail-value" />
+                    <Label text="Cargo:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailPosition" text="--" styleClass="detail-value" />
 
-                <Label text="Estado:" styleClass="detail-label" />
-                <Label fx:id="lblDetailStatus" text="--" styleClass="detail-value" />
+                    <Label text="Estado:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailStatus" text="--" styleClass="detail-value" />
 
-                <Label text="DNI:" styleClass="detail-label" />
-                <Label fx:id="lblDetailDni" text="--" styleClass="detail-value" />
+                    <Label text="DNI:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailDni" text="--" styleClass="detail-value" />
 
-                <Label text="Fecha Nacimiento:" styleClass="detail-label" />
-                <Label fx:id="lblDetailBirthDate" text="--" styleClass="detail-value" />
+                    <Label text="Fecha Nacimiento:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailBirthDate" text="--" styleClass="detail-value" />
 
-                <Label text="Teléfono:" styleClass="detail-label" />
-                <Label fx:id="lblDetailPhone" text="--" styleClass="detail-value" />
+                    <Label text="Teléfono:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailPhone" text="--" styleClass="detail-value" />
 
-                <Label text="Email:" styleClass="detail-label" />
-                <Label fx:id="lblDetailEmail" text="--" styleClass="detail-value" />
+                    <Label text="Email:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailEmail" text="--" styleClass="detail-value" />
 
-                <Label text="Dirección:" styleClass="detail-label" />
-                <Label fx:id="lblDetailAddress" text="--" styleClass="detail-value" wrapText="true" />
+                    <Label text="Dirección:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailAddress" text="--" styleClass="detail-value" wrapText="true" />
 
-                <Label text="Área:" styleClass="detail-label" />
-                <Label fx:id="lblDetailDepartment" text="--" styleClass="detail-value" />
+                    <Label text="Área:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailDepartment" text="--" styleClass="detail-value" />
 
-                <Label text="Contratación:" styleClass="detail-label" />
-                <Label fx:id="lblDetailHireDate" text="--" styleClass="detail-value" />
+                    <Label text="Contratación:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailHireDate" text="--" styleClass="detail-value" />
 
-                <Label text="Turno:" styleClass="detail-label" />
-                <Label fx:id="lblDetailShift" text="--" styleClass="detail-value" />
+                    <Label text="Turno:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailShift" text="--" styleClass="detail-value" />
 
-                <Label text="Salario:" styleClass="detail-label" />
-                <Label fx:id="lblDetailSalary" text="--" styleClass="detail-value" />
+                    <Label text="Salario:" styleClass="detail-label" />
+                    <Label fx:id="lblDetailSalary" text="--" styleClass="detail-value" />
 
-                <Region VBox.vgrow="ALWAYS" />
+                    <Region VBox.vgrow="ALWAYS" />
 
-                <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity"
-                        onAction="#handleEdit" />
-                <Button fx:id="btnDeactivate" text="Inactivar" styleClass="btn-detail-danger"
-                        maxWidth="Infinity" onAction="#handleDeactivate" />
-            </VBox>
+                    <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity"
+                            onAction="#handleEdit" />
+                    <Button fx:id="btnDeactivate" text="Inactivar" styleClass="btn-detail-danger"
+                            maxWidth="Infinity" onAction="#handleDeactivate" />
+                </VBox>
+            </ScrollPane>
         </SplitPane>
     </VBox>
 </AnchorPane>

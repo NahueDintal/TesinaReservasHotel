@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
+import java.time.format.DateTimeFormatter;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -105,7 +106,11 @@ public class StaffController {
             boolean coincideTexto = texto.isEmpty()
                     || staff.getFullName().toLowerCase().contains(texto)
                     || staff.getDni().toLowerCase().contains(texto)
-                    || (staff.getPositionName() != null && staff.getPositionName().toLowerCase().contains(texto));
+                    || (staff.getPositionName() != null && staff.getPositionName().toLowerCase().contains(texto))
+                    || (staff.getDepartmentName() != null && staff.getDepartmentName().toLowerCase().contains(texto))
+                    || (staff.getPhone() != null && staff.getPhone().toLowerCase().contains(texto))
+                    || (staff.getEmail() != null && staff.getEmail().toLowerCase().contains(texto))
+                    || (staff.getCity() != null && staff.getCity().toLowerCase().contains(texto));
 
             return coincideEstado && coincideTexto;
         });
@@ -124,14 +129,18 @@ public class StaffController {
         lblDetailPosition.setText(staff.getPositionName());
         lblDetailStatus.setText(staff.getStatus().toString());
         lblDetailDni.setText(staff.getDni());
-        lblDetailBirthDate.setText(staff.getBirthDate() != null ? staff.getBirthDate().toString() : "-");
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        lblDetailBirthDate.setText(staff.getBirthDate() != null ? staff.getBirthDate().format(df) : "-");
         lblDetailPhone.setText(staff.getPhone());
         lblDetailEmail.setText(staff.getEmail());
         lblDetailAddress.setText(staff.getStreet() + " " + staff.getAddressNumber() + ", " + staff.getCity());
         lblDetailDepartment.setText(staff.getDepartmentName());
-        lblDetailHireDate.setText(staff.getHireDate() != null ? staff.getHireDate().toString() : "-");
-        lblDetailShift.setText(staff.getShiftName() != null
-                ? staff.getShiftName() + " (" + staff.getShiftStart() + " - " + staff.getShiftEnd() + ")" : "-");
+        lblDetailHireDate.setText(staff.getHireDate() != null ? staff.getHireDate().format(df) : "-");
+        String turnoTexto = staff.getShiftName() != null ? staff.getShiftName() : "Sin turno asignado";
+        if (staff.getShiftStart() != null && staff.getShiftEnd() != null) {
+            turnoTexto += " (" + staff.getShiftStart() + " - " + staff.getShiftEnd() + ")";
+        }
+        lblDetailShift.setText(turnoTexto);
         lblDetailSalary.setText(staff.getSalary() != null ? "$ " + staff.getSalary() : "-");
     }
 
