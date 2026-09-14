@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 import models.Room;
 import repositories.RoomDAO;
 
-import java.sql.SQLException;
-
 public class UnavailableRoomsController {
 
   @FXML
@@ -50,20 +48,21 @@ public class UnavailableRoomsController {
 
     txtSearch.textProperty().addListener((obs, old, newVal) -> {
       filteredUnavailable.setPredicate(room -> {
-        if (newVal == null || newVal.isEmpty()) return true;
+        if (newVal == null || newVal.isEmpty())
+          return true;
         String lower = newVal.toLowerCase();
         return String.valueOf(room.getNumber()).contains(lower) ||
-                String.valueOf(room.getFloor()).contains(lower) ||
-                (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) || // <-- corregido
-                String.valueOf(room.getCapacity()).contains(lower) ||
-                String.valueOf(room.getPrice()).contains(lower);
+            String.valueOf(room.getFloor()).contains(lower) ||
+            (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) || // <-- corregido
+            String.valueOf(room.getCapacity()).contains(lower) ||
+            String.valueOf(room.getPrice()).contains(lower);
       });
       updateCounter();
     });
 
     btnReactivate.setDisable(true);
     tableUnavailableRooms.getSelectionModel().selectedItemProperty().addListener(
-            (obs, old, newVal) -> btnReactivate.setDisable(newVal == null));
+        (obs, old, newVal) -> btnReactivate.setDisable(newVal == null));
 
     btnReactivate.setOnAction(e -> reactivateRoom());
   }
@@ -82,7 +81,8 @@ public class UnavailableRoomsController {
 
   private void reactivateRoom() {
     Room selected = tableUnavailableRooms.getSelectionModel().getSelectedItem();
-    if (selected == null) return;
+    if (selected == null)
+      return;
 
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Reactivar habitación");
