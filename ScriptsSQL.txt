@@ -169,8 +169,9 @@ CREATE TABLE department (
 -- Tabla: RoomType
 -- ==========================================
 
-CREATE TABLE room_type (
-    id_room_type INT AUTO_INCREMENT PRIMARY KEY,
+
+CREATE TABLE RoomType (
+    idRoomType INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
