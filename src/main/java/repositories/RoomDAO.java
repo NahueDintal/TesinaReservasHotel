@@ -25,10 +25,10 @@ public class RoomDAO {
   private List<Room> listByActive(boolean active) {
     logger.debug("Ejecutando listByActive con active={}", active);
     List<Room> rooms = new ArrayList<>();
-    String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
-        "FROM room r " +
-        "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
-        "JOIN room_view rv ON r.id_room_view = rv.id_room_view " +
+    String sql = "SELECT r.*, rt.name AS typeName, rv.name AS viewName " +
+        "FROM Room r " +
+        "JOIN RoomType rt ON r.idRoomType = rt.idRoomType " +
+        "JOIN RoomView rv ON r.idRoomView = rv.idRoomView " +
         "WHERE r.active = ?";
 
     try (Connection conn = ConexionDB.getConnection();
@@ -50,10 +50,10 @@ public class RoomDAO {
 
   public Room searchByNumber(int number) {
     logger.debug("Ejecutando searchByNumber con number {}", number);
-    String sql = "SELECT r.*, rt.name AS type_name, rv.name AS view_name " +
-        "FROM room r " +
-        "JOIN room_type rt ON r.id_room_type = rt.id_room_type " +
-        "JOIN room_view rv ON r.id_room_view = rv.id_room_view " +
+    String sql = "SELECT r.*, rt.name AS typeName, rv.name AS viewName " +
+        "FROM Room r " +
+        "JOIN RoomType rt ON r.idRoomType = rt.idRoomType " +
+        "JOIN RoomView rv ON r.idRoomView = rv.idRoomView " +
         "WHERE r.number = ?";
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,8 +79,8 @@ public class RoomDAO {
     }
     logger.debug("Ejecutando insert con room {}, price {}, type {}, price {}", room.getNumber(), room.getFloor(),
         room.getPrice(), room.getTypeName(), room.getPrice());
-    String sqlRoom = "INSERT INTO room (number, floor, id_room_type, capacity, id_room_view, " +
-        "available, out_of_service, active, price, description) " +
+    String sqlRoom = "INSERT INTO Room (number, floor, idRoomType, capacity, idRoomView, " +
+        "available, outOfService, active, price, description) " +
         "VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, ?, ?)";
     Connection conn = null;
     try {
@@ -125,8 +125,8 @@ public class RoomDAO {
 
   public boolean update(Room room) {
     logger.debug("ejecutando update de room {}", room.getIdRoom());
-    String sqlRoom = "UPDATE room SET number = ?, floor = ?, id_room_type = ?, capacity = ?, " +
-        "id_room_view = ?, available = ?, out_of_service = ?, active = ?, " +
+    String sqlRoom = "UPDATE Room SET number = ?, floor = ?, idRoomType = ?, capacity = ?, " +
+        "idRoomView = ?, available = ?, outOfService = ?, active = ?, " +
         "price = ?, description = ? WHERE idRoom = ?";
     Connection conn = null;
     try {
@@ -164,7 +164,7 @@ public class RoomDAO {
 
   public boolean delete(int idRoom) {
     logger.debug("ejecutando Soft Delete para room {} ", idRoom);
-    String sql = "UPDATE room SET active = FALSE WHERE idRoom = ?";
+    String sql = "UPDATE Room SET active = FALSE WHERE idRoom = ?";
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
@@ -187,13 +187,13 @@ public class RoomDAO {
     room.setIdRoom(rs.getInt("idRoom"));
     room.setNumber(rs.getInt("number"));
     room.setFloor(rs.getInt("floor"));
-    room.setIdRoomType(rs.getInt("id_room_type"));
-    room.setTypeName(rs.getString("type_name"));
+    room.setIdRoomType(rs.getInt("idRoomType"));
+    room.setTypeName(rs.getString("typeName"));
     room.setCapacity(rs.getInt("capacity"));
-    room.setIdRoomView(rs.getInt("id_room_view"));
-    room.setViewName(rs.getString("view_name"));
+    room.setIdRoomView(rs.getInt("idRoomView"));
+    room.setViewName(rs.getString("viewName"));
     room.setAvailable(rs.getBoolean("available"));
-    room.setOutOfService(rs.getBoolean("out_of_service"));
+    room.setOutOfService(rs.getBoolean("outOfService"));
     room.setActive(rs.getBoolean("active"));
     room.setPrice(rs.getDouble("price"));
     room.setDescription(rs.getString("description"));
@@ -202,8 +202,8 @@ public class RoomDAO {
 
   private List<String> loadFeaturesForRoom(Connection conn, int idRoom) {
     List<String> features = new ArrayList<>();
-    String sql = "SELECT f.name FROM feature f " +
-        "JOIN room_feature rf ON f.id_feature = rf.id_feature " +
+    String sql = "SELECT f.name FROM Feature f " +
+        "JOIN RoomFeature rf ON f.idFeature = rf.idFeature " +
         "WHERE rf.idRoom = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
@@ -220,8 +220,8 @@ public class RoomDAO {
   }
 
   private void insertFeatures(Connection conn, int idRoom, List<String> featureNames) {
-    String sql = "INSERT INTO room_feature (idRoom, id_feature) " +
-        "SELECT ?, id_feature FROM feature WHERE name = ?";
+    String sql = "INSERT INTO RoomFeature (idRoom, idFeature) " +
+        "SELECT ?, idFeature FROM Feature WHERE name = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       for (String featureName : featureNames) {
         stmt.setInt(1, idRoom);
@@ -236,7 +236,7 @@ public class RoomDAO {
   }
 
   private void deleteFeatures(Connection conn, int idRoom) {
-    String sql = "DELETE FROM room_feature WHERE idRoom = ?";
+    String sql = "DELETE FROM RoomFeature WHERE idRoom = ?";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, idRoom);
       stmt.executeUpdate();
@@ -267,7 +267,7 @@ public class RoomDAO {
   }
 
   public boolean existsActiveByNumber(int number) {
-    String sql = "SELECT COUNT(*) FROM room WHERE number = ? AND active = TRUE";
+    String sql = "SELECT COUNT(*) FROM Room WHERE number = ? AND active = TRUE";
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
       stmt.setInt(1, number);
