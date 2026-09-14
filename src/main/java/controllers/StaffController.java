@@ -26,7 +26,6 @@ public class StaffController {
     @FXML private TableView<Staff> tableStaff;
     @FXML private TableColumn<Staff, String> colFullName;
     @FXML private TableColumn<Staff, String> colPosition;
-    @FXML private TableColumn<Staff, String> colDepartment;
     @FXML private TableColumn<Staff, String> colPhone;
     // colId, colDni y colStatus ya no son columnas visibles en esta pantalla,
     // pero los datos siguen existiendo en el modelo Staff (id, dni, status)
@@ -45,7 +44,6 @@ public class StaffController {
     @FXML private Label lblDetailPhone;
     @FXML private Label lblDetailEmail;
     @FXML private Label lblDetailAddress;
-    @FXML private Label lblDetailDepartment;
     @FXML private Label lblDetailHireDate;
     @FXML private Label lblDetailShift;
     @FXML private Label lblDetailSalary;
@@ -67,7 +65,6 @@ public class StaffController {
         colFullName.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getFullName()));
         colPosition.setCellValueFactory(new PropertyValueFactory<>("positionName"));
-        colDepartment.setCellValueFactory(new PropertyValueFactory<>("departmentName"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
     }
 
@@ -107,7 +104,6 @@ public class StaffController {
                     || staff.getFullName().toLowerCase().contains(texto)
                     || staff.getDni().toLowerCase().contains(texto)
                     || (staff.getPositionName() != null && staff.getPositionName().toLowerCase().contains(texto))
-                    || (staff.getDepartmentName() != null && staff.getDepartmentName().toLowerCase().contains(texto))
                     || (staff.getPhone() != null && staff.getPhone().toLowerCase().contains(texto))
                     || (staff.getEmail() != null && staff.getEmail().toLowerCase().contains(texto))
                     || (staff.getCity() != null && staff.getCity().toLowerCase().contains(texto));
@@ -134,7 +130,6 @@ public class StaffController {
         lblDetailPhone.setText(staff.getPhone());
         lblDetailEmail.setText(staff.getEmail());
         lblDetailAddress.setText(staff.getStreet() + " " + staff.getAddressNumber() + ", " + staff.getCity());
-        lblDetailDepartment.setText(staff.getDepartmentName());
         lblDetailHireDate.setText(staff.getHireDate() != null ? staff.getHireDate().format(df) : "-");
         String turnoTexto = staff.getShiftName() != null ? staff.getShiftName() : "Sin turno asignado";
         if (staff.getShiftStart() != null && staff.getShiftEnd() != null) {
@@ -208,26 +203,27 @@ public class StaffController {
 
     @FXML
     private void handleViewHistory() {
-        Staff seleccionado = tableStaff.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Seleccioná un empleado de la tabla primero.");
-            return;
-        }
-
+        // Ya no depende de tener un empleado seleccionado: esta ventana
+        // ahora muestra el listado completo de Personal Inactivo.
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/StaffHistory.fxml"));
             Parent root = loader.load();
 
-            StaffHistoryController historyController = loader.getController();
-            historyController.loadHistory(seleccionado.getId());
-
             Stage stage = new Stage();
-            stage.setTitle("Historial de " + seleccionado.getFullName());
+            stage.setTitle("Personal Inactivo");
             stage.setScene(new Scene(root));
+
+            // Al cerrar esta ventana, refrescamos la tabla principal
+            // por si se reactivó a algún empleado desde ahí.
+            stage.setOnHidden(e -> {
+                cargarDatos();
+                aplicarFiltros();
+            });
+
             stage.show();
 
         } catch (IOException e) {
-            mostrarAlerta("No se pudo abrir el historial: " + e.getMessage());
+            mostrarAlerta("No se pudo abrir el listado de inactivos: " + e.getMessage());
         }
     }
 
