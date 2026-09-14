@@ -50,22 +50,24 @@ public class RoomController {
   @FXML
   private Button btnDelete;
 
+  // Detalle — TextField (para replicar la estética del CustomerController)
   @FXML
-  private Label lblDetailNumber;
+  private TextField lblDetailNumber;
   @FXML
-  private Label lblDetailFloor;
+  private TextField lblDetailFloor;
   @FXML
-  private Label lblDetailType;
+  private TextField lblDetailType;
   @FXML
-  private Label lblDetailCapacity;
+  private TextField lblDetailCapacity;
   @FXML
-  private Label lblDetailView;
+  private TextField lblDetailView;
   @FXML
-  private Label lblDetailPrice;
+  private TextField lblDetailPrice;
   @FXML
-  private Label lblDetailFeatures;
+  private TextField lblDetailFeatures;
   @FXML
-  private Label lblDetailDescription;
+  private TextField lblDetailDescription;
+  // Estado — sigue siendo Label (en el FXML es <Label fx:id="lblDetailStatus">)
   @FXML
   private Label lblDetailStatus;
 
@@ -134,6 +136,7 @@ public class RoomController {
 
     btnEdit.setDisable(true);
     btnDeactivate.setDisable(true);
+    btnDelete.setDisable(true);
     tableRooms.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
       boolean selected = newVal != null;
       btnEdit.setDisable(!selected);
