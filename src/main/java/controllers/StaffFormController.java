@@ -29,7 +29,6 @@ public class StaffFormController {
     @FXML private TextField txtAddressNumber;
     @FXML private TextField txtCity;
     @FXML private ComboBox<String> comboPosition;
-    @FXML private Label lblDepartmentValue;      // el Área ya no se elige: se muestra sola según el Cargo
     @FXML private DatePicker dateHireDate;
     @FXML private ComboBox<String> comboShiftName; // opcional: catálogo Mañana/Tarde/Noche
     @FXML private TextField txtShiftStart;
@@ -53,11 +52,9 @@ public class StaffFormController {
     // ========== DAOs Y CATÁLOGOS ==========
     private StaffDAO staffDAO = new StaffDAO();
     private JobPositionDAO jobPositionDAO = new JobPositionDAO();
-    private DepartmentDAO departmentDAO = new DepartmentDAO();
     private ShiftDAO shiftDAO = new ShiftDAO();
 
     private Map<Integer, String> positions;
-    private Map<Integer, String> departments;
     private Map<Integer, String> shifts;
 
     private Staff editingStaff; // null si es alta nueva
@@ -67,17 +64,12 @@ public class StaffFormController {
         loadCatalogs();
         setupDateFormat();
         setupButtonActions();
-
-        // Cada vez que cambia el Cargo, actualizamos el Área automáticamente
-        comboPosition.setOnAction(e -> actualizarAreaSegunCargo());
     }
 
     private void loadCatalogs() {
         try {
             positions = jobPositionDAO.listAll();
             comboPosition.getItems().setAll(positions.values());
-
-            departments = departmentDAO.listAll();
 
             shifts = shiftDAO.listAll();
             comboShiftName.getItems().add(""); // opción vacía: el turno es opcional
@@ -112,21 +104,6 @@ public class StaffFormController {
         btnSave.setOnAction(e -> saveStaff());
     }
 
-    // Busca el id_department del cargo seleccionado y muestra su nombre (solo lectura)
-    private void actualizarAreaSegunCargo() {
-        int idPosition = getIdBySelection(comboPosition, positions);
-        if (idPosition == 0) {
-            lblDepartmentValue.setText("--");
-            return;
-        }
-        try {
-            Integer idDepartment = jobPositionDAO.getDepartmentIdByPosition(idPosition);
-            lblDepartmentValue.setText(idDepartment != null ? departments.get(idDepartment) : "--");
-        } catch (SQLException e) {
-            lblDepartmentValue.setText("--");
-        }
-    }
-
     public void setStaff(Staff staff) {
         this.editingStaff = staff;
         lblFormTitle.setText("Editar Personal");
@@ -140,7 +117,6 @@ public class StaffFormController {
         txtAddressNumber.setText(staff.getAddressNumber());
         txtCity.setText(staff.getCity());
         comboPosition.getSelectionModel().select(staff.getPositionName());
-        actualizarAreaSegunCargo();
         dateHireDate.setValue(staff.getHireDate());
         comboShiftName.getSelectionModel().select(staff.getShiftName() != null ? staff.getShiftName() : "");
         txtShiftStart.setText(staff.getShiftStart() != null ? staff.getShiftStart().toString() : "");

@@ -15,10 +15,9 @@ public class StaffDAO {
     // 1. LIST ALL — Área se obtiene vía job_position -> department; Turno vía LEFT JOIN (puede ser null)
     public List<Staff> listAll() throws SQLException {
         List<Staff> staffList = new ArrayList<>();
-        String sql = "SELECT s.*, jp.name AS positionName, d.name AS departmentName, sh.name AS shiftName " +
+        String sql = "SELECT s.*, jp.name AS positionName, sh.name AS shiftName " +
                 "FROM staff s " +
                 "LEFT JOIN job_position jp ON s.id_position = jp.id_position " +
-                "LEFT JOIN department d ON jp.id_department = d.id_department " +
                 "LEFT JOIN shift sh ON s.id_shift = sh.id_shift " +
                 "ORDER BY s.id";
 
@@ -35,10 +34,9 @@ public class StaffDAO {
 
     // 2. SEARCH BY ID
     public Staff searchById(String id) throws SQLException {
-        String sql = "SELECT s.*, jp.name AS positionName, d.name AS departmentName, sh.name AS shiftName " +
+        String sql = "SELECT s.*, jp.name AS positionName, sh.name AS shiftName " +
                 "FROM staff s " +
                 "LEFT JOIN job_position jp ON s.id_position = jp.id_position " +
-                "LEFT JOIN department d ON jp.id_department = d.id_department " +
                 "LEFT JOIN shift sh ON s.id_shift = sh.id_shift " +
                 "WHERE s.id = ?";
 
@@ -104,8 +102,8 @@ public class StaffDAO {
 
     // 4. UPDATE
     public boolean isUpdate(Staff staff) throws SQLException {
-        String sql = "UPDATE staff SET first_name=?, last_name=?, phone=?, email=?, " +
-                "street=?, address_number=?, city=?, id_position=?, id_shift=?, " +
+        String sql = "UPDATE staff SET first_name=?, last_name=?, dni=?, birth_date=?, phone=?, email=?, " +
+                "street=?, address_number=?, city=?, id_position=?, id_shift=?, hire_date=?, " +
                 "shift_start=?, shift_end=?, salary=? " +
                 "WHERE id=?";
 
@@ -114,21 +112,24 @@ public class StaffDAO {
 
             stmt.setString(1, staff.getFirstName());
             stmt.setString(2, staff.getLastName());
-            stmt.setString(3, staff.getPhone());
-            stmt.setString(4, staff.getEmail());
-            stmt.setString(5, staff.getStreet());
-            stmt.setString(6, staff.getAddressNumber());
-            stmt.setString(7, staff.getCity());
-            stmt.setInt(8, staff.getIdPosition());
+            stmt.setString(3, staff.getDni());
+            stmt.setDate(4, staff.getBirthDate() != null ? Date.valueOf(staff.getBirthDate()) : null);
+            stmt.setString(5, staff.getPhone());
+            stmt.setString(6, staff.getEmail());
+            stmt.setString(7, staff.getStreet());
+            stmt.setString(8, staff.getAddressNumber());
+            stmt.setString(9, staff.getCity());
+            stmt.setInt(10, staff.getIdPosition());
             if (staff.getIdShift() != null) {
-                stmt.setInt(9, staff.getIdShift());
+                stmt.setInt(11, staff.getIdShift());
             } else {
-                stmt.setNull(9, Types.INTEGER);
+                stmt.setNull(11, Types.INTEGER);
             }
-            stmt.setTime(10, staff.getShiftStart() != null ? Time.valueOf(staff.getShiftStart()) : null);
-            stmt.setTime(11, staff.getShiftEnd() != null ? Time.valueOf(staff.getShiftEnd()) : null);
-            stmt.setBigDecimal(12, staff.getSalary());
-            stmt.setString(13, staff.getId());
+            stmt.setDate(12, staff.getHireDate() != null ? Date.valueOf(staff.getHireDate()) : null);
+            stmt.setTime(13, staff.getShiftStart() != null ? Time.valueOf(staff.getShiftStart()) : null);
+            stmt.setTime(14, staff.getShiftEnd() != null ? Time.valueOf(staff.getShiftEnd()) : null);
+            stmt.setBigDecimal(15, staff.getSalary());
+            stmt.setString(16, staff.getId());
 
             boolean success = stmt.executeUpdate() > 0;
             if (success) {
@@ -157,6 +158,41 @@ public class StaffDAO {
             boolean success = stmt.executeUpdate() > 0;
             if (success) {
                 registrarHistorialSinRomperNada(id, "INACTIVADO", "Empleado inactivado");
+            }
+            return success;
+        }
+    }
+
+    // 5c. LISTAR SOLO INACTIVOS (para la ventana "Historial" -> Personal Inactivo)
+    public List<Staff> findInactive() throws SQLException {
+        List<Staff> inactivos = new ArrayList<>();
+        String sql = "SELECT s.*, jp.name AS positionName, sh.name AS shiftName " +
+                "FROM staff s " +
+                "LEFT JOIN job_position jp ON s.id_position = jp.id_position " +
+                "LEFT JOIN shift sh ON s.id_shift = sh.id_shift " +
+                "WHERE s.status = 'INACTIVE' " +
+                "ORDER BY s.first_name";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                inactivos.add(mapRow(rs));
+            }
+        }
+        return inactivos;
+    }
+
+    // 5d. REACTIVAR (vuelve a poner ACTIVE a un empleado inactivo)
+    public boolean reactivate(String id) throws SQLException {
+        String sql = "UPDATE staff SET status = 'ACTIVE' WHERE id = ?";
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            boolean success = stmt.executeUpdate() > 0;
+            if (success) {
+                registrarHistorialSinRomperNada(id, "REACTIVADO", "Empleado reactivado");
             }
             return success;
         }
@@ -227,7 +263,6 @@ public class StaffDAO {
         s.setShiftEnd(rs.getTime("shift_end") != null ? rs.getTime("shift_end").toLocalTime() : null);
         s.setSalary(rs.getBigDecimal("salary"));
         s.setPositionName(rs.getString("positionName"));
-        s.setDepartmentName(rs.getString("departmentName"));
         s.setShiftName(rs.getString("shiftName"));
         return s;
     }

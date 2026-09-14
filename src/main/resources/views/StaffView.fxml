@@ -53,7 +53,6 @@
                     <columns>
                         <TableColumn fx:id="colFullName" text="Nombre Completo" prefWidth="150" />
                         <TableColumn fx:id="colPosition" text="Cargo" prefWidth="120" />
-                        <TableColumn fx:id="colDepartment" text="Área" prefWidth="120" />
                         <TableColumn fx:id="colPhone" text="Teléfono" prefWidth="100" />
                     </columns>
                     <columnResizePolicy>
@@ -92,9 +91,6 @@
 
                     <Label text="Dirección:" styleClass="detail-label" />
                     <Label fx:id="lblDetailAddress" text="--" styleClass="detail-value" wrapText="true" />
-
-                    <Label text="Área:" styleClass="detail-label" />
-                    <Label fx:id="lblDetailDepartment" text="--" styleClass="detail-value" />
 
                     <Label text="Contratación:" styleClass="detail-label" />
                     <Label fx:id="lblDetailHireDate" text="--" styleClass="detail-value" />
