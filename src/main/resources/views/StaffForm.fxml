@@ -56,23 +56,20 @@
         <Label text="Cargo *" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
         <ComboBox fx:id="comboPosition" GridPane.rowIndex="9" GridPane.columnIndex="1" maxWidth="Infinity"/>
 
-        <Label text="Área" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-        <Label fx:id="lblDepartmentValue" text="--" style="-fx-font-style: italic;" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+        <Label text="Fecha de ingreso *" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dateHireDate" GridPane.rowIndex="10" GridPane.columnIndex="1" maxWidth="Infinity"/>
 
-        <Label text="Fecha de ingreso *" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dateHireDate" GridPane.rowIndex="11" GridPane.columnIndex="1" maxWidth="Infinity"/>
+        <Label text="Turno" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboShiftName" GridPane.rowIndex="11" GridPane.columnIndex="1" maxWidth="Infinity"/>
 
-        <Label text="Turno" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="comboShiftName" GridPane.rowIndex="12" GridPane.columnIndex="1" maxWidth="Infinity"/>
+        <Label text="Hora inicio (HH:mm)" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtShiftStart" promptText="ej: 07:00" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
 
-        <Label text="Hora inicio (HH:mm)" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtShiftStart" promptText="ej: 07:00" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
+        <Label text="Hora fin (HH:mm)" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtShiftEnd" promptText="ej: 15:00" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
 
-        <Label text="Hora fin (HH:mm)" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtShiftEnd" promptText="ej: 15:00" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
-
-        <Label text="Salario *" GridPane.rowIndex="15" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtSalary" promptText="ej: 450000" GridPane.rowIndex="15" GridPane.columnIndex="1"/>
+        <Label text="Salario *" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtSalary" promptText="ej: 450000" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">

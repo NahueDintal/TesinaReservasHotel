@@ -20,21 +20,4 @@ public class JobPositionDAO {
         }
         return positions;
     }
-
-    // Devuelve el id_department que corresponde a un cargo (para derivar el Área automáticamente)
-    public Integer getDepartmentIdByPosition(int idPosition) throws SQLException {
-        String sql = "SELECT id_department FROM job_position WHERE id_position = ?";
-
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, idPosition);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("id_department");
-                }
-            }
-        }
-        return null;
-    }
 }

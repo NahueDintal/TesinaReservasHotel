@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
@@ -13,13 +16,19 @@
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Historial de Personal" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Label text="Personal Inactivo" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Label text="Seleccioná un empleado y presioná Reactivar para volver a ponerlo Activo." style="-fx-font-style: italic;"/>
 
-    <TableView fx:id="tableHistory" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableInactive" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colChangedAt" text="Fecha" prefWidth="150"/>
-            <TableColumn fx:id="colChangeType" text="Tipo de Cambio" prefWidth="120"/>
-            <TableColumn fx:id="colDescription" text="Descripción" prefWidth="200"/>
+            <TableColumn fx:id="colName" text="Nombre Completo" prefWidth="200"/>
+            <TableColumn fx:id="colDni" text="DNI" prefWidth="120"/>
+            <TableColumn fx:id="colPosition" text="Cargo" prefWidth="150"/>
         </columns>
     </TableView>
+
+    <HBox alignment="CENTER_RIGHT">
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnReactivate" text="Reactivar" style="-fx-font-weight: bold;"/>
+    </HBox>
 </VBox>

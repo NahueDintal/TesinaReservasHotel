@@ -1,40 +1,67 @@
 package controllers;
 
-import models.StaffHistory;
-import repositories.StaffHistoryDAO;
+import models.Staff;
+import repositories.StaffDAO;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
 
+/**
+ * Esta ventana ya NO muestra un log de cambios por empleado.
+ * Ahora muestra el listado de TODOS los empleados Inactivos,
+ * con la opción de reactivarlos desde acá.
+ */
 public class StaffHistoryController {
 
-    @FXML private TableView<StaffHistory> tableHistory;
-    @FXML private TableColumn<StaffHistory, String> colChangedAt;
-    @FXML private TableColumn<StaffHistory, String> colChangeType;
-    @FXML private TableColumn<StaffHistory, String> colDescription;
+    @FXML private TableView<Staff> tableInactive;
+    @FXML private TableColumn<Staff, String> colName;
+    @FXML private TableColumn<Staff, String> colDni;
+    @FXML private TableColumn<Staff, String> colPosition;
+    @FXML private Button btnReactivate;
 
-    private final StaffHistoryDAO staffHistoryDAO = new StaffHistoryDAO();
+    private final StaffDAO staffDAO = new StaffDAO();
 
     @FXML
     public void initialize() {
-        colChangedAt.setCellValueFactory(new PropertyValueFactory<>("changedAt"));
-        colChangeType.setCellValueFactory(new PropertyValueFactory<>("changeType"));
-        colDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colName.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getFullName()));
+        colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
+        colPosition.setCellValueFactory(new PropertyValueFactory<>("positionName"));
+
+        btnReactivate.setOnAction(e -> reactivarSeleccionado());
+
+        cargarInactivos();
     }
 
-    // Se llama desde StaffController justo después de abrir esta ventana
-    public void loadHistory(String idStaff) {
+    private void cargarInactivos() {
         try {
-            tableHistory.setItems(FXCollections.observableArrayList(staffHistoryDAO.findByStaffId(idStaff)));
+            tableInactive.setItems(FXCollections.observableArrayList(staffDAO.findInactive()));
         } catch (SQLException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "No se pudo cargar el historial: " + e.getMessage());
-            alert.showAndWait();
+            mostrarAlerta("No se pudo cargar el listado de inactivos: " + e.getMessage());
         }
+    }
+
+    private void reactivarSeleccionado() {
+        Staff seleccionado = tableInactive.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Seleccioná un empleado de la lista primero.");
+            return;
+        }
+
+        try {
+            staffDAO.reactivate(seleccionado.getId());
+            cargarInactivos(); // refresca: el reactivado ya no debería aparecer en la lista
+        } catch (SQLException e) {
+            mostrarAlerta("No se pudo reactivar: " + e.getMessage());
+        }
+    }
+
+    private void mostrarAlerta(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, mensaje);
+        alert.showAndWait();
     }
 }

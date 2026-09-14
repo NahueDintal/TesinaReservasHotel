@@ -26,7 +26,6 @@ public class Staff {
 
     // Atributos de catálogo (solo lectura, para mostrar)
     private String positionName;
-    private String departmentName;    // se deriva del Cargo, no se guarda directo en staff
     private String shiftName;         // nombre del turno (de la tabla shift), puede ser null
 
     public Staff() {}
@@ -72,7 +71,6 @@ public class Staff {
     public BigDecimal getSalary() { return salary; }
 
     public String getPositionName() { return positionName; }
-    public String getDepartmentName() { return departmentName; }
     public String getShiftName() { return shiftName; }
 
     public void setId(String id) { this.id = id; }
@@ -94,7 +92,6 @@ public class Staff {
     public void setSalary(BigDecimal salary) { this.salary = salary; }
 
     public void setPositionName(String positionName) { this.positionName = positionName; }
-    public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
     public void setShiftName(String shiftName) { this.shiftName = shiftName; }
 
     public String getFullName() {

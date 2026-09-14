@@ -33,7 +33,7 @@ public class PruebaStaffDAO {
             System.out.println("¿Se insertó?: " + insertado + " | id asignado: " + nuevoEmpleado.getId());
 
             Staff leido = staffDAO.searchById(nuevoEmpleado.getId());
-            System.out.println("Leído desde la base: " + leido + " - " + leido.getPositionName() + " / " + leido.getDepartmentName());
+            System.out.println("Leído desde la base: " + leido + " - " + leido.getPositionName());
 
             List<Staff> todos = staffDAO.listAll();
             System.out.println("Total de empleados: " + todos.size());
