@@ -50,22 +50,24 @@ public class RoomController {
   @FXML
   private Button btnDelete;
 
+  // Detalle — TextField (para replicar la estética del CustomerController)
   @FXML
-  private Label lblDetailNumber;
+  private TextField lblDetailNumber;
   @FXML
-  private Label lblDetailFloor;
+  private TextField lblDetailFloor;
   @FXML
-  private Label lblDetailType;
+  private TextField lblDetailType;
   @FXML
-  private Label lblDetailCapacity;
+  private TextField lblDetailCapacity;
   @FXML
-  private Label lblDetailView;
+  private TextField lblDetailView;
   @FXML
-  private Label lblDetailPrice;
+  private TextField lblDetailPrice;
   @FXML
-  private Label lblDetailFeatures;
+  private TextField lblDetailFeatures;
   @FXML
-  private Label lblDetailDescription;
+  private TextField lblDetailDescription;
+  // Estado — sigue siendo Label (en el FXML es <Label fx:id="lblDetailStatus">)
   @FXML
   private Label lblDetailStatus;
 
@@ -134,6 +136,7 @@ public class RoomController {
 
     btnEdit.setDisable(true);
     btnDeactivate.setDisable(true);
+    btnDelete.setDisable(true);
     tableRooms.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
       boolean selected = newVal != null;
       btnEdit.setDisable(!selected);
@@ -158,6 +161,7 @@ public class RoomController {
       tableRooms.setItems(filteredRooms);
       updateCounter();
     } catch (RuntimeException e) {
+      logger.error("No se pudieron cargar las habitaciones.");
       showAlert("Error", "No se pudieron cargar las habitaciones", e.getMessage());
     }
   }
@@ -224,11 +228,13 @@ public class RoomController {
       tableRooms.refresh();
       updateCounter();
     } catch (IOException e) {
+      logger.error("No se pudo abrir la ventana de no disponibles.");
       showAlert("Error", "No se pudo abrir la ventana de no disponibles", e.getMessage());
     }
   }
 
   private void deactivateRoom() {
+    logger.debug("Ejecutando deactivateRoom");
     Room selected = tableRooms.getSelectionModel().getSelectedItem();
     if (selected == null)
       return;
@@ -248,8 +254,10 @@ public class RoomController {
             clearDetail();
             updateCounter();
             showAlert("Éxito", "Habitación actualizada", "");
+            logger.debug("Habitación actualizada {} ", selected.getNumber());
           }
         } catch (RuntimeException e) {
+          logger.error("No se pudo actualizar la habitación {} ", selected.getNumber());
           showAlert("Error", "No se pudo actualizar", e.getMessage());
         }
       }
@@ -276,10 +284,10 @@ public class RoomController {
             clearDetail();
             updateCounter();
             showAlert("Éxito", "Habitación eliminada", "");
-            logger.info("Habitacion eliminada...");
+            logger.debug("Habitacion eliminada {}", selected.getNumber());
           }
         } catch (RuntimeException e) {
-          logger.error("No se pudo eliminar habitacion");
+          logger.error("No se pudo eliminar habitacion {}", selected.getNumber());
           showAlert("Error", "No se pudo actualizar", e.getMessage());
         }
       }
