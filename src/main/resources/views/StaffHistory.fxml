@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.StaffHistoryController"
+      spacing="12" prefWidth="500" prefHeight="400">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Historial de Personal" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="tableHistory" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colChangedAt" text="Fecha" prefWidth="150"/>
+            <TableColumn fx:id="colChangeType" text="Tipo de Cambio" prefWidth="120"/>
+            <TableColumn fx:id="colDescription" text="Descripción" prefWidth="200"/>
+        </columns>
+    </TableView>
+</VBox>

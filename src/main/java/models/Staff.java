@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class Staff {
 
-    private String id;             // PK tipo "001", no autoincremental
+    private String id;
     private String firstName;
     private String lastName;
     private String dni;
@@ -17,25 +17,24 @@ public class Staff {
     private String addressNumber;
     private String city;
     private int idPosition;
-    private int idDepartment;
-    private StaffStatus status;    // Enum ACTIVE/INACTIVE (no es tabla catálogo)
+    private Integer idShift;          // nullable: el turno es opcional
+    private StaffStatus status;
     private LocalDate hireDate;
-    private String shiftName;
     private LocalTime shiftStart;
     private LocalTime shiftEnd;
     private BigDecimal salary;
 
-    // Atributos de tablas catálogo (para mostrar, igual que en Customer)
+    // Atributos de catálogo (solo lectura, para mostrar)
     private String positionName;
-    private String departmentName;
+    private String departmentName;    // se deriva del Cargo, no se guarda directo en staff
+    private String shiftName;         // nombre del turno (de la tabla shift), puede ser null
 
-    // CONSTRUCTOR
     public Staff() {}
 
     public Staff(String firstName, String lastName, String dni, LocalDate birthDate,
                  String phone, String email, String street, String addressNumber, String city,
-                 int idPosition, int idDepartment, StaffStatus status, LocalDate hireDate,
-                 String shiftName, LocalTime shiftStart, LocalTime shiftEnd, BigDecimal salary) {
+                 int idPosition, Integer idShift, StaffStatus status, LocalDate hireDate,
+                 LocalTime shiftStart, LocalTime shiftEnd, BigDecimal salary) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dni = dni;
@@ -46,16 +45,14 @@ public class Staff {
         this.addressNumber = addressNumber;
         this.city = city;
         this.idPosition = idPosition;
-        this.idDepartment = idDepartment;
+        this.idShift = idShift;
         this.status = status;
         this.hireDate = hireDate;
-        this.shiftName = shiftName;
         this.shiftStart = shiftStart;
         this.shiftEnd = shiftEnd;
         this.salary = salary;
     }
 
-    // GETTERS
     public String getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
@@ -67,19 +64,17 @@ public class Staff {
     public String getAddressNumber() { return addressNumber; }
     public String getCity() { return city; }
     public int getIdPosition() { return idPosition; }
-    public int getIdDepartment() { return idDepartment; }
+    public Integer getIdShift() { return idShift; }
     public StaffStatus getStatus() { return status; }
     public LocalDate getHireDate() { return hireDate; }
-    public String getShiftName() { return shiftName; }
     public LocalTime getShiftStart() { return shiftStart; }
     public LocalTime getShiftEnd() { return shiftEnd; }
     public BigDecimal getSalary() { return salary; }
 
-    // Atributos catálogo
     public String getPositionName() { return positionName; }
     public String getDepartmentName() { return departmentName; }
+    public String getShiftName() { return shiftName; }
 
-    // SETTERS
     public void setId(String id) { this.id = id; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
@@ -91,19 +86,17 @@ public class Staff {
     public void setAddressNumber(String addressNumber) { this.addressNumber = addressNumber; }
     public void setCity(String city) { this.city = city; }
     public void setIdPosition(int idPosition) { this.idPosition = idPosition; }
-    public void setIdDepartment(int idDepartment) { this.idDepartment = idDepartment; }
+    public void setIdShift(Integer idShift) { this.idShift = idShift; }
     public void setStatus(StaffStatus status) { this.status = status; }
     public void setHireDate(LocalDate hireDate) { this.hireDate = hireDate; }
-    public void setShiftName(String shiftName) { this.shiftName = shiftName; }
     public void setShiftStart(LocalTime shiftStart) { this.shiftStart = shiftStart; }
     public void setShiftEnd(LocalTime shiftEnd) { this.shiftEnd = shiftEnd; }
     public void setSalary(BigDecimal salary) { this.salary = salary; }
 
-    // Atributos catálogo
     public void setPositionName(String positionName) { this.positionName = positionName; }
     public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
+    public void setShiftName(String shiftName) { this.shiftName = shiftName; }
 
-    // Método de conveniencia, igual que usás getFullName-style en otras pantallas
     public String getFullName() {
         return firstName + " " + lastName;
     }

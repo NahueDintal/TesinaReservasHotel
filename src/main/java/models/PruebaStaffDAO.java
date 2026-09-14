@@ -14,15 +14,18 @@ public class PruebaStaffDAO {
 
         try {
             // 1) Creamos un empleado nuevo (sin id, StaffDAO se lo asigna solo)
+            // idPosition=4 (Mantenimiento) e idShift=2 (Tarde) según tus catálogos actuales:
+            // confirmá los números reales con SELECT * FROM job_position; y SELECT * FROM shift;
             Staff nuevoEmpleado = new Staff(
-                    "Lucas", "Fernández", "35.111.222",
+                    "Lucas", "Fernández", "35111222",
                     LocalDate.of(1995, 6, 20),
                     "3541 999888", "lucas.fernandez@hoteltemu.com",
                     "Belgrano", "456", "Villa Carlos Paz",
-                    4, 3, // idPosition=4 (Mantenimiento), idDepartment=3 (Mantenimiento) según los INSERT del catálogo
+                    4,      // idPosition
+                    2,      // idShift (o null si no querés asignarle turno)
                     StaffStatus.ACTIVE,
                     LocalDate.now(),
-                    "Tarde", LocalTime.of(15, 0), LocalTime.of(23, 0),
+                    LocalTime.of(15, 0), LocalTime.of(23, 0),
                     new BigDecimal("480000")
             );
 
