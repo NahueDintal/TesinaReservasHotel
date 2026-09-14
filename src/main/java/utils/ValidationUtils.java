@@ -14,20 +14,19 @@ public class ValidationUtils {
     private static final Pattern PASSPORT_PATTERN =
             Pattern.compile("^[A-Za-z]{3}\\d{6}$");
 
-    private static final Pattern FOREIGN_ID_PATTERN =
-            Pattern.compile("^[A-Za-z0-9]{6,12}$");
+    //private static final Pattern FOREIGN_ID_PATTERN =
+            //Pattern.compile("^[A-Za-z0-9]{6,12}$");
 
-    private static final Pattern DRIVER_LICENSE_PATTERN =
-            Pattern.compile("^[A-Za-z0-9]{8,12}$");
+    //private static final Pattern DRIVER_LICENSE_PATTERN =
+            //Pattern.compile("^[A-Za-z0-9]{8,12}$");
 
-    private static final Pattern PHONE_PATTERN =
-            Pattern.compile("^[+]?[0-9\\s\\-()]{7,20}$");
+    //private static final Pattern PHONE_PATTERN =
+            //Pattern.compile("^[+]?[0-9\\s\\-()]{7,20}$");
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     // ========== VALIDACIONES ==========
-
     public static boolean isValidName(String name) {
         if (name == null || name.trim().isEmpty()) return false;
         String trimmed = name.trim();
@@ -80,10 +79,10 @@ public class ValidationUtils {
                 return "El Pasaporte debe tener 3 letras seguidas de 6 números (ej: ABC123456).";
             case "Cédula":
                 return "La Cédula debe tener 7 u 8 dígitos numéricos.";
-            case "Cédula Extranjera":
-                return "La Cédula Extranjera debe tener entre 6 y 12 caracteres alfanuméricos.";
-            case "Driver License":
-                return "La Licencia de Conducir debe tener entre 8 y 12 caracteres alfanuméricos.";
+            //case "Cédula Extranjera":
+              //  return "La Cédula Extranjera debe tener entre 6 y 12 caracteres alfanuméricos.";
+            //case "Driver License":
+                //return "La Licencia de Conducir debe tener entre 8 y 12 caracteres alfanuméricos.";
             default:
                 return "Formato de documento inválido.";
         }

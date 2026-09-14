@@ -76,7 +76,7 @@ public class InactiveCustomersController {
     // ========== LOAD METHODS ==========
     private void loadInactiveCustomers() {
         try {
-            inactiveCustomers.setAll(customerDAO.listAllInactive()); // ← Usar el nuevo método
+            inactiveCustomers.setAll(customerDAO.listAllInactive());
             filteredInactive = new FilteredList<>(inactiveCustomers, p -> true);
             tableInactiveCustomers.setItems(filteredInactive);
             updateCounter();
@@ -107,7 +107,6 @@ public class InactiveCustomersController {
                     updateCounter();
                     showAlert("Éxito", "Cliente reactivado",
                             "El cliente ha sido reactivado correctamente.");
-                    // ✅ Cerrar la ventana SIN botón
                     Stage stage = (Stage) tableInactiveCustomers.getScene().getWindow();
                     stage.close();
                 }
@@ -130,7 +129,7 @@ public class InactiveCustomersController {
         } catch (SQLException e) {
             showAlert("Error", "No se pudo obtener el ID del estado", e.getMessage());
         }
-        return 1; // Default to "Activo" if not found
+        return 1; // Default "active"
     }
 
     private void updateCounter() {
@@ -138,16 +137,12 @@ public class InactiveCustomersController {
         lblTotalInactive.setText("Mostrando " + count + " clientes inactivos");
     }
 
-
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-
-        // Aplicar el CSS global a la alerta
         StyleManager.applyStyles(alert.getDialogPane());
-
         alert.showAndWait();
     }
 }

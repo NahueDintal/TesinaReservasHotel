@@ -200,6 +200,7 @@ public class CustomerFormController {
         return valid;
     }
 
+    //revisar
     private void validateCombo(ComboBox<String> combo, String value) {
         boolean valid = value != null && !value.isEmpty();
         setFieldValid(combo, valid, "Este campo es obligatorio.");
@@ -208,7 +209,7 @@ public class CustomerFormController {
 
     // ========== HELPER: MARCAR CAMPO VÁLIDO/INVÁLIDO ==========
     private void setFieldValid(Control field, boolean valid, String errorMessage) {
-        // Si el campo NO fue tocado por el usuario, no mostrar feedback visual
+        // Solo mostrar feedback visual si el campo ya fue tocada una vez
         if (!touchedFields.contains(field)) {
             return; // ← Salir sin hacer nada
         }
@@ -218,7 +219,7 @@ public class CustomerFormController {
                 " | Mensaje: " + errorMessage);
 
         if (valid) {
-            field.setStyle(""); // Limpiar borde rojo
+            field.setStyle("");
             field.setTooltip(null);
             System.out.println("   ✅ Campo válido, borde limpiado");
         } else {
@@ -231,12 +232,16 @@ public class CustomerFormController {
 
     // ========== ACTUALIZAR ESTADO DEL BOTÓN GUARDAR ==========
     private void updateSaveButtonState() {
-        boolean allValid = ValidationUtils.isValidName(txtFirstName.getText()) &&
+        boolean allValid =
+                ValidationUtils.isValidName(txtFirstName.getText()) &&
                 ValidationUtils.isValidName(txtSurname.getText()) &&
+
                 ValidationUtils.isValidDocument(txtDocumentNumber.getText(),
                         comboDocumentType.getSelectionModel().getSelectedItem()) &&
+
                 ValidationUtils.isValidPhone(txtPhone.getText()) &&
                 ValidationUtils.isValidEmail(txtEmail.getText()) &&
+
                 !comboDocumentType.getSelectionModel().isEmpty() &&
                 !comboCountry.getSelectionModel().isEmpty() &&
                 !comboOrigin.getSelectionModel().isEmpty();
@@ -265,7 +270,7 @@ public class CustomerFormController {
         comboCountry.getSelectionModel().select(customer.getCountryName());
         comboOrigin.getSelectionModel().select(customer.getOriginName());
 
-        // Validar todos los campos después de cargar
+        //revisar
         validateFirstName();
         validateSurname();
         validateDocument();
@@ -276,7 +281,7 @@ public class CustomerFormController {
 
     // ========== SAVE ==========
     private void saveCustomer() {
-        // Validar el campo activo antes de guardar
+
         if (!validateAllFields()) {
             return;
         }
@@ -285,19 +290,13 @@ public class CustomerFormController {
         loadDataFromForm(customer);
 
         try {
-            // Validar duplicados (si es necesario)
+            // Validar duplicados //revisar
             int excludeId = editingCustomer != null ? editingCustomer.getIdCustomer() : 0;
 
             if (customerDAO.isDuplicatedByDocumentation(customer.getDocumentNumber(),
                     customer.getIdDocumentType(), excludeId)) {
                 showAlert("Error", "Cliente duplicado",
                         "Ya existe un cliente con el mismo número de documento y tipo.");
-                return;
-            }
-
-            if (customerDAO.isDuplicatedByPhone(customer.getPhoneNumber(), excludeId)) {
-                showAlert("Error", "Teléfono duplicado",
-                        "Ya existe un cliente con el mismo número de teléfono.");
                 return;
             }
 
@@ -320,7 +319,7 @@ public class CustomerFormController {
     }
 
     private boolean validateAllFields() {
-        // Marcar TODOS los campos como tocados al intentar guardar
+        // Marcar TODOS los campos como tocados
         touchedFields.add(txtFirstName);
         touchedFields.add(txtSurname);
         touchedFields.add(txtDocumentNumber);
@@ -341,6 +340,7 @@ public class CustomerFormController {
         boolean countryValid = !comboCountry.getSelectionModel().isEmpty();
         boolean originValid = !comboOrigin.getSelectionModel().isEmpty();
 
+        //revisar
         if (!docTypeValid) setFieldValid(comboDocumentType, false, "Seleccione un tipo de documento.");
         if (!countryValid) setFieldValid(comboCountry, false, "Seleccione un país.");
         if (!originValid) setFieldValid(comboOrigin, false, "Seleccione un origen.");
@@ -414,10 +414,7 @@ public class CustomerFormController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-
-        // Aplicar el CSS global a la alerta
         StyleManager.applyStyles(alert.getDialogPane());
-
         alert.showAndWait();
     }
 }

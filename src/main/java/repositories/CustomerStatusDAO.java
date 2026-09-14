@@ -19,36 +19,4 @@ public class CustomerStatusDAO {
         }
         return estados;
     }
-
-    public String getNameById(int id) throws SQLException {
-        String sql = "SELECT name FROM CustomerStatus WHERE idCustomerStatus = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("name");
-                }
-            }
-        }
-        return null;
-    }
-    public int getIdByName(String name) throws SQLException {
-        String sql = "SELECT idCustomerStatus FROM CustomerStatus WHERE name = ?";
-
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, name);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("idCustomerStatus");
-                }
-            }
-        }
-
-        return 0;
-    }
 }
