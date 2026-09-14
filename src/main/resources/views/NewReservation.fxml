@@ -532,7 +532,8 @@
                         maxWidth="Infinity">
 
                     <Button
-                            text="+  Agregar consumo"
+                            fx:id="btnConsumptionAction"
+                            text="Agregar consumo"
                             onAction="#handleAddConsumption"
                             prefWidth="170.0"
                             prefHeight="36.0"
@@ -584,37 +585,14 @@
                                 text="Total"
                                 prefWidth="130.0"
                                 minWidth="100.0"/>
+                        <TableColumn
+                                fx:id="colConsumptionActions"
+                                text="Acciones"
+                                prefWidth="100.0"/>
 
                     </columns>
 
                 </TableView>
-
-
-                <!-- ================================================= -->
-                <!-- BOTONES DE CONSUMOS -->
-                <!-- ================================================= -->
-
-                <HBox
-                        spacing="10.0"
-                        alignment="CENTER_LEFT"
-                        maxWidth="Infinity">
-
-                    <Button
-                            text="Modificar consumo"
-                            onAction="#handleModifyConsumption"
-                            prefWidth="170.0"
-                            prefHeight="36.0"
-                            styleClass="reservation-secondary-button"/>
-
-                    <Button
-                            text="Anular consumo"
-                            onAction="#handleDeleteConsumption"
-                            prefWidth="150.0"
-                            prefHeight="36.0"
-                            styleClass="reservation-danger-button"/>
-
-                </HBox>
-
 
                 <!-- ================================================= -->
                 <!-- TOTAL CONSUMOS -->

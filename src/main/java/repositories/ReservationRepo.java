@@ -9,9 +9,7 @@ import java.util.List;
 
 public class ReservationRepo {
 
-    // =========================================================
     // CREATE para unico
-    // =========================================================
 
     public int createReservation(Reservation reservation) {
 
@@ -189,9 +187,7 @@ public class ReservationRepo {
         return -1;
     }
 
-    // =========================================================
     // GET ALL
-    // =========================================================
 
     public List<Reservation> getReservations() {
 
@@ -203,7 +199,8 @@ public class ReservationRepo {
                         "checkIn, checkOut, idReservationStatus, " +
                         "idReservationType, numberOfGuests, totalRate, " +
                         "observations " +
-                        "FROM Reservation";
+                        "FROM Reservation " +
+                        "ORDER BY idReservation DESC";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt =

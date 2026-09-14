@@ -13,9 +13,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.layout.HBox;
 
 public class NewReservationController {
     // RESERVA
+    @FXML Label lblReservationTitle;
     @FXML private TextField txtCustomerSearch;
     @FXML private ListView<Customer> lstCustomers;
     private final ObservableList<Customer> activeCustomers = FXCollections.observableArrayList();
@@ -34,7 +36,7 @@ public class NewReservationController {
     @FXML private ComboBox<PaymentStatus> cmbPaymentStatus;
     @FXML private TextArea txtPaymentObservations;
     // CONSUMPTION
-    @FXML private ComboBox<Integer> cmbConsumptionType;
+    @FXML private ComboBox<String> cmbConsumptionType;
     @FXML private ComboBox<Product> cmbProduct;
     @FXML private ComboBox<Service> cmbService;
     @FXML private TextField txtConsumptionQuantity;
@@ -44,7 +46,9 @@ public class NewReservationController {
     @FXML private TableColumn<Consumption, BigDecimal> colConsumptionTotal;
     @FXML private TableColumn<Consumption, String> colConsumptionType;
     @FXML private TableColumn<Consumption, String> colConsumptionName;
+    @FXML private TableColumn<Consumption, Void> colConsumptionActions;
     @FXML private TextField txtConsumptionTotal;
+    @FXML private Button btnConsumptionAction;
     // REPOSITORIES
     private DashboardController dashboardController;
     private Reservation reservationToEdit;
@@ -79,6 +83,9 @@ public class NewReservationController {
     public void setReservationToEdit(
             Reservation reservation) {
         this.reservationToEdit = reservation;
+
+        lblReservationTitle.setText("Editar Reserva");
+
         if (reservation == null) {
             return;
         }
@@ -252,24 +259,24 @@ public class NewReservationController {
         // TIPO CONSUMO
         cmbConsumptionType.setItems(
                 FXCollections.observableArrayList(
-                        1,
-                        2
+                        "Producto",
+                        "Servicio"
                 )
         );
         cmbConsumptionType.setOnAction(event -> {
-            Integer typeValue =
+            String typeValue =
                     cmbConsumptionType.getValue();
             if (typeValue == null) {
                 cmbProduct.setDisable(true);
                 cmbService.setDisable(true);
                 return;
             }
-            if (typeValue == 1) {
+            if (typeValue.equals("Producto")) {
                 // Producto
                 cmbProduct.setDisable(false);
                 cmbService.setDisable(true);
                 cmbService.setValue(null);
-            } else if (typeValue == 2) {
+            } else if (typeValue.equals("Servicio")) {
                 // Servicio
                 cmbProduct.setDisable(true);
                 cmbService.setDisable(false);
@@ -388,6 +395,7 @@ public class NewReservationController {
                 }
         );
     }
+
     // RESERVATION STATUS
     private void loadReservationStatuses() {
         try {
@@ -488,6 +496,7 @@ public class NewReservationController {
             e.printStackTrace();
         }
     }
+
     // TABLA CONSUMOS
     private void configureConsumptionTable() {
         colConsumptionQuantity.setCellValueFactory(
@@ -552,29 +561,139 @@ public class NewReservationController {
         tblConsumptions.setItems(
                 consumptions
         );
+
+        colConsumptionActions.setCellFactory(column -> new TableCell<>() {
+            private final Button btnEdit = new Button("✏");
+            private final Button btnDelete = new Button("✕");
+            private final HBox box = new HBox(5, btnEdit, btnDelete);
+
+            {
+                btnEdit.setOnAction(event -> {
+                    Consumption consumption = getTableView().getItems().get(getIndex());
+                    startConsumptionEdit(consumption);
+                });
+
+                btnDelete.setOnAction(event -> {
+                    Consumption consumption = getTableView().getItems().get(getIndex());
+                    deleteConsumptionFromRow(consumption);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : box);
+            }
+        });
     }
+
+    //EDITAR DESDE LA GRILLA
+    private void startConsumptionEdit(Consumption consumption) {
+        if (consumption == null) {
+            return;
+        }
+
+        if (consumption.getIdConsumptionStatus() != 1) {
+            showAlert(
+                    Alert.AlertType.WARNING,
+                    "Consumo",
+                    "No se puede modificar un consumo que está anulado."
+            );
+            return;
+        }
+
+        cmbConsumptionType.setValue(
+                consumption.getIdConsumptionType() == 1 ? "Producto" : "Servicio"
+        );
+        txtConsumptionQuantity.setText(
+                String.valueOf(consumption.getQuantity())
+        );
+
+        if (consumption.getIdConsumptionType() == 1) {
+            Product product = cmbProduct.getItems().stream()
+                    .filter(p -> p.getIdProduct() == consumption.getIdProduct())
+                    .findFirst()
+                    .orElse(null);
+
+            cmbProduct.setValue(product);
+            cmbService.setValue(null);
+            cmbProduct.setDisable(false);
+            cmbService.setDisable(true);
+        } else {
+            Service service = cmbService.getItems().stream()
+                    .filter(s -> s.getIdService() == consumption.getIdService())
+                    .findFirst()
+                    .orElse(null);
+
+            cmbService.setValue(service);
+            cmbProduct.setValue(null);
+            cmbProduct.setDisable(true);
+            cmbService.setDisable(false);
+        }
+
+        consumptionBeingEdited = consumption;
+        btnConsumptionAction.setText("Guardar modificación");
+    }
+
+    //BORRAR DESDE LA GRILLA
+    private void deleteConsumptionFromRow(Consumption consumption) {
+        if (consumption == null) {
+            return;
+        }
+
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Anular consumo");
+        confirmation.setHeaderText("¿Está seguro de anular este consumo?");
+        confirmation.setContentText("El consumo no será eliminado de la base de datos.");
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                consumption.setIdConsumptionStatus(2);
+                consumptions.remove(consumption);
+                modifiedConsumptions.remove(consumption);
+                tblConsumptions.refresh();
+                updateConsumptionTotal();
+            }
+        });
+    }
+
     // AGREGAR CONSUMO
     @FXML
     private void handleAddConsumption() {
-        Integer consumptionType =
+
+        if (consumptionBeingEdited != null) {
+            handleModifyConsumption();
+            return;
+        }
+
+        String selectedType =
                 cmbConsumptionType.getValue();
-        if (consumptionType == null) {
+
+        if (selectedType == null) {
             showError(
                     "Debe seleccionar el tipo de consumo."
             );
             return;
         }
+
+        // Convertir el texto del ComboBox al ID que usa la BD
+        int consumptionType =
+                selectedType.equals("Producto") ? 1 : 2;
+
         String quantityText =
                 txtConsumptionQuantity
                         .getText()
                         .trim();
+
         if (quantityText.isEmpty()) {
             showError(
                     "Debe ingresar la cantidad."
             );
             return;
         }
+
         int quantity;
+
         try {
             quantity =
                     Integer.parseInt(
@@ -586,49 +705,63 @@ public class NewReservationController {
             );
             return;
         }
+
         if (quantity <= 0) {
             showError(
                     "La cantidad debe ser mayor que 0."
             );
             return;
         }
+
         BigDecimal unitPrice;
         int idProduct = 0;
         int idService = 0;
+
         // PRODUCTO
         if (consumptionType == 1) {
+
             Product product =
                     cmbProduct.getValue();
+
             if (product == null) {
                 showError(
                         "Debe seleccionar un producto."
                 );
                 return;
             }
+
             idProduct =
                     product.getIdProduct();
+
             unitPrice =
                     product.getPrice();
+
             // SERVICIO
         } else {
+
             Service service =
                     cmbService.getValue();
+
             if (service == null) {
                 showError(
                         "Debe seleccionar un servicio."
                 );
                 return;
             }
+
             idService =
                     service.getIdService();
+
             unitPrice =
                     service.getPrice();
         }
+
         // TOTAL
         BigDecimal total =
                 unitPrice.multiply(
                         BigDecimal.valueOf(quantity)
                 );
+
         // CONSUMPTION
         Consumption consumption =
                 new Consumption(
@@ -643,126 +776,102 @@ public class NewReservationController {
                         1,
                         null
                 );
+
         consumption.setIdConsumptionStatus(1);
+
         // AGREGAR A LA TABLA
         consumptions.add(
                 consumption
         );
+
         updateConsumptionTotal();
+
         cmbProduct.setValue(null);
         cmbService.setValue(null);
         txtConsumptionQuantity.clear();
     }
+
     // MODIFICAR CONSUMO
     @FXML
     private void handleModifyConsumption() {
         // SI YA ESTAMOS EDITANDO → GUARDAR CAMBIOS
         if (consumptionBeingEdited != null) {
-            Integer consumptionType =
-                    cmbConsumptionType.getValue();
-            if (consumptionType == null) {
-                showError(
-                        "Debe seleccionar el tipo de consumo."
-                );
+            String selectedType = cmbConsumptionType.getValue();
+            if (selectedType == null) {
+                showError("Debe seleccionar el tipo de consumo.");
                 return;
             }
-            String quantityText =
-                    txtConsumptionQuantity.getText().trim();
+
+            int consumptionType = selectedType.equals("Producto") ? 1 : 2;
+            String quantityText = txtConsumptionQuantity.getText().trim();
             if (quantityText.isEmpty()) {
-                showError(
-                        "Debe ingresar la cantidad."
-                );
+                showError("Debe ingresar la cantidad.");
                 return;
             }
+
             int quantity;
             try {
-                quantity =
-                        Integer.parseInt(quantityText);
+                quantity = Integer.parseInt(quantityText);
             } catch (NumberFormatException e) {
-                showError(
-                        "La cantidad debe contener solamente números."
-                );
+                showError("La cantidad debe contener solamente números.");
                 return;
             }
+
             if (quantity <= 0) {
-                showError(
-                        "La cantidad debe ser mayor que 0."
-                );
+                showError("La cantidad debe ser mayor que 0.");
                 return;
             }
+
             int idProduct = 0;
             int idService = 0;
             BigDecimal unitPrice;
+
             // PRODUCTO
             if (consumptionType == 1) {
-                Product product =
-                        cmbProduct.getValue();
+                Product product = cmbProduct.getValue();
                 if (product == null) {
-                    showError(
-                            "Debe seleccionar un producto."
-                    );
+                    showError("Debe seleccionar un producto.");
                     return;
                 }
-                idProduct =
-                        product.getIdProduct();
-                unitPrice =
-                        product.getPrice();
+                idProduct = product.getIdProduct();
+                unitPrice = product.getPrice();
                 // SERVICIO
             } else {
-                Service service =
-                        cmbService.getValue();
+                Service service = cmbService.getValue();
                 if (service == null) {
-                    showError(
-                            "Debe seleccionar un servicio."
-                    );
+                    showError("Debe seleccionar un servicio.");
                     return;
                 }
-                idService =
-                        service.getIdService();
-                unitPrice =
-                        service.getPrice();
+                idService = service.getIdService();
+                unitPrice = service.getPrice();
             }
-            // CALCULAR TOTAL
-            BigDecimal total =
-                    unitPrice.multiply(
-                            BigDecimal.valueOf(quantity)
-                    );
-            // ACTUALIZAR OBJETO
-            consumptionBeingEdited.setIdConsumptionType(
-                    consumptionType
-            );
-            consumptionBeingEdited.setIdProduct(
-                    idProduct
-            );
-            consumptionBeingEdited.setIdService(
-                    idService
-            );
-            consumptionBeingEdited.setQuantity(
-                    quantity
-            );
-            consumptionBeingEdited.setUnitPrice(
-                    unitPrice
-            );
-            consumptionBeingEdited.setTotal(
-                    total
-            );
+
+            BigDecimal total = unitPrice.multiply(BigDecimal.valueOf(quantity));
+
+            consumptionBeingEdited.setIdConsumptionType(consumptionType);
+            consumptionBeingEdited.setIdProduct(idProduct);
+            consumptionBeingEdited.setIdService(idService);
+            consumptionBeingEdited.setQuantity(quantity);
+            consumptionBeingEdited.setUnitPrice(unitPrice);
+            consumptionBeingEdited.setTotal(total);
+
             if (consumptionBeingEdited.getIdConsumption() > 0 &&
                     !modifiedConsumptions.contains(consumptionBeingEdited)) {
-                modifiedConsumptions.add(
-                        consumptionBeingEdited
-                );
+                modifiedConsumptions.add(consumptionBeingEdited);
             }
-            // ACTUALIZAR TABLA
+
             tblConsumptions.refresh();
             updateConsumptionTotal();
-            // TERMINAR EDICIÓN
+
             consumptionBeingEdited = null;
+            btnConsumptionAction.setText("Agregar consumo");
             cmbConsumptionType.setValue(null);
             cmbProduct.setValue(null);
             cmbService.setValue(null);
             txtConsumptionQuantity.clear();
             cmbProduct.setDisable(true);
             cmbService.setDisable(true);
+
             showAlert(
                     Alert.AlertType.INFORMATION,
                     "Consumo",
@@ -770,10 +879,10 @@ public class NewReservationController {
             );
             return;
         }
+
         // COMENZAR EDICIÓN
-        Consumption selected =
-                tblConsumptions.getSelectionModel()
-                        .getSelectedItem();
+        Consumption selected = tblConsumptions.getSelectionModel().getSelectedItem();
+
         if (selected == null) {
             showAlert(
                     Alert.AlertType.WARNING,
@@ -782,7 +891,7 @@ public class NewReservationController {
             );
             return;
         }
-        // NO PERMITIR MODIFICAR CONSUMOS ANULADOS
+
         if (selected.getIdConsumptionStatus() != 1) {
             showAlert(
                     Alert.AlertType.WARNING,
@@ -791,100 +900,76 @@ public class NewReservationController {
             );
             return;
         }
+
         // CARGAR DATOS EN EL FORMULARIO
         cmbConsumptionType.setValue(
-                selected.getIdConsumptionType()
+                selected.getIdConsumptionType() == 1 ? "Producto" : "Servicio"
         );
-        txtConsumptionQuantity.setText(
-                String.valueOf(
-                        selected.getQuantity()
-                )
-        );
+        txtConsumptionQuantity.setText(String.valueOf(selected.getQuantity()));
+
         if (selected.getIdConsumptionType() == 1) {
-            Product product =
-                    cmbProduct.getItems()
-                            .stream()
-                            .filter(p ->
-                                    p.getIdProduct()
-                                            == selected.getIdProduct()
-                            )
-                            .findFirst()
-                            .orElse(null);
+            Product product = cmbProduct.getItems().stream()
+                    .filter(p -> p.getIdProduct() == selected.getIdProduct())
+                    .findFirst()
+                    .orElse(null);
+
             cmbProduct.setValue(product);
             cmbService.setValue(null);
             cmbProduct.setDisable(false);
             cmbService.setDisable(true);
         } else {
-            Service service =
-                    cmbService.getItems()
-                            .stream()
-                            .filter(s ->
-                                    s.getIdService()
-                                            == selected.getIdService()
-                            )
-                            .findFirst()
-                            .orElse(null);
+            Service service = cmbService.getItems().stream()
+                    .filter(s -> s.getIdService() == selected.getIdService())
+                    .findFirst()
+                    .orElse(null);
+
             cmbService.setValue(service);
             cmbProduct.setValue(null);
             cmbProduct.setDisable(true);
             cmbService.setDisable(false);
         }
-        // GUARDAR CONSUMO EN EDICIÓN
+
+
         consumptionBeingEdited = selected;
-        showAlert(
-                Alert.AlertType.INFORMATION,
-                "Modificar consumo",
-                "Modifique los datos y presione nuevamente " +
-                        "\"Modificar consumo\" para aplicar los cambios."
-        );
+        btnConsumptionAction.setText("Guardar modificación");
+
+        System.out.println("BOTÓN: " + btnConsumptionAction);
     }
+
     // TOTAL CONSUMOS
     private void updateConsumptionTotal() {
-        BigDecimal total =
-                BigDecimal.ZERO;
-        for (Consumption consumption :
-                consumptions) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Consumption consumption : consumptions) {
             if (consumption.getTotal() != null) {
-                total =
-                        total.add(
-                                consumption.getTotal()
-                        );
+                total = total.add(consumption.getTotal());
             }
         }
-        txtConsumptionTotal.setText(
-                total.toString()
-        );
+
+        txtConsumptionTotal.setText(total.toString());
     }
-    // Borrar consumo
-    @FXML
-    private void handleDeleteConsumption() {
-        Consumption selected =
-                tblConsumptions.getSelectionModel()
-                        .getSelectedItem();
+
+    //BORRAR CONSUMOS
+    @FXML private void handleDeleteConsumption() {
+        Consumption selected = tblConsumptions.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert(
-                    Alert.AlertType.WARNING,
-                    "Consumo",
-                    "Seleccione un consumo para anular."
-            );
-            return;
+            showAlert(Alert.AlertType.WARNING, "Consumo",
+                    "Seleccione un consumo para anular."); return;
         }
-        Alert confirmation =
-                new Alert(Alert.AlertType.CONFIRMATION);
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Anular consumo");
-        confirmation.setHeaderText(
-                "¿Está seguro de anular este consumo?"
-        );
-        confirmation.setContentText(
-                "El consumo no será eliminado de la base de datos."
-        );
+        confirmation.setHeaderText("¿Está seguro de anular este consumo?");
         confirmation.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                // Acá posteriormente llamaremos al repository
-                // para hacer el soft delete.
+            if (response == ButtonType.OK)
+            { selected.setIdConsumptionStatus(2);
+                consumptions.remove(selected);
+                modifiedConsumptions.remove(selected);
+                tblConsumptions.refresh();
+                updateConsumptionTotal();
             }
         });
     }
+
     // GUARDAR
     @FXML
     private void handleSave() {
