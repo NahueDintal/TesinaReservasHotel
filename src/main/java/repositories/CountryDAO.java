@@ -19,19 +19,4 @@ public class CountryDAO {
         }
         return paises;
     }
-
-    public String getNameById(int id) throws SQLException {
-        String sql = "SELECT name FROM Country WHERE idCountry = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("name");
-                }
-            }
-        }
-        return null;
-    }
 }

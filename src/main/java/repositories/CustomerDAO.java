@@ -187,45 +187,7 @@ public class CustomerDAO {
         }
     }
 
-    // 5. DELETE
-    public boolean isDelete(int id) throws SQLException {
-        String sql = "DELETE FROM Customer WHERE idCustomer = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
-        }
-    }
-
-    // 6. FIND BY DOCUMENT NUMBER (for duplicate validation)
-    public Customer findByDocumentNumber(String documentNumber) throws SQLException {
-        String sql = "SELECT * FROM Customer WHERE documentNumber = ?";
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, documentNumber);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Customer c = new Customer();
-                    c.setIdCustomer(rs.getInt("idCustomer"));
-                    c.setName(rs.getString("name"));
-                    c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumentType"));
-                    c.setDocumentNumber(rs.getString("documentNumber"));
-                    c.setPhoneNumber(rs.getString("phoneNumber"));
-                    c.setEmail(rs.getString("email"));
-                    c.setIdCountry(rs.getInt("idCountry"));
-                    c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
-                    c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                    return c;
-                }
-            }
-        }
-        return null;
-    }
-
-    // 7. validation for duplicated documentation
+    // 5. validation for duplicated documentation
     public boolean isDuplicatedByDocumentation(String documentNumber, int idDocumentType, int excludeCustomerId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Customer WHERE documentNumber = ? AND idDocumentType = ?";
 
@@ -252,36 +214,7 @@ public class CustomerDAO {
         }
         return false;
     }
-    // 8. validation for duplicated phonenumber
-    public boolean isDuplicatedByPhone(String phoneNumber, int excludeCustomerId) throws SQLException {
-        if (phoneNumber == null || phoneNumber.isEmpty()) {
-            return false;
-        }
 
-        String sql = "SELECT COUNT(*) FROM Customer WHERE phoneNumber = ?";
-
-        if (excludeCustomerId > 0) {
-            sql += " AND idCustomer != ?";
-        }
-
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, phoneNumber);
-
-            if (excludeCustomerId > 0) {
-                stmt.setInt(2, excludeCustomerId);
-            }
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    int count = rs.getInt(1);
-                    return count > 0;
-                }
-            }
-        }
-        return false;
-    }
     public int countAll() throws SQLException {
         String sql = "SELECT COUNT(*) FROM Customer";
         try (Connection conn = ConexionDB.getConnection();
@@ -315,7 +248,7 @@ public class CustomerDAO {
                 "   OR co2.name LIKE ?) " +
                 "AND cs.name = 'active' " +  // Solo activos
                 "ORDER BY c.idCustomer DESC " +
-                "LIMIT 100";  // Seguimos limitando a 100, pero ahora busca en TODA la BD
+                "LIMIT 100";  //limite de la grilla
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -370,7 +303,7 @@ public class CustomerDAO {
                 "   OR co2.name LIKE ?) " +
                 "AND cs.name = 'inactive' " +  // Solo inactivos
                 "ORDER BY c.idCustomer DESC " +
-                "LIMIT 100";  // Seguimos limitando a 100, pero ahora busca en TODA la BD
+                "LIMIT 100";  // limite de grilla
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

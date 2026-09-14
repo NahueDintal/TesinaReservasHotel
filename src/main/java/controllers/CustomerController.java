@@ -70,10 +70,9 @@ public class CustomerController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 if (newValue == null || newValue.trim().isEmpty()) {
-                    // Si el buscador está vacío, cargar los últimos 100
                     loadActiveCustomers();
                 } else {
-                    // Si hay texto, buscar en TODA la base de datos
+                    // Si hay texto, busca 100 recientes
                     masterCustomerList.setAll(customerDAO.searchCustomers(newValue.trim()));
                     filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
                     tableCustomers.setItems(filteredCustomers);
@@ -127,20 +126,9 @@ public class CustomerController {
         }
     }
 
-
-    // ========== CLEAR FILTERS ==========
-    @FXML
-    private void clearFilters() {
-        txtSearch.clear();
-        filteredCustomers.setPredicate(customer -> true);
-        updateCounter();
-    }
-
     // ========== DETAIL ==========
     private void showDetail(Customer c) {
-        // Nombre completo (siempre debería tener, pero por si acaso)
         txtDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
-
         txtDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
         txtDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
         txtDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
@@ -169,9 +157,7 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/CustomerFormView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
-            // Aplicar el CSS global
             StyleManager.applyStyles(stage);
-
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
 
@@ -197,10 +183,7 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InactiveCustomersView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
-
-            // Aplicar el CSS global
             StyleManager.applyStyles(stage);
-
             stage.setTitle("Vista de Inactivos");
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
@@ -254,7 +237,7 @@ public class CustomerController {
 
         // Verificar si hay más de 100 clientes en total (haciendo una consulta rápida)
         try {
-            int totalInDB = customerDAO.countAll(); // ← Necesitamos este método
+            int totalInDB = customerDAO.countAll();
             if (totalInDB > 100) {
                 lblTotalCustomers.setText("Mostrando los últimos 100 de " + totalInDB + " clientes");
             } else {
@@ -264,16 +247,12 @@ public class CustomerController {
             lblTotalCustomers.setText("Mostrando " + count + " clientes");
         }
     }
-
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
-
-        // Aplicar el CSS global a la alerta
         StyleManager.applyStyles(alert.getDialogPane());
-
         alert.showAndWait();
     }
 }
