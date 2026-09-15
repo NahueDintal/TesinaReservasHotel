@@ -149,21 +149,28 @@ CREATE TABLE ConsumptionStatus (
 -- Tabla: JobPosition
 -- ==========================================
 
-CREATE TABLE job_position (
-    id_position INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE JobPosition (
+    idPosition INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
-
 
 -- ==========================================
 -- Tabla: Department
 -- ==========================================
 
-CREATE TABLE department (
-    id_department INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE Department (
+    idDepartment INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
+-- ==========================================
+-- Tabla: Shift  (NUEVA - requerida por StaffDAO)
+-- ==========================================
+
+CREATE TABLE Shift (
+    idShift INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);
 
 -- ==========================================
 -- Tabla: RoomType
@@ -285,29 +292,42 @@ CREATE TABLE Reservation (
 -- Tabla: Staff
 -- ==========================================
 
-CREATE TABLE staff (
+CREATE TABLE Staff (
     id VARCHAR(10) PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
     dni VARCHAR(20) NOT NULL UNIQUE,
-    birth_date DATE,
+    birthDate DATE,
     phone VARCHAR(20),
     email VARCHAR(150),
     street VARCHAR(150),
-    address_number VARCHAR(20),
+    addressNumber VARCHAR(20),
     city VARCHAR(100),
-    id_position INT NOT NULL,
-    id_department INT NOT NULL,
+    idPosition INT NOT NULL,
+    idDepartment INT NULL,
+    idShift INT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
-    hire_date DATE,
-    shift_name VARCHAR(50),
-    shift_start TIME,
-    shift_end TIME,
+    hireDate DATE,
+    shiftStart TIME,
+    shiftEnd TIME,
     salary DECIMAL(12,2),
-    CONSTRAINT fk_staff_position FOREIGN KEY (id_position) REFERENCES job_position(id_position),
-    CONSTRAINT fk_staff_department FOREIGN KEY (id_department) REFERENCES department(id_department)
+    CONSTRAINT fk_staff_position   FOREIGN KEY (idPosition)   REFERENCES JobPosition(idPosition),
+    CONSTRAINT fk_staff_department FOREIGN KEY (idDepartment) REFERENCES Department(idDepartment),
+    CONSTRAINT fk_staff_shift      FOREIGN KEY (idShift)      REFERENCES Shift(idShift)
 );
 
+-- ==========================================
+-- Tabla: StaffHistory  (NUEVA - requerida por StaffHistoryDAO)
+-- ==========================================
+
+CREATE TABLE StaffHistory (
+    idHistory INT AUTO_INCREMENT PRIMARY KEY,
+    idStaff VARCHAR(10) NOT NULL,
+    changeType VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    changedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_staff_history_staff FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
+);
 
 -- ==========================================
 -- DEPENDIENTES 3
@@ -580,7 +600,7 @@ INSERT INTO RoomFeature (idRoom, idFeature) VALUES
 -- JOB POSITIONS
 -- ==========================================
 
-INSERT INTO job_position (name) VALUES
+INSERT INTO JobPosition (name) VALUES
 ('Recepcionista'),
 ('Gobernanta'),
 ('Mucama/o'),
@@ -589,18 +609,25 @@ INSERT INTO job_position (name) VALUES
 ('Ayudante de Cocina'),
 ('Administrativa/o');
 
-
 -- ==========================================
 -- DEPARTMENTS
 -- ==========================================
 
-INSERT INTO department (name) VALUES
+INSERT INTO Department (name) VALUES
 ('Recepcion'),
 ('Housekeeping'),
 ('Mantenimiento'),
 ('Cocina'),
 ('Administracion');
 
+-- ==========================================
+-- SHIFTS  (NUEVO - opcional pero recomendado)
+-- ==========================================
+
+INSERT INTO Shift (name) VALUES
+('Mañana'),
+('Tarde'),
+('Noche');
 
 -- ==========================================
 -- FIN DEL SCRIPT
