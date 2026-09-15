@@ -91,35 +91,21 @@ public class NewReservationController {
         }
         // CLIENTE
         try {
-            Customer customer =
-                    customerDAO.searchById(
-                            reservation.getIdCustomer()
-                    );
+            Customer customer = customerDAO.searchById(reservation.getIdCustomer());
             if (customer != null) {
                 selectedCustomer = customer;
-
                 txtCustomerSearch.setText(customer.getName() + " " + customer.getSurname());
             }
         } catch (Exception e) {
-            System.err.println(
-                    "Error cargando el cliente de la reserva: "
-                            + e.getMessage()
-            );
+            System.err.println("Error cargando el cliente de la reserva: "
+                    + e.getMessage());
         }
         // DATOS RESERVA
-        dpCheckIn.setValue(
-                reservation.getCheckIn()
-        );
-        dpCheckOut.setValue(
-                reservation.getCheckOut()
-        );
-        txtNumberOfGuests.setText(
-                String.valueOf(
-                        reservation.getNumberOfGuests()
-                )
-        );
-        txtTotalRate.setText(
-                reservation.getTotalRate() != null
+        dpCheckIn.setValue(reservation.getCheckIn());
+        dpCheckOut.setValue(reservation.getCheckOut());
+        txtNumberOfGuests.setText(String.valueOf(
+                        reservation.getNumberOfGuests()));
+        txtTotalRate.setText(reservation.getTotalRate() != null
                         ? reservation.getTotalRate().toString()
                         : ""
         );
@@ -156,9 +142,7 @@ public class NewReservationController {
                 reservation.getIdReservation()
         );
         // CARGAR CONSUMOS
-        loadReservationConsumptions(
-                reservation.getIdReservation()
-        );
+        loadReservationConsumptions(reservation.getIdReservation());
     }
     // CARGAR PAGO DE RESERVA
     private void loadReservationPayment(
@@ -176,17 +160,15 @@ public class NewReservationController {
                 txtPaymentObservations.clear();
                 return;
             }
-            // Por ahora manejamos el primer pago
-            Payment payment =
-                    payments.get(0);
+            //manejamos el primer pago
+            Payment payment = payments.get(0);
             txtPaymentAmount.setText(
                     payment.getAmount() != null
                             ? payment.getAmount().toString()
                             : ""
             );
             if (payment.getPaymentDate() != null) {
-                dpPaymentDate.setValue(
-                        payment.getPaymentDate().toLocalDate()
+                dpPaymentDate.setValue(payment.getPaymentDate().toLocalDate()
                 );
             }
             cmbPaymentMethod.getItems()
@@ -231,15 +213,10 @@ public class NewReservationController {
                             idReservation
                     );
             consumptions.clear();
-            consumptions.addAll(
-                    consumptionsBD
-            );
+            consumptions.addAll(consumptionsBD);
             tblConsumptions.refresh();
             updateConsumptionTotal();
-            System.out.println(
-                    "Consumos cargados: "
-                            + consumptions.size()
-            );
+            System.out.println("Consumos cargados: " + consumptions.size());
         } catch (Exception e) {
             System.err.println(
                     "Error cargando los consumos de la reserva: "
@@ -301,8 +278,7 @@ public class NewReservationController {
     // DASHBOARD
     public void setDashboardController(
             DashboardController dashboardController) {
-        this.dashboardController =
-                dashboardController;
+        this.dashboardController = dashboardController;
     }
     // CUSTOMERS
     private void loadCustomers() {
@@ -319,9 +295,8 @@ public class NewReservationController {
 
             lstCustomers.setItems(activeCustomers);
 
-            System.out.println(
-                    "Clientes activos encontrados: " +
-                            activeCustomers.size()
+            System.out.println("Clientes activos encontrados: "
+                    + activeCustomers.size()
             );
 
         } catch (Exception e) {
@@ -346,14 +321,11 @@ public class NewReservationController {
 
                     for (Customer customer : activeCustomers) {
 
-                        String name =
-                                customer.getName().toLowerCase();
+                        String name = customer.getName().toLowerCase();
 
-                        String surname =
-                                customer.getSurname().toLowerCase();
+                        String surname = customer.getSurname().toLowerCase();
 
-                        String document =
-                                customer.getDocumentNumber() != null
+                        String document = customer.getDocumentNumber() != null
                                         ? customer.getDocumentNumber().toLowerCase()
                                         : "";
 
@@ -370,9 +342,7 @@ public class NewReservationController {
         );
 
         lstCustomers.setOnMouseClicked(event -> {
-            Customer customer =
-                    lstCustomers.getSelectionModel()
-                            .getSelectedItem();
+            Customer customer = lstCustomers.getSelectionModel().getSelectedItem();
 
             if (customer != null) {
                 selectedCustomer = customer;
@@ -399,34 +369,25 @@ public class NewReservationController {
     // RESERVATION STATUS
     private void loadReservationStatuses() {
         try {
-            List<ReservationStatus> statuses =
-                    reservationStatusRepo
-                            .getReservationStatuses();
+            List<ReservationStatus> statuses = reservationStatusRepo.getReservationStatuses();
             cmbReservationStatus.getItems().clear();
-            cmbReservationStatus.getItems().addAll(
-                    statuses
-            );
+            cmbReservationStatus.getItems().addAll(statuses);
         } catch (Exception e) {
             System.err.println(
                     "Error cargando estados de reserva: "
             );
             e.printStackTrace();
         }
-    } //?????
+    }
+
     // RESERVATION TYPE
     private void loadReservationTypes() {
         try {
-            List<ReservationType> types =
-                    reservationTypeRepo
-                            .getReservationTypes();
+            List<ReservationType> types = reservationTypeRepo.getReservationTypes();
             cmbReservationType.getItems().clear();
-            cmbReservationType.getItems().addAll(
-                    types
-            );
+            cmbReservationType.getItems().addAll(types);
         } catch (Exception e) {
-            System.err.println(
-                    "Error cargando tipos de reserva: "
-            );
+            System.err.println("Error cargando tipos de reserva: ");
             e.printStackTrace();
         }
     }
@@ -434,16 +395,11 @@ public class NewReservationController {
     private void loadPaymentMethods() {
         try {
             List<PaymentMethod> methods =
-                    paymentMethodRepo
-                            .getPaymentMethods();
+                    paymentMethodRepo.getPaymentMethods();
             cmbPaymentMethod.getItems().clear();
-            cmbPaymentMethod.getItems().addAll(
-                    methods
-            );
+            cmbPaymentMethod.getItems().addAll(methods);
         } catch (Exception e) {
-            System.err.println(
-                    "Error cargando métodos de pago: "
-            );
+            System.err.println("Error cargando métodos de pago: ");
             e.printStackTrace();
         }
     }
@@ -451,48 +407,33 @@ public class NewReservationController {
     private void loadPaymentStatuses() {
         try {
             List<PaymentStatus> statuses =
-                    paymentStatusRepo
-                            .getPaymentStatuses();
+                    paymentStatusRepo.getPaymentStatuses();
             cmbPaymentStatus.getItems().clear();
-            cmbPaymentStatus.getItems().addAll(
-                    statuses
-            );
+            cmbPaymentStatus.getItems().addAll(statuses);
         } catch (Exception e) {
-            System.err.println(
-                    "Error cargando estados de pago: "
-            );
+            System.err.println("Error cargando estados de pago: ");
             e.printStackTrace();
         }
-    } ///??
+    }
     // PRODUCTS
     private void loadProducts() {
         try {
-            List<Product> products =
-                    productRepo.getActiveProducts();
+            List<Product> products = productRepo.getActiveProducts();
             cmbProduct.getItems().clear();
-            cmbProduct.getItems().addAll(
-                    products
-            );
+            cmbProduct.getItems().addAll(products);
         } catch (Exception e) {
-            System.err.println(
-                    "Error cargando productos: "
-            );
+            System.err.println("Error cargando productos: ");
             e.printStackTrace();
         }
     }
     // SERVICES
     private void loadServices() {
         try {
-            List<Service> services =
-                    serviceRepo.getActiveServices();
+            List<Service> services = serviceRepo.getActiveServices();
             cmbService.getItems().clear();
-            cmbService.getItems().addAll(
-                    services
-            );
+            cmbService.getItems().addAll(services);
         } catch (Exception e) {
-            System.err.println(
-                    "Error cargando servicios: "
-            );
+            System.err.println("Error cargando servicios: ");
             e.printStackTrace();
         }
     }
@@ -511,9 +452,9 @@ public class NewReservationController {
         // TIPO
         colConsumptionType.setCellValueFactory(
                 cellData -> {
-                    Consumption consumption =
-                            cellData.getValue();
+                    Consumption consumption = cellData.getValue();
                     String typeValue;
+
                     if (consumption.getIdConsumptionType() == 1) {
                         typeValue = "Producto";
                     } else if (
@@ -522,8 +463,7 @@ public class NewReservationController {
                     } else {
                         typeValue = "Desconocido";
                     }
-                    return new javafx.beans.property
-                            .SimpleStringProperty(typeValue);
+                    return new javafx.beans.property.SimpleStringProperty(typeValue);
                 }
         );
         // NOMBRE
@@ -532,13 +472,13 @@ public class NewReservationController {
                     Consumption consumption =
                             cellData.getValue();
                     String name = "";
+
                     if (consumption.getIdConsumptionType() == 1) {
-                        for (Product product :
-                                cmbProduct.getItems()) {
+                        for (Product product : cmbProduct.getItems()) {
+
                             if (product.getIdProduct()
                                     == consumption.getIdProduct()) {
-                                name =
-                                        product.getName();
+                                name = product.getName();
                                 break;
                             }
                         }
@@ -554,17 +494,14 @@ public class NewReservationController {
                             }
                         }
                     }
-                    return new javafx.beans.property
-                            .SimpleStringProperty(name);
+                    return new javafx.beans.property.SimpleStringProperty(name);
                 }
         );
-        tblConsumptions.setItems(
-                consumptions
-        );
+        tblConsumptions.setItems(consumptions);
 
         colConsumptionActions.setCellFactory(column -> new TableCell<>() {
-            private final Button btnEdit = new Button("✏");
-            private final Button btnDelete = new Button("✕");
+            private final Button btnEdit = new Button("✏️");
+            private final Button btnDelete = new Button("❌");
             private final HBox box = new HBox(5, btnEdit, btnDelete);
 
             {
@@ -666,19 +603,15 @@ public class NewReservationController {
             return;
         }
 
-        String selectedType =
-                cmbConsumptionType.getValue();
+        String selectedType = cmbConsumptionType.getValue();
 
         if (selectedType == null) {
-            showError(
-                    "Debe seleccionar el tipo de consumo."
-            );
+            showError("Debe seleccionar el tipo de consumo.");
             return;
         }
 
         // Convertir el texto del ComboBox al ID que usa la BD
-        int consumptionType =
-                selectedType.equals("Producto") ? 1 : 2;
+        int consumptionType = selectedType.equals("Producto") ? 1 : 2;
 
         String quantityText =
                 txtConsumptionQuantity
@@ -695,10 +628,8 @@ public class NewReservationController {
         int quantity;
 
         try {
-            quantity =
-                    Integer.parseInt(
-                            quantityText
-                    );
+            quantity = Integer.parseInt(quantityText);
+
         } catch (NumberFormatException e) {
             showError(
                     "La cantidad debe contener solamente números."
@@ -730,37 +661,27 @@ public class NewReservationController {
                 return;
             }
 
-            idProduct =
-                    product.getIdProduct();
-
-            unitPrice =
-                    product.getPrice();
+            idProduct = product.getIdProduct();
+            unitPrice = product.getPrice();
 
             // SERVICIO
         } else {
 
-            Service service =
-                    cmbService.getValue();
+            Service service = cmbService.getValue();
 
             if (service == null) {
-                showError(
-                        "Debe seleccionar un servicio."
-                );
+                showError("Debe seleccionar un servicio.");
                 return;
             }
 
-            idService =
-                    service.getIdService();
+            idService = service.getIdService();
 
-            unitPrice =
-                    service.getPrice();
+            unitPrice = service.getPrice();
         }
 
         // TOTAL
-        BigDecimal total =
-                unitPrice.multiply(
-                        BigDecimal.valueOf(quantity)
-                );
+        BigDecimal total = unitPrice.multiply(
+                        BigDecimal.valueOf(quantity));
 
         // CONSUMPTION
         Consumption consumption =
@@ -780,9 +701,7 @@ public class NewReservationController {
         consumption.setIdConsumptionStatus(1);
 
         // AGREGAR A LA TABLA
-        consumptions.add(
-                consumption
-        );
+        consumptions.add(consumption);
 
         updateConsumptionTotal();
 
@@ -796,6 +715,7 @@ public class NewReservationController {
     private void handleModifyConsumption() {
         // SI YA ESTAMOS EDITANDO → GUARDAR CAMBIOS
         if (consumptionBeingEdited != null) {
+
             String selectedType = cmbConsumptionType.getValue();
             if (selectedType == null) {
                 showError("Debe seleccionar el tipo de consumo.");
@@ -810,8 +730,7 @@ public class NewReservationController {
             }
 
             int quantity;
-            try {
-                quantity = Integer.parseInt(quantityText);
+            try { quantity = Integer.parseInt(quantityText);
             } catch (NumberFormatException e) {
                 showError("La cantidad debe contener solamente números.");
                 return;
@@ -1075,6 +994,7 @@ public class NewReservationController {
                 showError("No se pudo establecer conexión con la base de datos.");
                 return;
             }
+
             conn.setAutoCommit(false);
 
             int idReservation;
@@ -1152,6 +1072,7 @@ public class NewReservationController {
                             : "La reserva se modificó correctamente.\nNúmero de reserva: " + idReservation
             );
             handleBack();
+
         } catch (SQLException e) {
             try {
                 if (conn != null) conn.rollback();

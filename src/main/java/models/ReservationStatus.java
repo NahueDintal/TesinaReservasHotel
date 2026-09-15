@@ -16,7 +16,6 @@ public class ReservationStatus {
     public int getIdReservationStatus() {
         return idReservationStatus;
     }
-
     public void setIdReservationStatus(int idReservationStatus) {
         this.idReservationStatus = idReservationStatus;
     }
@@ -24,7 +23,6 @@ public class ReservationStatus {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }

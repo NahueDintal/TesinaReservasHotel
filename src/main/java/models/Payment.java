@@ -3,11 +3,6 @@ package models;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.sql.*;
-
 public class Payment {
 
         private int idPayment;

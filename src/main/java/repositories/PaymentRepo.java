@@ -1,8 +1,6 @@
 package repositories;
 
-import repositories.ConexionDB;
 import models.Payment;
-
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +8,7 @@ import java.util.List;
 
 public class PaymentRepo {
 
+    //VALIDACIONES DEL PAGO
     private boolean validatePayment(Payment payment) {
 
             if (payment == null) {
@@ -52,7 +51,7 @@ public class PaymentRepo {
             return true;
         }
 
-    //para cuando quieras crear un pago independiente
+    //crear un pago independiente????????
     public boolean createPayment(Payment payment) {
 
         if (!validatePayment(payment)) {
@@ -104,10 +103,7 @@ public class PaymentRepo {
 
             stmt.setInt(1, payment.getIdReservation());
             stmt.setBigDecimal(2, payment.getAmount());
-            stmt.setTimestamp(
-                    3,
-                    Timestamp.valueOf(payment.getPaymentDate())
-            );
+            stmt.setTimestamp(3, Timestamp.valueOf(payment.getPaymentDate()));
             stmt.setInt(4, payment.getIdPaymentMethod());
             stmt.setInt(5, payment.getIdPaymentStatus());
             stmt.setString(6, payment.getObservations());
@@ -313,14 +309,10 @@ public class PaymentRepo {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println(
-                        "Estado del pago actualizado correctamente."
-                );
+                System.out.println("Estado del pago actualizado correctamente.");
                 return true;
             }
-            System.out.println(
-                    "No se encontró el pago con ID: " + idPayment
-            );
+            System.out.println("No se encontró el pago con ID: " + idPayment);
 
             return false;
 
@@ -364,8 +356,7 @@ public class PaymentRepo {
                 return true;
             }
 
-            System.out.println("No se encontró el pago con ID: "
-                    + payment.getIdPayment());
+            System.out.println("No se encontró el pago con ID: " + payment.getIdPayment());
 
             return false;
 
@@ -384,9 +375,7 @@ public class PaymentRepo {
     // UPDATE para transacción
     // =========================================================
 
-    public boolean updatePayment(
-            Connection conn,
-            Payment payment) {
+    public boolean updatePayment(Connection conn, Payment payment) {
 
         if (!validatePayment(payment)) {
             return false;
@@ -408,49 +397,20 @@ public class PaymentRepo {
                         "observations = ? " +
                         "WHERE idPayment = ?";
 
-        try (PreparedStatement stmt =
-                     conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setBigDecimal(
-                    1,
-                    payment.getAmount()
-            );
+            stmt.setBigDecimal(1, payment.getAmount());
+            stmt.setTimestamp(2, Timestamp.valueOf(payment.getPaymentDate()));
+            stmt.setInt(3, payment.getIdPaymentMethod());
+            stmt.setInt(4, payment.getIdPaymentStatus());
+            stmt.setString(5, payment.getObservations());
+            stmt.setInt(6, payment.getIdPayment());
 
-            stmt.setTimestamp(
-                    2,
-                    Timestamp.valueOf(
-                            payment.getPaymentDate()
-                    )
-            );
-
-            stmt.setInt(
-                    3,
-                    payment.getIdPaymentMethod()
-            );
-
-            stmt.setInt(
-                    4,
-                    payment.getIdPaymentStatus()
-            );
-
-            stmt.setString(
-                    5,
-                    payment.getObservations()
-            );
-
-            stmt.setInt(
-                    6,
-                    payment.getIdPayment()
-            );
-
-            int rowsAffected =
-                    stmt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
 
-                System.out.println(
-                        "Pago actualizado dentro de la transacción."
-                );
+                System.out.println("Pago actualizado dentro de la transacción.");
 
                 return true;
             }

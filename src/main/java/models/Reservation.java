@@ -44,7 +44,6 @@ public class Reservation {
         public int getIdReservation() {
             return idReservation;
         }
-
         public void setIdReservation(int idReservation) {
             this.idReservation = idReservation;
         }
@@ -52,7 +51,6 @@ public class Reservation {
         public int getIdCustomer() {
             return idCustomer;
         }
-
         public void setIdCustomer(int idCustomer) {
             this.idCustomer = idCustomer;
         }
@@ -60,7 +58,6 @@ public class Reservation {
         public LocalDateTime getCreationDate() {
             return creationDate;
         }
-
         public void setCreationDate(LocalDateTime creationDate) {
             this.creationDate = creationDate;
         }
@@ -68,7 +65,6 @@ public class Reservation {
         public LocalDate getCheckIn() {
             return checkIn;
         }
-
         public void setCheckIn(LocalDate checkIn) {
             this.checkIn = checkIn;
         }
@@ -76,7 +72,6 @@ public class Reservation {
         public LocalDate getCheckOut() {
             return checkOut;
         }
-
         public void setCheckOut(LocalDate checkOut) {
             this.checkOut = checkOut;
         }
@@ -84,7 +79,6 @@ public class Reservation {
         public int getIdReservationStatus() {
             return idReservationStatus;
         }
-
         public void setIdReservationStatus(int idReservationStatus) {
             this.idReservationStatus = idReservationStatus;
         }
@@ -92,7 +86,6 @@ public class Reservation {
         public int getIdReservationType() {
         return idReservationType;
     }
-
         public void setIdReservationType(int idReservationType) {
         this.idReservationType = idReservationType;
     }
@@ -100,7 +93,6 @@ public class Reservation {
         public int getNumberOfGuests() {
             return numberOfGuests;
         }
-
         public void setNumberOfGuests(int numberOfGuests) {
             this.numberOfGuests = numberOfGuests;
         }
@@ -108,7 +100,6 @@ public class Reservation {
         public BigDecimal getTotalRate() {
             return totalRate;
         }
-
         public void setTotalRate(BigDecimal totalRate) {
             this.totalRate = totalRate;
         }
@@ -116,7 +107,6 @@ public class Reservation {
         public String getObservations() {
             return observations;
         }
-
         public void setObservations(String observations) {
             this.observations = observations;
         }
