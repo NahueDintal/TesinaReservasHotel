@@ -920,11 +920,6 @@ INSERT INTO Customer (name, surname, idDocumentType, documentNumber, phoneNumber
 -- Vistas: 1=vista al lago, 2=vista al jardín, 3=vista a las montañas, 4=sin vista
 -- ==========================================
 
--- (Opcional) limpiar habitaciones previas antes de cargar el hotel completo
-DELETE FROM RoomFeature;
-DELETE FROM Room;
-ALTER TABLE Room AUTO_INCREMENT = 1;
-
 INSERT INTO Room
 (number, floor, idRoomType, capacity, idRoomView, available, outOfService, active, price, description)
 VALUES
