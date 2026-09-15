@@ -182,7 +182,6 @@ public class RoomDAO {
   }
 
   private Room mapRoom(ResultSet rs) throws SQLException {
-    logger.debug("Ejecutando mapRoom");
     Room room = new Room();
     room.setIdRoom(rs.getInt("idRoom"));
     room.setNumber(rs.getInt("number"));
