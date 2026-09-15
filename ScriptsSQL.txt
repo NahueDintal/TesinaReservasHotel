@@ -1083,7 +1083,7 @@ VALUES
 -- ============ COCINA - AYUDANTES (5) ============
 ('036', 'Sofía',     'Luna',         '39567891', '2000-05-30', '11-4567-8936', 'sofia.luna@hotel.com',         'Av. Nazca',        '1234', 'CABA',          6, 4, 1, 'ACTIVE', '2023-01-25', '06:00:00', '14:00:00', 780000.00),
 ('037', 'Mateo',     'Godoy',        '41234567', '2002-10-09', '11-4567-8937', 'mateo.godoy@hotel.com',        'Av. Segurola',     '890',  'CABA',          6, 4, 2, 'ACTIVE', '2024-03-01', '14:00:00', '22:00:00', 750000.00),
-('038', 'Lorenzo',   'Ledesma',      '38901234', '1999-12-15', '11-4567-8938', 'lorenzo.ledesma@hotel.com',    'Av. Gaona',        '3400', 'CABA',          6, 4, 3, 'ACTIVE', '2022-08-10', '22:00:00', '06:00:00', 800000.00),
+('038', 'Lorenzo',   'Ledesma',      '39234568', '1999-12-15', '11-4567-8938', 'lorenzo.ledesma@hotel.com',    'Av. Gaona',        '3400', 'CABA',          6, 4, 3, 'ACTIVE', '2022-08-10', '22:00:00', '06:00:00', 800000.00),
 ('039', 'Dante',     'Bustos',       '37678902', '1997-06-02', '11-4567-8939', 'dante.bustos@hotel.com',       'Av. Álvarez Jonte','1789', 'CABA',          6, 4, 1, 'ACTIVE', '2021-11-05', '06:00:00', '14:00:00', 790000.00),
 ('040', 'Máximo',    'Cardozo',      '40123457', '2001-03-21', '11-4567-8940', 'maximo.cardozo@hotel.com',     'Av. San Martín',   '2100', 'CABA',          6, 4, 2, 'ACTIVE', '2023-07-01', '14:00:00', '22:00:00', 760000.00),
 
@@ -1092,7 +1092,7 @@ VALUES
 ('042', 'Gabriela',  'Arias',        '27890124', '1981-08-17', '11-4567-8942', 'gabriela.arias@hotel.com',     'Av. Quintana',     '2100', 'CABA',          7, 5, 2, 'ACTIVE', '2015-05-15', '14:00:00', '22:00:00', 1150000.00),
 ('043', 'Lautaro',   'Salazar',      '33456789', '1991-02-11', '11-4567-8943', 'lautaro.salazar@hotel.com',    'Av. Callao',       '1567', 'CABA',          7, 5, 1, 'ACTIVE', '2018-10-20', '06:00:00', '14:00:00', 1050000.00),
 ('044', 'Constanza', 'Rivero',       '35567891', '1995-06-26', '11-4567-8944', 'constanza.rivero@hotel.com',   'Av. Ayacucho',     '890',  'CABA',          7, 5, 2, 'ACTIVE', '2021-03-10', '14:00:00', '22:00:00', 1000000.00),
-('045', 'Agustín',   'Maldonado',    '37890123', '1998-11-08', '11-4567-8945', 'agustin.maldonado@hotel.com',  'Av. Juncal',       '1789', 'CABA',          7, 5, 1, 'ACTIVE', '2023-04-01', '06:00:00', '14:00:00', 980000.00),
+('045', 'Agustín',   'Maldonado',    '38901235', '1998-11-08', '11-4567-8945', 'agustin.maldonado@hotel.com',  'Av. Juncal',       '1789', 'CABA',          7, 5, 1, 'ACTIVE', '2023-04-01', '06:00:00', '14:00:00', 980000.00),
 
 -- ============ PERSONAL ADICIONAL (variado, para cubrir francos) ============
 ('046', 'Emilia',    'Oyarzabal',    '41901234', '2003-05-12', '11-4567-8946', 'emilia.oyarzabal@hotel.com',   'Av. Warnes',       '1234', 'CABA',          1, 1, 3, 'ACTIVE', '2024-06-15', '22:00:00', '06:00:00', 850000.00),
