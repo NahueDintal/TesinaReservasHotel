@@ -5,8 +5,7 @@ public class ReservationType {
     private int idReservationType;
     private String name;
 
-    public ReservationType() {
-    }
+    public ReservationType() {}
 
     public ReservationType(String name) {
         this.name = name;
@@ -15,7 +14,6 @@ public class ReservationType {
     public int getIdReservationType() {
         return idReservationType;
     }
-
     public void setIdReservationType(int idReservationType) {
         this.idReservationType = idReservationType;
     }
@@ -23,7 +21,6 @@ public class ReservationType {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }

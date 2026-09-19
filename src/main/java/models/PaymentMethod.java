@@ -15,7 +15,6 @@ public class PaymentMethod {
     public int getIdPaymentMethod() {
         return idPaymentMethod;
     }
-
     public void setIdPaymentMethod(int idPaymentMethod) {
         this.idPaymentMethod = idPaymentMethod;
     }
@@ -23,7 +22,6 @@ public class PaymentMethod {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }

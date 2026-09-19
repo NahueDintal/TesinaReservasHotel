@@ -30,35 +30,16 @@ public class ReservationsController {
     private List<Customer> customers;
     private List<ReservationStatus> reservationStatuses;
 
-    @FXML
-    private TableView<Reservation> tblReservations;
-
-    @FXML
-    private TableColumn<Reservation, Integer> colIdReservation;
-
-    @FXML
-    private TableColumn<Reservation, String> colCustomer;
-
-    @FXML
-    private TableColumn<Reservation, Object> colCheckIn;
-
-    @FXML
-    private TableColumn<Reservation, Object> colCheckOut;
-
-    @FXML
-    private TableColumn<Reservation, Integer> colGuests;
-
-    @FXML
-    private TableColumn<Reservation, Object> colTotalRate;
-
-    @FXML
-    private TableColumn<Reservation, String> colStatus;
-
-    @FXML
-    private TableColumn<Reservation, Void> colActions;
-
-    @FXML
-    private TextField txtBuscarReserva;
+    @FXML private TableView<Reservation> tblReservations;
+    @FXML private TableColumn<Reservation, Integer> colIdReservation;
+    @FXML private TableColumn<Reservation, String> colCustomer;
+    @FXML private TableColumn<Reservation, Object> colCheckIn;
+    @FXML private TableColumn<Reservation, Object> colCheckOut;
+    @FXML private TableColumn<Reservation, Integer> colGuests;
+    @FXML private TableColumn<Reservation, Object> colTotalRate;
+    @FXML private TableColumn<Reservation, String> colStatus;
+    @FXML private TableColumn<Reservation, Void> colActions;
+    @FXML private TextField txtBuscarReserva;
 
     public ReservationsController() {
         reservationRepo = new ReservationRepo();
@@ -86,22 +67,10 @@ public class ReservationsController {
             return new SimpleStringProperty(customerName);
         });
 
-        colCheckIn.setCellValueFactory(
-                new PropertyValueFactory<>("checkIn")
-        );
-
-        colCheckOut.setCellValueFactory(
-                new PropertyValueFactory<>("checkOut")
-        );
-
-        colGuests.setCellValueFactory(
-                new PropertyValueFactory<>("numberOfGuests")
-        );
-
-        colTotalRate.setCellValueFactory(
-                new PropertyValueFactory<>("totalRate")
-        );
-
+        colCheckIn.setCellValueFactory(new PropertyValueFactory<>("checkIn"));
+        colCheckOut.setCellValueFactory(new PropertyValueFactory<>("checkOut"));
+        colGuests.setCellValueFactory(new PropertyValueFactory<>("numberOfGuests"));
+        colTotalRate.setCellValueFactory(new PropertyValueFactory<>("totalRate"));
         colStatus.setCellValueFactory(cellData -> {
             Reservation reservation = cellData.getValue();
             String statusName = getStatusName(
@@ -127,26 +96,26 @@ public class ReservationsController {
                         switch (status.toLowerCase()) {
                             case "pendiente":
                                 setStyle(
-                                        "-fx-background-color: #fdeaea;" +
-                                                "-fx-text-fill: #c0392b;" +
+                                        "-fx-background-color: #fdfbea;" +
+                                                "-fx-text-fill: #c0a72b;" +
                                                 "-fx-font-weight: bold;" +
                                                 "-fx-alignment: CENTER;"
                                 );
                                 break;
 
-                            case "pagado":
+                            case "confirmada":
                                 setStyle(
-                                        "-fx-background-color: #fff4cc;" +
-                                                "-fx-text-fill: #b8860b;" +
+                                        "-fx-background-color: #e0ffcc;" +
+                                                "-fx-text-fill: #1a6d03;" +
                                                 "-fx-font-weight: bold;" +
                                                 "-fx-alignment: CENTER;"
                                 );
                                 break;
 
-                            case "cancelado":
+                            case "cancelada":
                                 setStyle(
-                                        "-fx-background-color: #e3f3e7;" +
-                                                "-fx-text-fill: #2e7d45;" +
+                                        "-fx-background-color: #ffdde5;" +
+                                                "-fx-text-fill: #8a1527;" +
                                                 "-fx-font-weight: bold;" +
                                                 "-fx-alignment: CENTER;"
                                 );
@@ -174,8 +143,7 @@ public class ReservationsController {
 
     private void loadStatuses() {
         try {
-            reservationStatuses =
-                    reservationStatusRepo.getReservationStatuses();
+            reservationStatuses = reservationStatusRepo.getReservationStatuses();
 
             System.out.println(
                     "Reservation statuses loaded: " +
@@ -250,9 +218,7 @@ public class ReservationsController {
                             FXCollections.observableArrayList();
 
                     for (Reservation reservation : todasLasReservas) {
-                        String id = String.valueOf(
-                                reservation.getIdReservation()
-                        );
+                        String id = String.valueOf(reservation.getIdReservation());
 
                         String customer = getCustomerName(
                                 reservation.getIdCustomer()
@@ -339,6 +305,9 @@ public class ReservationsController {
             );
         }
     }
+
+   //ARREGLAR
+
 
     public int createReservation(Reservation reservation) {
         return reservationRepo.createReservation(reservation);

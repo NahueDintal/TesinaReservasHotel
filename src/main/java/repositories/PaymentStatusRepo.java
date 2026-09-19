@@ -1,8 +1,6 @@
 package repositories;
 
-import repositories.ConexionDB;
 import models.PaymentStatus;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,22 +25,14 @@ public class PaymentStatusRepo {
 
                 PaymentStatus paymentStatus = new PaymentStatus();
 
-                paymentStatus.setIdPaymentStatus(
-                        rs.getInt("idPaymentStatus")
-                );
-
-                paymentStatus.setName(
-                        rs.getString("name")
-                );
+                paymentStatus.setIdPaymentStatus(rs.getInt("idPaymentStatus"));
+                paymentStatus.setName(rs.getString("name"));
 
                 paymentStatuses.add(paymentStatus);
             }
 
         } catch (SQLException e) {
-            System.err.println(
-                    "Error al obtener los estados de pago: "
-                            + e.getMessage()
-            );
+            System.err.println("Error al obtener los estados de pago: " + e.getMessage());
         }
 
         return paymentStatuses;

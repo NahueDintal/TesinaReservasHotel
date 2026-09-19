@@ -11,10 +11,7 @@ import java.util.List;
 
 public class ConsumptionRepo {
 
-
-    // =========================================================
-    // CREATE
-    // =========================================================
+    // CREACIÓN DEL CONSUMO
 
     public boolean createConsumption(
             Connection conn,
@@ -36,110 +33,53 @@ public class ConsumptionRepo {
                         "observations" +
                         ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps =
-                     conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(
-                    1,
-                    consumption.getIdReservation()
-            );
-
-            ps.setInt(
-                    2,
-                    consumption.getIdConsumptionType()
-            );
-
+            ps.setInt(1, consumption.getIdReservation());
+            ps.setInt(2, consumption.getIdConsumptionType());
 
             // PRODUCTO
 
             if (consumption.getIdProduct() > 0) {
 
-                ps.setInt(
-                        3,
-                        consumption.getIdProduct()
-                );
+                ps.setInt(3, consumption.getIdProduct());
 
             } else {
 
-                ps.setNull(
-                        3,
-                        java.sql.Types.INTEGER
-                );
+                ps.setNull(3, java.sql.Types.INTEGER);
             }
-
 
             // SERVICIO
 
             if (consumption.getIdService() > 0) {
 
-                ps.setInt(
-                        4,
-                        consumption.getIdService()
+                ps.setInt(4, consumption.getIdService()
                 );
 
             } else {
 
-                ps.setNull(
-                        4,
-                        java.sql.Types.INTEGER
-                );
+                ps.setNull(4, java.sql.Types.INTEGER);
             }
 
-
-            ps.setInt(
-                    5,
-                    consumption.getQuantity()
-            );
-
-            ps.setBigDecimal(
-                    6,
-                    consumption.getUnitPrice()
-            );
-
-            ps.setBigDecimal(
-                    7,
-                    consumption.getTotal()
-            );
-
-            ps.setObject(
-                    8,
-                    consumption.getConsumptionDate()
-            );
-
-            ps.setInt(
-                    9,
-                    consumption.getIdPaymentStatus()
-            );
-
-            ps.setInt(
-                    10,
-                    consumption.getIdConsumptionStatus()
-            );
-
-            ps.setString(
-                    11,
-                    consumption.getObservations()
-            );
-
+            ps.setInt(5, consumption.getQuantity());
+            ps.setBigDecimal(6, consumption.getUnitPrice());
+            ps.setBigDecimal(7, consumption.getTotal());
+            ps.setObject(8, consumption.getConsumptionDate());
+            ps.setInt(9, consumption.getIdPaymentStatus());
+            ps.setInt(10, consumption.getIdConsumptionStatus());
+            ps.setString(11, consumption.getObservations());
 
             return ps.executeUpdate() > 0;
 
-
         } catch (SQLException e) {
 
-            System.err.println(
-                    "Error al crear el consumo: "
-                            + e.getMessage()
-            );
+            System.err.println("Error al crear el consumo: " + e.getMessage());
 
             return false;
         }
     }
 
-
-    // =========================================================
-    // GET CONSUMPTIONS BY RESERVATION
-    // =========================================================
+    //OBTENER LOS CONSUMO POR RESERVA
 
     public List<Consumption> getConsumptionsByReservation(
             int idReservation
@@ -160,135 +100,48 @@ public class ConsumptionRepo {
                         "ORDER BY idConsumption";
 
 
-        try (Connection conn =
-                     ConexionDB.getConnection();
+        try (Connection conn = ConexionDB.getConnection();
 
-             PreparedStatement ps =
-                     conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
+            ps.setInt(1, idReservation);
 
-            ps.setInt(
-                    1,
-                    idReservation
-            );
-
-
-            try (ResultSet rs =
-                         ps.executeQuery()) {
-
+            try (ResultSet rs = ps.executeQuery()) {
 
                 while (rs.next()) {
 
-                    Consumption consumption =
-                            new Consumption();
-
-
-                    consumption.setIdConsumption(
-                            rs.getInt(
-                                    "idConsumption"
-                            )
-                    );
-
-
-                    consumption.setIdReservation(
-                            rs.getInt(
-                                    "idReservation"
-                            )
-                    );
-
-
-                    consumption.setIdConsumptionType(
-                            rs.getInt(
-                                    "idConsumptionType"
-                            )
-                    );
-
-
-                    consumption.setIdProduct(
-                            rs.getInt(
-                                    "idProduct"
-                            )
-                    );
-
-
-                    consumption.setIdService(
-                            rs.getInt(
-                                    "idService"
-                            )
-                    );
-
-
-                    consumption.setQuantity(
-                            rs.getInt(
-                                    "quantity"
-                            )
-                    );
-
-
-                    consumption.setUnitPrice(
-                            rs.getBigDecimal(
-                                    "unitPrice"
-                            )
-                    );
-
-
-                    consumption.setTotal(
-                            rs.getBigDecimal(
-                                    "total"
-                            )
-                    );
-
+                    Consumption consumption = new Consumption();
+                    consumption.setIdConsumption(rs.getInt("idConsumption"));
+                    consumption.setIdReservation(rs.getInt("idReservation"));
+                    consumption.setIdConsumptionType(rs.getInt("idConsumptionType"));
+                    consumption.setIdProduct(rs.getInt("idProduct"));
+                    consumption.setIdService(rs.getInt("idService"));
+                    consumption.setQuantity(rs.getInt("quantity"));
+                    consumption.setUnitPrice(rs.getBigDecimal("unitPrice"));
+                    consumption.setTotal(rs.getBigDecimal("total"));
 
                     if (
-                            rs.getTimestamp(
-                                    "consumptionDate"
-                            ) != null
+                            rs.getTimestamp("consumptionDate") != null
                     ) {
-
-                        consumption.setConsumptionDate(
-                                rs.getTimestamp(
-                                        "consumptionDate"
-                                ).toLocalDateTime()
-                        );
+                        consumption.setConsumptionDate(rs.getTimestamp
+                                ("consumptionDate").toLocalDateTime());
                     }
 
-
-                    consumption.setIdPaymentStatus(
-                            rs.getInt(
-                                    "idPaymentStatus"
-                            )
-                    );
-
-
-                    consumption.setIdConsumptionStatus(
-                            rs.getInt(
-                                    "idConsumptionStatus"
-                            )
-                    );
-
-
-                    consumption.setObservations(
-                            rs.getString(
-                                    "observations"
-                            )
-                    );
-
-
-                    consumptions.add(
-                            consumption
-                    );
+                    consumption.setIdPaymentStatus(rs.getInt
+                            ("idPaymentStatus"));
+                    consumption.setIdConsumptionStatus(rs.getInt
+                            ("idConsumptionStatus"));
+                    consumption.setObservations(rs.getString
+                            ("observations"));
+                    consumptions.add(consumption);
                 }
             }
         }
 
-
         return consumptions;
     }
 
-
-    // =========================================================
-    // UPDATE CONSUMPTION
-    // =========================================================
+    //ACTUALIZAR CONSUMO
 
     public boolean updateConsumption(
             Connection conn,
@@ -307,111 +160,53 @@ public class ConsumptionRepo {
                         "WHERE idConsumption = ?";
 
 
-        try (PreparedStatement ps =
-                     conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
-
-            ps.setInt(
-                    1,
-                    consumption.getIdConsumptionType()
-            );
-
+            ps.setInt(1, consumption.getIdConsumptionType());
 
             if (consumption.getIdProduct() > 0) {
 
-                ps.setInt(
-                        2,
-                        consumption.getIdProduct()
-                );
+                ps.setInt(2, consumption.getIdProduct());
 
             } else {
-
-                ps.setNull(
-                        2,
-                        java.sql.Types.INTEGER
-                );
+                ps.setNull(2, java.sql.Types.INTEGER);
             }
-
 
             if (consumption.getIdService() > 0) {
 
-                ps.setInt(
-                        3,
-                        consumption.getIdService()
-                );
+                ps.setInt(3, consumption.getIdService());
 
             } else {
 
-                ps.setNull(
-                        3,
-                        java.sql.Types.INTEGER
-                );
+                ps.setNull(3, java.sql.Types.INTEGER);
             }
 
+            ps.setInt(4, consumption.getQuantity());
+            ps.setBigDecimal(5, consumption.getUnitPrice());
+            ps.setBigDecimal(6, consumption.getTotal());
+            ps.setString(7, consumption.getObservations());
+            ps.setInt(8, consumption.getIdConsumption());
 
-            ps.setInt(
-                    4,
-                    consumption.getQuantity()
-            );
-
-
-            ps.setBigDecimal(
-                    5,
-                    consumption.getUnitPrice()
-            );
-
-
-            ps.setBigDecimal(
-                    6,
-                    consumption.getTotal()
-            );
-
-
-            ps.setString(
-                    7,
-                    consumption.getObservations()
-            );
-
-
-            ps.setInt(
-                    8,
-                    consumption.getIdConsumption()
-            );
-
-
-            int rowsAffected =
-                    ps.executeUpdate();
-
+            int rowsAffected = ps.executeUpdate();
 
             if (rowsAffected > 0) {
 
-                System.out.println(
-                        "Consumo actualizado correctamente."
-                );
+                System.out.println("Consumo actualizado correctamente.");
 
                 return true;
             }
 
-
             return false;
-
 
         } catch (SQLException e) {
 
-            System.err.println(
-                    "Error al actualizar el consumo: "
-                            + e.getMessage()
-            );
+            System.err.println("Error al actualizar el consumo: " + e.getMessage());
 
             return false;
         }
     }
 
-
-    // =========================================================
-    // SOFT DELETE / ANULAR CONSUMPTION
-    // =========================================================
-
+    // ANULAR CONSUMPTION ?????????????????????????????
 
     public boolean anularConsumption(
             Connection conn,

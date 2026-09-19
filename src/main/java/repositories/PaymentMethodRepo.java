@@ -1,8 +1,6 @@
 package repositories;
 
-import repositories.ConexionDB;
 import models.PaymentMethod;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,22 +25,17 @@ public class PaymentMethodRepo {
 
                 PaymentMethod paymentMethod = new PaymentMethod();
 
-                paymentMethod.setIdPaymentMethod(
-                        rs.getInt("idPaymentMethod")
-                );
-
-                paymentMethod.setName(
-                        rs.getString("name")
-                );
+                paymentMethod.setIdPaymentMethod(rs.getInt
+                        ("idPaymentMethod"));
+                paymentMethod.setName(rs.getString
+                        ("name"));
 
                 paymentMethods.add(paymentMethod);
             }
 
         } catch (SQLException e) {
             System.err.println(
-                    "Error al obtener los métodos de pago: "
-                            + e.getMessage()
-            );
+                    "Error al obtener los métodos de pago: " + e.getMessage());
         }
 
         return paymentMethods;
