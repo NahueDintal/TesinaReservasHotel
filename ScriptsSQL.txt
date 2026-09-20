@@ -393,7 +393,8 @@ CREATE TABLE Consumption (
 INSERT INTO DocumentType (name) VALUES
 ('dni'),
 ('pasaporte'),
-('cedula de identidad');
+('cedula extranjera')
+('otro');
 
 
 -- ==========================================

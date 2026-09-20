@@ -18,7 +18,7 @@ public class CustomerFormController {
 
     // ========== FORM COMPONENTS ==========
     @FXML private Label lblFormTitle;
-    @FXML private TextField txtFirstName;
+    @FXML private TextField txtName;
     @FXML private TextField txtSurname;
     @FXML private ComboBox<String> comboDocumentType;
     @FXML private TextField txtDocumentNumber;
@@ -85,10 +85,10 @@ public class CustomerFormController {
     // ========== SETUP VALIDATIONS ==========
     private void setupValidations() {
         // Validar nombres al perder el foco
-        txtFirstName.focusedProperty().addListener((obs, oldVal, newVal) -> {
+        txtName.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
-                touchedFields.add(txtFirstName);
-                validateFirstName();
+                touchedFields.add(txtName);
+                validateName();
             }
         });
 
@@ -141,7 +141,7 @@ public class CustomerFormController {
         });
 
         // Validación mientras se escribe (sin feedback visual)
-        txtFirstName.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
+        txtName.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
         txtSurname.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
         txtDocumentNumber.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
         txtPhone.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
@@ -154,11 +154,11 @@ public class CustomerFormController {
     }
 
     // ========== VALIDACIONES INDIVIDUALES ==========
-    private boolean validateFirstName() {
-        String name = txtFirstName.getText();
+    private boolean validateName() {
+        String name = txtName.getText();
         boolean valid = ValidationUtils.isValidName(name);
-        System.out.println("🔍 validateFirstName() - Texto: '" + name + "' | Válido: " + valid);
-        setFieldValid(txtFirstName, valid, ValidationUtils.getNameError());
+        System.out.println("🔍 validateName() - Texto: '" + name + "' | Válido: " + valid);
+        setFieldValid(txtName, valid, ValidationUtils.getNameError());
         updateSaveButtonState();
         return valid;
     }
@@ -233,7 +233,7 @@ public class CustomerFormController {
     // ========== ACTUALIZAR ESTADO DEL BOTÓN GUARDAR ==========
     private void updateSaveButtonState() {
         boolean allValid =
-                ValidationUtils.isValidName(txtFirstName.getText()) &&
+                ValidationUtils.isValidName(txtName.getText()) &&
                 ValidationUtils.isValidName(txtSurname.getText()) &&
 
                 ValidationUtils.isValidDocument(txtDocumentNumber.getText(),
@@ -260,7 +260,7 @@ public class CustomerFormController {
         this.editingCustomer = customer;
         btnSave.setText("Actualizar");
 
-        txtFirstName.setText(customer.getName());
+        txtName.setText(customer.getName());
         txtSurname.setText(customer.getSurname());
         txtDocumentNumber.setText(customer.getDocumentNumber());
         txtPhone.setText(customer.getPhoneNumber());
@@ -271,7 +271,7 @@ public class CustomerFormController {
         comboOrigin.getSelectionModel().select(customer.getOriginName());
 
         //revisar
-        validateFirstName();
+        validateName();
         validateSurname();
         validateDocument();
         validatePhone();
@@ -320,7 +320,7 @@ public class CustomerFormController {
 
     private boolean validateAllFields() {
         // Marcar TODOS los campos como tocados
-        touchedFields.add(txtFirstName);
+        touchedFields.add(txtName);
         touchedFields.add(txtSurname);
         touchedFields.add(txtDocumentNumber);
         touchedFields.add(txtPhone);
@@ -329,7 +329,7 @@ public class CustomerFormController {
         touchedFields.add(comboCountry);
         touchedFields.add(comboOrigin);
 
-        boolean firstNameValid = validateFirstName();
+        boolean nameValid = validateName();
         boolean surnameValid = validateSurname();
         boolean documentValid = validateDocument();
         boolean phoneValid = validatePhone();
@@ -345,13 +345,13 @@ public class CustomerFormController {
         if (!countryValid) setFieldValid(comboCountry, false, "Seleccione un país.");
         if (!originValid) setFieldValid(comboOrigin, false, "Seleccione un origen.");
 
-        return firstNameValid && surnameValid && documentValid &&
+        return nameValid && surnameValid && documentValid &&
                 phoneValid && emailValid && docTypeValid && countryValid && originValid;
     }
 
     // ========== LOAD DATA FROM FORM ==========
     private void loadDataFromForm(Customer customer) {
-        customer.setName(txtFirstName.getText().trim());
+        customer.setName(txtName.getText().trim());
         customer.setSurname(txtSurname.getText().trim());
         customer.setDocumentNumber(txtDocumentNumber.getText().trim());
         customer.setEmail(txtEmail.getText().trim());
