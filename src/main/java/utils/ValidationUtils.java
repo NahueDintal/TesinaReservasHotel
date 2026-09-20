@@ -12,7 +12,7 @@ public class ValidationUtils {
             Pattern.compile("^(?=(?:.*\\d){7,8}$)[\\d. ]+$");
 
     private static final Pattern PASSPORT_PATTERN =
-            Pattern.compile("^(?:\\s*[A-Za-z0-9]\\s*){6,12}$");
+            Pattern.compile("^(?=(?:\\s*[A-Za-z0-9]\\s*){6,10}$)(?:\\s*[A-Za-z]\\s*)*(?:\\s*[0-9]\\s*)*$");
 
     private static final Pattern FOREIGN_ID_PATTERN =
             Pattern.compile("^(?:\\s*[A-Za-z0-9]\\s*){6,15}$");
@@ -82,7 +82,7 @@ public class ValidationUtils {
     }
 
     public static String getPhoneError() {
-        return "El teléfono debe tener entre 7 y 15 dígitos.";
+        return "El teléfono debe tener entre 7 y 15 dígitos numericos.";
     }
 
     public static String getEmailError() {

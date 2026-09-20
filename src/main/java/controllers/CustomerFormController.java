@@ -351,25 +351,50 @@ public class CustomerFormController {
 
     // ========== LOAD DATA FROM FORM ==========
     private void loadDataFromForm(Customer customer) {
-        customer.setName(txtName.getText().trim());
-        customer.setSurname(txtSurname.getText().trim());
-        customer.setDocumentNumber(txtDocumentNumber.getText().trim());
-        customer.setEmail(txtEmail.getText().trim());
-
-        // Limpiar el teléfono antes de guardar
-        String rawPhone = txtPhone.getText().trim();
-        String cleanPhone = rawPhone.replaceAll("[^+0-9]", "");
-        customer.setPhoneNumber(cleanPhone);
-
+        //foraneas
         int idDocType = getIdBySelection(comboDocumentType, documentTypes);
         int idCountry = getIdBySelection(comboCountry, countries);
         int idOrigin = getIdBySelection(comboOrigin, origins);
         int idStatus = getActiveStatusId();
-
         customer.setIdDocumentType(idDocType);
         customer.setIdCountry(idCountry);
         customer.setIdCustomerStatus(idStatus);
         customer.setIdCustomerOrigin(idOrigin);
+
+        //campos que no requieren limpieza
+        customer.setName(txtName.getText().trim());
+        customer.setSurname(txtSurname.getText().trim());
+        customer.setEmail(txtEmail.getText().trim());
+
+        // Campos que requieren limpieza
+        // numero de telefono
+        String rawPhone = txtPhone.getText().trim();
+        String cleanPhone = rawPhone.replaceAll("[^+0-9]", "");
+        customer.setPhoneNumber(cleanPhone);
+        // numero de documento (todos)
+        String docType = comboDocumentType.getSelectionModel().getSelectedItem();
+        String rawDocumentNumber = txtDocumentNumber.getText().trim();
+        String cleanDocumentNumber = "";
+        switch (docType) {
+            case "dni":
+                cleanDocumentNumber = rawDocumentNumber.replaceAll("[^0-9]", "");
+                break;
+            case "pasaporte":
+                cleanDocumentNumber = rawDocumentNumber.replaceAll("[^A-Za-z0-9]", "");
+                break;
+            case "cedula extranjera":
+                cleanDocumentNumber = rawDocumentNumber.replaceAll("[^A-Za-z0-9]", "");
+                break;
+            case "otro":
+                cleanDocumentNumber = rawDocumentNumber.replaceAll("[^A-Za-z0-9]", "");
+                break;
+            default:
+                cleanDocumentNumber = rawDocumentNumber.replaceAll("[^A-Za-z0-9]", "");
+                break;
+        }
+        customer.setDocumentNumber(cleanDocumentNumber);
+
+
     }
 
     private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {
