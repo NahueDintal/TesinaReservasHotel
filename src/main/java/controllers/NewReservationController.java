@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import models.*;
 import repositories.*;
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 public class NewReservationController {
     // RESERVA
@@ -29,6 +31,12 @@ public class NewReservationController {
     @FXML private ComboBox<ReservationStatus> cmbReservationStatus;
     @FXML private ComboBox<ReservationType> cmbReservationType;
     @FXML private TextArea txtReservationObservations;
+    // ROOMS
+    @FXML private FlowPane roomsContainer;
+    private final ObservableList<Room> activeRooms = FXCollections.observableArrayList();
+    private final ObservableList<Room> selectedRooms = FXCollections.observableArrayList();
+    private final ObservableList<Room> availableRooms = FXCollections.observableArrayList();
+    private final RoomDAO roomDAO;
     // PAYMENT
     @FXML private TextField txtPaymentAmount;
     @FXML private DatePicker dpPaymentDate;
@@ -55,6 +63,7 @@ public class NewReservationController {
     private final ReservationRepo reservationRepo;
     private final ReservationStatusRepo reservationStatusRepo;
     private final ReservationTypeRepo reservationTypeRepo;
+    private final ReservationRoomRepo reservationRoomRepo;
     private final PaymentRepo paymentRepo;
     private final PaymentMethodRepo paymentMethodRepo;
     private final PaymentStatusRepo paymentStatusRepo;
@@ -78,6 +87,8 @@ public class NewReservationController {
         productRepo = new ProductRepo();
         serviceRepo = new ServiceRepo();
         customerDAO = new CustomerDAO();
+        roomDAO = new RoomDAO();
+        reservationRoomRepo = new ReservationRoomRepo();
     }
     // RECIBIR RESERVA A MODIFICAR
     public void setReservationToEdit(
@@ -131,6 +142,31 @@ public class NewReservationController {
                 .ifPresent(
                         cmbReservationType::setValue
                 );
+
+        // ROOMS
+        activeRooms.setAll(roomDAO.listActive());
+
+        List<ReservationRoom> reservationRooms =
+                reservationRoomRepo.getByReservation(
+                        reservationToEdit.getIdReservation()
+                );
+
+        selectedRooms.clear();
+
+        for (ReservationRoom reservationRoom : reservationRooms) {
+
+            for (Room room : activeRooms) {
+
+                if (room.getNumber() == reservationRoom.getRoomNumber()) {
+
+                    selectedRooms.add(room);
+                    break;
+                }
+            }
+        }
+
+        loadAvailableRooms();
+
         // OBSERVACIONES
         txtReservationObservations.setText(
                 reservation.getObservations() == null
@@ -231,6 +267,17 @@ public class NewReservationController {
         System.out.println(
                 "NewReservationController iniciado"
         );
+
+        // ROOMS
+        activeRooms.setAll(roomDAO.listActive());
+        availableRooms.setAll(activeRooms);
+        loadRoomCards();
+
+        System.out.println("Habitaciones activas: " + activeRooms.size());
+        System.out.println("Habitaciones disponibles: " + availableRooms.size());
+
+        System.out.println("Habitaciones cargadas: " + activeRooms.size());
+
         // TABLA CONSUMOS
         configureConsumptionTable();
         // TIPO CONSUMO
@@ -280,6 +327,93 @@ public class NewReservationController {
             DashboardController dashboardController) {
         this.dashboardController = dashboardController;
     }
+
+    //ROOMS
+    private void loadRoomCards() {
+
+        roomsContainer.getChildren().clear();
+
+        for (Room room : availableRooms) {
+
+            VBox card = new VBox(5);
+
+            Label lblNumber = new Label("Habitación " + room.getNumber());
+            Label lblType = new Label(room.getTypeName());
+            Label lblView = new Label(room.getViewName());
+            card.getChildren().addAll(lblNumber, lblType, lblView);
+            card.getStyleClass().add("room-card");
+
+            if (selectedRooms.contains(room)) {
+                card.getStyleClass().add("selected");
+            }
+
+            card.setOnMouseClicked(event -> {
+
+                if (selectedRooms.contains(room)) {
+
+                    selectedRooms.remove(room);
+                    card.getStyleClass().remove("selected");
+
+                } else {
+
+                    selectedRooms.add(room);
+                    card.getStyleClass().add("selected");
+                }
+            });
+
+            roomsContainer.getChildren().add(card);
+        }
+    }
+
+    private void loadAvailableRooms() {
+
+        System.out.println("CHECK-IN: " + dpCheckIn.getValue());
+        System.out.println("CHECK-OUT: " + dpCheckOut.getValue());
+
+        if (dpCheckIn.getValue() == null || dpCheckOut.getValue() == null) {
+
+            availableRooms.setAll(activeRooms);
+            loadRoomCards();
+            return;
+        }
+
+        if (!dpCheckOut.getValue().isAfter(dpCheckIn.getValue())) {
+            return;
+        }
+
+        Integer idReservationToExclude = null;
+
+        if (reservationToEdit != null) {idReservationToExclude =
+                    reservationToEdit.getIdReservation();
+        }
+
+        List<Integer> occupiedRooms = reservationRoomRepo.getOccupiedRoomNumbers(
+                        dpCheckIn.getValue(),
+                        dpCheckOut.getValue(),
+                        idReservationToExclude
+                );
+        System.out.println("Habitaciones ocupadas: " + occupiedRooms);
+
+        availableRooms.clear();
+
+        for (Room room : activeRooms) {
+
+            if (!occupiedRooms.contains(room.getNumber())) {
+                availableRooms.add(room);
+            }
+        }
+
+        loadRoomCards();
+
+        dpCheckIn.valueProperty().addListener(
+                (obs, oldValue, newValue) -> loadAvailableRooms()
+        );
+
+        dpCheckOut.valueProperty().addListener(
+                (obs, oldValue, newValue) -> loadAvailableRooms()
+        );
+    }
+
     // CUSTOMERS
     private void loadCustomers() {
         try {
@@ -1010,6 +1144,7 @@ public class NewReservationController {
                 idReservation = reservationToEdit.getIdReservation();
             }
 
+
             if (idReservation <= 0) {
                 conn.rollback();
                 showError(reservationToEdit == null ? "No se pudo crear la reserva." : "No se pudo actualizar la reserva.");
@@ -1063,6 +1198,26 @@ public class NewReservationController {
                     showError("No se pudo registrar el pago.");
                     return;
                 }
+            }
+
+            //ROOM
+            if (reservationToEdit != null) {
+
+                reservationRoomRepo.deleteByReservation(
+                        conn,
+                        idReservation
+                );
+            }
+
+            for (Room room : selectedRooms) {
+
+                ReservationRoom reservationRoom =
+                        new ReservationRoom(
+                                idReservation,
+                                room.getNumber()
+                        );
+
+                reservationRoomRepo.create(conn, reservationRoom);
             }
 
             conn.commit();

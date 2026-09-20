@@ -12,20 +12,11 @@ USE HotelDataBase;
 -- TABLAS INDEPENDIENTES
 -- ==========================================
 
--- ==========================================
--- Tabla: DocumentType
--- ==========================================
-
 CREATE TABLE DocumentType (
     idDocumentType INT AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     PRIMARY KEY (idDocumentType)
 );
-
-
--- ==========================================
--- Tabla: Country
--- ==========================================
 
 CREATE TABLE Country (
     idCountry INT AUTO_INCREMENT,
@@ -33,21 +24,11 @@ CREATE TABLE Country (
     PRIMARY KEY (idCountry)
 );
 
-
--- ==========================================
--- Tabla: CustomerStatus
--- ==========================================
-
 CREATE TABLE CustomerStatus (
     idCustomerStatus INT AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     PRIMARY KEY (idCustomerStatus)
 );
-
-
--- ==========================================
--- Tabla: CustomerOrigin
--- ==========================================
 
 CREATE TABLE CustomerOrigin (
     idCustomerOrigin INT AUTO_INCREMENT,
@@ -55,31 +36,16 @@ CREATE TABLE CustomerOrigin (
     PRIMARY KEY (idCustomerOrigin)
 );
 
-
--- ==========================================
--- Tabla: ReservationStatus
--- ==========================================
-
 CREATE TABLE ReservationStatus (
     idReservationStatus INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (idReservationStatus)
 );
 
-
--- ==========================================
--- Tabla: ReservationType
--- ==========================================
-
 CREATE TABLE ReservationType (
     idReservationType INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
-
-
--- ==========================================
--- Tabla: PaymentMethod
--- ==========================================
 
 CREATE TABLE PaymentMethod (
     idPaymentMethod INT NOT NULL AUTO_INCREMENT,
@@ -87,21 +53,11 @@ CREATE TABLE PaymentMethod (
     PRIMARY KEY (idPaymentMethod)
 );
 
-
--- ==========================================
--- Tabla: PaymentStatus
--- ==========================================
-
 CREATE TABLE PaymentStatus (
     idPaymentStatus INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     PRIMARY KEY (idPaymentStatus)
 );
-
-
--- ==========================================
--- Tabla: Service
--- ==========================================
 
 CREATE TABLE Service (
     idService INT AUTO_INCREMENT PRIMARY KEY,
@@ -111,11 +67,6 @@ CREATE TABLE Service (
     active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-
--- ==========================================
--- Tabla: Product
--- ==========================================
-
 CREATE TABLE Product (
     idProduct INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -124,79 +75,40 @@ CREATE TABLE Product (
     active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
-
--- ==========================================
--- Tabla: ConsumptionType
--- ==========================================
-
 CREATE TABLE ConsumptionType (
     idConsumptionType INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL
 );
-
-
--- ==========================================
--- Tabla: ConsumptionStatus
--- ==========================================
 
 CREATE TABLE ConsumptionStatus (
     idConsumptionStatus INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL
 );
 
-
--- ==========================================
--- Tabla: JobPosition
--- ==========================================
-
 CREATE TABLE JobPosition (
     idPosition INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
-
--- ==========================================
--- Tabla: Department
--- ==========================================
 
 CREATE TABLE Department (
     idDepartment INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
--- ==========================================
--- Tabla: Shift  (NUEVA - requerida por StaffDAO)
--- ==========================================
-
 CREATE TABLE Shift (
     idShift INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
-
--- ==========================================
--- Tabla: RoomType
--- ==========================================
-
 
 CREATE TABLE RoomType (
     idRoomType INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
--- ==========================================
--- Tabla: RoomView
--- ==========================================
-
 CREATE TABLE RoomView (
     idRoomView INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
--- ==========================================
--- Tabla: Feature
--- ==========================================
-
 
 CREATE TABLE Feature (
     idFeature INT AUTO_INCREMENT PRIMARY KEY,
@@ -206,10 +118,6 @@ CREATE TABLE Feature (
 
 -- ==========================================
 -- DEPENDIENTES 1
--- ==========================================
-
--- ==========================================
--- Tabla: Customer
 -- ==========================================
 
 CREATE TABLE Customer (
@@ -230,11 +138,6 @@ CREATE TABLE Customer (
     FOREIGN KEY (idCustomerOrigin) REFERENCES CustomerOrigin(idCustomerOrigin)
 );
 
-
--- ==========================================
--- Tabla: Room (MODIFICADA con idRoom y active)
--- ==========================================
-
 CREATE TABLE Room (
     idRoom INT AUTO_INCREMENT PRIMARY KEY,
     number INT NOT NULL,
@@ -247,13 +150,10 @@ CREATE TABLE Room (
     active BOOLEAN NOT NULL DEFAULT TRUE,
     price DECIMAL(10,2) NOT NULL,
     description TEXT,
+    CONSTRAINT uq_room_number UNIQUE (number),
     FOREIGN KEY (idRoomType) REFERENCES RoomType(idRoomType),
     FOREIGN KEY (idRoomView) REFERENCES RoomView(idRoomView)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ==========================================
--- Tabla: RoomFeature (MODIFICADA para usar idRoom)
--- ==========================================
 
 CREATE TABLE RoomFeature (
     idRoom INT NOT NULL,
@@ -263,12 +163,9 @@ CREATE TABLE RoomFeature (
     FOREIGN KEY (idFeature) REFERENCES Feature(idFeature) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ==========================================
--- DEPENDIENTES 2
--- ==========================================
 
 -- ==========================================
--- Tabla: Reservation
+-- DEPENDIENTES 2
 -- ==========================================
 
 CREATE TABLE Reservation (
@@ -287,10 +184,13 @@ CREATE TABLE Reservation (
     CONSTRAINT fk_reservation_type FOREIGN KEY (idReservationType) REFERENCES ReservationType(idReservationType)
 );
 
-
--- ==========================================
--- Tabla: Staff
--- ==========================================
+CREATE TABLE ReservationRoom (
+    idReservation INT NOT NULL,
+    roomNumber INT NOT NULL,
+    PRIMARY KEY (idReservation, roomNumber),
+    FOREIGN KEY (idReservation) REFERENCES Reservation(idReservation),
+    FOREIGN KEY (roomNumber) REFERENCES Room(number)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE Staff (
     id VARCHAR(10) PRIMARY KEY,
@@ -316,10 +216,6 @@ CREATE TABLE Staff (
     CONSTRAINT fk_staff_shift      FOREIGN KEY (idShift)      REFERENCES Shift(idShift)
 );
 
--- ==========================================
--- Tabla: StaffHistory  (NUEVA - requerida por StaffHistoryDAO)
--- ==========================================
-
 CREATE TABLE StaffHistory (
     idHistory INT AUTO_INCREMENT PRIMARY KEY,
     idStaff VARCHAR(10) NOT NULL,
@@ -329,12 +225,9 @@ CREATE TABLE StaffHistory (
     CONSTRAINT fk_staff_history_staff FOREIGN KEY (idStaff) REFERENCES Staff(id) ON DELETE CASCADE
 );
 
--- ==========================================
--- DEPENDIENTES 3
--- ==========================================
 
 -- ==========================================
--- Tabla: Payment
+-- DEPENDIENTES 3
 -- ==========================================
 
 CREATE TABLE Payment (
@@ -353,11 +246,6 @@ CREATE TABLE Payment (
     CONSTRAINT payment_ibfk_2 FOREIGN KEY (idPaymentMethod) REFERENCES PaymentMethod(idPaymentMethod),
     CONSTRAINT payment_ibfk_3 FOREIGN KEY (idPaymentStatus) REFERENCES PaymentStatus(idPaymentStatus)
 );
-
-
--- ==========================================
--- Tabla: Consumption
--- ==========================================
 
 CREATE TABLE Consumption (
     idConsumption INT AUTO_INCREMENT PRIMARY KEY,
@@ -385,20 +273,10 @@ CREATE TABLE Consumption (
 -- INSERTS - DATOS INDEPENDIENTES
 -- ==========================================
 
-
--- ==========================================
--- DocumentType
--- ==========================================
-
 INSERT INTO DocumentType (name) VALUES
 ('dni'),
 ('pasaporte'),
 ('cedula de identidad');
-
-
--- ==========================================
--- Country
--- ==========================================
 
 INSERT INTO Country (name) VALUES
 ('afganistan'), ('albania'), ('alemania'), ('andorra'), ('angola'),
@@ -441,19 +319,9 @@ INSERT INTO Country (name) VALUES
 ('uruguay'), ('uzbekistan'), ('vanuatu'), ('venezuela'), ('vietnam'),
 ('yemen'), ('yibuti'), ('zambia'), ('zimbabue');
 
-
--- ==========================================
--- CustomerStatus
--- ==========================================
-
 INSERT INTO CustomerStatus (name) VALUES
 ('active'),
 ('inactive');
-
-
--- ==========================================
--- CustomerOrigin
--- ==========================================
 
 INSERT INTO CustomerOrigin (name) VALUES
 ('airbnb'),
@@ -461,21 +329,11 @@ INSERT INTO CustomerOrigin (name) VALUES
 ('particular'),
 ('walk-in');
 
-
--- ==========================================
--- ReservationStatus
--- ==========================================
-
 INSERT INTO ReservationStatus (name) VALUES
 ('Pendiente'),
 ('Confirmada'),
 ('Cancelada'),
 ('Finalizada');
-
-
--- ==========================================
--- ReservationType
--- ==========================================
 
 INSERT INTO ReservationType (name) VALUES
 ('Directa'),
@@ -484,70 +342,32 @@ INSERT INTO ReservationType (name) VALUES
 ('WhatsApp'),
 ('Walk-in');
 
-
--- ==========================================
--- PaymentMethod
--- ==========================================
-
 INSERT INTO PaymentMethod (name) VALUES
 ('Efectivo'),
 ('Tarjeta'),
 ('Transferencia');
-
-
--- ==========================================
--- PaymentStatus
--- ==========================================
 
 INSERT INTO PaymentStatus (name) VALUES
 ('Pendiente'),
 ('Pagado'),
 ('Cancelado');
 
-
--- ==========================================
--- ConsumptionType
--- ==========================================
-
 INSERT INTO ConsumptionType (name) VALUES
 ('Producto'),
 ('Servicio');
-
-
--- ==========================================
--- ConsumptionStatus
--- ==========================================
 
 INSERT INTO ConsumptionStatus (name) VALUES
 ('Activo'),
 ('Anulado');
 
-
--- ==========================================
--- room_type
--- ==========================================
-
 INSERT INTO RoomType (name) VALUES
 ('simple'), ('doble'), ('suite'), ('familiar');
-
--- ==========================================
--- room_view
--- ==========================================
 
 INSERT INTO RoomView (name) VALUES
 ('vista al lago'), ('vista al jardín'), ('vista a las montañas'), ('sin vista');
 
--- ==========================================
--- feature
--- ==========================================
-
-INSERT INTO feature (name) VALUES
+INSERT INTO Feature (name) VALUES
 ('WiFi'), ('TV'), ('Aire acondicionado'), ('Calefacción'), ('Minibar'), ('Caja fuerte');
-
-
--- ==========================================
--- PRODUCTOS
--- ==========================================
 
 INSERT INTO Product
 (name, description, price, active)
@@ -563,76 +383,6 @@ VALUES
 ('Helado', 'Porcion individual de helado', 2500.00, TRUE),
 ('Toalla adicional', 'Toalla adicional para el huesped', 3000.00, TRUE);
 
-
-
--- ==========================================
--- PRODUCTOS
--- ==========================================
-INSERT INTO Reservation
-(idCustomer, creationDate, checkIn, checkOut,
- idReservationStatus, idReservationType,
- numberOfGuests, totalRate, observations)
-VALUES
-
-(1,  '2026-08-01 09:15:00', '2026-09-15', '2026-09-18', 2, 1, 2, 180.00, 'Habitación doble'),
-(2,  '2026-08-01 10:30:00', '2026-09-16', '2026-09-20', 2, 2, 3, 320.00, 'Solicita cama matrimonial'),
-(3,  '2026-08-02 11:20:00', '2026-09-17', '2026-09-19', 1, 3, 2, 160.00, NULL),
-(4,  '2026-08-02 14:10:00', '2026-09-18', '2026-09-22', 2, 4, 4, 420.00, 'Familia'),
-(5,  '2026-08-03 08:45:00', '2026-09-19', '2026-09-21', 1, 5, 1, 120.00, 'Huésped individual'),
-(6,  '2026-08-03 12:00:00', '2026-09-20', '2026-09-24', 2, 1, 2, 260.00, 'Vista al lago'),
-(7,  '2026-08-04 15:30:00', '2026-09-21', '2026-09-25', 2, 2, 4, 450.00, 'Viaje familiar'),
-(8,  '2026-08-04 16:15:00', '2026-09-22', '2026-09-24', 3, 3, 2, 180.00, 'Cancelación solicitada'),
-(9,  '2026-08-05 09:00:00', '2026-09-23', '2026-09-26', 1, 4, 2, 240.00, NULL),
-(10, '2026-08-05 13:40:00', '2026-09-24', '2026-09-28', 2, 5, 3, 360.00, 'Solicita desayuno'),
-(11, '2026-08-06 10:10:00', '2026-09-25', '2026-09-27', 2, 1, 2, 190.00, NULL),
-(12, '2026-08-06 11:50:00', '2026-09-26', '2026-09-30', 1, 2, 4, 480.00, 'Familia con niños'),
-(13, '2026-08-07 14:25:00', '2026-09-27', '2026-09-29', 2, 3, 2, 210.00, 'Estadía corta'),
-(14, '2026-08-07 17:00:00', '2026-09-28', '2026-10-02', 2, 4, 3, 390.00, NULL),
-(15, '2026-08-08 09:35:00', '2026-09-29', '2026-10-01', 3, 5, 1, 130.00, 'Reserva cancelada'),
-(16, '2026-08-08 12:45:00', '2026-09-30', '2026-10-04', 1, 1, 2, 280.00, 'Solicita habitación tranquila'),
-(17, '2026-08-09 08:20:00', '2026-10-01', '2026-10-05', 2, 2, 4, 520.00, 'Viaje familiar'),
-(18, '2026-08-09 15:10:00', '2026-10-02', '2026-10-04', 2, 3, 2, 220.00, NULL),
-(19, '2026-08-10 10:00:00', '2026-10-03', '2026-10-06', 1, 4, 3, 330.00, 'Solicita cochera'),
-(20, '2026-08-10 13:15:00', '2026-10-04', '2026-10-08', 2, 5, 2, 310.00, NULL),
-
-(21, '2026-08-11 09:40:00', '2026-10-05', '2026-10-09', 2, 1, 2, 340.00, 'Vista al lago'),
-(22, '2026-08-11 11:25:00', '2026-10-06', '2026-10-08', 4, 2, 2, 180.00, 'Estadía finalizada'),
-(23, '2026-08-12 14:00:00', '2026-10-07', '2026-10-11', 2, 3, 4, 520.00, 'Familia'),
-(24, '2026-08-12 16:30:00', '2026-10-08', '2026-10-10', 3, 4, 2, 200.00, 'Cancelada por huésped'),
-(25, '2026-08-13 08:50:00', '2026-10-09', '2026-10-12', 1, 5, 1, 180.00, NULL),
-(26, '2026-08-13 12:20:00', '2026-10-10', '2026-10-14', 2, 1, 3, 410.00, 'Solicita camas separadas'),
-(27, '2026-08-14 10:45:00', '2026-10-11', '2026-10-15', 4, 2, 2, 360.00, 'Estadía finalizada'),
-(28, '2026-08-14 15:00:00', '2026-10-12', '2026-10-14', 1, 3, 2, 240.00, NULL),
-(29, '2026-08-15 09:10:00', '2026-10-13', '2026-10-17', 2, 4, 4, 560.00, 'Familia numerosa'),
-(30, '2026-08-15 13:30:00', '2026-10-14', '2026-10-16', 2, 5, 2, 220.00, NULL),
-
-(31, '2026-08-16 11:00:00', '2026-10-15', '2026-10-19', 2, 1, 2, 360.00, 'Solicita habitación en primer piso'),
-(32, '2026-08-16 14:40:00', '2026-10-16', '2026-10-18', 4, 2, 3, 290.00, 'Estadía finalizada'),
-(33, '2026-08-17 08:30:00', '2026-10-17', '2026-10-20', 1, 3, 2, 270.00, NULL),
-(34, '2026-08-17 12:10:00', '2026-10-18', '2026-10-22', 2, 4, 4, 580.00, 'Familia'),
-(35, '2026-08-18 15:20:00', '2026-10-19', '2026-10-21', 3, 5, 1, 150.00, 'Cancelada'),
-(36, '2026-08-18 17:10:00', '2026-10-20', '2026-10-24', 2, 1, 2, 390.00, 'Vista al lago'),
-(37, '2026-08-19 09:25:00', '2026-10-21', '2026-10-23', 1, 2, 2, 230.00, NULL),
-(38, '2026-08-19 13:00:00', '2026-10-22', '2026-10-26', 2, 3, 3, 470.00, 'Solicita cochera'),
-(39, '2026-08-20 10:15:00', '2026-10-23', '2026-10-27', 2, 4, 4, 620.00, 'Familia con niños'),
-(40, '2026-08-20 16:45:00', '2026-10-24', '2026-10-26', 1, 5, 2, 240.00, NULL),
-
-(41, '2026-08-21 08:40:00', '2026-10-25', '2026-10-29', 2, 1, 2, 380.00, NULL),
-(42, '2026-08-21 11:30:00', '2026-10-26', '2026-10-28', 4, 2, 2, 210.00, 'Estadía finalizada'),
-(43, '2026-08-22 14:15:00', '2026-10-27', '2026-10-31', 1, 3, 4, 590.00, 'Familia'),
-(44, '2026-08-22 17:30:00', '2026-10-28', '2026-10-30', 3, 4, 2, 250.00, 'Cancelada por huésped'),
-(45, '2026-08-23 09:05:00', '2026-10-29', '2026-11-02', 2, 5, 3, 420.00, NULL),
-(46, '2026-08-23 12:35:00', '2026-10-30', '2026-11-03', 2, 1, 2, 400.00, 'Habitación tranquila'),
-(47, '2026-08-24 10:50:00', '2026-10-31', '2026-11-02', 1, 2, 2, 260.00, NULL),
-(48, '2026-08-24 15:45:00', '2026-11-01', '2026-11-05', 2, 3, 4, 640.00, 'Familia numerosa'),
-(49, '2026-08-25 08:15:00', '2026-11-02', '2026-11-04', 4, 4, 2, 230.00, 'Estadía finalizada'),
-(50, '2026-08-25 13:50:00', '2026-11-03', '2026-11-07', 1, 5, 1, 190.00, NULL),
-
-
--- ==========================================
--- SERVICIOS
--- ==========================================
-
 INSERT INTO Service
 (name, description, price, active)
 VALUES
@@ -647,41 +397,6 @@ VALUES
 ('Check-out tardio', 'Extension del horario de salida', 6000.00, TRUE),
 ('Alquiler de toalla', 'Alquiler de toalla para piscina', 2500.00, TRUE);
 
-
--- ==========================================
--- ROOMS (MODIFICADA con active)
--- ==========================================
-
-INSERT INTO Room
-(number, floor, idRoomType, capacity, idRoomView, available, outOfService, active, price, description)
-VALUES
-(101, 1, 1, 2, 4, 1, 0, 1, 50.00, 'Habitacion simple'),
-(102, 1, 2, 4, 4, 1, 0, 1, 80.00, 'Habitacion doble'),
-(201, 2, 3, 2, 1, 0, 0, 1, 150.00, 'Suite de lujo'),
-(202, 2, 4, 6, 2, 1, 0, 1, 120.00, 'Habitacion familiar');
-
-
--- ==========================================
--- RoomFeature (MODIFICADA con idRoom)
--- ==========================================
-
-INSERT INTO RoomFeature (idRoom, idFeature) VALUES
-(1, 1),
-(1, 2),
-(2, 1),
-(2, 2),
-(2, 3),
-(3, 1),
-(3, 2),
-(3, 5),
-(4, 1),
-(4, 2),
-(4, 3);
-
--- ==========================================
--- JOB POSITIONS
--- ==========================================
-
 INSERT INTO JobPosition (name) VALUES
 ('Recepcionista'),
 ('Gobernanta'),
@@ -691,10 +406,6 @@ INSERT INTO JobPosition (name) VALUES
 ('Ayudante de Cocina'),
 ('Administrativa/o');
 
--- ==========================================
--- DEPARTMENTS
--- ==========================================
-
 INSERT INTO Department (name) VALUES
 ('Recepcion'),
 ('Housekeeping'),
@@ -702,16 +413,15 @@ INSERT INTO Department (name) VALUES
 ('Cocina'),
 ('Administracion');
 
--- ==========================================
--- SHIFTS  (NUEVO - opcional pero recomendado)
--- ==========================================
-
 INSERT INTO Shift (name) VALUES
 ('Mañana'),
 ('Tarde'),
 ('Noche');
 
 
+-- ==========================================
+-- CLIENTES (AHORA ANTES DE RESERVATION)
+-- ==========================================
 
 -- ---------- CLIENTES CON idCustomerStatus = 1 (110) ----------
 INSERT INTO Customer (name, surname, idDocumentType, documentNumber, phoneNumber, email, idCountry, idCustomerStatus, idCustomerOrigin) VALUES
@@ -979,17 +689,14 @@ INSERT INTO Customer (name, surname, idDocumentType, documentNumber, phoneNumber
 ('ricardo', 'quiroz', 1, '35890125', '1123456814', 'ricardo.quiroz@mail.com', 109, 2, 1),
 ('gabriela', 'carrasco', 1, '29234569', '1134567915', 'gabriela.carrasco@mail.com', 110, 2, 2);
 
+
 -- ==========================================
--- ROOMS - HOTEL GRANDE (8 pisos, 97 habitaciones)
--- Tipos:  1=simple, 2=doble, 3=suite, 4=familiar
--- Vistas: 1=vista al lago, 2=vista al jardín, 3=vista a las montañas, 4=sin vista
+-- ROOMS (AHORA ANTES DE RESERVATION)
 -- ==========================================
 
 INSERT INTO Room
 (number, floor, idRoomType, capacity, idRoomView, available, outOfService, active, price, description)
 VALUES
-
--- ============ PISO 1 (101-112) · Económicas, sin vista ============
 (101, 1, 1, 2, 4, 1, 0, 1,  50.00, 'Simple económica - Piso 1'),
 (102, 1, 1, 2, 4, 1, 0, 1,  50.00, 'Simple económica - Piso 1'),
 (103, 1, 1, 2, 4, 1, 0, 1,  52.00, 'Simple económica - Piso 1'),
@@ -1002,8 +709,6 @@ VALUES
 (110, 1, 2, 4, 4, 1, 0, 1,  82.00, 'Doble estándar - Piso 1'),
 (111, 1, 1, 2, 4, 1, 0, 1,  55.00, 'Simple económica - Piso 1'),
 (112, 1, 1, 2, 4, 1, 0, 1,  55.00, 'Simple económica - Piso 1'),
-
--- ============ PISO 2 (201-214) · Mixtas, sin vista / jardín ============
 (201, 2, 1, 2, 4, 1, 0, 1,  55.00, 'Simple estándar - Piso 2'),
 (202, 2, 1, 2, 4, 1, 0, 1,  55.00, 'Simple estándar - Piso 2'),
 (203, 2, 2, 4, 4, 1, 0, 1,  85.00, 'Doble estándar - Piso 2'),
@@ -1018,8 +723,6 @@ VALUES
 (212, 2, 4, 6, 2, 1, 0, 1, 130.00, 'Familiar grande con vista al jardín - Piso 2'),
 (213, 2, 2, 4, 2, 1, 0, 1,  95.00, 'Doble con vista al jardín - Piso 2'),
 (214, 2, 2, 4, 2, 1, 0, 1,  95.00, 'Doble con vista al jardín - Piso 2'),
-
--- ============ PISO 3 (301-315) · Vista al jardín ============
 (301, 3, 1, 2, 2, 1, 0, 1,  60.00, 'Simple con vista al jardín - Piso 3'),
 (302, 3, 1, 2, 2, 1, 0, 1,  60.00, 'Simple con vista al jardín - Piso 3'),
 (303, 3, 2, 4, 2, 1, 0, 1,  95.00, 'Doble con vista al jardín - Piso 3'),
@@ -1035,8 +738,6 @@ VALUES
 (313, 3, 3, 3, 2, 1, 0, 1, 160.00, 'Suite con vista al jardín - Piso 3'),
 (314, 3, 2, 4, 2, 1, 0, 1, 105.00, 'Doble con vista al jardín - Piso 3'),
 (315, 3, 2, 4, 2, 1, 0, 1, 105.00, 'Doble con vista al jardín - Piso 3'),
-
--- ============ PISO 4 (401-415) · Vista a las montañas ============
 (401, 4, 1, 2, 3, 1, 0, 1,  65.00, 'Simple con vista a las montañas - Piso 4'),
 (402, 4, 1, 2, 3, 1, 0, 1,  65.00, 'Simple con vista a las montañas - Piso 4'),
 (403, 4, 2, 4, 3, 1, 0, 1, 100.00, 'Doble con vista a las montañas - Piso 4'),
@@ -1052,8 +753,6 @@ VALUES
 (413, 4, 3, 3, 3, 1, 0, 1, 180.00, 'Suite con vista a las montañas - Piso 4'),
 (414, 4, 2, 4, 3, 1, 0, 1, 115.00, 'Doble con vista a las montañas - Piso 4'),
 (415, 4, 2, 4, 3, 1, 0, 1, 115.00, 'Doble con vista a las montañas - Piso 4'),
-
--- ============ PISO 5 (501-515) · Vista a las montañas (premium) ============
 (501, 5, 2, 4, 3, 1, 0, 1, 110.00, 'Doble con vista a las montañas - Piso 5'),
 (502, 5, 2, 4, 3, 1, 0, 1, 110.00, 'Doble con vista a las montañas - Piso 5'),
 (503, 5, 2, 4, 3, 1, 0, 1, 115.00, 'Doble con vista a las montañas - Piso 5'),
@@ -1069,8 +768,6 @@ VALUES
 (513, 5, 3, 3, 3, 1, 0, 1, 195.00, 'Suite con vista a las montañas - Piso 5'),
 (514, 5, 3, 4, 3, 1, 0, 1, 210.00, 'Suite premium con vista a las montañas - Piso 5'),
 (515, 5, 3, 4, 3, 1, 0, 1, 210.00, 'Suite premium con vista a las montañas - Piso 5'),
-
--- ============ PISO 6 (601-612) · Vista al lago ============
 (601, 6, 3, 3, 1, 1, 0, 1, 230.00, 'Suite con vista al lago - Piso 6'),
 (602, 6, 3, 3, 1, 1, 0, 1, 230.00, 'Suite con vista al lago - Piso 6'),
 (603, 6, 3, 3, 1, 1, 0, 1, 240.00, 'Suite con vista al lago - Piso 6'),
@@ -1083,8 +780,6 @@ VALUES
 (610, 6, 2, 4, 1, 1, 0, 1, 150.00, 'Doble con vista al lago - Piso 6'),
 (611, 6, 4, 6, 1, 1, 0, 1, 200.00, 'Familiar con vista al lago - Piso 6'),
 (612, 6, 4, 6, 1, 1, 0, 1, 200.00, 'Familiar con vista al lago - Piso 6'),
-
--- ============ PISO 7 (701-708) · Suites de lujo, vista al lago ============
 (701, 7, 3, 3, 1, 1, 0, 1, 280.00, 'Suite de lujo con vista al lago - Piso 7'),
 (702, 7, 3, 3, 1, 1, 0, 1, 280.00, 'Suite de lujo con vista al lago - Piso 7'),
 (703, 7, 3, 4, 1, 1, 0, 1, 300.00, 'Suite de lujo con vista al lago - Piso 7'),
@@ -1093,8 +788,6 @@ VALUES
 (706, 7, 3, 4, 1, 1, 0, 1, 320.00, 'Suite de lujo con vista al lago - Piso 7'),
 (707, 7, 3, 4, 1, 1, 0, 1, 340.00, 'Suite de lujo con vista al lago - Piso 7'),
 (708, 7, 3, 4, 1, 1, 0, 1, 340.00, 'Suite de lujo con vista al lago - Piso 7'),
-
--- ============ PISO 8 (801-806) · Penthouse, vista al lago ============
 (801, 8, 3, 4, 1, 1, 0, 1, 450.00, 'Penthouse con vista al lago - Piso 8'),
 (802, 8, 3, 4, 1, 1, 0, 1, 450.00, 'Penthouse con vista al lago - Piso 8'),
 (803, 8, 3, 4, 1, 1, 0, 1, 480.00, 'Penthouse con vista al lago - Piso 8'),
@@ -1102,16 +795,106 @@ VALUES
 (805, 8, 3, 4, 1, 1, 0, 1, 500.00, 'Suite presidencial con vista al lago - Piso 8'),
 (806, 8, 3, 4, 1, 1, 0, 1, 500.00, 'Suite presidencial con vista al lago - Piso 8');
 
+
 -- ==========================================
--- STAFF - HOTEL GRANDE (50 empleados)
+-- ROOMFEATURE
+-- ==========================================
+
+INSERT INTO RoomFeature (idRoom, idFeature) VALUES
+(1, 1),
+(1, 2),
+(2, 1),
+(2, 2),
+(2, 3),
+(3, 1),
+(3, 2),
+(3, 5),
+(4, 1),
+(4, 2),
+(4, 3);
+
+
+-- ==========================================
+-- RESERVAS (AHORA DESPUÉS DE CUSTOMER Y ROOM)
+-- ==========================================
+
+INSERT INTO Reservation
+(idCustomer, creationDate, checkIn, checkOut,
+ idReservationStatus, idReservationType,
+ numberOfGuests, totalRate, observations)
+VALUES
+(1,  '2026-08-01 09:15:00', '2026-09-15', '2026-09-18', 2, 1, 2, 180.00, 'Habitación doble'),
+(2,  '2026-08-01 10:30:00', '2026-09-16', '2026-09-20', 2, 2, 3, 320.00, 'Solicita cama matrimonial'),
+(3,  '2026-08-02 11:20:00', '2026-09-17', '2026-09-19', 1, 3, 2, 160.00, NULL),
+(4,  '2026-08-02 14:10:00', '2026-09-18', '2026-09-22', 2, 4, 4, 420.00, 'Familia'),
+(5,  '2026-08-03 08:45:00', '2026-09-19', '2026-09-21', 1, 5, 1, 120.00, 'Huésped individual'),
+(6,  '2026-08-03 12:00:00', '2026-09-20', '2026-09-24', 2, 1, 2, 260.00, 'Vista al lago'),
+(7,  '2026-08-04 15:30:00', '2026-09-21', '2026-09-25', 2, 2, 4, 450.00, 'Viaje familiar'),
+(8,  '2026-08-04 16:15:00', '2026-09-22', '2026-09-24', 3, 3, 2, 180.00, 'Cancelación solicitada'),
+(9,  '2026-08-05 09:00:00', '2026-09-23', '2026-09-26', 1, 4, 2, 240.00, NULL),
+(10, '2026-08-05 13:40:00', '2026-09-24', '2026-09-28', 2, 5, 3, 360.00, 'Solicita desayuno'),
+(11, '2026-08-06 10:10:00', '2026-09-25', '2026-09-27', 2, 1, 2, 190.00, NULL),
+(12, '2026-08-06 11:50:00', '2026-09-26', '2026-09-30', 1, 2, 4, 480.00, 'Familia con niños'),
+(13, '2026-08-07 14:25:00', '2026-09-27', '2026-09-29', 2, 3, 2, 210.00, 'Estadía corta'),
+(14, '2026-08-07 17:00:00', '2026-09-28', '2026-10-02', 2, 4, 3, 390.00, NULL),
+(15, '2026-08-08 09:35:00', '2026-09-29', '2026-10-01', 3, 5, 1, 130.00, 'Reserva cancelada'),
+(16, '2026-08-08 12:45:00', '2026-09-30', '2026-10-04', 1, 1, 2, 280.00, 'Solicita habitación tranquila'),
+(17, '2026-08-09 08:20:00', '2026-10-01', '2026-10-05', 2, 2, 4, 520.00, 'Viaje familiar'),
+(18, '2026-08-09 15:10:00', '2026-10-02', '2026-10-04', 2, 3, 2, 220.00, NULL),
+(19, '2026-08-10 10:00:00', '2026-10-03', '2026-10-06', 1, 4, 3, 330.00, 'Solicita cochera'),
+(20, '2026-08-10 13:15:00', '2026-10-04', '2026-10-08', 2, 5, 2, 310.00, NULL),
+(21, '2026-08-11 09:40:00', '2026-10-05', '2026-10-09', 2, 1, 2, 340.00, 'Vista al lago'),
+(22, '2026-08-11 11:25:00', '2026-10-06', '2026-10-08', 4, 2, 2, 180.00, 'Estadía finalizada'),
+(23, '2026-08-12 14:00:00', '2026-10-07', '2026-10-11', 2, 3, 4, 520.00, 'Familia'),
+(24, '2026-08-12 16:30:00', '2026-10-08', '2026-10-10', 3, 4, 2, 200.00, 'Cancelada por huésped'),
+(25, '2026-08-13 08:50:00', '2026-10-09', '2026-10-12', 1, 5, 1, 180.00, NULL),
+(26, '2026-08-13 12:20:00', '2026-10-10', '2026-10-14', 2, 1, 3, 410.00, 'Solicita camas separadas'),
+(27, '2026-08-14 10:45:00', '2026-10-11', '2026-10-15', 4, 2, 2, 360.00, 'Estadía finalizada'),
+(28, '2026-08-14 15:00:00', '2026-10-12', '2026-10-14', 1, 3, 2, 240.00, NULL),
+(29, '2026-08-15 09:10:00', '2026-10-13', '2026-10-17', 2, 4, 4, 560.00, 'Familia numerosa'),
+(30, '2026-08-15 13:30:00', '2026-10-14', '2026-10-16', 2, 5, 2, 220.00, NULL),
+(31, '2026-08-16 11:00:00', '2026-10-15', '2026-10-19', 2, 1, 2, 360.00, 'Solicita habitación en primer piso'),
+(32, '2026-08-16 14:40:00', '2026-10-16', '2026-10-18', 4, 2, 3, 290.00, 'Estadía finalizada'),
+(33, '2026-08-17 08:30:00', '2026-10-17', '2026-10-20', 1, 3, 2, 270.00, NULL),
+(34, '2026-08-17 12:10:00', '2026-10-18', '2026-10-22', 2, 4, 4, 580.00, 'Familia'),
+(35, '2026-08-18 15:20:00', '2026-10-19', '2026-10-21', 3, 5, 1, 150.00, 'Cancelada'),
+(36, '2026-08-18 17:10:00', '2026-10-20', '2026-10-24', 2, 1, 2, 390.00, 'Vista al lago'),
+(37, '2026-08-19 09:25:00', '2026-10-21', '2026-10-23', 1, 2, 2, 230.00, NULL),
+(38, '2026-08-19 13:00:00', '2026-10-22', '2026-10-26', 2, 3, 3, 470.00, 'Solicita cochera'),
+(39, '2026-08-20 10:15:00', '2026-10-23', '2026-10-27', 2, 4, 4, 620.00, 'Familia con niños'),
+(40, '2026-08-20 16:45:00', '2026-10-24', '2026-10-26', 1, 5, 2, 240.00, NULL),
+(41, '2026-08-21 08:40:00', '2026-10-25', '2026-10-29', 2, 1, 2, 380.00, NULL),
+(42, '2026-08-21 11:30:00', '2026-10-26', '2026-10-28', 4, 2, 2, 210.00, 'Estadía finalizada'),
+(43, '2026-08-22 14:15:00', '2026-10-27', '2026-10-31', 1, 3, 4, 590.00, 'Familia'),
+(44, '2026-08-22 17:30:00', '2026-10-28', '2026-10-30', 3, 4, 2, 250.00, 'Cancelada por huésped'),
+(45, '2026-08-23 09:05:00', '2026-10-29', '2026-11-02', 2, 5, 3, 420.00, NULL),
+(46, '2026-08-23 12:35:00', '2026-10-30', '2026-11-03', 2, 1, 2, 400.00, 'Habitación tranquila'),
+(47, '2026-08-24 10:50:00', '2026-10-31', '2026-11-02', 1, 2, 2, 260.00, NULL),
+(48, '2026-08-24 15:45:00', '2026-11-01', '2026-11-05', 2, 3, 4, 640.00, 'Familia numerosa'),
+(49, '2026-08-25 08:15:00', '2026-11-02', '2026-11-04', 4, 4, 2, 230.00, 'Estadía finalizada'),
+(50, '2026-08-25 13:50:00', '2026-11-03', '2026-11-07', 1, 5, 1, 190.00, NULL);
+
+
+-- ==========================================
+-- RESERVATION ROOM
+-- ==========================================
+
+INSERT INTO ReservationRoom (idReservation, roomNumber)
+VALUES
+    (14, 101),
+    (15, 102),
+    (16, 201),
+    (16, 202);
+
+
+-- ==========================================
+-- STAFF
 -- ==========================================
 
 INSERT INTO Staff
 (id, firstName, lastName, dni, birthDate, phone, email, street, addressNumber, city,
  idPosition, idDepartment, idShift, status, hireDate, shiftStart, shiftEnd, salary)
 VALUES
-
--- ============ RECEPCIÓN (8 recepcionistas) ============
 ('001', 'Valentina', 'Rodríguez',    '32456789', '1990-03-15', '11-4567-8901', 'valentina.rodriguez@hotel.com', 'Av. Corrientes',   '1234', 'CABA',          1, 1, 1, 'ACTIVE', '2019-05-10', '06:00:00', '14:00:00', 920000.00),
 ('002', 'Matías',    'González',     '30123456', '1988-07-22', '11-4567-8902', 'matias.gonzalez@hotel.com',    'Av. Santa Fe',     '2456', 'CABA',          1, 1, 2, 'ACTIVE', '2018-11-03', '14:00:00', '22:00:00', 950000.00),
 ('003', 'Camila',    'Fernández',    '34567890', '1995-01-08', '11-4567-8903', 'camila.fernandez@hotel.com',   'Av. Callao',       '789',  'CABA',          1, 1, 3, 'ACTIVE', '2021-02-15', '22:00:00', '06:00:00', 980000.00),
@@ -1120,12 +903,8 @@ VALUES
 ('006', 'Nicolás',   'Pérez',        '31234567', '1991-11-25', '11-4567-8906', 'nicolas.perez@hotel.com',      'Av. de Mayo',      '567',  'CABA',          1, 1, 3, 'ACTIVE', '2019-09-14', '22:00:00', '06:00:00', 970000.00),
 ('007', 'Agustina',  'García',       '36789012', '1997-04-18', '11-4567-8907', 'agustina.garcia@hotel.com',    'Av. 9 de Julio',   '1500', 'CABA',          1, 1, 1, 'ACTIVE', '2023-01-10', '06:00:00', '14:00:00', 870000.00),
 ('008', 'Facundo',   'Sánchez',      '32789012', '1992-08-05', '11-4567-8908', 'facundo.sanchez@hotel.com',    'Av. Córdoba',      '2890', 'CABA',          1, 1, 2, 'INACTIVE', '2020-06-01', '14:00:00', '22:00:00', 890000.00),
-
--- ============ HOUSEKEEPING - GOBERNANTAS (2) ============
 ('009', 'Mariana',   'Romero',       '28901234', '1982-12-10', '11-4567-8909', 'mariana.romero@hotel.com',     'Av. Libertador',   '4500', 'CABA',          2, 2, 1, 'ACTIVE', '2016-03-15', '06:00:00', '14:00:00', 1100000.00),
 ('010', 'Cecilia',   'Torres',       '29890123', '1985-06-28', '11-4567-8910', 'cecilia.torres@hotel.com',     'Av. del Libertador','3200','CABA',          2, 2, 2, 'ACTIVE', '2017-07-20', '14:00:00', '22:00:00', 1080000.00),
-
--- ============ HOUSEKEEPING - MUCAMAS (15) ============
 ('011', 'Rocío',     'Flores',       '37890123', '1998-02-14', '11-4567-8911', 'rocio.flores@hotel.com',       'Av. Boedo',        '1234', 'CABA',          3, 2, 1, 'ACTIVE', '2022-05-10', '06:00:00', '14:00:00', 720000.00),
 ('012', 'Antonella', 'Benítez',      '38901234', '1999-07-30', '11-4567-8912', 'antonella.benitez@hotel.com',  'Av. La Plata',     '890',  'CABA',          3, 2, 1, 'ACTIVE', '2023-02-01', '06:00:00', '14:00:00', 700000.00),
 ('013', 'Milagros',  'Acosta',       '36901234', '1997-09-22', '11-4567-8913', 'milagros.acosta@hotel.com',    'Av. Caseros',      '2345', 'CABA',          3, 2, 2, 'ACTIVE', '2021-09-15', '14:00:00', '22:00:00', 740000.00),
@@ -1141,36 +920,26 @@ VALUES
 ('023', 'Lara',      'Zapata',       '40456789', '2001-04-07', '11-4567-8923', 'lara.zapata@hotel.com',        'Av. Pedro Goyena', '2789', 'CABA',          3, 2, 3, 'ACTIVE', '2024-01-15', '22:00:00', '06:00:00', 720000.00),
 ('024', 'Isabella',  'Andrade',      '36123456', '1995-10-30', '11-4567-8924', 'isabella.andrade@hotel.com',   'Av. Directorio',   '1567', 'CABA',          3, 2, 1, 'INACTIVE','2020-03-10', '06:00:00', '14:00:00', 700000.00),
 ('025', 'Victoria',  'Páez',         '38789012', '1999-01-20', '11-4567-8925', 'victoria.paez@hotel.com',      'Av. Carabobo',     '890',  'CABA',          3, 2, 2, 'ACTIVE', '2022-10-05', '14:00:00', '22:00:00', 725000.00),
-
--- ============ MANTENIMIENTO (5) ============
 ('026', 'Héctor',    'Silva',        '27890123', '1980-05-16', '11-4567-8926', 'hector.silva@hotel.com',       'Av. Eva Perón',    '3400', 'CABA',          4, 3, 1, 'ACTIVE', '2015-08-10', '06:00:00', '14:00:00', 900000.00),
 ('027', 'Gustavo',   'Cabrera',      '29567890', '1984-11-28', '11-4567-8927', 'gustavo.cabrera@hotel.com',    'Av. Rivadavia',    '8900', 'CABA',          4, 3, 2, 'ACTIVE', '2017-02-20', '14:00:00', '22:00:00', 880000.00),
 ('028', 'Emanuel',   'Rojas',        '34567891', '1993-07-14', '11-4567-8928', 'emanuel.rojas@hotel.com',      'Av. Lope de Vega', '1234', 'CABA',          4, 3, 3, 'ACTIVE', '2020-11-15', '22:00:00', '06:00:00', 850000.00),
 ('029', 'Franco',    'Suárez',       '35678902', '1995-09-03', '11-4567-8929', 'franco.suarez@hotel.com',      'Av. del Campo',    '2100', 'CABA',          4, 3, 1, 'ACTIVE', '2021-06-01', '06:00:00', '14:00:00', 830000.00),
 ('030', 'Tomás',     'Quiroga',      '36789013', '1996-02-25', '11-4567-8930', 'tomas.quiroga@hotel.com',      'Av. Congreso',     '1800', 'CABA',          4, 3, 2, 'ACTIVE', '2022-04-10', '14:00:00', '22:00:00', 810000.00),
-
--- ============ COCINA - COCINEROS (5) ============
 ('031', 'Ricardo',   'Navarro',      '26789012', '1979-06-08', '11-4567-8931', 'ricardo.navarro@hotel.com',    'Av. Cabildo',      '4500', 'CABA',          5, 4, 1, 'ACTIVE', '2014-04-15', '06:00:00', '14:00:00', 1150000.00),
 ('032', 'Alejandro', 'Vera',         '28901235', '1982-09-19', '11-4567-8932', 'alejandro.vera@hotel.com',     'Av. Monroe',       '3200', 'CABA',          5, 4, 2, 'ACTIVE', '2016-10-01', '14:00:00', '22:00:00', 1100000.00),
 ('033', 'Mariano',   'Paredes',      '32345678', '1990-12-22', '11-4567-8933', 'mariano.paredes@hotel.com',    'Av. Federico Lacroze','2100','CABA',       5, 4, 3, 'ACTIVE', '2019-03-20', '22:00:00', '06:00:00', 1050000.00),
 ('034', 'Ramiro',    'Ibarra',       '34567892', '1993-04-11', '11-4567-8934', 'ramiro.ibarra@hotel.com',      'Av. Triunvirato',  '1890', 'CABA',          5, 4, 1, 'ACTIVE', '2020-12-01', '06:00:00', '14:00:00', 980000.00),
 ('035', 'Benjamín',  'Correa',       '36789014', '1996-08-27', '11-4567-8935', 'benjamin.correa@hotel.com',    'Av. Beiró',        '2300', 'CABA',          5, 4, 2, 'INACTIVE','2022-09-15','14:00:00', '22:00:00', 950000.00),
-
--- ============ COCINA - AYUDANTES (5) ============
 ('036', 'Sofía',     'Luna',         '39567891', '2000-05-30', '11-4567-8936', 'sofia.luna@hotel.com',         'Av. Nazca',        '1234', 'CABA',          6, 4, 1, 'ACTIVE', '2023-01-25', '06:00:00', '14:00:00', 780000.00),
 ('037', 'Mateo',     'Godoy',        '41234567', '2002-10-09', '11-4567-8937', 'mateo.godoy@hotel.com',        'Av. Segurola',     '890',  'CABA',          6, 4, 2, 'ACTIVE', '2024-03-01', '14:00:00', '22:00:00', 750000.00),
 ('038', 'Lorenzo',   'Ledesma',      '39234568', '1999-12-15', '11-4567-8938', 'lorenzo.ledesma@hotel.com',    'Av. Gaona',        '3400', 'CABA',          6, 4, 3, 'ACTIVE', '2022-08-10', '22:00:00', '06:00:00', 800000.00),
 ('039', 'Dante',     'Bustos',       '37678902', '1997-06-02', '11-4567-8939', 'dante.bustos@hotel.com',       'Av. Álvarez Jonte','1789', 'CABA',          6, 4, 1, 'ACTIVE', '2021-11-05', '06:00:00', '14:00:00', 790000.00),
 ('040', 'Máximo',    'Cardozo',      '40123457', '2001-03-21', '11-4567-8940', 'maximo.cardozo@hotel.com',     'Av. San Martín',   '2100', 'CABA',          6, 4, 2, 'ACTIVE', '2023-07-01', '14:00:00', '22:00:00', 760000.00),
-
--- ============ ADMINISTRACIÓN (5) ============
 ('041', 'Patricia',  'Miranda',      '25678901', '1977-04-04', '11-4567-8941', 'patricia.miranda@hotel.com',   'Av. Alvear',       '1890', 'CABA',          7, 5, 1, 'ACTIVE', '2012-09-01', '06:00:00', '14:00:00', 1200000.00),
 ('042', 'Gabriela',  'Arias',        '27890124', '1981-08-17', '11-4567-8942', 'gabriela.arias@hotel.com',     'Av. Quintana',     '2100', 'CABA',          7, 5, 2, 'ACTIVE', '2015-05-15', '14:00:00', '22:00:00', 1150000.00),
 ('043', 'Lautaro',   'Salazar',      '33456789', '1991-02-11', '11-4567-8943', 'lautaro.salazar@hotel.com',    'Av. Callao',       '1567', 'CABA',          7, 5, 1, 'ACTIVE', '2018-10-20', '06:00:00', '14:00:00', 1050000.00),
 ('044', 'Constanza', 'Rivero',       '35567891', '1995-06-26', '11-4567-8944', 'constanza.rivero@hotel.com',   'Av. Ayacucho',     '890',  'CABA',          7, 5, 2, 'ACTIVE', '2021-03-10', '14:00:00', '22:00:00', 1000000.00),
 ('045', 'Agustín',   'Maldonado',    '38901235', '1998-11-08', '11-4567-8945', 'agustin.maldonado@hotel.com',  'Av. Juncal',       '1789', 'CABA',          7, 5, 1, 'ACTIVE', '2023-04-01', '06:00:00', '14:00:00', 980000.00),
-
--- ============ PERSONAL ADICIONAL (variado, para cubrir francos) ============
 ('046', 'Emilia',    'Oyarzabal',    '41901234', '2003-05-12', '11-4567-8946', 'emilia.oyarzabal@hotel.com',   'Av. Warnes',       '1234', 'CABA',          1, 1, 3, 'ACTIVE', '2024-06-15', '22:00:00', '06:00:00', 850000.00),
 ('047', 'Thiago',    'Ceballos',     '38678901', '1999-09-28', '11-4567-8947', 'thiago.ceballos@hotel.com',    'Av. Corrientes',   '5600', 'CABA',          3, 2, 2, 'ACTIVE', '2023-11-01', '14:00:00', '22:00:00', 720000.00),
 ('048', 'Noah',      'Barrientos',   '42345678', '2003-12-03', '11-4567-8948', 'noah.barrientos@hotel.com',    'Av. Córdoba',      '4500', 'CABA',          6, 4, 3, 'ACTIVE', '2024-08-10', '22:00:00', '06:00:00', 740000.00),

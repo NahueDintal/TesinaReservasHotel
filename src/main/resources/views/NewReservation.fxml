@@ -13,9 +13,11 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ListView?>
+
 
 <ScrollPane
         fitToWidth="true"
@@ -249,6 +251,23 @@
 
                 </GridPane>
 
+                <!-- HABITACIONES -->
+
+                <Label
+                        text="Habitaciones:"
+                        GridPane.rowIndex="7"
+                        GridPane.columnIndex="0"
+                        styleClass="reservation-field-label"/>
+
+                <FlowPane
+                        fx:id="roomsContainer"
+                        hgap="10.0"
+                        vgap="10.0"
+                        prefWrapLength="500.0"
+                        prefHeight="130.0"
+                        GridPane.rowIndex="7"
+                        GridPane.columnIndex="1"
+                        styleClass="rooms-container"/>
 
                 <!-- OBSERVACIONES -->
 

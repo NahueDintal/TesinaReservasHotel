@@ -1338,4 +1338,27 @@
 /* Alertas de advertencia */
 .dialog-pane.warning-alert .header-panel {
     -fx-background-color: #f39c12;
+
+}
+
+/*rooms/reservation*/
+.room-card {
+    -fx-background-color: white;
+    -fx-border-color: #c8d8cc;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-pref-width: 130;
+    -fx-pref-height: 80;
+    -fx-cursor: hand;
+}
+
+.room-card:hover {
+    -fx-border-color: #6a9b76;
+}
+
+.room-card.selected {
+    -fx-background-color: #dcefe1;
+    -fx-border-color: #4f855d;
+    -fx-border-width: 2;
 }
