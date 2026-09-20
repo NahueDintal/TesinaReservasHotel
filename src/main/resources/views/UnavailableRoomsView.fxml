@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="15" styleClass="form-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UnavailableRoomsController">
+<VBox Spacing="15"  stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UnavailableRoomsController">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20" />
     </padding>
@@ -26,7 +26,7 @@
 
     <TextField fx:id="txtSearch" promptText="🔍 Buscar por número, tipo, vista..." styleClass="search-field" />
 
-    <TableView fx:id="tableUnavailableRooms" styleClass="room-table" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableUnavailableRooms" styleClass="customer-table" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colNumber" text="Número" prefWidth="100" />
             <TableColumn fx:id="colFloor" text="Piso" prefWidth="80" />

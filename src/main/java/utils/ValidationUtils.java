@@ -9,25 +9,24 @@ public class ValidationUtils {
             Pattern.compile("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+(?:[ '-][a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+)*$");
 
     private static final Pattern DNI_PATTERN =
-            Pattern.compile("^\\d{7,8}$");
+            Pattern.compile("^(?=(?:.*\\d){7,8}$)[\\d. ]+$");
 
     private static final Pattern PASSPORT_PATTERN =
-            Pattern.compile("^[A-Za-z]{3}\\d{6}$");
+            Pattern.compile("^(?:\\s*[A-Za-z0-9]\\s*){6,12}$");
 
     private static final Pattern FOREIGN_ID_PATTERN =
-            Pattern.compile("^[A-Za-z0-9]{6,12}$");
+            Pattern.compile("^(?:\\s*[A-Za-z0-9]\\s*){6,15}$");
 
-    private static final Pattern DRIVER_LICENSE_PATTERN =
-            Pattern.compile("^[A-Za-z0-9]{8,12}$");
+    private static final Pattern OTHER_ID_PATTERN =
+            Pattern.compile("^(?:\\s*[A-Za-z0-9]\\s*){6,15}$");
 
-    private static final Pattern PHONE_PATTERN =
-            Pattern.compile("^[+]?[0-9\\s\\-()]{7,20}$");
+    //private static final Pattern PHONE_PATTERN =
+            //Pattern.compile("^[+]?[0-9\\s\\-()]{7,20}$");
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     // ========== VALIDACIONES ==========
-
     public static boolean isValidName(String name) {
         if (name == null || name.trim().isEmpty()) return false;
         String trimmed = name.trim();
@@ -44,12 +43,10 @@ public class ValidationUtils {
                 return DNI_PATTERN.matcher(doc).matches();
             case "pasaporte":
                 return PASSPORT_PATTERN.matcher(doc).matches();
-            case "cedula de identidad":
-                return DNI_PATTERN.matcher(doc).matches();
-            //case "Cédula Extranjera":
-                //return FOREIGN_ID_PATTERN.matcher(doc).matches();
-            //case "Driver License":
-                //return DRIVER_LICENSE_PATTERN.matcher(doc).matches();
+            case "cedula extranjera":
+                return FOREIGN_ID_PATTERN.matcher(doc).matches();
+            case "otro":
+                return OTHER_ID_PATTERN.matcher(doc).matches();
             default:
                 return false;
         }
@@ -67,23 +64,18 @@ public class ValidationUtils {
     }
 
     // ========== MENSAJES DE ERROR ==========
-
     public static String getNameError() {
         return "El nombre debe tener entre 2 y 50 letras, sin números ni símbolos.";
     }
 
     public static String getDocumentError(String documentType) {
         switch (documentType) {
-            case "DNI":
+            case "dni":
                 return "El DNI debe tener 7 u 8 dígitos numéricos.";
-            case "Pasaporte":
-                return "El Pasaporte debe tener 3 letras seguidas de 6 números (ej: ABC123456).";
-            case "Cédula":
-                return "La Cédula debe tener 7 u 8 dígitos numéricos.";
-            case "Cédula Extranjera":
+            case "pasaporte":
+                return "El Pasaporte debe tener entre 6 y 12 caracteres alfanumericos";
+            case "cedula extranjera":
                 return "La Cédula Extranjera debe tener entre 6 y 12 caracteres alfanuméricos.";
-            case "Driver License":
-                return "La Licencia de Conducir debe tener entre 8 y 12 caracteres alfanuméricos.";
             default:
                 return "Formato de documento inválido.";
         }

@@ -27,7 +27,6 @@ public class Service {
     public int getIdService() {
         return idService;
     }
-
     public void setIdService(int idService) {
         this.idService = idService;
     }
@@ -35,7 +34,6 @@ public class Service {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -43,7 +41,6 @@ public class Service {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -51,7 +48,6 @@ public class Service {
     public BigDecimal getPrice() {
         return price;
     }
-
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
@@ -59,7 +55,6 @@ public class Service {
     public boolean isActive() {
         return active;
     }
-
     public void setActive(boolean active) {
         this.active = active;
     }

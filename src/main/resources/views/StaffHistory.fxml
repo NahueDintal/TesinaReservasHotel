@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<VBox stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.StaffHistoryController"
-      spacing="12" prefWidth="500" prefHeight="400">
+      spacing="15" prefWidth="500" prefHeight="400">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
@@ -19,7 +19,7 @@
     <Label text="Personal Inactivo" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
     <Label text="Seleccioná un empleado y presioná Reactivar para volver a ponerlo Activo." style="-fx-font-style: italic;"/>
 
-    <TableView fx:id="tableInactive" VBox.vgrow="ALWAYS">
+    <TableView fx:id="tableInactive" styleClass="customer-table" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colName" text="Nombre Completo" prefWidth="200"/>
             <TableColumn fx:id="colDni" text="DNI" prefWidth="120"/>

@@ -393,8 +393,7 @@ CREATE TABLE Consumption (
 INSERT INTO DocumentType (name) VALUES
 ('dni'),
 ('pasaporte'),
-('cedula extranjera')
-('otro');
+('cedula de identidad');
 
 
 -- ==========================================
@@ -1177,6 +1176,98 @@ VALUES
 ('048', 'Noah',      'Barrientos',   '42345678', '2003-12-03', '11-4567-8948', 'noah.barrientos@hotel.com',    'Av. Córdoba',      '4500', 'CABA',          6, 4, 3, 'ACTIVE', '2024-08-10', '22:00:00', '06:00:00', 740000.00),
 ('049', 'Amelia',    'Cisneros',     '40789012', '2001-07-19', '11-4567-8949', 'amelia.cisneros@hotel.com',    'Av. Santa Fe',     '3900', 'CABA',          7, 5, 3, 'ACTIVE', '2024-04-01', '22:00:00', '06:00:00', 950000.00),
 ('050', 'Dylan',     'Espinoza',     '37234567', '1997-03-05', '11-4567-8950', 'dylan.espinoza@hotel.com',     'Av. Cabildo',      '3200', 'CABA',          4, 3, 3, 'ACTIVE', '2021-12-01', '22:00:00', '06:00:00', 830000.00);
+
+-- ==========================================
+-- RESERVATIONS - HOTEL GRANDE (70 reservas)
+-- Cliente obtenido dinámicamente con subconsulta + OFFSET
+-- (funciona aunque los idCustomer no arranquen en 1)
+-- ==========================================
+
+INSERT INTO Reservation
+(idCustomer, creationDate, checkIn, checkOut, idReservationStatus, idReservationType,
+ numberOfGuests, totalRate, observations)
+VALUES
+
+-- ============ FINALIZADAS (pasadas) - 30 ============
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  60), '2026-05-10 10:15:00', '2026-06-01', '2026-06-05', 4, 1, 2,  320.00, 'Estadía tranquila, sin observaciones'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  61), '2026-05-12 14:30:00', '2026-06-03', '2026-06-08', 4, 2, 2,  475.00, 'Reserva vía Booking - desayuno incluido'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  62), '2026-05-15 09:45:00', '2026-06-07', '2026-06-10', 4, 1, 1,  165.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  63), '2026-05-18 16:20:00', '2026-06-10', '2026-06-15', 4, 3, 4,  600.00, 'Airbnb - familia con 2 niños'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  64), '2026-05-20 11:00:00', '2026-06-12', '2026-06-14', 4, 5, 2,  160.00, 'Walk-in - pasajero por trabajo'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  65), '2026-05-22 18:35:00', '2026-06-15', '2026-06-20', 4, 2, 3,  425.00, 'Solicita cuna para bebé'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  66), '2026-05-25 08:50:00', '2026-06-18', '2026-06-21', 4, 1, 2,  255.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  67), '2026-05-28 13:10:00', '2026-06-20', '2026-06-27', 4, 4, 2,  665.00, 'WhatsApp - cliente frecuente'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  68), '2026-06-01 10:05:00', '2026-06-22', '2026-06-25', 4, 2, 4,  330.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET  69), '2026-06-03 15:40:00', '2026-06-25', '2026-06-30', 4, 1, 2,  450.00, 'Solicitó late check-out'),
+
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 10), '2026-06-05 09:20:00', '2026-06-28', '2026-07-02', 4, 3, 2,  380.00, 'Airbnb - pareja en luna de miel'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 11), '2026-06-08 11:55:00', '2026-07-01', '2026-07-05', 4, 2, 3,  460.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 12), '2026-06-10 14:15:00', '2026-07-03', '2026-07-10', 4, 1, 4,  850.00, 'Familia numerosa - 2 habitaciones'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 13), '2026-06-12 17:30:00', '2026-07-06', '2026-07-09', 4, 5, 1,  180.00, 'Walk-in nocturno'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 14), '2026-06-15 10:45:00', '2026-07-10', '2026-07-14', 4, 2, 2,  400.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 15), '2026-06-18 12:00:00', '2026-07-12', '2026-07-18', 4, 4, 4,  720.00, 'WhatsApp - grupo de amigos'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 16), '2026-06-20 09:35:00', '2026-07-15', '2026-07-19', 4, 1, 2,  360.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 17), '2026-06-22 16:50:00', '2026-07-18', '2026-07-22', 4, 3, 3,  500.00, 'Airbnb - solicitó servicio de limpieza extra'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 18), '2026-06-25 08:15:00', '2026-07-20', '2026-07-25', 4, 2, 2,  525.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 19), '2026-06-28 13:40:00', '2026-07-23', '2026-07-27', 4, 1, 3,  440.00, 'Cliente recurrente'),
+
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 20), '2026-07-01 11:20:00', '2026-07-25', '2026-08-01', 4, 2, 4,  800.00, 'Estadía vacaciones de invierno'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 21), '2026-07-03 15:05:00', '2026-07-28', '2026-07-31', 4, 1, 2,  300.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 22), '2026-07-05 10:30:00', '2026-08-01', '2026-08-05', 4, 4, 2,  400.00, 'WhatsApp - pidió recomendaciones turísticas'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 23), '2026-07-08 14:55:00', '2026-08-03', '2026-08-08', 4, 3, 5,  680.00, 'Airbnb - 2 adultos + 3 niños'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 24), '2026-07-10 09:10:00', '2026-08-06', '2026-08-09', 4, 2, 2,  300.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 25), '2026-07-12 17:45:00', '2026-08-10', '2026-08-15', 4, 1, 2,  475.00, 'Solicitó habitación con vista al lago'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 26), '2026-07-15 11:30:00', '2026-08-12', '2026-08-16', 4, 5, 1,  240.00, 'Walk-in - viajero solo'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 27), '2026-07-18 13:25:00', '2026-08-15', '2026-08-20', 4, 2, 3,  525.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 28), '2026-07-20 10:00:00', '2026-08-18', '2026-08-22', 4, 1, 2,  400.00, 'Cliente corporativo'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 29), '2026-07-22 16:15:00', '2026-08-20', '2026-08-25', 4, 4, 4,  625.00, 'WhatsApp - familia con mascota'),
+
+-- ============ CANCELADAS - 8 ============
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 30), '2026-06-01 10:20:00', '2026-07-05', '2026-07-10', 3, 2, 2,  425.00, 'Cancelada por el cliente - motivos personales'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 31), '2026-06-15 14:40:00', '2026-07-20', '2026-07-25', 3, 1, 3,  550.00, 'Cancelada - cambio de planes'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 32), '2026-07-01 09:50:00', '2026-08-10', '2026-08-15', 3, 3, 2,  500.00, 'Cancelada por Airbnb - huésped no se presentó'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 33), '2026-07-10 15:30:00', '2026-08-20', '2026-08-25', 3, 2, 4,  625.00, 'Cancelada - problema de pago'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 34), '2026-07-20 11:15:00', '2026-08-28', '2026-09-02', 3, 1, 2,  450.00, 'Cancelada por el huésped'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 35), '2026-08-01 16:45:00', '2026-09-05', '2026-09-10', 3, 5, 1,  280.00, 'Walk-in cancelado en recepción'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 36), '2026-08-10 10:30:00', '2026-09-15', '2026-09-20', 3, 4, 3,  540.00, 'WhatsApp - cancelada por clima'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 37), '2026-08-15 13:55:00', '2026-09-22', '2026-09-28', 3, 2, 2,  660.00, 'Cancelada - vuelo cancelado'),
+
+-- ============ PENDIENTES - 12 ============
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 38), '2026-09-10 10:00:00', '2026-10-05', '2026-10-10', 1, 2, 2,  500.00, 'Pendiente de confirmación de pago'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 39), '2026-09-11 14:25:00', '2026-10-08', '2026-10-12', 1, 1, 3,  440.00, 'Esperando seña'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 40), '2026-09-12 09:15:00', '2026-10-12', '2026-10-18', 1, 3, 4,  720.00, 'Pendiente datos del huésped'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 41), '2026-09-12 16:50:00', '2026-10-15', '2026-10-20', 1, 4, 2,  550.00, 'WhatsApp - a confirmar'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 42), '2026-09-13 11:30:00', '2026-10-18', '2026-10-22', 1, 1, 2,  440.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 43), '2026-09-13 15:10:00', '2026-10-22', '2026-10-28', 1, 2, 3,  660.00, 'Pendiente de documentación'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 44), '2026-09-14 09:45:00', '2026-10-25', '2026-10-30', 1, 5, 1,  275.00, 'Walk-in futuro - consulta'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 45), '2026-09-14 13:20:00', '2026-11-01', '2026-11-07', 1, 1, 4,  660.00, 'Pendiente confirmación grupo'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 46), '2026-09-15 10:15:00', '2026-11-05', '2026-11-10', 1, 2, 2,  550.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 47), '2026-09-15 14:40:00', '2026-11-10', '2026-11-15', 1, 4, 3,  550.00, 'Pendiente - cliente pide factura A'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 48), '2026-09-15 17:00:00', '2026-11-15', '2026-11-20', 1, 1, 2,  550.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 49), '2026-09-16 09:30:00', '2026-11-20', '2026-11-25', 1, 3, 5,  550.00, 'Airbnb - pendiente aprobación'),
+
+-- ============ CONFIRMADAS (futuras) - 20 ============
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 50), '2026-09-01 10:20:00', '2026-09-20', '2026-09-25', 2, 2, 2,  550.00, 'Confirmada - pago total recibido'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 51), '2026-09-02 14:15:00', '2026-09-22', '2026-09-27', 2, 1, 3,  550.00, 'Confirmada - solicitó cuna'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 52), '2026-09-03 09:40:00', '2026-09-25', '2026-09-30', 2, 4, 2,  550.00, 'WhatsApp - confirmada con seña'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 53), '2026-09-04 16:30:00', '2026-09-28', '2026-10-03', 2, 3, 4,  550.00, 'Airbnb - confirmada'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 54), '2026-09-05 11:00:00', '2026-10-01', '2026-10-06', 2, 2, 2,  550.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 55), '2026-09-06 15:45:00', '2026-10-03', '2026-10-08', 2, 1, 3,  550.00, 'Confirmada - cliente recurrente'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 56), '2026-09-07 10:30:00', '2026-10-06', '2026-10-11', 2, 5, 1,  275.00, 'Walk-in confirmado'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 57), '2026-09-08 13:55:00', '2026-10-10', '2026-10-15', 2, 2, 4,  550.00, 'Confirmada - solicita late check-out'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 58), '2026-09-08 17:20:00', '2026-10-14', '2026-10-19', 2, 1, 2,  550.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 59), '2026-09-09 11:10:00', '2026-10-17', '2026-10-22', 2, 4, 2,  550.00, 'WhatsApp - confirmada con transferencia'),
+
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 60), '2026-09-10 14:35:00', '2026-10-20', '2026-10-25', 2, 3, 3,  550.00, 'Airbnb - confirmada'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 61), '2026-09-11 09:20:00', '2026-10-24', '2026-10-30', 2, 2, 4,  660.00, 'Confirmada - familia numerosa'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 62), '2026-09-12 15:40:00', '2026-10-28', '2026-11-02', 2, 1, 2,  550.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 63), '2026-09-13 10:05:00', '2026-11-02', '2026-11-08', 2, 2, 3,  660.00, 'Confirmada - grupo corporativo'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 64), '2026-09-13 16:25:00', '2026-11-08', '2026-11-12', 2, 4, 2,  440.00, 'WhatsApp - confirmada'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 65), '2026-09-14 11:50:00', '2026-11-12', '2026-11-18', 2, 1, 4,  660.00, 'Confirmada - 2 habitaciones'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 66), '2026-09-14 15:15:00', '2026-11-18', '2026-11-23', 2, 3, 2,  550.00, 'Airbnb - confirmada'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 67), '2026-09-15 09:35:00', '2026-11-22', '2026-11-27', 2, 2, 3,  550.00, NULL),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 68), '2026-09-15 13:20:00', '2026-11-28', '2026-12-03', 2, 1, 2,  550.00, 'Confirmada - estadía por trabajo'),
+((SELECT idCustomer FROM Customer ORDER BY idCustomer LIMIT 1 OFFSET 69), '2026-09-16 10:10:00', '2026-12-05', '2026-12-12', 2, 2, 4,  770.00, 'Confirmada - vacaciones de fin de año');
 
 -- ==========================================
 -- FIN DEL SCRIPT

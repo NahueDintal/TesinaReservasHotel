@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import models.*;
 import repositories.*;
+import utils.StyleManager;
 import utils.ValidationUtils;
 
 import java.sql.SQLException;
@@ -17,7 +18,7 @@ public class CustomerFormController {
 
     // ========== FORM COMPONENTS ==========
     @FXML private Label lblFormTitle;
-    @FXML private TextField txtFirstName;
+    @FXML private TextField txtName;
     @FXML private TextField txtSurname;
     @FXML private ComboBox<String> comboDocumentType;
     @FXML private TextField txtDocumentNumber;
@@ -54,7 +55,6 @@ public class CustomerFormController {
         setupValidations();
 
         if (editingCustomer == null) {
-            lblFormTitle.setText("Registrar Nuevo Cliente");
             btnSave.setText("Guardar");
         }
     }
@@ -85,10 +85,10 @@ public class CustomerFormController {
     // ========== SETUP VALIDATIONS ==========
     private void setupValidations() {
         // Validar nombres al perder el foco
-        txtFirstName.focusedProperty().addListener((obs, oldVal, newVal) -> {
+        txtName.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
-                touchedFields.add(txtFirstName);
-                validateFirstName();
+                touchedFields.add(txtName);
+                validateName();
             }
         });
 
@@ -141,7 +141,7 @@ public class CustomerFormController {
         });
 
         // Validación mientras se escribe (sin feedback visual)
-        txtFirstName.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
+        txtName.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
         txtSurname.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
         txtDocumentNumber.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
         txtPhone.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
@@ -154,11 +154,11 @@ public class CustomerFormController {
     }
 
     // ========== VALIDACIONES INDIVIDUALES ==========
-    private boolean validateFirstName() {
-        String name = txtFirstName.getText();
+    private boolean validateName() {
+        String name = txtName.getText();
         boolean valid = ValidationUtils.isValidName(name);
-        System.out.println("🔍 validateFirstName() - Texto: '" + name + "' | Válido: " + valid);
-        setFieldValid(txtFirstName, valid, ValidationUtils.getNameError());
+        System.out.println("🔍 validateName() - Texto: '" + name + "' | Válido: " + valid);
+        setFieldValid(txtName, valid, ValidationUtils.getNameError());
         updateSaveButtonState();
         return valid;
     }
@@ -200,6 +200,7 @@ public class CustomerFormController {
         return valid;
     }
 
+    //revisar
     private void validateCombo(ComboBox<String> combo, String value) {
         boolean valid = value != null && !value.isEmpty();
         setFieldValid(combo, valid, "Este campo es obligatorio.");
@@ -208,7 +209,7 @@ public class CustomerFormController {
 
     // ========== HELPER: MARCAR CAMPO VÁLIDO/INVÁLIDO ==========
     private void setFieldValid(Control field, boolean valid, String errorMessage) {
-        // Si el campo NO fue tocado por el usuario, no mostrar feedback visual
+        // Solo mostrar feedback visual si el campo ya fue tocada una vez
         if (!touchedFields.contains(field)) {
             return; // ← Salir sin hacer nada
         }
@@ -218,7 +219,7 @@ public class CustomerFormController {
                 " | Mensaje: " + errorMessage);
 
         if (valid) {
-            field.setStyle(""); // Limpiar borde rojo
+            field.setStyle("");
             field.setTooltip(null);
             System.out.println("   ✅ Campo válido, borde limpiado");
         } else {
@@ -231,12 +232,16 @@ public class CustomerFormController {
 
     // ========== ACTUALIZAR ESTADO DEL BOTÓN GUARDAR ==========
     private void updateSaveButtonState() {
-        boolean allValid = ValidationUtils.isValidName(txtFirstName.getText()) &&
+        boolean allValid =
+                ValidationUtils.isValidName(txtName.getText()) &&
                 ValidationUtils.isValidName(txtSurname.getText()) &&
+
                 ValidationUtils.isValidDocument(txtDocumentNumber.getText(),
                         comboDocumentType.getSelectionModel().getSelectedItem()) &&
+
                 ValidationUtils.isValidPhone(txtPhone.getText()) &&
                 ValidationUtils.isValidEmail(txtEmail.getText()) &&
+
                 !comboDocumentType.getSelectionModel().isEmpty() &&
                 !comboCountry.getSelectionModel().isEmpty() &&
                 !comboOrigin.getSelectionModel().isEmpty();
@@ -253,10 +258,9 @@ public class CustomerFormController {
     // ========== SET CUSTOMER (para edición) ==========
     public void setCustomer(Customer customer) {
         this.editingCustomer = customer;
-        lblFormTitle.setText("Editar Cliente");
         btnSave.setText("Actualizar");
 
-        txtFirstName.setText(customer.getName());
+        txtName.setText(customer.getName());
         txtSurname.setText(customer.getSurname());
         txtDocumentNumber.setText(customer.getDocumentNumber());
         txtPhone.setText(customer.getPhoneNumber());
@@ -266,8 +270,8 @@ public class CustomerFormController {
         comboCountry.getSelectionModel().select(customer.getCountryName());
         comboOrigin.getSelectionModel().select(customer.getOriginName());
 
-        // Validar todos los campos después de cargar
-        validateFirstName();
+        //revisar
+        validateName();
         validateSurname();
         validateDocument();
         validatePhone();
@@ -277,7 +281,7 @@ public class CustomerFormController {
 
     // ========== SAVE ==========
     private void saveCustomer() {
-        // Validar el campo activo antes de guardar
+
         if (!validateAllFields()) {
             return;
         }
@@ -286,19 +290,13 @@ public class CustomerFormController {
         loadDataFromForm(customer);
 
         try {
-            // Validar duplicados (si es necesario)
+            // Validar duplicados //revisar
             int excludeId = editingCustomer != null ? editingCustomer.getIdCustomer() : 0;
 
             if (customerDAO.isDuplicatedByDocumentation(customer.getDocumentNumber(),
                     customer.getIdDocumentType(), excludeId)) {
                 showAlert("Error", "Cliente duplicado",
                         "Ya existe un cliente con el mismo número de documento y tipo.");
-                return;
-            }
-
-            if (customerDAO.isDuplicatedByPhone(customer.getPhoneNumber(), excludeId)) {
-                showAlert("Error", "Teléfono duplicado",
-                        "Ya existe un cliente con el mismo número de teléfono.");
                 return;
             }
 
@@ -321,8 +319,8 @@ public class CustomerFormController {
     }
 
     private boolean validateAllFields() {
-        // Marcar TODOS los campos como tocados al intentar guardar
-        touchedFields.add(txtFirstName);
+        // Marcar TODOS los campos como tocados
+        touchedFields.add(txtName);
         touchedFields.add(txtSurname);
         touchedFields.add(txtDocumentNumber);
         touchedFields.add(txtPhone);
@@ -331,7 +329,7 @@ public class CustomerFormController {
         touchedFields.add(comboCountry);
         touchedFields.add(comboOrigin);
 
-        boolean firstNameValid = validateFirstName();
+        boolean nameValid = validateName();
         boolean surnameValid = validateSurname();
         boolean documentValid = validateDocument();
         boolean phoneValid = validatePhone();
@@ -342,23 +340,26 @@ public class CustomerFormController {
         boolean countryValid = !comboCountry.getSelectionModel().isEmpty();
         boolean originValid = !comboOrigin.getSelectionModel().isEmpty();
 
+        //revisar
         if (!docTypeValid) setFieldValid(comboDocumentType, false, "Seleccione un tipo de documento.");
         if (!countryValid) setFieldValid(comboCountry, false, "Seleccione un país.");
         if (!originValid) setFieldValid(comboOrigin, false, "Seleccione un origen.");
 
-        return firstNameValid && surnameValid && documentValid &&
+        return nameValid && surnameValid && documentValid &&
                 phoneValid && emailValid && docTypeValid && countryValid && originValid;
     }
 
     // ========== LOAD DATA FROM FORM ==========
     private void loadDataFromForm(Customer customer) {
-        customer.setName(txtFirstName.getText().trim());
+        customer.setName(txtName.getText().trim());
         customer.setSurname(txtSurname.getText().trim());
         customer.setDocumentNumber(txtDocumentNumber.getText().trim());
-
-        // Limpiar y validar teléfono
-
         customer.setEmail(txtEmail.getText().trim());
+
+        // Limpiar el teléfono antes de guardar
+        String rawPhone = txtPhone.getText().trim();
+        String cleanPhone = rawPhone.replaceAll("[^+0-9]", "");
+        customer.setPhoneNumber(cleanPhone);
 
         int idDocType = getIdBySelection(comboDocumentType, documentTypes);
         int idCountry = getIdBySelection(comboCountry, countries);
@@ -413,6 +414,7 @@ public class CustomerFormController {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        StyleManager.applyStyles(alert.getDialogPane());
         alert.showAndWait();
     }
 }

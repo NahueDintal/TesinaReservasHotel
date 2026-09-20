@@ -1,38 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
-
 <?import javafx.scene.control.Button?>
-
 <?import javafx.scene.control.ComboBox?>
-
 <?import javafx.scene.control.DatePicker?>
-
 <?import javafx.scene.control.Label?>
-
 <?import javafx.scene.control.ScrollPane?>
-
 <?import javafx.scene.control.TableColumn?>
-
 <?import javafx.scene.control.TableView?>
-
 <?import javafx.scene.control.TextArea?>
-
 <?import javafx.scene.control.TextField?>
-
 <?import javafx.scene.layout.AnchorPane?>
-
 <?import javafx.scene.layout.ColumnConstraints?>
-
 <?import javafx.scene.layout.GridPane?>
-
 <?import javafx.scene.layout.HBox?>
-
 <?import javafx.scene.layout.Priority?>
-
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.ListView?>
+
 <ScrollPane
         fitToWidth="true"
         hbarPolicy="NEVER"
@@ -548,7 +532,8 @@
                         maxWidth="Infinity">
 
                     <Button
-                            text="+  Agregar consumo"
+                            fx:id="btnConsumptionAction"
+                            text="Agregar consumo"
                             onAction="#handleAddConsumption"
                             prefWidth="170.0"
                             prefHeight="36.0"
@@ -600,37 +585,14 @@
                                 text="Total"
                                 prefWidth="130.0"
                                 minWidth="100.0"/>
+                        <TableColumn
+                                fx:id="colConsumptionActions"
+                                text="Acciones"
+                                prefWidth="100.0"/>
 
                     </columns>
 
                 </TableView>
-
-
-                <!-- ================================================= -->
-                <!-- BOTONES DE CONSUMOS -->
-                <!-- ================================================= -->
-
-                <HBox
-                        spacing="10.0"
-                        alignment="CENTER_LEFT"
-                        maxWidth="Infinity">
-
-                    <Button
-                            text="Modificar consumo"
-                            onAction="#handleModifyConsumption"
-                            prefWidth="170.0"
-                            prefHeight="36.0"
-                            styleClass="reservation-secondary-button"/>
-
-                    <Button
-                            text="Anular consumo"
-                            onAction="#handleDeleteConsumption"
-                            prefWidth="150.0"
-                            prefHeight="36.0"
-                            styleClass="reservation-danger-button"/>
-
-                </HBox>
-
 
                 <!-- ================================================= -->
                 <!-- TOTAL CONSUMOS -->

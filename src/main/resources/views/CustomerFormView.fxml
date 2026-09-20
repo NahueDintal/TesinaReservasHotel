@@ -27,7 +27,7 @@
     <GridPane hgap="15" vgap="12">
         <!-- Name -->
         <Label text="Nombres *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtFirstName" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250.0" />
+        <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250.0" />
 
         <!-- Surname -->
         <Label text="Apellidos *" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0" />

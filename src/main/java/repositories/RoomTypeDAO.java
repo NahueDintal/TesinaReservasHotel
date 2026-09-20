@@ -1,28 +1,30 @@
 package repositories;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RoomTypeDAO {
 
-  /**
-   * Obtiene todos los tipos de habitación como un mapa id -> nombre.
-   * 
-   * @return Map<Integer, String> con id_room_type y name.
-   * @throws SQLException si ocurre un error de base de datos.
-   */
-  public Map<Integer, String> listAll() throws SQLException {
+  private static final Logger logger = LoggerFactory.getLogger(RoomTypeDAO.class);
+
+  public Map<Integer, String> listAll() {
     Map<Integer, String> types = new LinkedHashMap<>();
-    String sql = "SELECT id_room_type, name FROM room_type ORDER BY name";
+    String sql = "SELECT idRoomType, name FROM RoomType ORDER BY name";
 
     try (Connection conn = ConexionDB.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
         ResultSet rs = stmt.executeQuery()) {
 
       while (rs.next()) {
-        types.put(rs.getInt("id_room_type"), rs.getString("name"));
+        types.put(rs.getInt("idRoomType"), rs.getString("name"));
       }
+    } catch (SQLException e) {
+      logger.error("No se puede listar los tipos de habitación. {}", e.getMessage());
+      throw new RuntimeException("No se pudo cargar el tipo de habitación");
     }
     return types;
   }

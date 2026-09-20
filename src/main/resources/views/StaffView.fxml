@@ -20,7 +20,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.StaffController">
 
-    <VBox styleClass="content-main" spacing="15"
+    <VBox styleClass="room-table" spacing="15"
           AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <padding>
@@ -29,7 +29,7 @@
 
         <!-- Título y botones -->
         <HBox alignment="CENTER_LEFT" spacing="15">
-            <Label text="Personal" styleClass="section-title">
+            <Label text="Personal" styleClass="room-table">
                 <font><Font size="24.0" /></font>
             </Label>
             <Region HBox.hgrow="ALWAYS" />
@@ -49,7 +49,7 @@
         <!-- SplitPane: Tabla + Detalle -->
         <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS" styleClass="split-pane">
             <VBox spacing="10">
-                <TableView fx:id="tableStaff" styleClass="staff-table" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tableStaff" styleClass="customer-table" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colFullName" text="Nombre Completo" prefWidth="150" />
                         <TableColumn fx:id="colPosition" text="Cargo" prefWidth="120" />

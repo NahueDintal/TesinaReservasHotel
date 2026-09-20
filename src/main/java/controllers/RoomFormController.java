@@ -73,8 +73,8 @@ public class RoomFormController {
 
       roomViews = roomViewDAO.listAll();
       comboView.getItems().setAll(roomViews.values());
-    } catch (SQLException e) {
-      logger.error("No se pudieron cargar los catalogos. {}", e.getMessage());
+    } catch (Exception e) {
+      logger.error("No se pudieron cargar los catalogos. {}", e.getMessage(), e);
       showAlert("Error", "No se pudieron cargar los catálogos", e.getMessage());
     }
   }

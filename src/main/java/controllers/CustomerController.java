@@ -12,6 +12,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import models.*;
 import repositories.*;
+import utils.StyleManager;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class CustomerController {
 
     // ========== TABLE ==========
     @FXML private TableView<Customer> tableCustomers;
-    @FXML private TableColumn<Customer, String> colFirstName;
+    @FXML private TableColumn<Customer, String> colName;
     @FXML private TableColumn<Customer, String> colSurname;
     @FXML private TableColumn<Customer, String> colDocumentType;
     @FXML private TableColumn<Customer, String> colOrigin;
@@ -56,7 +57,7 @@ public class CustomerController {
     @FXML
     public void initialize() {
         // Configurar columnas
-        colFirstName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
         colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
@@ -69,10 +70,9 @@ public class CustomerController {
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             try {
                 if (newValue == null || newValue.trim().isEmpty()) {
-                    // Si el buscador está vacío, cargar los últimos 100
                     loadActiveCustomers();
                 } else {
-                    // Si hay texto, buscar en TODA la base de datos
+                    // Si hay texto, busca 100 recientes
                     masterCustomerList.setAll(customerDAO.searchCustomers(newValue.trim()));
                     filteredCustomers = new FilteredList<>(masterCustomerList, p -> true);
                     tableCustomers.setItems(filteredCustomers);
@@ -126,20 +126,9 @@ public class CustomerController {
         }
     }
 
-
-    // ========== CLEAR FILTERS ==========
-    @FXML
-    private void clearFilters() {
-        txtSearch.clear();
-        filteredCustomers.setPredicate(customer -> true);
-        updateCounter();
-    }
-
     // ========== DETAIL ==========
     private void showDetail(Customer c) {
-        // Nombre completo (siempre debería tener, pero por si acaso)
         txtDetailFullName.setText(getDisplayText(c.getName() + " " + c.getSurname()));
-
         txtDetailDocumentType.setText(getDisplayText(c.getDocumentTypeName()));
         txtDetailDocumentNumber.setText(getDisplayText(c.getDocumentNumber()));
         txtDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
@@ -168,6 +157,7 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/CustomerFormView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
+            StyleManager.applyStyles(stage);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
 
@@ -193,6 +183,7 @@ public class CustomerController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InactiveCustomersView.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(loader.load()));
+            StyleManager.applyStyles(stage);
             stage.setTitle("Vista de Inactivos");
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(tableCustomers.getScene().getWindow());
@@ -209,27 +200,25 @@ public class CustomerController {
         Customer selected = tableCustomers.getSelectionModel().getSelectedItem();
         if (selected == null) return;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar cliente");
-        alert.setHeaderText("¿Desea eliminar este cliente?");
-        alert.setContentText("El cliente " + selected.getName() + " " + selected.getSurname() + " no podrá realizar reservas.");
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                try {
-                    selected.setIdCustomerStatus(getStatusIdByName("inactive"));
-                    if (customerDAO.isUpdate(selected)) {
-                        masterCustomerList.remove(selected);
-                        filteredCustomers.remove(selected);
-                        tableCustomers.refresh();
-                        clearDetail();
-                        updateCounter();
-                        showAlert("Éxito", "Cliente eliminado", "");
-                    }
-                } catch (SQLException e) {
-                    showAlert("Error", "No se pudo eliminar", e.getMessage());
+        boolean confirmed = StyleManager.showConfirmation("Eliminar cliente",
+                "¿Desea eliminar este cliente?",
+                "El cliente " + selected.getName() + " " + selected.getSurname() + " no podrá realizar reservas.");
+
+        if (confirmed) {
+            try {
+                selected.setIdCustomerStatus(getStatusIdByName("inactive"));
+                if (customerDAO.isUpdate(selected)) {
+                    masterCustomerList.remove(selected);
+                    filteredCustomers.remove(selected);
+                    tableCustomers.refresh();
+                    clearDetail();
+                    updateCounter();
+                    showAlert("Éxito", "Cliente eliminado", "");
                 }
+            } catch (SQLException e) {
+                showAlert("Error", "No se pudo eliminar", e.getMessage());
             }
-        });
+        }
     }
 
     // ========== HELPERS ==========
@@ -248,7 +237,7 @@ public class CustomerController {
 
         // Verificar si hay más de 100 clientes en total (haciendo una consulta rápida)
         try {
-            int totalInDB = customerDAO.countAll(); // ← Necesitamos este método
+            int totalInDB = customerDAO.countAll();
             if (totalInDB > 100) {
                 lblTotalCustomers.setText("Mostrando los últimos 100 de " + totalInDB + " clientes");
             } else {
@@ -258,12 +247,12 @@ public class CustomerController {
             lblTotalCustomers.setText("Mostrando " + count + " clientes");
         }
     }
-
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        StyleManager.applyStyles(alert.getDialogPane());
         alert.showAndWait();
     }
 }
