@@ -55,6 +55,7 @@ public class StaffHistoryController {
         try {
             staffDAO.reactivate(seleccionado.getId());
             cargarInactivos(); // refresca: el reactivado ya no debería aparecer en la lista
+            mostrarAlerta("El personal ha sido reincorporado satisfactoriamente.");
         } catch (SQLException e) {
             mostrarAlerta("No se pudo reactivar: " + e.getMessage());
         }

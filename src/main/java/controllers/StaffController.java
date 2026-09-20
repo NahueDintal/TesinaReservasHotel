@@ -194,6 +194,7 @@ public class StaffController {
                     staffDAO.deactivate(seleccionado.getId());
                     cargarDatos();
                     aplicarFiltros();
+                    mostrarAlerta("El registro del personal fue inactivado satisfactoriamente.");
                 } catch (SQLException e) {
                     mostrarAlerta("No se pudo inactivar: " + e.getMessage());
                 }

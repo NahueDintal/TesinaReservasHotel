@@ -2,6 +2,7 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.Node;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import models.*;
@@ -12,8 +13,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.function.UnaryOperator;
+import javafx.scene.control.TextFormatter;
 
 public class StaffFormController {
 
@@ -30,7 +35,7 @@ public class StaffFormController {
     @FXML private TextField txtCity;
     @FXML private ComboBox<String> comboPosition;
     @FXML private DatePicker dateHireDate;
-    @FXML private ComboBox<String> comboShiftName; // opcional: catálogo Mañana/Tarde/Noche
+    @FXML private ComboBox<String> comboShiftName;
     @FXML private TextField txtShiftStart;
     @FXML private TextField txtShiftEnd;
     @FXML private TextField txtSalary;
@@ -38,9 +43,13 @@ public class StaffFormController {
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
 
+    // Estilo para marcar un campo con error (borde rojo)
+    private static final String ESTILO_INVALIDO = "-fx-border-color: #e53935; -fx-border-width: 2px; -fx-border-radius: 3px;";
+    private static final String ESTILO_VALIDO = "";
+
     // ========== VALIDACIÓN: patrones y constantes ==========
     private static final Pattern NAME_PATTERN = Pattern.compile("^[\\p{L} ]+$");
-    private static final Pattern DNI_PATTERN = Pattern.compile("^\\d{7,9}$");        // solo números
+    private static final Pattern DNI_PATTERN = Pattern.compile("^\\d{7,9}$");
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9\\s-]+$");
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.-]+@[\\w-]+\\.[a-zA-Z]{2,}$");
     private static final int MIN_AGE_YEARS = 18;
@@ -48,6 +57,8 @@ public class StaffFormController {
     private static final int MAX_ADDRESS_NUMBER_LENGTH = 20;
     private static final int MAX_CITY_LENGTH = 100;
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final java.math.BigDecimal SALARY_MAX = new java.math.BigDecimal("9999999999.99"); // límite real de la columna DECIMAL(12,2)
+    private static final Pattern SALARY_TYPING_PATTERN = Pattern.compile("^\\d{0,10}(\\.\\d{0,2})?$");
 
     // ========== DAOs Y CATÁLOGOS ==========
     private StaffDAO staffDAO = new StaffDAO();
@@ -57,13 +68,26 @@ public class StaffFormController {
     private Map<Integer, String> positions;
     private Map<Integer, String> shifts;
 
-    private Staff editingStaff; // null si es alta nueva
+    private Staff editingStaff;
 
     @FXML
     public void initialize() {
         loadCatalogs();
         setupDateFormat();
+        setupSalaryFormatter();
         setupButtonActions();
+    }
+
+    // Evita que se pueda escribir un número más grande de lo que la base admite (DECIMAL(12,2))
+    private void setupSalaryFormatter() {
+        UnaryOperator<TextFormatter.Change> filtro = change -> {
+            String textoNuevo = change.getControlNewText();
+            if (textoNuevo.isEmpty() || SALARY_TYPING_PATTERN.matcher(textoNuevo).matches()) {
+                return change;
+            }
+            return null; // rechaza el cambio: no se deja escribir ese caracter
+        };
+        txtSalary.setTextFormatter(new TextFormatter<>(filtro));
     }
 
     private void loadCatalogs() {
@@ -72,7 +96,7 @@ public class StaffFormController {
             comboPosition.getItems().setAll(positions.values());
 
             shifts = shiftDAO.listAll();
-            comboShiftName.getItems().add(""); // opción vacía: el turno es opcional
+            comboShiftName.getItems().add("");
             comboShiftName.getItems().addAll(shifts.values());
 
         } catch (SQLException e) {
@@ -80,7 +104,6 @@ public class StaffFormController {
         }
     }
 
-    // Muestra las fechas en formato DD/MM/AAAA en vez del ISO por defecto
     private void setupDateFormat() {
         StringConverter<LocalDate> converter = new StringConverter<>() {
             @Override
@@ -125,8 +148,6 @@ public class StaffFormController {
     }
 
     private void saveStaff() {
-        // Red de seguridad: cualquier excepción inesperada muestra un aviso
-        // en vez de dejar el botón "sin responder" (bug reportado en los test cases).
         try {
             if (!validateFields()) return;
 
@@ -168,13 +189,13 @@ public class StaffFormController {
         staff.setIdPosition(getIdBySelection(comboPosition, positions));
 
         if (staff.getStatus() == null) {
-            staff.setStatus(StaffStatus.ACTIVE); // toda alta nace Activa; en edición no se toca desde acá
+            staff.setStatus(StaffStatus.ACTIVE);
         }
 
         staff.setHireDate(dateHireDate.getValue());
 
         String shiftSelected = comboShiftName.getSelectionModel().getSelectedItem();
-        staff.setIdShift(getIdBySelection(comboShiftName, shifts) == 0 || shiftSelected == null || shiftSelected.isEmpty()
+        staff.setIdShift((shiftSelected == null || shiftSelected.isEmpty())
                 ? null : getIdBySelection(comboShiftName, shifts));
 
         staff.setShiftStart(parseHora(txtShiftStart.getText()));
@@ -198,135 +219,154 @@ public class StaffFormController {
         return 0;
     }
 
-    // ========== VALIDACIÓN ==========
-    // Cada campo obligatorio se valida por separado y muestra SOLO el mensaje
-    // correspondiente a lo que realmente falta (sin mezclar campos que sí están completos).
+    // ========== VALIDACIÓN COMPLETA: junta TODOS los errores antes de mostrarlos ==========
     private boolean validateFields() {
+        List<String> errores = new ArrayList<>();
+        limpiarEstilos();
 
-        if (txtFirstName.getText().trim().isEmpty()) {
-            showAlert("El Nombre es obligatorio.");
-            return false;
-        }
-        if (!NAME_PATTERN.matcher(txtFirstName.getText().trim()).matches()) {
-            showAlert("El Nombre solo puede contener letras y espacios.");
-            return false;
+        String firstName = txtFirstName.getText().trim();
+        if (firstName.isEmpty()) {
+            errores.add("El Nombre es obligatorio.");
+            marcarInvalido(txtFirstName);
+        } else if (!NAME_PATTERN.matcher(firstName).matches()) {
+            errores.add("El Nombre solo puede contener letras y espacios.");
+            marcarInvalido(txtFirstName);
         }
 
-        if (txtLastName.getText().trim().isEmpty()) {
-            showAlert("El Apellido es obligatorio.");
-            return false;
-        }
-        if (!NAME_PATTERN.matcher(txtLastName.getText().trim()).matches()) {
-            showAlert("El Apellido solo puede contener letras y espacios.");
-            return false;
+        String lastName = txtLastName.getText().trim();
+        if (lastName.isEmpty()) {
+            errores.add("El Apellido es obligatorio.");
+            marcarInvalido(txtLastName);
+        } else if (!NAME_PATTERN.matcher(lastName).matches()) {
+            errores.add("El Apellido solo puede contener letras y espacios.");
+            marcarInvalido(txtLastName);
         }
 
         String dni = txtDni.getText().trim();
         if (dni.isEmpty()) {
-            showAlert("El DNI es obligatorio.");
-            return false;
-        }
-        if (!DNI_PATTERN.matcher(dni).matches()) {
-            showAlert("El DNI debe contener solo números (7 a 9 dígitos).");
-            return false;
+            errores.add("El DNI es obligatorio.");
+            marcarInvalido(txtDni);
+        } else if (!DNI_PATTERN.matcher(dni).matches()) {
+            errores.add("El DNI debe contener solo números (7 a 9 dígitos).");
+            marcarInvalido(txtDni);
         }
 
         LocalDate birthDate = dateBirthDate.getValue();
         if (birthDate == null) {
-            showAlert("La Fecha de Nacimiento es obligatoria.");
-            return false;
-        }
-        if (birthDate.plusYears(MIN_AGE_YEARS).isAfter(LocalDate.now())) {
-            showAlert("El empleado debe tener al menos " + MIN_AGE_YEARS + " años.");
-            return false;
+            errores.add("La Fecha de Nacimiento es obligatoria.");
+            marcarInvalido(dateBirthDate);
+        } else if (birthDate.plusYears(MIN_AGE_YEARS).isAfter(LocalDate.now())) {
+            errores.add("El empleado debe tener al menos " + MIN_AGE_YEARS + " años.");
+            marcarInvalido(dateBirthDate);
         }
 
         String phone = txtPhone.getText().trim();
         if (phone.isEmpty()) {
-            showAlert("El Teléfono es obligatorio.");
-            return false;
-        }
-        if (!PHONE_PATTERN.matcher(phone).matches()) {
-            showAlert("El Teléfono solo puede contener números, espacios y guiones.");
-            return false;
+            errores.add("El Teléfono es obligatorio.");
+            marcarInvalido(txtPhone);
+        } else if (!PHONE_PATTERN.matcher(phone).matches()) {
+            errores.add("El Teléfono solo puede contener números, espacios y guiones.");
+            marcarInvalido(txtPhone);
         }
 
         String email = txtEmail.getText().trim();
         if (!email.isEmpty() && !EMAIL_PATTERN.matcher(email).matches()) {
-            showAlert("El formato de Email no es válido (ejemplo: nombre@dominio.com).");
-            return false;
+            errores.add("El formato de Email no es válido (ejemplo: nombre@dominio.com).");
+            marcarInvalido(txtEmail);
         }
 
         String street = txtStreet.getText().trim();
         if (street.isEmpty()) {
-            showAlert("La Calle es obligatoria.");
-            return false;
-        }
-        if (street.length() > MAX_STREET_LENGTH) {
-            showAlert("La Calle no puede superar los " + MAX_STREET_LENGTH + " caracteres.");
-            return false;
+            errores.add("La Calle es obligatoria.");
+            marcarInvalido(txtStreet);
+        } else if (street.length() > MAX_STREET_LENGTH) {
+            errores.add("La Calle no puede superar los " + MAX_STREET_LENGTH + " caracteres.");
+            marcarInvalido(txtStreet);
         }
 
         if (txtAddressNumber.getText().trim().length() > MAX_ADDRESS_NUMBER_LENGTH) {
-            showAlert("El Número no puede superar los " + MAX_ADDRESS_NUMBER_LENGTH + " caracteres.");
-            return false;
+            errores.add("El Número no puede superar los " + MAX_ADDRESS_NUMBER_LENGTH + " caracteres.");
+            marcarInvalido(txtAddressNumber);
         }
 
         String city = txtCity.getText().trim();
         if (city.isEmpty()) {
-            showAlert("La Ciudad es obligatoria.");
-            return false;
-        }
-        if (city.length() > MAX_CITY_LENGTH) {
-            showAlert("La Ciudad no puede superar los " + MAX_CITY_LENGTH + " caracteres.");
-            return false;
+            errores.add("La Ciudad es obligatoria.");
+            marcarInvalido(txtCity);
+        } else if (city.length() > MAX_CITY_LENGTH) {
+            errores.add("La Ciudad no puede superar los " + MAX_CITY_LENGTH + " caracteres.");
+            marcarInvalido(txtCity);
         }
 
         if (comboPosition.getSelectionModel().isEmpty()) {
-            showAlert("Debe seleccionar un Cargo.");
-            return false;
+            errores.add("Debe seleccionar un Cargo.");
+            marcarInvalido(comboPosition);
         }
 
         LocalDate hireDate = dateHireDate.getValue();
         if (hireDate == null) {
-            showAlert("La Fecha de Ingreso es obligatoria.");
-            return false;
-        }
-        if (hireDate.isAfter(LocalDate.now())) {
-            showAlert("La Fecha de Ingreso no puede ser una fecha futura.");
-            return false;
-        }
-        if (hireDate.isBefore(birthDate.plusYears(MIN_AGE_YEARS))) {
-            showAlert("La Fecha de Ingreso no puede ser anterior a que el empleado cumpliera " + MIN_AGE_YEARS + " años.");
-            return false;
+            errores.add("La Fecha de Ingreso es obligatoria.");
+            marcarInvalido(dateHireDate);
+        } else if (hireDate.isAfter(LocalDate.now())) {
+            errores.add("La Fecha de Ingreso no puede ser una fecha futura.");
+            marcarInvalido(dateHireDate);
+        } else if (birthDate != null && hireDate.isBefore(birthDate.plusYears(MIN_AGE_YEARS))) {
+            errores.add("La Fecha de Ingreso no puede ser anterior a que el empleado cumpliera " + MIN_AGE_YEARS + " años.");
+            marcarInvalido(dateHireDate);
         }
 
-        // Turno: opcional. Si se completa alguna hora, validamos el formato.
         try {
             if (!txtShiftStart.getText().trim().isEmpty()) LocalTime.parse(txtShiftStart.getText().trim());
+        } catch (DateTimeParseException e) {
+            errores.add("La Hora de inicio del turno debe tener formato HH:mm (ej: 07:00).");
+            marcarInvalido(txtShiftStart);
+        }
+        try {
             if (!txtShiftEnd.getText().trim().isEmpty()) LocalTime.parse(txtShiftEnd.getText().trim());
         } catch (DateTimeParseException e) {
-            showAlert("El horario del turno debe tener formato HH:mm (ej: 07:00).");
-            return false;
+            errores.add("La Hora de fin del turno debe tener formato HH:mm (ej: 15:00).");
+            marcarInvalido(txtShiftEnd);
         }
 
         String salaryText = txtSalary.getText().trim();
         if (salaryText.isEmpty()) {
-            showAlert("El Salario es obligatorio.");
-            return false;
-        }
-        try {
-            java.math.BigDecimal salario = new java.math.BigDecimal(salaryText);
-            if (salario.compareTo(java.math.BigDecimal.ZERO) <= 0) {
-                showAlert("El Salario debe ser mayor a $0.");
-                return false;
+            errores.add("El Salario es obligatorio.");
+            marcarInvalido(txtSalary);
+        } else {
+            try {
+                java.math.BigDecimal salario = new java.math.BigDecimal(salaryText);
+                if (salario.compareTo(java.math.BigDecimal.ZERO) <= 0) {
+                    errores.add("El Salario debe ser mayor a $0.");
+                    marcarInvalido(txtSalary);
+                } else if (salario.compareTo(SALARY_MAX) > 0) {
+                    errores.add("El Salario no puede superar $" + SALARY_MAX + ".");
+                    marcarInvalido(txtSalary);
+                }
+            } catch (NumberFormatException e) {
+                errores.add("El Salario debe ser un número válido (ejemplo: 450000).");
+                marcarInvalido(txtSalary);
             }
-        } catch (NumberFormatException e) {
-            showAlert("El Salario debe ser un número válido (ejemplo: 450000).");
-            return false;
         }
 
+        if (!errores.isEmpty()) {
+            showAlert(String.join("\n", errores));
+            return false;
+        }
         return true;
+    }
+
+    // Pinta el borde de un campo de rojo para señalar que tiene un error
+    private void marcarInvalido(Node campo) {
+        campo.setStyle(ESTILO_INVALIDO);
+    }
+
+    // Saca cualquier marca de error de todos los campos, antes de validar de nuevo
+    private void limpiarEstilos() {
+        for (Node campo : new Node[]{txtFirstName, txtLastName, txtDni, dateBirthDate, txtPhone,
+                txtEmail, txtStreet, txtAddressNumber, txtCity, comboPosition, dateHireDate,
+                txtShiftStart, txtShiftEnd, txtSalary}) {
+            campo.setStyle(ESTILO_VALIDO);
+        }
     }
 
     private void closeWindow() {
