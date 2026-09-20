@@ -133,11 +133,11 @@ public class CustomerFormController {
         });
 
         comboCountry.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) validateCombo(comboCountry, newVal);
+            if (newVal != null) updateSaveButtonState();
         });
 
         comboOrigin.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) validateCombo(comboOrigin, newVal);
+            if (newVal != null) updateSaveButtonState();
         });
 
         // Validación mientras se escribe (sin feedback visual)
@@ -198,13 +198,6 @@ public class CustomerFormController {
         setFieldValid(txtEmail, valid, ValidationUtils.getEmailError());
         updateSaveButtonState();
         return valid;
-    }
-
-    //revisar
-    private void validateCombo(ComboBox<String> combo, String value) {
-        boolean valid = value != null && !value.isEmpty();
-        setFieldValid(combo, valid, "Este campo es obligatorio.");
-        updateSaveButtonState();
     }
 
     // ========== HELPER: MARCAR CAMPO VÁLIDO/INVÁLIDO ==========
@@ -270,7 +263,7 @@ public class CustomerFormController {
         comboCountry.getSelectionModel().select(customer.getCountryName());
         comboOrigin.getSelectionModel().select(customer.getOriginName());
 
-        //revisar
+        // Se validan para ingresos no realizados desde "Nuevo"
         validateName();
         validateSurname();
         validateDocument();
@@ -290,7 +283,7 @@ public class CustomerFormController {
         loadDataFromForm(customer);
 
         try {
-            // Validar duplicados //revisar
+            // Validar duplicados
             int excludeId = editingCustomer != null ? editingCustomer.getIdCustomer() : 0;
 
             if (customerDAO.isDuplicatedByDocumentation(customer.getDocumentNumber(),
@@ -339,11 +332,6 @@ public class CustomerFormController {
         boolean docTypeValid = !comboDocumentType.getSelectionModel().isEmpty();
         boolean countryValid = !comboCountry.getSelectionModel().isEmpty();
         boolean originValid = !comboOrigin.getSelectionModel().isEmpty();
-
-        //revisar
-        if (!docTypeValid) setFieldValid(comboDocumentType, false, "Seleccione un tipo de documento.");
-        if (!countryValid) setFieldValid(comboCountry, false, "Seleccione un país.");
-        if (!originValid) setFieldValid(comboOrigin, false, "Seleccione un origen.");
 
         return nameValid && surnameValid && documentValid &&
                 phoneValid && emailValid && docTypeValid && countryValid && originValid;
