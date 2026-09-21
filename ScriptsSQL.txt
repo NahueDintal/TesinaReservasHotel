@@ -214,8 +214,8 @@ CREATE TABLE Feature (
 
 CREATE TABLE Customer (
     idCustomer INT AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    surname VARCHAR(100) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    surname VARCHAR(50) NOT NULL,
     idDocumentType INT NOT NULL,
     documentNumber VARCHAR(30) NOT NULL,
     phoneNumber VARCHAR(30),

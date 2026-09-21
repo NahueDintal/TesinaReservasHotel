@@ -140,12 +140,38 @@ public class CustomerFormController {
             if (newVal != null) updateSaveButtonState();
         });
 
-        // Validación mientras se escribe (sin feedback visual)
-        txtName.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
-        txtSurname.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
-        txtDocumentNumber.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
-        txtPhone.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
-        txtEmail.textProperty().addListener((obs, oldVal, newVal) -> updateSaveButtonState());
+
+        // Validar txts mientras se escribe (sin feedback visual)
+        txtName.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.length() > 50) {
+                txtName.setText(oldVal);
+            }
+            updateSaveButtonState();
+        });
+        txtSurname.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.length() > 50) {
+                txtSurname.setText(oldVal);
+            }
+            updateSaveButtonState();
+        });
+        txtDocumentNumber.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.length() > 30) {
+                txtDocumentNumber.setText(oldVal);
+            }
+            updateSaveButtonState();
+        });
+        txtPhone.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.length() > 30) {
+                txtPhone.setText(oldVal);
+            }
+            updateSaveButtonState();
+        });
+        txtEmail.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null && newVal.length() > 255) {
+                txtEmail.setText(oldVal);
+            }
+            updateSaveButtonState();
+        });
     }
 
     private void updateDocumentValidation(String documentType) {
@@ -244,7 +270,16 @@ public class CustomerFormController {
 
     // ========== BOTONES ==========
     private void setupButtonActions() {
-        btnCancel.setOnAction(e -> closeWindow());
+        btnCancel.setOnAction(e -> {
+            boolean confirmed = StyleManager.showConfirmation(
+                    "Cancelar",
+                    "¿Descartar cambios?",
+                    "Perdera todo lo que haya modificado o agregado en el formulario"
+            );
+            if (confirmed) {
+                closeWindow();
+            }
+        });
         btnSave.setOnAction(e -> saveCustomer());
     }
 
