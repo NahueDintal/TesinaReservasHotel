@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
 import models.Room;
 import repositories.RoomDAO;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class RoomFormController {
 
   private static final String SAFE_FEATURE = "Caja fuerte";
+  private static final int MAX_DESCRIPTION_LENGTH = 100;
 
   private static final Logger logger = LoggerFactory.getLogger(RoomFormController.class);
 
@@ -38,6 +40,8 @@ public class RoomFormController {
   private TextField txtPrice;
   @FXML
   private TextField txtDescription;
+  @FXML
+  private Label lblCharCounter;
   @FXML
   private CheckBox chkWifi;
   @FXML
@@ -64,6 +68,7 @@ public class RoomFormController {
   public void initialize() {
     loadCatalogs();
     setupActions();
+    setupDescriptionLimit();
   }
 
   private void loadCatalogs() {
@@ -82,6 +87,37 @@ public class RoomFormController {
   private void setupActions() {
     btnCancel.setOnAction(e -> closeWindow());
     btnSave.setOnAction(e -> saveRoom());
+  }
+
+  private void setupDescriptionLimit() {
+    // Bloquea la escritura una vez alcanzado el límite (aplica también a pegar).
+    txtDescription.setTextFormatter(new TextFormatter<>(change -> {
+      if (change.getControlNewText().length() <= MAX_DESCRIPTION_LENGTH) {
+        return change;
+      }
+      return null;
+    }));
+
+    // Actualiza el contador en tiempo real.
+    txtDescription.textProperty().addListener((obs, oldVal, newVal) -> {
+      int len = newVal == null ? 0 : newVal.length();
+      lblCharCounter.setText(len + "/" + MAX_DESCRIPTION_LENGTH + " caracteres");
+      updateCounterStyle(len);
+    });
+
+    // Estado inicial por si el campo ya viniera con texto.
+    updateCounterStyle(txtDescription.getText() == null ? 0 : txtDescription.getText().length());
+  }
+
+  private void updateCounterStyle(int len) {
+    lblCharCounter.getStyleClass().removeAll("char-counter", "char-counter-warning", "char-counter-limit");
+    if (len >= MAX_DESCRIPTION_LENGTH) {
+      lblCharCounter.getStyleClass().add("char-counter-limit");
+    } else if (len >= MAX_DESCRIPTION_LENGTH * 0.8) {
+      lblCharCounter.getStyleClass().add("char-counter-warning");
+    } else {
+      lblCharCounter.getStyleClass().add("char-counter");
+    }
   }
 
   public void setRoom(Room room) {
@@ -254,6 +290,13 @@ public class RoomFormController {
         errors.append("El precio debe ser un valor número (puede ser decimal).\n");
         logger.error("Intento de insertar valor '{}' que no es un número", txtPrice.getText());
       }
+    }
+
+    if (txtDescription.getText().length() > MAX_DESCRIPTION_LENGTH) {
+      logger.warn("Intento de ingresar más de {} caracteres en la descripción.", MAX_DESCRIPTION_LENGTH);
+      errors.append("La descripción no debe tener más de ")
+          .append(MAX_DESCRIPTION_LENGTH)
+          .append(" caracteres.\n");
     }
 
     if (errors.length() > 0) {
