@@ -543,7 +543,7 @@ INSERT INTO RoomView (name) VALUES
 -- ==========================================
 
 INSERT INTO Feature (name) VALUES
-('WiFi'), ('TV'), ('Aire acondicionado'), ('Calefacción'), ('Minibar'), ('Caja fuerte');
+('WiFi'), ('TV'), ('Aire acondicionado'), ('Minibar'), ('Caja fuerte');
 
 
 -- ==========================================
