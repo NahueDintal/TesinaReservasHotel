@@ -20,7 +20,6 @@
       <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-    <!-- Título y botones -->
     <HBox alignment="CENTER_LEFT" spacing="15">
       <Label styleClass="room-table" text="Habitaciones">
         <font><Font name="System Bold" size="24.0" /></font>
@@ -30,12 +29,10 @@
       <Button fx:id="btnViewUnavailable" styleClass="btn-secondary" text="Ver no disponibles" />
     </HBox>
 
-    <!-- Buscador -->
     <HBox alignment="CENTER_LEFT" spacing="15">
         <TextField fx:id="txtSearch" promptText="🔍 Buscar por número, tipo, vista, precio..." styleClass="search-field" HBox.hgrow="ALWAYS" />
     </HBox>
 
-    <!-- SplitPane: Tabla + Detalle -->
     <SplitPane dividerPositions="0.75" styleClass="SplitPane" VBox.vgrow="ALWAYS">
       <VBox spacing="10">
         <TableView fx:id="tableRooms" styleClass="customer-table" VBox.vgrow="ALWAYS">
@@ -55,7 +52,6 @@
         <Label fx:id="lblTotalRooms" styleClass="footer-info" text="Mostrando 0 habitaciones" />
       </VBox>
 
-      <!-- Panel de detalle -->
       <VBox maxWidth="400.0" minWidth="150.0" prefWidth="400.0" spacing="12" styleClass="detail-panel">
         <padding>
           <Insets bottom="15" left="15" right="15" top="15" />
@@ -80,6 +76,9 @@
 
         <Label styleClass="detail-label" text="Precio:" />
         <TextField fx:id="lblDetailPrice" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />
+
+        <Label styleClass="detail-label" text="Características:" />
+        <TextField fx:id="lblDetailFeatures" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />
 
         <Label styleClass="detail-label" text="Descripción:" />
         <TextField fx:id="lblDetailDescription" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />

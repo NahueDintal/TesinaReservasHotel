@@ -50,7 +50,6 @@ public class RoomController {
   @FXML
   private Button btnDelete;
 
-  // Detalle — TextField (para replicar la estética del CustomerController)
   @FXML
   private TextField lblDetailNumber;
   @FXML
@@ -67,7 +66,6 @@ public class RoomController {
   private TextField lblDetailFeatures;
   @FXML
   private TextField lblDetailDescription;
-  // Estado — sigue siendo Label (en el FXML es <Label fx:id="lblDetailStatus">)
   @FXML
   private Label lblDetailStatus;
 
