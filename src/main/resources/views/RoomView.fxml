@@ -81,9 +81,6 @@
         <Label styleClass="detail-label" text="Precio:" />
         <TextField fx:id="lblDetailPrice" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />
 
-        <Label styleClass="detail-label" text="Características:" />
-        <TextField fx:id="lblDetailFeatures" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />
-
         <Label styleClass="detail-label" text="Descripción:" />
         <TextField fx:id="lblDetailDescription" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />
 
