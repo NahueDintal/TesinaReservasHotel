@@ -127,4 +127,25 @@ public class ProbabilityDAO {
     }
     return result;
   }
+
+  /** Cancellation probability grouped by month of check-in (seasonality). */
+  public List<Probability> findByMonth(LocalDate fromDate,
+      LocalDate toDate,
+      String channelFilter) {
+
+    String sql = "SELECT MONTHNAME(r.checkIn) AS category, " +
+        "       MONTH(r.checkIn)     AS month_order, " +
+        "       COUNT(*) AS total, " +
+        "       SUM(CASE WHEN LOWER(rs.name) = LOWER(?) THEN 1 ELSE 0 END) AS cancelled " +
+        "FROM Reservation r " +
+        "JOIN ReservationStatus rs ON r.idReservationStatus = rs.idReservationStatus " +
+        "JOIN ReservationType   rt ON r.idReservationType   = rt.idReservationType " +
+        "WHERE (? IS NULL OR r.checkIn >= ?) " +
+        "  AND (? IS NULL OR r.checkIn <= ?) " +
+        "  AND (? IS NULL OR rt.name = ?) " +
+        "GROUP BY category, month_order " +
+        "ORDER BY month_order";
+
+    return runQuery(sql, fromDate, toDate, channelFilter);
+  }
 }

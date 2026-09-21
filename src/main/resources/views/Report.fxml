@@ -30,6 +30,14 @@
                           maxWidth="Infinity" alignment="CENTER_LEFT"
                           style="-fx-padding: 10 12 10 12;"/>
             <!-- Agregá acá más ToggleButtons a medida que sumás reportes -->
+            <ToggleButton fx:id="btnCancellationByMonth"
+                          text="Cancellation by month"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
+            <ToggleButton fx:id="btnCancellationImpact"
+                          text="Cancellation impact ($)"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
         </VBox>
     </left>
 

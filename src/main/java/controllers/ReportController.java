@@ -21,11 +21,17 @@ public class ReportController {
   private ToggleButton btnCancellationProbability;
   @FXML
   private ToggleButton btnCancellationByLeadTime;
+  @FXML
+  private ToggleButton btnCancellationByMonth;
+  @FXML
+  private ToggleButton btnCancellationImpact;
 
   private ToggleGroup reportGroup;
 
   private static final String VIEW_PROBABILITY = "/views/CancellationProbability.fxml";
   private static final String VIEW_LEAD_TIME = "/views/CancellationByLeadTime.fxml";
+  private static final String VIEW_BY_MONTH = "/views/CancellationByMonth.fxml";
+  private static final String VIEW_IMPACT = "/views/CancellationImpact.fxml";
 
   private DashboardController dashboardController;
 
@@ -46,6 +52,17 @@ public class ReportController {
     btnCancellationByLeadTime.setOnAction(e -> {
       selectButton(btnCancellationByLeadTime);
       loadReport(VIEW_LEAD_TIME);
+    });
+    btnCancellationByMonth.setToggleGroup(reportGroup);
+    btnCancellationImpact.setToggleGroup(reportGroup);
+
+    btnCancellationByMonth.setOnAction(e -> {
+      selectButton(btnCancellationByMonth);
+      loadReport(VIEW_BY_MONTH);
+    });
+    btnCancellationImpact.setOnAction(e -> {
+      selectButton(btnCancellationImpact);
+      loadReport(VIEW_IMPACT);
     });
 
     // Default report
