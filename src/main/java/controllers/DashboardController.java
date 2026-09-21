@@ -68,7 +68,7 @@ public class DashboardController {
     });
     btnReportes.setOnAction(e -> {
       selectButton(btnReportes);
-      loadView("/views/.fxml");
+      loadView("/views/Report.fxml");
     });
     btnPersonal.setOnAction(e -> {
       selectButton(btnPersonal);
@@ -110,9 +110,9 @@ public class DashboardController {
         ((ReservationsController) controller).setDashboardController(this);
       }
 
-       if (controller instanceof NewReservationController) {
-            ((NewReservationController) controller).setDashboardController(this);
-       }
+      if (controller instanceof NewReservationController) {
+        ((NewReservationController) controller).setDashboardController(this);
+      }
 
       // Limpiar el centerPane y agregar la vista
       centerPane.getChildren().clear();
@@ -129,13 +129,13 @@ public class DashboardController {
       centerPane.getChildren().setAll(new AnchorPane());
     }
   }
+
   public void loadEditReservation(Reservation reservation) {
 
     try {
 
       FXMLLoader loader = new FXMLLoader(
-              getClass().getResource("/views/NewReservation.fxml")
-      );
+          getClass().getResource("/views/NewReservation.fxml"));
 
       Parent view = loader.load();
 
