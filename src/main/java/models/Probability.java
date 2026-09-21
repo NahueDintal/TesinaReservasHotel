@@ -1,33 +1,31 @@
 package models;
 
 /**
- * Represents the cancellation probability for a given booking channel.
- * The probability is the empirical conditional probability P(cancel | channel),
- * and the confidence interval is computed using the Wilson score method.
+ * Represents the empirical cancellation probability for a given category
+ * (a booking channel, a lead time bucket, etc.) with a 95% Wilson confidence
+ * interval.
  */
 public class Probability {
 
-  private String channel;
+  private String category;
   private int totalReservations;
   private int cancelledReservations;
 
   public Probability() {
   }
 
-  public Probability(String channel, int totalReservations, int cancelledReservations) {
-    this.channel = channel;
+  public Probability(String category, int totalReservations, int cancelledReservations) {
+    this.category = category;
     this.totalReservations = totalReservations;
     this.cancelledReservations = cancelledReservations;
   }
 
-  // ---------- Getters / Setters ----------
-
-  public String getChannel() {
-    return channel;
+  public String getCategory() {
+    return category;
   }
 
-  public void setChannel(String channel) {
-    this.channel = channel;
+  public void setCategory(String category) {
+    this.category = category;
   }
 
   public int getTotalReservations() {
@@ -46,21 +44,14 @@ public class Probability {
     this.cancelledReservations = cancelledReservations;
   }
 
-  // ---------- Derived values ----------
-
-  /** Empirical probability of cancellation for this channel. */
   public double getProbability() {
-    if (totalReservations == 0)
-      return 0.0;
-    return (double) cancelledReservations / totalReservations;
+    return totalReservations == 0 ? 0.0 : (double) cancelledReservations / totalReservations;
   }
 
-  /** Lower bound of the 95% Wilson confidence interval. */
   public double getConfidenceIntervalLower() {
     return wilsonScore(-1.96);
   }
 
-  /** Upper bound of the 95% Wilson confidence interval. */
   public double getConfidenceIntervalUpper() {
     return wilsonScore(1.96);
   }
@@ -71,32 +62,16 @@ public class Probability {
         getConfidenceIntervalUpper() * 100);
   }
 
-  /**
-   * Wilson score interval for a binomial proportion.
-   * 
-   * @param z standard normal quantile (1.96 for 95% confidence)
-   */
+  /** Wilson score interval for a binomial proportion. z = 1.96 for 95% CI. */
   private double wilsonScore(double z) {
     int n = totalReservations;
     if (n == 0)
       return 0.0;
-
     double p = getProbability();
     double z2 = z * z;
     double denominator = 1.0 + z2 / n;
     double center = p + z2 / (2.0 * n);
     double margin = z * Math.sqrt((p * (1 - p) / n) + (z2 / (4.0 * n * n)));
-
     return (center + margin) / denominator;
-  }
-
-  @Override
-  public String toString() {
-    return "Probability{" +
-        "channel='" + channel + '\'' +
-        ", total=" + totalReservations +
-        ", cancelled=" + cancelledReservations +
-        ", probability=" + String.format("%.4f", getProbability()) +
-        '}';
   }
 }
