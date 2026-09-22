@@ -105,7 +105,7 @@
 
                     <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity"
                             onAction="#handleEdit" />
-                    <Button fx:id="btnDeactivate" text="Inactivar" styleClass="btn-detail-danger"
+                    <Button fx:id="btnDeactivate" text="Eliminar" styleClass="btn-detail-danger"
                             maxWidth="Infinity" onAction="#handleDeactivate" />
                 </VBox>
             </ScrollPane>
