@@ -96,16 +96,26 @@ public class RoomController {
       }
     });
 
-    colAvailable.setCellFactory(tc -> new TableCell<>() {
+    colAvailable.setCellFactory(tc -> new TableCell<Room, Boolean>() {
       @Override
       protected void updateItem(Boolean available, boolean empty) {
         super.updateItem(available, empty);
-        setText(empty || available == null ? "" : (available ? "Disponible" : "No disponible"));
-        setStyle(empty || available == null ? "" : (available ? "-fx-text-fill: green;" : "-fx-text-fill: red;"));
+        if (empty || available == null) {
+          setText(null);
+          setStyle("");
+          return;
+        }
+        if (available) {
+          setText("Disponible");
+          setStyle("-fx-text-fill: green;");
+        } else {
+          setText("No disponible");
+          setStyle("-fx-text-fill: #d97706; -fx-font-weight: bold;");
+        }
       }
     });
 
-    loadRooms(true);
+    loadRooms();
 
     txtSearch.textProperty().addListener((obs, oldVal, newVal) -> {
       filteredRooms.setPredicate(room -> {
@@ -149,12 +159,10 @@ public class RoomController {
     btnDelete.setOnAction(e -> deleteRoom());
   }
 
-  private void loadRooms(boolean onlyAvailable) {
+  private void loadRooms() {
     try {
       masterRoomList.setAll(roomDAO.listActive());
-      if (onlyAvailable) {
-        masterRoomList.removeIf(room -> !room.isAvailable());
-      }
+      masterRoomList.removeIf(Room::isOutOfService);
       filteredRooms = new FilteredList<>(masterRoomList, p -> true);
       tableRooms.setItems(filteredRooms);
       updateCounter();
@@ -175,7 +183,7 @@ public class RoomController {
     lblDetailDescription.setText(r.getDescription() != null ? r.getDescription() : "--");
     lblDetailStatus.setText(r.isAvailable() ? "Disponible" : "No disponible");
     lblDetailStatus.setStyle(r.isAvailable() ? "-fx-text-fill: green; -fx-font-weight: bold;"
-        : "-fx-text-fill: red; -fx-font-weight: bold;");
+        : "-fx-text-fill: #d97706; -fx-font-weight: bold;");
   }
 
   private void clearDetail() {
@@ -204,7 +212,7 @@ public class RoomController {
         controller.setRoom(room);
 
       stage.showAndWait();
-      loadRooms(true);
+      loadRooms();
       tableRooms.refresh();
       updateCounter();
     } catch (IOException e) {
@@ -222,7 +230,7 @@ public class RoomController {
       stage.initModality(Modality.WINDOW_MODAL);
       stage.initOwner(tableRooms.getScene().getWindow());
       stage.showAndWait();
-      loadRooms(true);
+      loadRooms();
       tableRooms.refresh();
       updateCounter();
     } catch (IOException e) {
