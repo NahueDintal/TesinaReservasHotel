@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.CancellationByLeadTimeController"
+            style="-fx-background-color: #f4f6f9;">
+
+    <top>
+        <VBox spacing="12">
+            <padding><Insets top="18" right="18" bottom="12" left="18"/></padding>
+
+            <Label text="Cancellation probability by lead time"
+                   style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #222;"/>
+            <Label text="Lead time = days between reservation creation and check-in. Empirical P(cancel | bucket) with 95% Wilson CI."
+                   style="-fx-text-fill: #666; -fx-font-size: 12;"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="From:"/>
+                <DatePicker fx:id="fromDatePicker" prefWidth="140"/>
+                <Label text="To:"/>
+                <DatePicker fx:id="toDatePicker" prefWidth="140"/>
+                <Label text="Channel:"/>
+                <ComboBox fx:id="channelComboBox" prefWidth="170"/>
+                <Button fx:id="calculateButton" text="Calculate" onAction="#onCalculate"
+                        defaultButton="true"
+                        style="-fx-background-color: #2d6cdf; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="exportButton" text="Export CSV" onAction="#onExport"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clearButton" text="Clear" onAction="#onClear"/>
+            </HBox>
+
+            <GridPane hgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33.33"/>
+                    <ColumnConstraints percentWidth="33.33"/>
+                    <ColumnConstraints percentWidth="33.34"/>
+                </columnConstraints>
+
+                <VBox GridPane.columnIndex="0" spacing="4"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Total reservations" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="totalReservationsLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" spacing="4"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Cancelled reservations" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="cancelledReservationsLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="2" spacing="6"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Highest-risk bucket" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="highestRiskLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+                    <Label fx:id="highestRiskDetailLabel" text=""
+                           style="-fx-text-fill: #666; -fx-font-size: 11;"/>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="12">
+            <padding><Insets top="6" right="18" bottom="18" left="18"/></padding>
+
+            <VBox VBox.vgrow="ALWAYS" spacing="6"
+                  style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                <Label text="Cancellation probability by lead time bucket (%)"
+                       style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+                <BarChart fx:id="leadTimeChart" VBox.vgrow="ALWAYS"
+                          legendVisible="false" animated="false" barGap="4" categoryGap="20">
+                    <xAxis><CategoryAxis fx:id="leadTimeAxis" label="Lead time bucket"/></xAxis>
+                    <yAxis><NumberAxis fx:id="probabilityAxis" label="Probability (%)"
+                                       autoRanging="false" lowerBound="0" upperBound="100" tickUnit="10"/></yAxis>
+                </BarChart>
+            </VBox>
+
+            <VBox prefHeight="240" spacing="6"
+                  style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                <Label text="Detail by lead time bucket" style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
+                <TableView fx:id="dataTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="bucketColumn"             text="Lead time"        prefWidth="150"/>
+                        <TableColumn fx:id="totalColumn"              text="Reservations"     prefWidth="110"/>
+                        <TableColumn fx:id="cancelledColumn"          text="Cancelled"        prefWidth="110"/>
+                        <TableColumn fx:id="probabilityColumn"        text="Probability"      prefWidth="130"/>
+                        <TableColumn fx:id="visualColumn"             text="Distribution"     prefWidth="200"/>
+                        <TableColumn fx:id="confidenceIntervalColumn" text="95% CI (Wilson)"  prefWidth="200"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #eef1f5; -fx-padding: 8 18 8 18;">
+            <Label fx:id="statusLabel" text="Ready." style="-fx-text-fill: #555; -fx-font-size: 11;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

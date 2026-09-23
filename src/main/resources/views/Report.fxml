@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ReportController"
+            style="-fx-background-color: #f4f6f9;">
+
+    <!-- ============ LEFT: menu ============ -->
+    <left>
+        <VBox fx:id="leftMenu" prefWidth="230" spacing="6"
+              style="-fx-background-color: #1f2937; -fx-padding: 18 12 18 12;">
+
+            <Label text="Reports"
+                   style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Analytics &amp; statistics"
+                   style="-fx-font-size: 11; -fx-text-fill: #9ca3af;"/>
+
+            <Region prefHeight="14"/>
+
+            <ToggleButton fx:id="btnCancellationProbability"
+                          text="Cancellation probability"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
+            <ToggleButton fx:id="btnCancellationByLeadTime"
+                          text="Cancellation by lead time"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
+            <!-- Agregá acá más ToggleButtons a medida que sumás reportes -->
+            <ToggleButton fx:id="btnCancellationByMonth"
+                          text="Cancellation by month"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
+            <ToggleButton fx:id="btnCancellationImpact"
+                          text="Cancellation impact ($)"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
+        </VBox>
+    </left>
+
+    <!-- ============ CENTER: dynamic sub-report ============ -->
+    <center>
+        <AnchorPane fx:id="centerPane" style="-fx-background-color: #f4f6f9;"/>
+    </center>
+</BorderPane>

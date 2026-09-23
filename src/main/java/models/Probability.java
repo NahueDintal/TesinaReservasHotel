@@ -1,48 +1,77 @@
 package models;
 
+/**
+ * Represents the empirical cancellation probability for a given category
+ * (a booking channel, a lead time bucket, etc.) with a 95% Wilson confidence
+ * interval.
+ */
 public class Probability {
 
-  // cantidad de reservas activas
-  // cantidad de reservas concreatadas 'que tengan checkout finalizado en tiempo y
-  // forma'
-  // cantidad de reservas canceladas
-  // cantidad de reservas checklate
-  // cantidad de reservas con alteración de dias de hospedaje
+  private String category;
+  private int totalReservations;
+  private int cancelledReservations;
 
-  private int totalReservation;
-  private int reservationCancelled;
-
-  // opcionales
-  // private int reservarionChecklate;
-  // private int reservationUpdate;
-
-  public Probability(int totalReservation, int reservationCancelled) {
-    this.totalReservation = totalReservation;
-    this.reservationCancelled = reservationCancelled;
+  public Probability() {
   }
 
-  public double probabilityCancelled() {
-    return (double) reservationCancelled / totalReservation;
+  public Probability(String category, int totalReservations, int cancelledReservations) {
+    this.category = category;
+    this.totalReservations = totalReservations;
+    this.cancelledReservations = cancelledReservations;
   }
 
-  // cancelación de temporada baja
-  // tendría que hacer una consulta con los meses que se denominan como temp baja
-  // cancelación en temporada alta
-  // idem al anterior
-
-  public int getTotalReservation() {
-    return totalReservation;
+  public String getCategory() {
+    return category;
   }
 
-  public int getReservationCancelled() {
-    return reservationCancelled;
+  public void setCategory(String category) {
+    this.category = category;
   }
 
-  public void setTotalReservation(int totalReservation) {
-    this.totalReservation = totalReservation;
+  public int getTotalReservations() {
+    return totalReservations;
   }
 
-  public void setReservationCancelled(int reservationCancelled) {
-    this.reservationCancelled = reservationCancelled;
+  public void setTotalReservations(int totalReservations) {
+    this.totalReservations = totalReservations;
+  }
+
+  public int getCancelledReservations() {
+    return cancelledReservations;
+  }
+
+  public void setCancelledReservations(int cancelledReservations) {
+    this.cancelledReservations = cancelledReservations;
+  }
+
+  public double getProbability() {
+    return totalReservations == 0 ? 0.0 : (double) cancelledReservations / totalReservations;
+  }
+
+  public double getConfidenceIntervalLower() {
+    return wilsonScore(-1.96);
+  }
+
+  public double getConfidenceIntervalUpper() {
+    return wilsonScore(1.96);
+  }
+
+  public String getFormattedConfidenceInterval() {
+    return String.format("%.2f%% - %.2f%%",
+        getConfidenceIntervalLower() * 100,
+        getConfidenceIntervalUpper() * 100);
+  }
+
+  /** Wilson score interval for a binomial proportion. z = 1.96 for 95% CI. */
+  private double wilsonScore(double z) {
+    int n = totalReservations;
+    if (n == 0)
+      return 0.0;
+    double p = getProbability();
+    double z2 = z * z;
+    double denominator = 1.0 + z2 / n;
+    double center = p + z2 / (2.0 * n);
+    double margin = z * Math.sqrt((p * (1 - p) / n) + (z2 / (4.0 * n * n)));
+    return (center + margin) / denominator;
   }
 }

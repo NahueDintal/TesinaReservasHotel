@@ -13,63 +13,58 @@
 
 <VBox stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.StaffFormController"
-      spacing="16" prefWidth="480">
+      spacing="16" prefWidth="620">
     <padding>
         <Insets top="20" right="24" bottom="20" left="24"/>
     </padding>
 
     <Label fx:id="lblFormTitle" text="Nuevo Personal" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-    <GridPane hgap="12" vgap="10">
+    <GridPane hgap="14" vgap="12">
         <columnConstraints>
-            <ColumnConstraints minWidth="120"/>
-            <ColumnConstraints minWidth="200" hgrow="ALWAYS"/>
+            <ColumnConstraints minWidth="110"/>
+            <ColumnConstraints minWidth="150" hgrow="ALWAYS"/>
+            <ColumnConstraints minWidth="110"/>
+            <ColumnConstraints minWidth="150" hgrow="ALWAYS"/>
         </columnConstraints>
 
         <Label text="Nombre *" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <TextField fx:id="txtFirstName" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Apellido *" GridPane.rowIndex="0" GridPane.columnIndex="2"/>
+        <TextField fx:id="txtLastName" GridPane.rowIndex="0" GridPane.columnIndex="3"/>
 
-        <Label text="Apellido *" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtLastName" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="DNI *" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtDni" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Fecha de nacimiento *" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+        <DatePicker fx:id="dateBirthDate" GridPane.rowIndex="1" GridPane.columnIndex="3" maxWidth="Infinity"/>
 
-        <Label text="DNI *" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtDni" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Teléfono *" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtPhone" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Email" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+        <TextField fx:id="txtEmail" GridPane.rowIndex="2" GridPane.columnIndex="3"/>
 
-        <Label text="Fecha de nacimiento *" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dateBirthDate" GridPane.rowIndex="3" GridPane.columnIndex="1" maxWidth="Infinity"/>
+        <Label text="Calle *" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtStreet" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Número" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+        <TextField fx:id="txtAddressNumber" GridPane.rowIndex="3" GridPane.columnIndex="3"/>
 
-        <Label text="Teléfono *" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtPhone" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="Ciudad *" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtCity" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <Label text="Cargo *" GridPane.rowIndex="4" GridPane.columnIndex="2"/>
+        <ComboBox fx:id="comboPosition" GridPane.rowIndex="4" GridPane.columnIndex="3" maxWidth="Infinity"/>
 
-        <Label text="Email" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtEmail" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Fecha de ingreso *" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="dateHireDate" GridPane.rowIndex="5" GridPane.columnIndex="1" maxWidth="Infinity"/>
+        <Label text="Turno" GridPane.rowIndex="5" GridPane.columnIndex="2"/>
+        <ComboBox fx:id="comboShiftName" GridPane.rowIndex="5" GridPane.columnIndex="3" maxWidth="Infinity"/>
 
-        <Label text="Calle *" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtStreet" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        <Label text="Hora inicio (HH:mm)" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtShiftStart" promptText="ej: 07:00" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        <Label text="Hora fin (HH:mm)" GridPane.rowIndex="6" GridPane.columnIndex="2"/>
+        <TextField fx:id="txtShiftEnd" promptText="ej: 15:00" GridPane.rowIndex="6" GridPane.columnIndex="3"/>
 
-        <Label text="Número" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtAddressNumber" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
-
-        <Label text="Ciudad *" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtCity" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
-
-        <Label text="Cargo *" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="comboPosition" GridPane.rowIndex="9" GridPane.columnIndex="1" maxWidth="Infinity"/>
-
-        <Label text="Fecha de ingreso *" GridPane.rowIndex="10" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="dateHireDate" GridPane.rowIndex="10" GridPane.columnIndex="1" maxWidth="Infinity"/>
-
-        <Label text="Turno" GridPane.rowIndex="11" GridPane.columnIndex="0"/>
-        <ComboBox fx:id="comboShiftName" GridPane.rowIndex="11" GridPane.columnIndex="1" maxWidth="Infinity"/>
-
-        <Label text="Hora inicio (HH:mm)" GridPane.rowIndex="12" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtShiftStart" promptText="ej: 07:00" GridPane.rowIndex="12" GridPane.columnIndex="1"/>
-
-        <Label text="Hora fin (HH:mm)" GridPane.rowIndex="13" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtShiftEnd" promptText="ej: 15:00" GridPane.rowIndex="13" GridPane.columnIndex="1"/>
-
-        <Label text="Salario *" GridPane.rowIndex="14" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtSalary" promptText="ej: 450000" GridPane.rowIndex="14" GridPane.columnIndex="1"/>
+        <Label text="Salario *" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtSalary" promptText="ej: 450000" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">

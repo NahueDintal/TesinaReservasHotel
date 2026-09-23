@@ -35,7 +35,7 @@
             <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="btnNewStaff" text=" Nuevo " styleClass="btn-primary"
                     onAction="#handleNewStaff" />
-            <Button fx:id="btnViewHistory" text="Historial" styleClass="btn-secondary"
+            <Button fx:id="btnViewHistory" text="Inactivos" styleClass="btn-secondary"
                     onAction="#handleViewHistory" />
         </HBox>
 
@@ -105,7 +105,7 @@
 
                     <Button fx:id="btnEdit" text="Editar" styleClass="btn-detail" maxWidth="Infinity"
                             onAction="#handleEdit" />
-                    <Button fx:id="btnDeactivate" text="Inactivar" styleClass="btn-detail-danger"
+                    <Button fx:id="btnDeactivate" text="Eliminar" styleClass="btn-detail-danger"
                             maxWidth="Infinity" onAction="#handleDeactivate" />
                 </VBox>
             </ScrollPane>

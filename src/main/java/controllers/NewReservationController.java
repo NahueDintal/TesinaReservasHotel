@@ -777,6 +777,13 @@ public class NewReservationController {
             return;
         }
 
+        if (quantity > 30) {
+            showError(
+                    "La cantidad máxima por consumo es de 30."
+            );
+            return;
+        }
+
         BigDecimal unitPrice;
         int idProduct = 0;
         int idService = 0;
@@ -871,6 +878,13 @@ public class NewReservationController {
 
             if (quantity <= 0) {
                 showError("La cantidad debe ser mayor que 0.");
+                return;
+            }
+
+            if (quantity > 30) {
+                showError(
+                        "La cantidad máxima por consumo es de 30."
+                );
                 return;
             }
 
@@ -1061,12 +1075,21 @@ public class NewReservationController {
 
             String rateText = txtTotalRate.getText().trim();
             BigDecimal totalRate = null;
+
             if (rateText.isEmpty()) {
                 errors.add("Debe ingresar la tarifa total.");
             } else {
                 try {
                     totalRate = new BigDecimal(rateText);
-                    if (totalRate.compareTo(BigDecimal.ZERO) < 0) errors.add("La tarifa total no puede ser negativa.");
+
+                    BigDecimal maxRate = new BigDecimal("999999999.99");
+
+                    if (totalRate.compareTo(BigDecimal.ZERO) <= 0) {
+                        errors.add("La tarifa total debe ser mayor que 0.");
+                    } else if (totalRate.compareTo(maxRate) > 0) {
+                        errors.add("La tarifa total supera el monto máximo permitido.");
+                    }
+
                 } catch (NumberFormatException e) {
                     errors.add("La tarifa debe contener solamente números.");
                 }
