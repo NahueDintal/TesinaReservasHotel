@@ -76,13 +76,13 @@ public class CancellationImpactController {
 
   @FXML
   public void initialize() {
-    toDatePicker.setValue(LocalDate.now().plusDays(90));
-    fromDatePicker.setValue(LocalDate.now().minusDays(90));
+    fromDatePicker.setValue(LocalDate.now().minusMonths(12));
+    toDatePicker.setValue(LocalDate.now().plusMonths(12));
 
-    ObservableList<String> channels = FXCollections.observableArrayList("All");
+    ObservableList<String> channels = FXCollections.observableArrayList("Todos");
     channels.addAll(probabilityDAO.findAllChannels());
     channelComboBox.setItems(channels);
-    channelComboBox.setValue("All");
+    channelComboBox.setValue("Todos");
 
     configureTable();
     loadData();
@@ -132,7 +132,8 @@ public class CancellationImpactController {
   private void onCalculate() {
     if (fromDatePicker.getValue() != null && toDatePicker.getValue() != null
         && fromDatePicker.getValue().isAfter(toDatePicker.getValue())) {
-      new Alert(Alert.AlertType.WARNING, "'From' date cannot be after 'To' date.").showAndWait();
+      new Alert(Alert.AlertType.WARNING,
+          "'Desde' no puede ser posterior a 'Hasta'.").showAndWait();
       return;
     }
     loadData();
@@ -140,16 +141,16 @@ public class CancellationImpactController {
 
   @FXML
   private void onClear() {
-    fromDatePicker.setValue(LocalDate.now().minusDays(90));
-    toDatePicker.setValue(LocalDate.now().plusDays(90));
-    channelComboBox.setValue("All");
+    fromDatePicker.setValue(LocalDate.now().minusMonths(12));
+    toDatePicker.setValue(LocalDate.now().plusMonths(12));
+    channelComboBox.setValue("Todos");
     loadData();
   }
 
   private void loadData() {
     LocalDate from = fromDatePicker.getValue();
     LocalDate to = toDatePicker.getValue();
-    String channel = "All".equals(channelComboBox.getValue()) ? null : channelComboBox.getValue();
+    String channel = "Todos".equals(channelComboBox.getValue()) ? null : channelComboBox.getValue();
 
     List<CancellationImpact> data = impactDAO.findByChannel(from, to, channel);
     currentData.setAll(data);
@@ -157,7 +158,7 @@ public class CancellationImpactController {
     updateKpis();
     updateChart();
 
-    statusLabel.setText(String.format("Showing %d channel(s). Period: %s -> %s.",
+    statusLabel.setText(String.format("Mostrando %d canal(es). Período: %s → %s.",
         currentData.size(), from, to));
   }
 
@@ -172,7 +173,7 @@ public class CancellationImpactController {
     cancelledReservationsLabel.setText(String.valueOf(cancelled));
     totalRevenueLabel.setText(String.format("%,.2f", totalRev));
     lostRevenueLabel.setText(String.format("%,.2f", lostRev));
-    lostRatioLabel.setText(String.format("%.2f %% of total revenue", ratio * 100));
+    lostRatioLabel.setText(String.format("%.2f %% de los ingresos totales", ratio * 100));
   }
 
   private void updateChart() {
@@ -193,11 +194,11 @@ public class CancellationImpactController {
       if (p != null) {
         Tooltip.install(d.getNode(), new Tooltip(
             p.getCategory() + "\n" +
-                "Reservations: " + p.getTotalReservations() + "\n" +
-                "Cancelled: " + p.getCancelledReservations() + "\n" +
-                "Total revenue: " + String.format("%,.2f", p.getTotalRevenue()) + "\n" +
-                "Lost revenue: " + String.format("%,.2f", p.getLostRevenue()) + "\n" +
-                "Lost ratio: " + p.getLostRatioFormatted()));
+                "Reservas: " + p.getTotalReservations() + "\n" +
+                "Canceladas: " + p.getCancelledReservations() + "\n" +
+                "Ingresos totales: " + String.format("%,.2f", p.getTotalRevenue()) + "\n" +
+                "Ingresos perdidos: " + String.format("%,.2f", p.getLostRevenue()) + "\n" +
+                "Ratio perdido: " + p.getLostRatioFormatted()));
       }
     }
   }
@@ -205,23 +206,23 @@ public class CancellationImpactController {
   @FXML
   private void onExport() {
     FileChooser fc = new FileChooser();
-    fc.setTitle("Export report");
+    fc.setTitle("Exportar reporte");
     fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
-    fc.setInitialFileName("cancellation_impact.csv");
+    fc.setInitialFileName("impacto_cancelaciones.csv");
     File file = fc.showSaveDialog(exportButton.getScene().getWindow());
     if (file == null)
       return;
 
     try (PrintWriter pw = new PrintWriter(file)) {
-      pw.println("Channel;Reservations;Cancelled;Total revenue;Lost revenue;Lost ratio");
+      pw.println("Canal;Reservas;Canceladas;Ingresos totales;Ingresos perdidos;Ratio perdido");
       for (CancellationImpact p : currentData) {
         pw.printf("%s;%d;%d;%.2f;%.2f;%.4f%n",
             p.getCategory(), p.getTotalReservations(), p.getCancelledReservations(),
             p.getTotalRevenue(), p.getLostRevenue(), p.getLostRatio());
       }
-      statusLabel.setText("Exported to: " + file.getAbsolutePath());
+      statusLabel.setText("Exportado a: " + file.getAbsolutePath());
     } catch (Exception ex) {
-      new Alert(Alert.AlertType.ERROR, "Error while exporting: " + ex.getMessage()).showAndWait();
+      new Alert(Alert.AlertType.ERROR, "Error al exportar: " + ex.getMessage()).showAndWait();
     }
   }
 }

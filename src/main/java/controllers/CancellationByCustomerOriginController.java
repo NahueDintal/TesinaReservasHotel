@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
 
-public class CancellationByMonthController {
+public class CancellationByCustomerOriginController {
 
   @FXML
   private DatePicker fromDatePicker;
@@ -43,16 +43,16 @@ public class CancellationByMonthController {
   private Label highestRiskDetailLabel;
 
   @FXML
-  private BarChart<String, Number> monthChart;
+  private BarChart<String, Number> originChart;
   @FXML
-  private CategoryAxis monthAxis;
+  private CategoryAxis originAxis;
   @FXML
   private NumberAxis probabilityAxis;
 
   @FXML
   private TableView<Probability> dataTable;
   @FXML
-  private TableColumn<Probability, String> monthColumn;
+  private TableColumn<Probability, String> originColumn;
   @FXML
   private TableColumn<Probability, Integer> totalColumn;
   @FXML
@@ -85,7 +85,7 @@ public class CancellationByMonthController {
   }
 
   private void configureTable() {
-    monthColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getCategory()));
+    originColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getCategory()));
     totalColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getTotalReservations()));
     cancelledColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getCancelledReservations()));
     probabilityColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getProbability()));
@@ -148,13 +148,13 @@ public class CancellationByMonthController {
     LocalDate to = toDatePicker.getValue();
     String channel = "Todos".equals(channelComboBox.getValue()) ? null : channelComboBox.getValue();
 
-    List<Probability> data = probabilityDAO.findByMonth(from, to, channel);
+    List<Probability> data = probabilityDAO.findByCustomerOrigin(from, to, channel);
     currentData.setAll(data);
 
     updateKpis();
     updateChart();
 
-    statusLabel.setText(String.format("Mostrando %d mes(es). Período: %s → %s.",
+    statusLabel.setText(String.format("Mostrando %d origen(es). Período: %s → %s.",
         currentData.size(), from, to));
   }
 
@@ -182,13 +182,13 @@ public class CancellationByMonthController {
   }
 
   private void updateChart() {
-    monthChart.getData().clear();
+    originChart.getData().clear();
     XYChart.Series<String, Number> series = new XYChart.Series<>();
 
     for (Probability p : currentData) {
       series.getData().add(new XYChart.Data<>(p.getCategory(), p.getProbability() * 100));
     }
-    monthChart.getData().add(series);
+    originChart.getData().add(series);
 
     for (XYChart.Data<String, Number> d : series.getData()) {
       if (d.getNode() == null)
@@ -212,13 +212,13 @@ public class CancellationByMonthController {
     FileChooser fc = new FileChooser();
     fc.setTitle("Exportar reporte");
     fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
-    fc.setInitialFileName("cancelaciones_por_mes.csv");
+    fc.setInitialFileName("cancelaciones_por_origen.csv");
     File file = fc.showSaveDialog(exportButton.getScene().getWindow());
     if (file == null)
       return;
 
     try (PrintWriter pw = new PrintWriter(file)) {
-      pw.println("Mes;Reservas;Canceladas;Probabilidad;IC 95% inferior;IC 95% superior");
+      pw.println("Origen;Reservas;Canceladas;Probabilidad;IC 95% inferior;IC 95% superior");
       for (Probability p : currentData) {
         pw.printf("%s;%d;%d;%.4f;%.4f;%.4f%n",
             p.getCategory(), p.getTotalReservations(), p.getCancelledReservations(),

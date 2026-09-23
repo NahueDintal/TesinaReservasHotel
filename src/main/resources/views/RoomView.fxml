@@ -26,7 +26,7 @@
       </Label>
       <Region HBox.hgrow="ALWAYS" />
       <Button fx:id="btnNewRoom" styleClass="btn-primary" text="Nuevo" />
-      <Button fx:id="btnViewUnavailable" styleClass="btn-secondary" text="Ver no disponibles" />
+      <Button fx:id="btnViewUnavailable" styleClass="btn-secondary" text="Fuera de servicio" />
     </HBox>
 
     <HBox alignment="CENTER_LEFT" spacing="15">
@@ -86,7 +86,7 @@
         <Region VBox.vgrow="ALWAYS" />
 
         <Button fx:id="btnEdit" maxWidth="Infinity" styleClass="btn-detail" text="Editar" />
-        <Button fx:id="btnDeactivate" maxWidth="Infinity" styleClass="btn-detail-danger" text="Marcar no disponible" />
+        <Button fx:id="btnDeactivate" maxWidth="Infinity" styleClass="btn-detail-danger" text="Marcar como fuera de servicio" />
         <Button fx:id="btnDelete" maxWidth="Infinity" styleClass="btn-detail-danger" text="Eliminar" />
       </VBox>
     </SplitPane>

@@ -25,6 +25,10 @@ public class ReportController {
   private ToggleButton btnCancellationByMonth;
   @FXML
   private ToggleButton btnCancellationImpact;
+  @FXML
+  private ToggleButton btnCancellationByGuests;
+  @FXML
+  private ToggleButton btnCancellationByCustomerOrigin;
 
   private ToggleGroup reportGroup;
 
@@ -32,6 +36,8 @@ public class ReportController {
   private static final String VIEW_LEAD_TIME = "/views/CancellationByLeadTime.fxml";
   private static final String VIEW_BY_MONTH = "/views/CancellationByMonth.fxml";
   private static final String VIEW_IMPACT = "/views/CancellationImpact.fxml";
+  private static final String VIEW_BY_GUESTS = "/views/CancellationByGuests.fxml";
+  private static final String VIEW_BY_ORIGIN = "/views/CancellationByCustomerOrigin.fxml";
 
   private DashboardController dashboardController;
 
@@ -42,8 +48,13 @@ public class ReportController {
   @FXML
   public void initialize() {
     reportGroup = new ToggleGroup();
+
     btnCancellationProbability.setToggleGroup(reportGroup);
     btnCancellationByLeadTime.setToggleGroup(reportGroup);
+    btnCancellationByMonth.setToggleGroup(reportGroup);
+    btnCancellationImpact.setToggleGroup(reportGroup);
+    btnCancellationByGuests.setToggleGroup(reportGroup);
+    btnCancellationByCustomerOrigin.setToggleGroup(reportGroup);
 
     btnCancellationProbability.setOnAction(e -> {
       selectButton(btnCancellationProbability);
@@ -53,9 +64,6 @@ public class ReportController {
       selectButton(btnCancellationByLeadTime);
       loadReport(VIEW_LEAD_TIME);
     });
-    btnCancellationByMonth.setToggleGroup(reportGroup);
-    btnCancellationImpact.setToggleGroup(reportGroup);
-
     btnCancellationByMonth.setOnAction(e -> {
       selectButton(btnCancellationByMonth);
       loadReport(VIEW_BY_MONTH);
@@ -63,6 +71,14 @@ public class ReportController {
     btnCancellationImpact.setOnAction(e -> {
       selectButton(btnCancellationImpact);
       loadReport(VIEW_IMPACT);
+    });
+    btnCancellationByGuests.setOnAction(e -> {
+      selectButton(btnCancellationByGuests);
+      loadReport(VIEW_BY_GUESTS);
+    });
+    btnCancellationByCustomerOrigin.setOnAction(e -> {
+      selectButton(btnCancellationByCustomerOrigin);
+      loadReport(VIEW_BY_ORIGIN);
     });
 
     // Default report
