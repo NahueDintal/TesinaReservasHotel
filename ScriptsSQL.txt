@@ -1182,5 +1182,81 @@ VALUES
 ('050', 'Dylan',     'Espinoza',     '37234567', '1997-03-05', '11-4567-8950', 'dylan.espinoza@hotel.com',     'Av. Cabildo',      '3200', 'CABA',          4, 3, 3, 'ACTIVE', '2021-12-01', '22:00:00', '06:00:00', 830000.00);
 
 -- ==========================================
+-- 200 RESERVAS EXTRA PARA ANÁLISIS DE PROBABILIDADES
+-- ==========================================
+-- Genera 200 reservas con distribución realista:
+--   * Canales: Booking 35%, Airbnb 20%, Directa 15%, WhatsApp 15%, Walk-in 15%
+--   * Check-in: distribuido en todo 2026
+--   * Lead time: 1-180 días (cubre los 5 buckets)
+--   * Huéspedes: 1-5
+--   * Cancelación: variable por canal + lead time + mes
+-- ==========================================
+
+INSERT INTO Reservation
+(idCustomer, creationDate, checkIn, checkOut,
+ idReservationStatus, idReservationType,
+ numberOfGuests, totalRate, observations)
+WITH RECURSIVE nums(n) AS (
+    SELECT 1
+    UNION ALL
+    SELECT n + 1 FROM nums WHERE n < 200
+)
+SELECT
+    v_customer,
+    TIMESTAMP(DATE_SUB(v_checkIn, INTERVAL v_leadDays DAY), '09:00:00'),
+    v_checkIn,
+    DATE_ADD(v_checkIn, INTERVAL v_los DAY),
+    CASE
+        WHEN v_rand_cancel < v_prob THEN 3
+        WHEN v_checkIn < '2026-09-22' THEN 4
+        ELSE 2
+    END,
+    v_channel,
+    v_guests,
+    v_rate,
+    NULL
+FROM (
+    SELECT
+        v_customer, v_channel, v_rand_cancel, v_checkIn,
+        v_leadDays, v_guests, v_rate, v_los,
+        (CASE v_channel
+            WHEN 2 THEN 0.40
+            WHEN 3 THEN 0.20
+            WHEN 4 THEN 0.22
+            WHEN 5 THEN 0.05
+            ELSE 0.10
+        END)
+        + CASE WHEN v_leadDays > 90 THEN 0.15
+               WHEN v_leadDays > 60 THEN 0.08
+               ELSE 0 END
+        + CASE WHEN MONTH(v_checkIn) IN (1, 2, 7) THEN 0.08
+               WHEN MONTH(v_checkIn) IN (4, 11) THEN -0.03
+               ELSE 0 END
+        AS v_prob
+    FROM (
+        SELECT
+            1 + FLOOR(r1 * 220)  AS v_customer,
+            CASE
+                WHEN r2 < 0.35 THEN 2
+                WHEN r2 < 0.55 THEN 3
+                WHEN r2 < 0.70 THEN 1
+                WHEN r2 < 0.85 THEN 4
+                ELSE 5
+            END AS v_channel,
+            r3 AS v_rand_cancel,
+            DATE_ADD('2026-01-01', INTERVAL FLOOR(r4 * 365) DAY) AS v_checkIn,
+            1 + FLOOR(r5 * 180)  AS v_leadDays,
+            1 + FLOOR(r6 * 5)    AS v_guests,
+            100 + FLOOR(r7 * 450) AS v_rate,
+            1 + FLOOR(r8 * 6)    AS v_los
+        FROM (
+            SELECT RAND() AS r1, RAND() AS r2, RAND() AS r3, RAND() AS r4,
+                   RAND() AS r5, RAND() AS r6, RAND() AS r7, RAND() AS r8
+            FROM nums
+        ) AS randoms
+    ) AS with_channel
+) AS with_prob;
+
+-- ==========================================
 -- FIN DEL SCRIPT
 -- ==========================================
