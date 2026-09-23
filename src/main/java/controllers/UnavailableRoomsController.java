@@ -70,7 +70,7 @@ public class UnavailableRoomsController {
   private void loadUnavailableRooms() {
     try {
       unavailableRooms.setAll(roomDAO.listActive());
-      unavailableRooms.removeIf(Room::isAvailable); // solo no disponibles
+      unavailableRooms.removeIf(room -> !room.isOutOfService());
       filteredUnavailable = new FilteredList<>(unavailableRooms, p -> true);
       tableUnavailableRooms.setItems(filteredUnavailable);
       updateCounter();
@@ -91,15 +91,14 @@ public class UnavailableRoomsController {
     alert.showAndWait().ifPresent(response -> {
       if (response == ButtonType.OK) {
         try {
-          selected.setAvailable(true);
+          selected.setOutOfService(false);
           if (roomDAO.update(selected)) {
             unavailableRooms.remove(selected);
             filteredUnavailable.remove(selected);
             tableUnavailableRooms.refresh();
             updateCounter();
-            showAlert("Éxito", "Habitación reactivada", "La habitación ha sido reactivada correctamente.");
-            Stage stage = (Stage) tableUnavailableRooms.getScene().getWindow();
-            stage.close();
+            showAlert("Éxito", "Habitación reactivada",
+                "La habitación ha sido reactivada correctamente.");
           }
         } catch (RuntimeException e) {
           showAlert("Error", "No se pudo reactivar la habitación", e.getMessage());

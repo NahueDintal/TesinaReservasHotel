@@ -167,11 +167,12 @@ public class Room {
 
   public void setOutOfService(boolean outOfService) {
     this.outOfService = outOfService;
-    logger.debug("Cambiar de estado a fuera de servicio '{}'", outOfService);
     if (outOfService) {
       this.available = false;
-      logger.debug("Cambia de estado disponibilidad '{}'", outOfService);
+    } else {
+      this.available = true;
     }
+    logger.debug("Cambiar de estado a fuera de servicio '{}' (available={})", outOfService, available);
   }
 
   public boolean isActive() {
