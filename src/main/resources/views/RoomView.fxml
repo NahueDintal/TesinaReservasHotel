@@ -84,10 +84,13 @@
         <TextField fx:id="lblDetailDescription" editable="false" focusTraversable="false" maxWidth="Infinity" styleClass="detail-value-field" text="--" />
 
         <Region VBox.vgrow="ALWAYS" />
-
         <Button fx:id="btnEdit" maxWidth="Infinity" styleClass="btn-detail" text="Editar" />
-        <Button fx:id="btnDeactivate" maxWidth="Infinity" styleClass="btn-detail-danger" text="Marcar como fuera de servicio" />
-        <Button fx:id="btnDelete" maxWidth="Infinity" styleClass="btn-detail-danger" text="Eliminar" />
+        <Button fx:id="btnDeactivate" maxWidth="Infinity" styleClass="btn-detail-danger"
+                text="Marcar como no disponible" />
+        <Button fx:id="btnOutOfService" maxWidth="Infinity" styleClass="btn-detail-danger"
+                text="Marcar fuera de servicio" />
+        <Button fx:id="btnDelete" maxWidth="Infinity" styleClass="btn-detail-danger"
+                text="Eliminar" />
       </VBox>
     </SplitPane>
   </VBox>
