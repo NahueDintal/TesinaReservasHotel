@@ -11,7 +11,6 @@ public class ProbabilityDAO {
 
   private static final String CANCELLED_STATUS = "Cancelada";
 
-  /** Cancellation probability grouped by booking channel (ReservationType). */
   public List<Probability> findByChannel(LocalDate fromDate,
       LocalDate toDate,
       String channelFilter) {
@@ -31,10 +30,6 @@ public class ProbabilityDAO {
     return runQuery(sql, fromDate, toDate, channelFilter);
   }
 
-  /**
-   * Cancellation probability grouped by lead time bucket (days between creation
-   * and check-in).
-   */
   public List<Probability> findByLeadTime(LocalDate fromDate,
       LocalDate toDate,
       String channelFilter) {
@@ -81,7 +76,6 @@ public class ProbabilityDAO {
     return channels;
   }
 
-  // ---------- shared executor ----------
   private List<Probability> runQuery(String sql, LocalDate fromDate,
       LocalDate toDate, String channelFilter) {
     List<Probability> result = new ArrayList<>();
@@ -128,7 +122,6 @@ public class ProbabilityDAO {
     return result;
   }
 
-  /** Cancellation probability grouped by month of check-in (seasonality). */
   public List<Probability> findByMonth(LocalDate fromDate,
       LocalDate toDate,
       String channelFilter) {
@@ -145,6 +138,57 @@ public class ProbabilityDAO {
         "  AND (? IS NULL OR rt.name = ?) " +
         "GROUP BY category, month_order " +
         "ORDER BY month_order";
+
+    return runQuery(sql, fromDate, toDate, channelFilter);
+  }
+
+  public List<Probability> findByGuests(LocalDate fromDate,
+      LocalDate toDate,
+      String channelFilter) {
+
+    String sql = "SELECT CASE " +
+        "         WHEN r.numberOfGuests = 1 THEN '1 huésped' " +
+        "         WHEN r.numberOfGuests = 2 THEN '2 huéspedes' " +
+        "         WHEN r.numberOfGuests BETWEEN 3 AND 4 THEN '3-4 huéspedes' " +
+        "         ELSE '5+ huéspedes' " +
+        "       END AS category, " +
+        "       CASE " +
+        "         WHEN r.numberOfGuests = 1 THEN 1 " +
+        "         WHEN r.numberOfGuests = 2 THEN 2 " +
+        "         WHEN r.numberOfGuests BETWEEN 3 AND 4 THEN 3 " +
+        "         ELSE 4 " +
+        "       END AS bucket_order, " +
+        "       COUNT(*) AS total, " +
+        "       SUM(CASE WHEN LOWER(rs.name) = LOWER(?) THEN 1 ELSE 0 END) AS cancelled " +
+        "FROM Reservation r " +
+        "JOIN ReservationStatus rs ON r.idReservationStatus = rs.idReservationStatus " +
+        "JOIN ReservationType   rt ON r.idReservationType   = rt.idReservationType " +
+        "WHERE (? IS NULL OR r.checkIn >= ?) " +
+        "  AND (? IS NULL OR r.checkIn <= ?) " +
+        "  AND (? IS NULL OR rt.name = ?) " +
+        "GROUP BY category, bucket_order " +
+        "ORDER BY bucket_order";
+
+    return runQuery(sql, fromDate, toDate, channelFilter);
+  }
+
+  public List<Probability> findByCustomerOrigin(LocalDate fromDate,
+      LocalDate toDate,
+      String channelFilter) {
+
+    String sql = "SELECT co.name AS category, " +
+        "       COUNT(*) AS total, " +
+        "       SUM(CASE WHEN LOWER(rs.name) = LOWER(?) THEN 1 ELSE 0 END) AS cancelled " +
+        "FROM Reservation r " +
+        "JOIN ReservationStatus rs ON r.idReservationStatus = rs.idReservationStatus " +
+        "JOIN ReservationType   rt ON r.idReservationType   = rt.idReservationType " +
+        "JOIN Customer          c  ON r.idCustomer          = c.idCustomer " +
+        "JOIN CustomerOrigin    co ON c.idCustomerOrigin    = co.idCustomerOrigin " +
+        "WHERE (? IS NULL OR r.checkIn >= ?) " +
+        "  AND (? IS NULL OR r.checkIn <= ?) " +
+        "  AND (? IS NULL OR rt.name = ?) " +
+        "GROUP BY co.name " +
+        "ORDER BY co.name";
 
     return runQuery(sql, fromDate, toDate, channelFilter);
   }

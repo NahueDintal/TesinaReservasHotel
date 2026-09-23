@@ -72,13 +72,13 @@ public class CancellationByLeadTimeController {
 
   @FXML
   public void initialize() {
-    toDatePicker.setValue(LocalDate.now().plusDays(180));
-    fromDatePicker.setValue(LocalDate.now().minusDays(180));
+    fromDatePicker.setValue(LocalDate.now().minusMonths(12));
+    toDatePicker.setValue(LocalDate.now().plusMonths(12));
 
-    ObservableList<String> channels = FXCollections.observableArrayList("All");
+    ObservableList<String> channels = FXCollections.observableArrayList("Todos");
     channels.addAll(probabilityDAO.findAllChannels());
     channelComboBox.setItems(channels);
-    channelComboBox.setValue("All");
+    channelComboBox.setValue("Todos");
 
     configureTable();
     loadData();
@@ -128,7 +128,8 @@ public class CancellationByLeadTimeController {
   private void onCalculate() {
     if (fromDatePicker.getValue() != null && toDatePicker.getValue() != null
         && fromDatePicker.getValue().isAfter(toDatePicker.getValue())) {
-      new Alert(Alert.AlertType.WARNING, "'From' date cannot be after 'To' date.").showAndWait();
+      new Alert(Alert.AlertType.WARNING,
+          "'Desde' no puede ser posterior a 'Hasta'.").showAndWait();
       return;
     }
     loadData();
@@ -136,16 +137,16 @@ public class CancellationByLeadTimeController {
 
   @FXML
   private void onClear() {
-    fromDatePicker.setValue(LocalDate.now().minusDays(180));
-    toDatePicker.setValue(LocalDate.now().plusDays(180));
-    channelComboBox.setValue("All");
+    fromDatePicker.setValue(LocalDate.now().minusMonths(12));
+    toDatePicker.setValue(LocalDate.now().plusMonths(12));
+    channelComboBox.setValue("Todos");
     loadData();
   }
 
   private void loadData() {
     LocalDate from = fromDatePicker.getValue();
     LocalDate to = toDatePicker.getValue();
-    String channel = "All".equals(channelComboBox.getValue()) ? null : channelComboBox.getValue();
+    String channel = "Todos".equals(channelComboBox.getValue()) ? null : channelComboBox.getValue();
 
     List<Probability> data = probabilityDAO.findByLeadTime(from, to, channel);
     currentData.setAll(data);
@@ -153,7 +154,7 @@ public class CancellationByLeadTimeController {
     updateKpis();
     updateChart();
 
-    statusLabel.setText(String.format("Showing %d bucket(s). Period: %s -> %s.",
+    statusLabel.setText(String.format("Mostrando %d rango(s). Período: %s → %s.",
         currentData.size(), from, to));
   }
 
@@ -164,7 +165,6 @@ public class CancellationByLeadTimeController {
     totalReservationsLabel.setText(String.valueOf(total));
     cancelledReservationsLabel.setText(String.valueOf(cancelled));
 
-    // Highest-risk bucket
     Probability riskiest = currentData.stream()
         .filter(p -> p.getTotalReservations() > 0)
         .max((a, b) -> Double.compare(a.getProbability(), b.getProbability()))
@@ -199,10 +199,10 @@ public class CancellationByLeadTimeController {
       if (p != null) {
         Tooltip.install(d.getNode(), new Tooltip(
             p.getCategory() + "\n" +
-                "Reservations: " + p.getTotalReservations() + "\n" +
-                "Cancelled: " + p.getCancelledReservations() + "\n" +
-                "Probability: " + String.format("%.2f %%", p.getProbability() * 100) + "\n" +
-                "95% CI: " + p.getFormattedConfidenceInterval()));
+                "Reservas: " + p.getTotalReservations() + "\n" +
+                "Canceladas: " + p.getCancelledReservations() + "\n" +
+                "Probabilidad: " + String.format("%.2f %%", p.getProbability() * 100) + "\n" +
+                "IC 95%: " + p.getFormattedConfidenceInterval()));
       }
     }
   }
@@ -210,23 +210,23 @@ public class CancellationByLeadTimeController {
   @FXML
   private void onExport() {
     FileChooser fc = new FileChooser();
-    fc.setTitle("Export report");
+    fc.setTitle("Exportar reporte");
     fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
-    fc.setInitialFileName("cancellation_by_lead_time.csv");
+    fc.setInitialFileName("cancelaciones_por_anticipacion.csv");
     File file = fc.showSaveDialog(exportButton.getScene().getWindow());
     if (file == null)
       return;
 
     try (PrintWriter pw = new PrintWriter(file)) {
-      pw.println("Lead time bucket;Total reservations;Cancelled;Probability;95% CI lower;95% CI upper");
+      pw.println("Anticipación;Reservas;Canceladas;Probabilidad;IC 95% inferior;IC 95% superior");
       for (Probability p : currentData) {
         pw.printf("%s;%d;%d;%.4f;%.4f;%.4f%n",
             p.getCategory(), p.getTotalReservations(), p.getCancelledReservations(),
             p.getProbability(), p.getConfidenceIntervalLower(), p.getConfidenceIntervalUpper());
       }
-      statusLabel.setText("Exported to: " + file.getAbsolutePath());
+      statusLabel.setText("Exportado a: " + file.getAbsolutePath());
     } catch (Exception ex) {
-      new Alert(Alert.AlertType.ERROR, "Error while exporting: " + ex.getMessage()).showAndWait();
+      new Alert(Alert.AlertType.ERROR, "Error al exportar: " + ex.getMessage()).showAndWait();
     }
   }
 }
