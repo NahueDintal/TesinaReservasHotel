@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.BookingChartController"
+            styleClass="planilla-container">
+
+    <!-- HEADER -->
+    <top>
+        <HBox spacing="15"
+              alignment="CENTER_LEFT"
+              styleClass="planilla-header">
+
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+
+            <Button text="‹"
+                    fx:id="btnPreviousMonth"
+                    styleClass="month-button"/>
+
+            <Label fx:id="lblMonth"
+                   text="SEPTIEMBRE 2026"
+                   styleClass="month-title"/>
+
+            <Button text="›"
+                    fx:id="btnNextMonth"
+                    styleClass="month-button"/>
+
+        </HBox>
+    </top>
+
+    <!-- GRID AREA -->
+    <center>
+        <ScrollPane fx:id="scrollPane"
+                    fitToHeight="true"
+                    fitToWidth="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    styleClass="planilla-scroll">
+
+            <VBox fx:id="gridContainer"
+                  spacing="0"
+                  styleClass="planilla-grid">
+
+            </VBox>
+
+        </ScrollPane>
+    </center>
+
+</BorderPane>

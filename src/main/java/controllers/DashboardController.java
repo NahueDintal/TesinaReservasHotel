@@ -9,11 +9,17 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import java.io.IOException;
+import javafx.scene.control.Button;
+
 
 public class DashboardController {
 
   @FXML
   private VBox leftMenu;
+
+  @FXML
+  private Button btnMenu;
+
   @FXML
   private AnchorPane centerPane;
 
@@ -39,6 +45,7 @@ public class DashboardController {
     // 1. Crear un ToggleGroup para que solo un botón esté seleccionado a la vez
     menuGroup = new ToggleGroup();
     btnPlanilla.setToggleGroup(menuGroup);
+    loadView("/views/BookingChart.fxml");
     btnReservas.setToggleGroup(menuGroup);
     btnHabitaciones.setToggleGroup(menuGroup);
     btnClientes.setToggleGroup(menuGroup);
@@ -52,7 +59,7 @@ public class DashboardController {
     // 3. Asignar acciones a los botones
     btnPlanilla.setOnAction(e -> {
       selectButton(btnPlanilla);
-      loadView("/views/.fxml");
+      loadView("/views/BookingChart.fxml");
     });
     btnReservas.setOnAction(e -> {
       selectButton(btnReservas);
@@ -78,6 +85,15 @@ public class DashboardController {
       selectButton(btnConfiguracion);
       loadView("/views/.fxml");
     });
+  }
+
+  @FXML
+  private void toggleSidebar() {
+
+    boolean visible = leftMenu.isVisible();
+
+    leftMenu.setVisible(!visible);
+    leftMenu.setManaged(!visible);
   }
 
   /**

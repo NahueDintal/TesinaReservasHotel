@@ -1362,3 +1362,84 @@
     -fx-border-color: #4f855d;
     -fx-border-width: 2;
 }
+
+.planilla-container {
+    -fx-background-color: #f5f8f5;
+}
+
+.planilla-header {
+    -fx-background-color: white;
+    -fx-border-color: #dce5dd;
+    -fx-border-width: 0 0 1 0;
+}
+
+.month-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e6d3d;
+}
+
+.month-button {
+    -fx-background-color: white;
+    -fx-border-color: #c8d8cc;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-size: 18px;
+    -fx-cursor: hand;
+}
+
+.month-button:hover {
+    -fx-background-color: #e7f2e9;
+}
+
+.planilla-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.planilla-grid {
+    -fx-background-color: #f5f8f5;
+}
+.grid-header {
+    -fx-background-color: #3E864D;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-border-color: #d5dfd7;
+    -fx-border-width: 0 1 1 0;
+    -fx-font-weight: bold;
+}
+
+.room-label {
+    -fx-background-color: white;
+    -fx-alignment: CENTER;
+    -fx-border-color: #d5dfd7;
+    -fx-border-width: 0 1 1 0;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E6D3D;
+}
+
+.booking-cell {
+    -fx-background-color: white;
+    -fx-border-color: #d5dfd7;
+    -fx-border-width: 0 1 1 0;
+}
+.booking-cell:hover {
+    -fx-background-color: #e7f2e9;
+    -fx-cursor: hand;
+}
+
+.hamburger-button {
+    -fx-background-color: white;
+    -fx-text-fill: #2E6D3D;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-border-color: #d5dfd7;
+    -fx-border-radius: 6;
+    -fx-padding: 6 10;
+    -fx-cursor: hand;
+}
+
+.hamburger-button:hover {
+    -fx-background-color: #e7f2e9;
+}

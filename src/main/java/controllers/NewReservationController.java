@@ -273,8 +273,7 @@ public class NewReservationController {
         availableRooms.setAll(activeRooms);
         loadRoomCards();
 
-        System.out.println("Habitaciones activas: " + activeRooms.size());
-        System.out.println("Habitaciones disponibles: " + availableRooms.size());
+
 
         System.out.println("Habitaciones cargadas: " + activeRooms.size());
 
@@ -367,8 +366,6 @@ public class NewReservationController {
 
     private void loadAvailableRooms() {
 
-        System.out.println("CHECK-IN: " + dpCheckIn.getValue());
-        System.out.println("CHECK-OUT: " + dpCheckOut.getValue());
 
         if (dpCheckIn.getValue() == null || dpCheckOut.getValue() == null) {
 
@@ -392,13 +389,15 @@ public class NewReservationController {
                         dpCheckOut.getValue(),
                         idReservationToExclude
                 );
-        System.out.println("Habitaciones ocupadas: " + occupiedRooms);
+
 
         availableRooms.clear();
 
         for (Room room : activeRooms) {
 
-            if (!occupiedRooms.contains(room.getNumber())) {
+            if (!occupiedRooms.contains(room.getNumber())
+                    || selectedRooms.contains(room)) {
+
                 availableRooms.add(room);
             }
         }
