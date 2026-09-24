@@ -1443,3 +1443,20 @@
 .hamburger-button:hover {
     -fx-background-color: #e7f2e9;
 }
+   .btn-config {
+       -fx-background-color: white;
+       -fx-border-color: #3E864D;
+       -fx-border-width: 2;
+       -fx-border-radius: 10;
+       -fx-background-radius: 10;
+       -fx-text-fill: #3E864D;
+       -fx-font-size: 16px;
+       -fx-font-weight: bold;
+       -fx-cursor: hand;
+   }
+
+.btn-config:hover {
+    -fx-background-color: #3E864D;
+    -fx-text-fill: white;
+}
+
