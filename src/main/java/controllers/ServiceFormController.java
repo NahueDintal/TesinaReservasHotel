@@ -1,0 +1,417 @@
+package controllers;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import models.Service;
+import repositories.ServiceRepo;
+import utils.StyleManager;
+
+import java.math.BigDecimal;
+
+public class ServiceFormController {
+
+    @FXML
+    private Label lblFormTitle;
+
+    @FXML
+    private TextField txtName;
+
+    @FXML
+    private TextField txtPrice;
+
+    @FXML
+    private TextArea txtDescription;
+
+    @FXML
+    private Button btnSave;
+
+    @FXML
+    private Button btnCancel;
+
+    private final ServiceRepo serviceRepo =
+            new ServiceRepo();
+
+    private Service editingService;
+
+    @FXML
+    public void initialize() {
+
+        setupButtonActions();
+        setupValidations();
+
+        btnSave.setDisable(true);
+    }
+
+    private void setupValidations() {
+
+        txtName.focusedProperty().addListener(
+                (obs, oldValue, newValue) -> {
+
+                    if (!newValue) {
+                        validateName();
+                    }
+                }
+        );
+
+        txtPrice.focusedProperty().addListener(
+                (obs, oldValue, newValue) -> {
+
+                    if (!newValue) {
+                        validatePrice();
+                    }
+                }
+        );
+
+        txtName.textProperty().addListener(
+                (obs, oldValue, newValue) -> {
+
+                    if (newValue != null &&
+                            newValue.length() > 50) {
+
+                        txtName.setText(oldValue);
+                    }
+
+                    updateSaveButtonState();
+                }
+        );
+
+        txtDescription.textProperty().addListener(
+                (obs, oldValue, newValue) -> {
+
+                    if (newValue != null &&
+                            newValue.length() > 255) {
+
+                        txtDescription.setText(oldValue);
+                    }
+
+                    updateSaveButtonState();
+                }
+        );
+
+        txtPrice.textProperty().addListener(
+                (obs, oldValue, newValue) -> {
+
+                    if (newValue != null &&
+                            newValue.length() > 12) {
+
+                        txtPrice.setText(oldValue);
+                    }
+
+                    updateSaveButtonState();
+                }
+        );
+    }
+
+    private boolean validateName() {
+
+        String name = txtName.getText();
+
+        boolean valid =
+                name != null &&
+                        !name.trim().isEmpty() &&
+                        name.trim().length() <= 50;
+
+        setFieldValid(
+                txtName,
+                valid,
+                "El nombre es obligatorio y debe tener hasta 50 caracteres."
+        );
+
+        return valid;
+    }
+
+    private boolean validatePrice() {
+
+        String text = txtPrice.getText();
+
+        boolean valid = false;
+
+        try {
+
+            if (text != null &&
+                    !text.trim().isEmpty()) {
+
+                BigDecimal price =
+                        new BigDecimal(text.trim());
+
+                valid =
+                        price.compareTo(BigDecimal.ZERO) > 0 &&
+                                price.compareTo(
+                                        new BigDecimal("999999999.99")
+                                ) <= 0;
+            }
+
+        } catch (NumberFormatException e) {
+
+            valid = false;
+        }
+
+        setFieldValid(
+                txtPrice,
+                valid,
+                "El precio debe ser mayor a 0 y no superar $999.999.999,99."
+        );
+
+        return valid;
+    }
+
+    private void setFieldValid(
+            Control field,
+            boolean valid,
+            String errorMessage
+    ) {
+
+        if (valid) {
+
+            field.setStyle("");
+            field.setTooltip(null);
+
+        } else {
+
+            field.setStyle(
+                    "-fx-border-color: #e74c3c;" +
+                            "-fx-border-width: 2;" +
+                            "-fx-border-radius: 5;"
+            );
+
+            Tooltip tooltip =
+                    new Tooltip(errorMessage);
+
+            field.setTooltip(tooltip);
+        }
+    }
+
+    private void updateSaveButtonState() {
+
+        boolean nameValid =
+                txtName.getText() != null &&
+                        !txtName.getText().trim().isEmpty();
+
+        boolean priceValid =
+                isValidPrice(txtPrice.getText());
+
+        btnSave.setDisable(
+                !(nameValid && priceValid)
+        );
+    }
+
+    private boolean isValidPrice(String text) {
+
+        if (text == null ||
+                text.trim().isEmpty()) {
+
+            return false;
+        }
+
+        try {
+
+            BigDecimal price =
+                    new BigDecimal(text.trim());
+
+            return price.compareTo(BigDecimal.ZERO) > 0 &&
+                    price.compareTo(
+                            new BigDecimal("999999999.99")
+                    ) <= 0;
+
+        } catch (NumberFormatException e) {
+
+            return false;
+        }
+    }
+
+    private void setupButtonActions() {
+
+        btnCancel.setOnAction(e -> {
+
+            boolean confirmed =
+                    StyleManager.showConfirmation(
+                            "Cancelar",
+                            "¿Descartar cambios?",
+                            "Perderá todo lo que haya modificado o agregado en el formulario."
+                    );
+
+            if (confirmed) {
+                closeWindow();
+            }
+        });
+
+        btnSave.setOnAction(
+                e -> saveService()
+        );
+    }
+
+    public void setService(Service service) {
+
+        this.editingService = service;
+
+        lblFormTitle.setText(
+                "Modificar Servicio"
+        );
+
+        btnSave.setText(
+                "Actualizar"
+        );
+
+        txtName.setText(
+                service.getName()
+        );
+
+        txtDescription.setText(
+                service.getDescription() != null
+                        ? service.getDescription()
+                        : ""
+        );
+
+        txtPrice.setText(
+                service.getPrice() != null
+                        ? service.getPrice().toString()
+                        : ""
+        );
+
+        updateSaveButtonState();
+    }
+
+    private void saveService() {
+
+        if (!validateAllFields()) {
+            return;
+        }
+
+        String name =
+                txtName.getText().trim();
+
+        String description =
+                txtDescription.getText() != null
+                        ? txtDescription.getText().trim()
+                        : "";
+
+        BigDecimal price;
+
+        try {
+
+            price =
+                    new BigDecimal(
+                            txtPrice.getText().trim()
+                    );
+
+        } catch (NumberFormatException e) {
+
+            showAlert(
+                    "Error",
+                    "Precio inválido",
+                    "Ingrese un precio numérico válido."
+            );
+
+            return;
+        }
+
+        Service service =
+                editingService != null
+                        ? editingService
+                        : new Service();
+
+        service.setName(name);
+        service.setDescription(description);
+        service.setPrice(price);
+
+        int excludeId =
+                editingService != null
+                        ? editingService.getIdService()
+                        : 0;
+
+        if (serviceRepo.existsByName(
+                name,
+                excludeId
+        )) {
+
+            showAlert(
+                    "Servicio duplicado",
+                    "Ya existe un servicio con ese nombre.",
+                    "Ingrese un nombre diferente."
+            );
+
+            return;
+        }
+
+        boolean success;
+
+        if (editingService != null) {
+
+            success =
+                    serviceRepo.update(service);
+
+        } else {
+
+            success =
+                    serviceRepo.insert(service);
+        }
+
+        if (success) {
+
+            showAlert(
+                    "Éxito",
+                    editingService != null
+                            ? "Servicio actualizado"
+                            : "Servicio creado",
+                    editingService != null
+                            ? "El servicio se actualizó correctamente."
+                            : "El servicio se creó correctamente."
+            );
+
+            closeWindow();
+
+        } else {
+
+            showAlert(
+                    "Error",
+                    "No se pudo guardar el servicio",
+                    "Ocurrió un error al guardar los datos."
+            );
+        }
+    }
+
+    private boolean validateAllFields() {
+
+        boolean nameValid =
+                validateName();
+
+        boolean priceValid =
+                validatePrice();
+
+        return nameValid && priceValid;
+    }
+
+    private void closeWindow() {
+
+        Stage stage =
+                (Stage) btnCancel
+                        .getScene()
+                        .getWindow();
+
+        stage.close();
+    }
+
+    private void showAlert(
+            String title,
+            String header,
+            String content
+    ) {
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.INFORMATION
+                );
+
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        StyleManager.applyStyles(
+                alert.getDialogPane()
+        );
+
+        alert.showAndWait();
+    }
+}
+
