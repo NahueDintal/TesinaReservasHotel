@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="20"
+      styleClass="form-container"
+      xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.ServiceFormController">
+
+    <padding>
+        <Insets top="25"
+                right="25"
+                bottom="25"
+                left="25"/>
+    </padding>
+
+    <Label fx:id="lblFormTitle"
+           text="Nuevo Servicio"
+           styleClass="form-title">
+
+        <font>
+            <Font size="15.0"/>
+        </font>
+
+    </Label>
+
+    <GridPane hgap="15"
+              vgap="12">
+
+        <Label text="Nombre *"
+               styleClass="form-label"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="0"/>
+
+        <TextField fx:id="txtName"
+                   promptText="Nombre del servicio"
+                   prefWidth="250.0"
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="0"/>
+
+        <Label text="Precio *"
+               styleClass="form-label"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="1"/>
+
+        <TextField fx:id="txtPrice"
+                   promptText="0.00"
+                   prefWidth="250.0"
+                   GridPane.columnIndex="1"
+                   GridPane.rowIndex="1"/>
+
+        <Label text="Descripción"
+               styleClass="form-label"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="2"/>
+
+        <TextArea fx:id="txtDescription"
+                  promptText="Descripción del servicio"
+                  prefWidth="250.0"
+                  prefHeight="100.0"
+                  wrapText="true"
+                  GridPane.columnIndex="1"
+                  GridPane.rowIndex="2"/>
+
+    </GridPane>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="15"
+          alignment="CENTER_RIGHT">
+
+        <Button fx:id="btnCancel"
+                text="Cancelar"
+                styleClass="btn-secondary"/>
+
+        <Button fx:id="btnSave"
+                text="Guardar"
+                styleClass="btn-primary"/>
+
+    </HBox>
+
+</VBox>
+
+
