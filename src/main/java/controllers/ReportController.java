@@ -29,6 +29,8 @@ public class ReportController {
   private ToggleButton btnCancellationByGuests;
   @FXML
   private ToggleButton btnCancellationByCustomerOrigin;
+  @FXML
+  private ToggleButton btnDailySchedule;
 
   private ToggleGroup reportGroup;
 
@@ -38,6 +40,7 @@ public class ReportController {
   private static final String VIEW_IMPACT = "/views/CancellationImpact.fxml";
   private static final String VIEW_BY_GUESTS = "/views/CancellationByGuests.fxml";
   private static final String VIEW_BY_ORIGIN = "/views/CancellationByCustomerOrigin.fxml";
+  private static final String VIEW_DAILY_SCHEDULE = "/views/DailySchedule.fxml";
 
   private DashboardController dashboardController;
 
@@ -79,6 +82,11 @@ public class ReportController {
     btnCancellationByCustomerOrigin.setOnAction(e -> {
       selectButton(btnCancellationByCustomerOrigin);
       loadReport(VIEW_BY_ORIGIN);
+    });
+    btnDailySchedule.setToggleGroup(reportGroup);
+    btnDailySchedule.setOnAction(e -> {
+      selectButton(btnDailySchedule);
+      loadReport(VIEW_DAILY_SCHEDULE);
     });
 
     // Default report
