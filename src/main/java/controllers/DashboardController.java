@@ -83,7 +83,7 @@ public class DashboardController {
     });
     btnConfiguracion.setOnAction(e -> {
       selectButton(btnConfiguracion);
-      loadView("/views/.fxml");
+      loadView("/views/Configuration.fxml");
     });
   }
 
