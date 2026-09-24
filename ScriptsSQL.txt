@@ -367,16 +367,8 @@ INSERT INTO RoomType (name) VALUES
 INSERT INTO RoomView (name) VALUES
 ('vista al lago'), ('vista al jardín'), ('vista a las montañas'), ('sin vista');
 
--- ==========================================
--- ROOM FEATURES - todas las habitaciones
--- ==========================================
-
--- Todas las habitaciones tienen: WiFi, TV, Aire acondicionado, Caja fuerte
-INSERT INTO RoomFeature (idRoom, idFeature)
-SELECT r.idRoom, f.idFeature
-FROM Room r
-CROSS JOIN Feature f
-WHERE f.name IN ('WiFi', 'TV', 'Aire acondicionado', 'Caja fuerte');
+INSERT INTO Feature (name) VALUES
+('WiFi'), ('TV'), ('Aire acondicionado'), ('Caja fuerte');
 
 INSERT INTO Product
 (name, description, price, active)
