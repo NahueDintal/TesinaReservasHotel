@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox
+        spacing="20"
+        styleClass="form-container"
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="controllers.ConsumptionManagementController">
+
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <!-- TÍTULO -->
+
+    <VBox spacing="3">
+
+        <Label
+                fx:id="lblFormTitle"
+                text="Gestión de consumos"
+                styleClass="form-title"/>
+
+        <Label
+                fx:id="lblReservation"
+                text="Reserva"
+                styleClass="reservation-card-description"/>
+
+    </VBox>
+
+
+    <!-- FORMULARIO -->
+
+    <VBox spacing="12">
+
+        <Label
+                text="Agregar consumo"
+                styleClass="reservation-card-title"/>
+
+        <HBox spacing="12">
+
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+
+                <Label
+                        text="Tipo de consumo *"
+                        styleClass="form-label"/>
+
+                <ComboBox
+                        fx:id="cmbConsumptionType"
+                        promptText="Producto / Servicio"
+                        maxWidth="Infinity"/>
+
+            </VBox>
+
+
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+
+                <Label
+                        text="Producto"
+                        styleClass="form-label"/>
+
+                <ComboBox
+                        fx:id="cmbProduct"
+                        promptText="Seleccione un producto"
+                        maxWidth="Infinity"/>
+
+            </VBox>
+
+
+            <VBox spacing="5" HBox.hgrow="ALWAYS">
+
+                <Label
+                        text="Servicio"
+                        styleClass="form-label"/>
+
+                <ComboBox
+                        fx:id="cmbService"
+                        promptText="Seleccione un servicio"
+                        maxWidth="Infinity"/>
+
+            </VBox>
+
+
+            <VBox spacing="5">
+
+                <Label
+                        text="Cantidad *"
+                        styleClass="form-label"/>
+
+                <TextField
+                        fx:id="txtQuantity"
+                        promptText="Ej: 2"
+                        prefWidth="100"/>
+
+            </VBox>
+
+        </HBox>
+
+
+        <HBox
+                spacing="15"
+                alignment="CENTER_RIGHT">
+
+            <Button
+                    fx:id="btnAdd"
+                    text="Agregar consumo"
+                    prefWidth="160"
+                    prefHeight="36"
+                    styleClass="btn-primary"/>
+
+        </HBox>
+
+    </VBox>
+
+
+    <!-- TABLA -->
+
+    <VBox
+            spacing="10"
+            VBox.vgrow="ALWAYS">
+
+        <Label
+                text="Consumos registrados"
+                styleClass="reservation-card-title"/>
+
+        <TableView
+                fx:id="tblConsumptions"
+                VBox.vgrow="ALWAYS"
+                maxWidth="Infinity">
+
+            <columns>
+
+                <TableColumn
+                        fx:id="colType"
+                        text="Tipo"
+                        prefWidth="100"
+                        reorderable="false"/>
+
+                <TableColumn
+                        fx:id="colName"
+                        text="Nombre"
+                        prefWidth="200"
+                        reorderable="false"/>
+
+                <TableColumn
+                        fx:id="colQuantity"
+                        text="Cantidad"
+                        prefWidth="100"
+                        reorderable="false"/>
+
+                <TableColumn
+                        fx:id="colUnitPrice"
+                        text="Precio unitario"
+                        prefWidth="130"
+                        reorderable="false"/>
+
+                <TableColumn
+                        fx:id="colTotal"
+                        text="Total"
+                        prefWidth="120"
+                        reorderable="false"/>
+
+                <TableColumn
+                        fx:id="colActions"
+                        text="Acciones"
+                        prefWidth="130"
+                        reorderable="false"/>
+
+            </columns>
+
+        </TableView>
+
+
+        <HBox
+                spacing="10"
+                alignment="CENTER_RIGHT">
+
+            <Label
+                    text="Total consumos:"
+                    styleClass="form-label"/>
+
+            <TextField
+                    fx:id="txtTotal"
+                    text="0.00"
+                    editable="false"
+                    focusTraversable="false"
+                    prefWidth="120"/>
+
+        </HBox>
+
+    </VBox>
+
+
+    <!-- BOTONES -->
+
+    <HBox
+            spacing="15"
+            alignment="CENTER_RIGHT">
+
+        <Button
+                fx:id="btnCancel"
+                text="Cerrar"
+                prefWidth="110"
+                prefHeight="38"
+                styleClass="btn-secondary"/>
+
+    </HBox>
+
+</VBox>

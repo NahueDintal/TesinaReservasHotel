@@ -260,13 +260,11 @@ public class ServiceController {
     }
 
     private void openInactiveServicesWindow() {
-
         try {
-
             FXMLLoader loader =
                     new FXMLLoader(
                             getClass().getResource(
-                                    "/views/InactiveServicesView.fxml"
+                                    "/views/InactiveServiceView.fxml"
                             )
                     );
 
@@ -278,27 +276,18 @@ public class ServiceController {
 
             StyleManager.applyStyles(stage);
 
-            stage.setTitle(
-                    "Servicios Eliminados"
-            );
+            stage.setTitle("Servicios Eliminados");
 
-            stage.initModality(
-                    Modality.WINDOW_MODAL
-            );
-
-            stage.initOwner(
-                    tableServices.getScene().getWindow()
-            );
+            stage.initModality(Modality.WINDOW_MODAL);
 
             stage.showAndWait();
 
             loadActiveServices();
-
             tableServices.refresh();
-
             updateCounter();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
 
             showAlert(
                     "Error",
@@ -307,6 +296,7 @@ public class ServiceController {
             );
         }
     }
+
 
     private void deactivateService() {
 

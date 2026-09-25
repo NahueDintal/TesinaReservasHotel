@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ReservationDetailController"
+            stylesheets="@/css/style.css"
+            styleClass="content-main">
+
+    <VBox spacing="15"
+          AnchorPane.topAnchor="0"
+          AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="20" right="25" bottom="20" left="25"/>
+        </padding>
+
+        <!-- ENCABEZADO -->
+        <VBox spacing="3">
+            <Label fx:id="lblTitle"
+                   text="Detalle de reserva"
+                   styleClass="section-title"/>
+
+            <Label text="Información completa de la reserva, pagos y consumos"
+                   styleClass="subtitulo-seccion"/>
+        </VBox>
+
+
+        <!-- INFORMACIÓN DE LA RESERVA -->
+        <VBox spacing="10"
+              styleClass="form-container">
+
+            <padding>
+                <Insets top="15" right="18" bottom="15" left="18"/>
+            </padding>
+
+            <Label text="Información de la reserva"
+                   styleClass="detail-section-title"/>
+
+            <GridPane hgap="25" vgap="10">
+
+                <Label text="Cliente:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="0"/>
+
+                <Label fx:id="lblCustomer"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="0"/>
+
+
+                <Label text="Check-in:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="1"/>
+
+                <Label fx:id="lblCheckIn"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="1"/>
+
+
+                <Label text="Check-out:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="2"
+                       GridPane.rowIndex="1"/>
+
+                <Label fx:id="lblCheckOut"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="3"
+                       GridPane.rowIndex="1"/>
+
+
+                <Label text="Noches:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="2"/>
+
+                <Label fx:id="lblNights"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="2"/>
+
+
+                <Label text="Huéspedes:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="2"
+                       GridPane.rowIndex="2"/>
+
+                <Label fx:id="lblGuests"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="3"
+                       GridPane.rowIndex="2"/>
+
+
+                <Label text="Habitación:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="3"/>
+
+                <Label fx:id="lblRoom"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="3"/>
+
+
+                <Label text="Tipo:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="2"
+                       GridPane.rowIndex="3"/>
+
+                <Label fx:id="lblReservationType"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="3"
+                       GridPane.rowIndex="3"/>
+
+
+                <Label text="Origen:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="4"/>
+
+                <Label fx:id="lblOrigin"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="4"/>
+
+
+                <Label text="Estado:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="2"
+                       GridPane.rowIndex="4"/>
+
+                <Label fx:id="lblStatus"
+                       styleClass="detail-value"
+                       GridPane.columnIndex="3"
+                       GridPane.rowIndex="4"/>
+
+
+                <Label text="Observaciones:"
+                       styleClass="detail-label"
+                       GridPane.columnIndex="0"
+                       GridPane.rowIndex="5"/>
+
+                <Label fx:id="lblObservations"
+                       styleClass="detail-value"
+                       wrapText="true"
+                       GridPane.columnIndex="1"
+                       GridPane.rowIndex="5"
+                       GridPane.columnSpan="3"/>
+
+            </GridPane>
+        </VBox>
+
+
+        <!-- PAGOS -->
+        <VBox spacing="10"
+              styleClass="form-container"
+              VBox.vgrow="ALWAYS">
+
+            <padding>
+                <Insets top="15" right="18" bottom="12" left="18"/>
+            </padding>
+
+            <Label text="Pagos"
+                   styleClass="detail-section-title"/>
+
+            <TableView fx:id="tblPayments"
+                       styleClass="customer-table"
+                       VBox.vgrow="ALWAYS">
+
+                <columns>
+
+                    <TableColumn fx:id="colPaymentDate"
+                                 text="Fecha"/>
+
+                    <TableColumn fx:id="colPaymentAmount"
+                                 text="Importe"/>
+
+                    <TableColumn fx:id="colPaymentMethod"
+                                 text="Método"/>
+
+                    <TableColumn fx:id="colPaymentStatus"
+                                 text="Estado"/>
+
+                    <TableColumn fx:id="colPaymentObservations"
+                                 text="Observaciones"/>
+
+                </columns>
+
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT"
+                  spacing="5">
+
+                <Label text="Total pagado:"
+                       styleClass="detail-label"/>
+
+                <Label fx:id="lblTotalPaid"
+                       styleClass="detail-value"/>
+
+            </HBox>
+
+        </VBox>
+
+
+        <!-- CONSUMOS -->
+        <VBox spacing="10"
+              styleClass="form-container"
+              VBox.vgrow="ALWAYS">
+
+            <padding>
+                <Insets top="15" right="18" bottom="12" left="18"/>
+            </padding>
+
+            <Label text="Consumos"
+                   styleClass="detail-section-title"/>
+
+            <TableView fx:id="tblConsumptions"
+                       styleClass="customer-table"
+                       VBox.vgrow="ALWAYS">
+
+                <columns>
+
+                    <TableColumn fx:id="colConsumptionType"
+                                 text="Tipo"/>
+
+                    <TableColumn fx:id="colConsumptionName"
+                                 text="Producto / Servicio"/>
+
+                    <TableColumn fx:id="colConsumptionQuantity"
+                                 text="Cantidad"/>
+
+                    <TableColumn fx:id="colConsumptionUnitPrice"
+                                 text="Precio unitario"/>
+
+                    <TableColumn fx:id="colConsumptionTotal"
+                                 text="Total"/>
+
+                    <TableColumn fx:id="colConsumptionDate"
+                                 text="Fecha"/>
+
+                </columns>
+
+            </TableView>
+
+            <HBox alignment="CENTER_RIGHT"
+                  spacing="5">
+
+                <Label text="Total consumos:"
+                       styleClass="detail-label"/>
+
+                <Label fx:id="lblTotalConsumptions"
+                       styleClass="detail-value"/>
+
+            </HBox>
+
+        </VBox>
+
+
+        <!-- BOTÓN CERRAR -->
+        <HBox alignment="CENTER_RIGHT">
+
+            <Button fx:id="btnClose"
+                    text="Cerrar"
+                    styleClass="btn-secondary"
+                    onAction="#handleClose"/>
+
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>
+

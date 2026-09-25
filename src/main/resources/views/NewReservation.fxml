@@ -112,7 +112,7 @@
                     <!-- CLIENTE -->
 
                     <Label
-                            text="Cliente:"
+                            text="Cliente *"
                             GridPane.rowIndex="0"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -145,7 +145,7 @@
                     <!-- CHECK-IN -->
 
                     <Label
-                            text="Check-in:"
+                            text="Check-in *"
                             GridPane.rowIndex="1"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -163,7 +163,7 @@
                     <!-- CHECK-OUT -->
 
                     <Label
-                            text="Check-out:"
+                            text="Check-out *"
                             GridPane.rowIndex="2"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -181,7 +181,7 @@
                     <!-- HUÉSPEDES -->
 
                     <Label
-                            text="Cantidad de huéspedes:"
+                            text="Cantidad de huéspedes *"
                             GridPane.rowIndex="3"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -199,7 +199,7 @@
                     <!-- TARIFA -->
 
                     <Label
-                            text="Tarifa total:"
+                            text="Tarifa total *"
                             GridPane.rowIndex="4"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -217,7 +217,7 @@
                     <!-- ESTADO -->
 
                     <Label
-                            text="Estado:"
+                            text="Estado *"
                             GridPane.rowIndex="5"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -235,7 +235,7 @@
                     <!-- TIPO -->
 
                     <Label
-                            text="Tipo de reserva:"
+                            text="Tipo de reserva *"
                             GridPane.rowIndex="6"
                             GridPane.columnIndex="0"
                             styleClass="reservation-field-label"/>
@@ -254,7 +254,7 @@
                 <!-- HABITACIONES -->
 
                 <Label
-                        text="Habitaciones:"
+                        text="Habitaciones *"
                         GridPane.rowIndex="7"
                         GridPane.columnIndex="0"
                         styleClass="reservation-field-label"/>
@@ -659,11 +659,12 @@
                         styleClass="reservation-cancel-button"/>
 
                 <Button
+                        fx:id="btnSaveReservation"
                         text="Guardar reserva"
-                        onAction="#handleSave"
                         prefWidth="170.0"
                         prefHeight="38.0"
-                        styleClass="reservation-primary-button"/>
+                        styleClass="reservation-primary-button"
+                        onAction="#handleSave"/>
 
             </HBox>
 

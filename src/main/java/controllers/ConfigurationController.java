@@ -56,6 +56,8 @@ public class ConfigurationController {
 
     private void openServices() {
 
+        System.out.println("CLICK EN SERVICIOS");
+
         try {
 
             FXMLLoader loader =
@@ -65,11 +67,15 @@ public class ConfigurationController {
                             )
                     );
 
+            System.out.println("FXML encontrado, intentando cargar...");
+
             Stage stage = new Stage();
 
             stage.setScene(
                     new Scene(loader.load())
             );
+
+            System.out.println("FXML cargado correctamente.");
 
             StyleManager.applyStyles(stage);
 
@@ -77,7 +83,9 @@ public class ConfigurationController {
 
             stage.show();
 
-        } catch (IOException e) {
+            System.out.println("Ventana de servicios abierta.");
+
+        } catch (Exception e) {
 
             e.printStackTrace();
         }
