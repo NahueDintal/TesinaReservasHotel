@@ -35,7 +35,7 @@
             <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="btnNewStaff" text=" Nuevo " styleClass="btn-primary"
                     onAction="#handleNewStaff" />
-            <Button fx:id="btnViewHistory" text="Inactivos" styleClass="btn-secondary"
+            <Button fx:id="btnViewHistory" text="Eliminados" styleClass="btn-secondary"
                     onAction="#handleViewHistory" />
         </HBox>
 

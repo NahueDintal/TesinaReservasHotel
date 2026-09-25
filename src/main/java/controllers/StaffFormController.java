@@ -39,6 +39,7 @@ public class StaffFormController {
     @FXML private TextField txtShiftStart;
     @FXML private TextField txtShiftEnd;
     @FXML private TextField txtSalary;
+    @FXML private Label lblSalaryCounter;
 
     @FXML private Button btnSave;
     @FXML private Button btnCancel;
@@ -59,6 +60,8 @@ public class StaffFormController {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final java.math.BigDecimal SALARY_MAX = new java.math.BigDecimal("9999999999.99"); // límite real de la columna DECIMAL(12,2)
     private static final Pattern SALARY_TYPING_PATTERN = Pattern.compile("^\\d{0,10}(\\.\\d{0,2})?$");
+    private static final Pattern DNI_TYPING_PATTERN = Pattern.compile("^\\d{0,9}$");
+    private static final Pattern PHONE_TYPING_PATTERN = Pattern.compile("^[0-9\\s-]{0,20}$");
 
     // ========== DAOs Y CATÁLOGOS ==========
     private StaffDAO staffDAO = new StaffDAO();
@@ -74,8 +77,34 @@ public class StaffFormController {
     public void initialize() {
         loadCatalogs();
         setupDateFormat();
+        setupDniFormatter();
+        setupPhoneFormatter();
         setupSalaryFormatter();
         setupButtonActions();
+    }
+
+    // DNI: solo números, sin letras ni símbolos
+    private void setupDniFormatter() {
+        UnaryOperator<TextFormatter.Change> filtro = change -> {
+            String textoNuevo = change.getControlNewText();
+            if (textoNuevo.isEmpty() || DNI_TYPING_PATTERN.matcher(textoNuevo).matches()) {
+                return change;
+            }
+            return null;
+        };
+        txtDni.setTextFormatter(new TextFormatter<>(filtro));
+    }
+
+    // Teléfono: solo números, espacios y guiones (sin letras)
+    private void setupPhoneFormatter() {
+        UnaryOperator<TextFormatter.Change> filtro = change -> {
+            String textoNuevo = change.getControlNewText();
+            if (textoNuevo.isEmpty() || PHONE_TYPING_PATTERN.matcher(textoNuevo).matches()) {
+                return change;
+            }
+            return null;
+        };
+        txtPhone.setTextFormatter(new TextFormatter<>(filtro));
     }
 
     // Evita que se pueda escribir un número más grande de lo que la base admite (DECIMAL(12,2))
@@ -88,6 +117,12 @@ public class StaffFormController {
             return null; // rechaza el cambio: no se deja escribir ese caracter
         };
         txtSalary.setTextFormatter(new TextFormatter<>(filtro));
+
+        // Contador de dígitos en tiempo real (solo cuenta números, no el punto decimal)
+        txtSalary.textProperty().addListener((obs, textoAnterior, textoNuevo) -> {
+            long cantidadDigitos = textoNuevo.chars().filter(Character::isDigit).count();
+            lblSalaryCounter.setText(cantidadDigitos + "/10");
+        });
     }
 
     private void loadCatalogs() {

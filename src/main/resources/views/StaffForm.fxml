@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.StaffFormController"
       spacing="16" prefWidth="620">
     <padding>
@@ -63,8 +63,13 @@
         <Label text="Hora fin (HH:mm)" GridPane.rowIndex="6" GridPane.columnIndex="2"/>
         <TextField fx:id="txtShiftEnd" promptText="ej: 15:00" GridPane.rowIndex="6" GridPane.columnIndex="3"/>
 
-        <Label text="Salario *" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtSalary" promptText="ej: 450000" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        <Label text="Salario *" GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+        <VBox spacing="2" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.valignment="TOP">
+            <TextField fx:id="txtSalary" promptText="ej: 450000"/>
+            <Label text="El salario tiene un límite de 10 dígitos" wrapText="true" maxWidth="Infinity" style="-fx-font-size: 10px; -fx-text-fill: gray;"/>
+            <Label fx:id="lblSalaryCounter" text="0/10" style="-fx-font-size: 10px; -fx-text-fill: gray;"/>
+        </VBox>
+
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
