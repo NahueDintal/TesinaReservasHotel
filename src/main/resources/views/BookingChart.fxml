@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ToggleButton?>
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.BookingChartController"
@@ -35,6 +36,18 @@
                     fx:id="btnNextMonth"
                     styleClass="month-button"/>
 
+            <ToggleButton fx:id="btnFullMonth"
+                          text="MES COMPLETO"
+                          styleClass="view-button"/>
+
+            <ToggleButton fx:id="btnFirstFortnight"
+                          text="1° QUINCENA"
+                          styleClass="view-button"/>
+
+            <ToggleButton fx:id="btnSecondFortnight"
+                          text="2° QUINCENA"
+                          styleClass="view-button"/>
+
         </HBox>
     </top>
 
@@ -42,13 +55,14 @@
     <center>
         <ScrollPane fx:id="scrollPane"
                     fitToHeight="true"
-                    fitToWidth="true"
-                    hbarPolicy="NEVER"
+                    fitToWidth="false"
+                    hbarPolicy="AS_NEEDED"
                     vbarPolicy="AS_NEEDED"
                     styleClass="planilla-scroll">
 
             <VBox fx:id="gridContainer"
                   spacing="0"
+                  maxWidth="Infinity"
                   styleClass="planilla-grid">
 
             </VBox>

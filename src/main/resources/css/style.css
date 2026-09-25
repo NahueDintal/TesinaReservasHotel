@@ -1423,6 +1423,13 @@
     -fx-border-color: #d5dfd7;
     -fx-border-width: 0 1 1 0;
 }
+
+.reserved-cell {
+    -fx-background-color: #8e7cc3;
+    -fx-border-color: #d5dfd7;
+    -fx-border-width: 0 1 1 0;
+}
+
 .booking-cell:hover {
     -fx-background-color: #e7f2e9;
     -fx-cursor: hand;

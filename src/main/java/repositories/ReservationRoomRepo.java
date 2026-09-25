@@ -78,20 +78,25 @@ public class ReservationRoomRepo {
    * Devuelve TODAS las asignaciones reserva-habitación (para la columna del
    * grid).
    */
-  public List<ReservationRoom> getAll() throws SQLException {
+  public List<ReservationRoom> getAll() {
     List<ReservationRoom> list = new ArrayList<>();
     String sql = "SELECT idReservation, roomNumber FROM ReservationRoom";
 
     try (Connection conn = ConexionDB.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery()) {
+         PreparedStatement ps = conn.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
 
       while (rs.next()) {
         list.add(new ReservationRoom(
-            rs.getInt("idReservation"),
-            rs.getInt("roomNumber")));
+                rs.getInt("idReservation"),
+                rs.getInt("roomNumber")));
       }
+
+    } catch (SQLException e) {
+      throw new RuntimeException(
+              "Error al obtener las habitaciones de las reservas", e);
     }
+
     return list;
   }
 
