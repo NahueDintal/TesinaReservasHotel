@@ -127,6 +127,7 @@
                                 prefWidth="80"
                                 text="Huéspedes"/>
 
+                        <TableColumn fx:id="colRooms" prefWidth="110" text="Habitación" />
                         <TableColumn
                                 fx:id="colTotalRate"
                                 prefWidth="110"
