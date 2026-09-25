@@ -23,9 +23,6 @@ import java.util.List;
 
 public class NewReservationController {
 
-  // ============================================================
-  // CAMPOS FXML
-  // ============================================================
   @FXML
   Label lblReservationTitle;
   @FXML
@@ -88,9 +85,6 @@ public class NewReservationController {
   @FXML
   private Button btnConsumptionAction;
 
-  // ============================================================
-  // ESTADO
-  // ============================================================
   private final ObservableList<Customer> activeCustomers = FXCollections.observableArrayList();
   private Customer selectedCustomer;
 
@@ -123,9 +117,6 @@ public class NewReservationController {
 
   private boolean loadingReservation = false;
 
-  // ============================================================
-  // CONSTRUCTOR
-  // ============================================================
   public NewReservationController() {
     roomDAO = new RoomDAO();
     reservationRepo = new ReservationRepo();
@@ -141,9 +132,6 @@ public class NewReservationController {
     customerDAO = new CustomerDAO();
   }
 
-  // ============================================================
-  // INITIALIZE
-  // ============================================================
   @FXML
   public void initialize() {
     System.out.println("=== NewReservationController.initialize() ===");
@@ -160,13 +148,10 @@ public class NewReservationController {
     activeRooms.setAll(roomDAO.listActive());
     System.out.println("Habitaciones activas cargadas: " + activeRooms.size());
 
-    // Placeholder inicial (sin huéspedes → sin habitaciones)
     loadRoomCards();
 
-    // Tabla consumos
     configureConsumptionTable();
 
-    // Tipo consumo
     cmbConsumptionType.setItems(FXCollections.observableArrayList("Producto", "Servicio"));
     cmbConsumptionType.setOnAction(event -> {
       String typeValue = cmbConsumptionType.getValue();
@@ -186,7 +171,6 @@ public class NewReservationController {
       }
     });
 
-    // Cargar combos
     loadReservationStatuses();
     loadReservationTypes();
     loadPaymentMethods();
@@ -196,15 +180,11 @@ public class NewReservationController {
     loadCustomers();
     configureCustomerSearch();
 
-    // Estado inicial consumos
     txtConsumptionTotal.setText("0.00");
     txtConsumptionTotal.setEditable(false);
     cmbProduct.setDisable(true);
     cmbService.setDisable(true);
 
-    // ------------------------------------------------------------
-    // LISTENERS (los importantes para el filtro y el precio)
-    // ------------------------------------------------------------
     txtNumberOfGuests.textProperty().addListener((obs, oldVal, newVal) -> {
       System.out.println("[listener] txtNumberOfGuests cambió a: '" + newVal
           + "' → parseado = " + getRequestedGuests());
@@ -227,16 +207,10 @@ public class NewReservationController {
     System.out.println("=== NewReservationController.initialize() OK ===");
   }
 
-  // ============================================================
-  // DASHBOARD
-  // ============================================================
   public void setDashboardController(DashboardController dashboardController) {
     this.dashboardController = dashboardController;
   }
 
-  // ============================================================
-  // CARGAR RESERVA A EDITAR
-  // ============================================================
   public void setReservationToEdit(Reservation reservation) {
     this.reservationToEdit = reservation;
     this.loadingReservation = true;
@@ -247,7 +221,6 @@ public class NewReservationController {
       return;
     }
 
-    // Cliente
     try {
       Customer customer = customerDAO.searchById(reservation.getIdCustomer());
       if (customer != null) {
@@ -271,7 +244,6 @@ public class NewReservationController {
         .filter(t -> t.getIdReservationType() == reservation.getIdReservationType())
         .findFirst().ifPresent(cmbReservationType::setValue);
 
-    // Rooms
     activeRooms.setAll(roomDAO.listActive());
     List<ReservationRoom> reservationRooms = reservationRoomRepo.getByReservation(reservationToEdit.getIdReservation());
     selectedRooms.clear();
@@ -294,9 +266,6 @@ public class NewReservationController {
     loadingReservation = false;
   }
 
-  // ============================================================
-  // LOAD PAGO / CONSUMOS
-  // ============================================================
   private void loadReservationPayment(int idReservation) {
     try {
       List<Payment> payments = paymentRepo.getPaymentsByReservation(idReservation);
@@ -336,9 +305,6 @@ public class NewReservationController {
     }
   }
 
-  // ============================================================
-  // ROOMS — CARGA DE TARJETAS
-  // ============================================================
   private void loadRoomCards() {
     roomsContainer.getChildren().clear();
 
@@ -347,7 +313,6 @@ public class NewReservationController {
         + " availableRooms=" + availableRooms.size()
         + " availableTours=" + availableTours.size());
 
-    // 1. Sin cantidad de huéspedes
     if (requested <= 0) {
       Label placeholder = new Label(
           "Ingresá la cantidad de huéspedes para ver las habitaciones disponibles.");
@@ -356,7 +321,6 @@ public class NewReservationController {
       return;
     }
 
-    // 2. Mostrar habitaciones directas (si las hay)
     if (!availableRooms.isEmpty()) {
       java.util.Set<Integer> selectedNumbers = selectedRooms.stream()
           .map(Room::getNumber)
@@ -395,7 +359,6 @@ public class NewReservationController {
       }
     }
 
-    // 3. Mostrar tours (independiente de si hay o no habitaciones directas)
     if (!availableTours.isEmpty()) {
       Label lblTourTitle = new Label("🏨 Modo Hotel Tour — cambiás de habitación durante la estadía:");
       lblTourTitle.setStyle("-fx-text-fill: #2d6cdf; -fx-font-weight: bold; -fx-padding: 10 0 4 0;");
@@ -436,7 +399,6 @@ public class NewReservationController {
       }
     }
 
-    // 4. Si NO hay NADA (ni habitaciones ni tours) → mensaje de error
     if (availableRooms.isEmpty() && availableTours.isEmpty()) {
       Label placeholder = new Label(
           "No hay habitaciones ni tours disponibles para " + requested + " huésped(es).");
@@ -445,20 +407,15 @@ public class NewReservationController {
     }
   }
 
-  // ============================================================
-  // ROOMS — FILTRO
-  // ============================================================
   private void loadAvailableRooms() {
     int requested = getRequestedGuests();
 
-    // Sin cantidad válida → vaciar y mostrar placeholder
     if (requested <= 0) {
       availableRooms.clear();
       loadRoomCards();
       return;
     }
 
-    // Sin fechas → solo filtrar por capacidad
     if (dpCheckIn.getValue() == null || dpCheckOut.getValue() == null) {
       availableRooms.clear();
       for (Room room : activeRooms) {
@@ -532,9 +489,6 @@ public class NewReservationController {
     }
   }
 
-  // ============================================================
-  // TARIFA AUTOMÁTICA
-  // ============================================================
   private void updateTotalRate() {
     if (loadingReservation)
       return;
@@ -562,9 +516,6 @@ public class NewReservationController {
     txtTotalRate.setText(String.format("%.2f", total));
   }
 
-  // ============================================================
-  // CUSTOMERS
-  // ============================================================
   private void loadCustomers() {
     try {
       List<Customer> customers = customerDAO.listAll();
@@ -616,9 +567,6 @@ public class NewReservationController {
     });
   }
 
-  // ============================================================
-  // CARGAR COMBOS
-  // ============================================================
   private void loadReservationStatuses() {
     try {
       cmbReservationStatus.getItems().setAll(reservationStatusRepo.getReservationStatuses());
@@ -667,9 +615,6 @@ public class NewReservationController {
     }
   }
 
-  // ============================================================
-  // CONSUMOS
-  // ============================================================
   private void configureConsumptionTable() {
     colConsumptionQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
     colConsumptionUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
@@ -919,7 +864,6 @@ public class NewReservationController {
       return;
     }
 
-    // Iniciar edición
     Consumption selected = tblConsumptions.getSelectionModel().getSelectedItem();
     if (selected == null) {
       showAlert(Alert.AlertType.WARNING, "Consumo", "Seleccione un consumo para modificar.");
@@ -982,9 +926,6 @@ public class NewReservationController {
     });
   }
 
-  // ============================================================
-  // GUARDAR
-  // ============================================================
   @FXML
   private void handleSave() {
     Connection conn = null;
@@ -1200,9 +1141,6 @@ public class NewReservationController {
     }
   }
 
-  // ============================================================
-  // NAVEGACIÓN
-  // ============================================================
   @FXML
   private void handleBack() {
     if (dashboardController != null)
@@ -1234,9 +1172,6 @@ public class NewReservationController {
     });
   }
 
-  // ============================================================
-  // HELPERS
-  // ============================================================
   private void showError(String msg) {
     Alert a = new Alert(Alert.AlertType.ERROR);
     a.setTitle("Error");
