@@ -203,8 +203,10 @@ public class BookingChartController {
         gridContainer.getChildren().add(headerRow);
 
         List<Room> rooms = roomDAO.listActive();
+        System.out.println("ROOMS LOADED: " + rooms.size());
 
         List<Reservation> reservations = reservationRepo.getReservations();
+
         List<ReservationRoom> reservationRooms = reservationRoomRepo.getAll();
 
         for (Room room : rooms) {
@@ -235,6 +237,10 @@ public class BookingChartController {
 
                 for (Reservation reservation : reservations) {
 
+                    if (reservation.getIdReservationStatus() == 3) {
+                        continue;
+                    }
+
                     boolean reservationUsesRoom = reservationRooms.stream()
                             .anyMatch(rr ->
                                     rr.getIdReservation() == reservation.getIdReservation()
@@ -250,9 +256,26 @@ public class BookingChartController {
                                     && currentDate.isBefore(reservation.getCheckOut());
 
                     if (occupied) {
-                        cell.getStyleClass().add("reserved-cell");
+
+                        switch (reservation.getIdReservationStatus()) {
+                            case 1 -> cell.getStyleClass().add("pending-cell");
+                            case 2 -> cell.getStyleClass().add("confirmed-cell");
+                            case 4 -> cell.getStyleClass().add("finished-cell");
+                        }
+
                         break;
                     }
+                }
+
+                for (Reservation reservation : reservations) {
+                    System.out.println(
+                            "ID: " + reservation.getIdReservation()
+                                    + " | Status: " + reservation.getIdReservationStatus()
+                                    + " | CI: " + reservation.getCheckIn()
+                                    + " | CO: " + reservation.getCheckOut()
+                    );
+
+                    // resto del código...
                 }
 
                 roomRow.getChildren().add(cell);

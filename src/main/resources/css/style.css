@@ -1424,8 +1424,20 @@
     -fx-border-width: 0 1 1 0;
 }
 
-.reserved-cell {
-    -fx-background-color: #8e7cc3;
+.pending-cell {
+    -fx-background-color: #f2d36b;
+    -fx-border-color: #d5dfd7;
+    -fx-border-width: 0 1 1 0;
+}
+
+.confirmed-cell {
+    -fx-background-color: #6fa879;
+    -fx-border-color: #d5dfd7;
+    -fx-border-width: 0 1 1 0;
+}
+
+.finished-cell {
+    -fx-background-color: #d9d9d9;
     -fx-border-color: #d5dfd7;
     -fx-border-width: 0 1 1 0;
 }
