@@ -1460,3 +1460,23 @@
     -fx-text-fill: white;
 }
 
+.room-card {
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-min-width: 150;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);
+}
+
+.room-card:hover {
+    -fx-border-color: #2d6cdf;
+}
+
+.room-card.selected {
+    -fx-background-color: #e8f0fe;
+    -fx-border-color: #2d6cdf;
+    -fx-border-width: 2;
+}

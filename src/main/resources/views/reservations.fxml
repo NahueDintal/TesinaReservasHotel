@@ -148,6 +148,8 @@
                                 prefWidth="90.0"
                                 minWidth="80.0"/>
 
+                        <TableColumn fx:id="colRooms" prefWidth="100" text="Habitación" />
+
                         <TableColumn
                                 fx:id="colTotalRate"
                                 text="Tarifa"
