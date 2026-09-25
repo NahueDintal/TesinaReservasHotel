@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.DailyScheduleController"
+            style="-fx-background-color: #f4f6f9;">
+
+    <top>
+        <VBox spacing="12">
+            <padding><Insets top="18" right="18" bottom="12" left="18"/></padding>
+
+            <Label text="Cronograma de check-in y check-out"
+                   style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #222;"/>
+            <Label text="Movimientos programados para una fecha específica. Útil para el trabajo diario de recepción."
+                   style="-fx-text-fill: #666; -fx-font-size: 12;"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Fecha:"/>
+                <DatePicker fx:id="datePicker" prefWidth="160"/>
+                <Button fx:id="todayButton" text="Hoy" onAction="#onToday"/>
+                <Button fx:id="calculateButton" text="Mostrar" onAction="#onCalculate"
+                        defaultButton="true"
+                        style="-fx-background-color: #2d6cdf; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="exportButton" text="Exportar CSV" onAction="#onExport"/>
+            </HBox>
+
+            <GridPane hgap="12">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                    <ColumnConstraints percentWidth="25"/>
+                </columnConstraints>
+
+                <VBox GridPane.columnIndex="0" spacing="4"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Check-ins del día" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="checkInCountLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="1" spacing="4"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Check-outs del día" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="checkOutCountLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="2" spacing="4"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Huéspedes que llegan" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="guestsArrivingLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold;"/>
+                </VBox>
+
+                <VBox GridPane.columnIndex="3" spacing="4"
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <Label text="Huéspedes que se van" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
+                    <Label fx:id="guestsDepartingLabel" text="—"
+                           style="-fx-font-size: 22; -fx-font-weight: bold;"/>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.5" style="-fx-background-color: #f4f6f9;">
+            <padding><Insets top="6" right="18" bottom="18" left="18"/></padding>
+
+            <!-- Check-ins -->
+            <VBox spacing="6"
+                  style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                <Label text="Check-ins programados"
+                       style="-fx-font-weight: bold; -fx-text-fill: #27ae60; -fx-font-size: 14;"/>
+                <TableView fx:id="checkInTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="ciIdColumn"        text="Reserva"     prefWidth="80"/>
+                        <TableColumn fx:id="ciCustomerColumn"  text="Huésped"     prefWidth="200"/>
+                        <TableColumn fx:id="ciGuestsColumn"    text="Huéspedes"   prefWidth="90"/>
+                        <TableColumn fx:id="ciRateColumn"      text="Tarifa"      prefWidth="100"/>
+                        <TableColumn fx:id="ciStatusColumn"    text="Estado"      prefWidth="100"/>
+                        <TableColumn fx:id="ciObsColumn"       text="Observaciones" prefWidth="200"/>
+                    </columns>
+                </TableView>
+                <Label fx:id="checkInFooterLabel" text="0 check-ins"
+                       style="-fx-text-fill: #666; -fx-font-size: 11;"/>
+            </VBox>
+
+            <!-- Check-outs -->
+            <VBox spacing="6"
+                  style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                <Label text="Check-outs programados"
+                       style="-fx-font-weight: bold; -fx-text-fill: #c0392b; -fx-font-size: 14;"/>
+                <TableView fx:id="checkOutTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="coIdColumn"        text="Reserva"     prefWidth="80"/>
+                        <TableColumn fx:id="coCustomerColumn"  text="Huésped"     prefWidth="200"/>
+                        <TableColumn fx:id="coGuestsColumn"    text="Huéspedes"   prefWidth="90"/>
+                        <TableColumn fx:id="coRateColumn"      text="Tarifa"      prefWidth="100"/>
+                        <TableColumn fx:id="coStatusColumn"    text="Estado"      prefWidth="100"/>
+                        <TableColumn fx:id="coObsColumn"       text="Observaciones" prefWidth="200"/>
+                    </columns>
+                </TableView>
+                <Label fx:id="checkOutFooterLabel" text="0 check-outs"
+                       style="-fx-text-fill: #666; -fx-font-size: 11;"/>
+            </VBox>
+        </SplitPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #eef1f5; -fx-padding: 8 18 8 18;">
+            <Label fx:id="statusLabel" text="Listo." style="-fx-text-fill: #555; -fx-font-size: 11;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

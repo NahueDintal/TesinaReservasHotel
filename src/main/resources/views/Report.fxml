@@ -20,7 +20,6 @@
 
             <ToggleButton fx:id="btnCancellationProbability" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Probabilidad de cancelación" />
             <ToggleButton fx:id="btnCancellationByLeadTime" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Cancelación por anticipación" />
-            <!-- Agregá acá más ToggleButtons a medida que sumás reportes -->
             <ToggleButton fx:id="btnCancellationByMonth" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Cancelación por mes" />
             <ToggleButton fx:id="btnCancellationImpact" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Impacto cancelaciones" />
             <ToggleButton fx:id="btnCancellationByGuests"
@@ -29,6 +28,10 @@
                           style="-fx-padding: 10 12 10 12;"/>
             <ToggleButton fx:id="btnCancellationByCustomerOrigin"
                           text="Cancelación por origen"
+                          maxWidth="Infinity" alignment="CENTER_LEFT"
+                          style="-fx-padding: 10 12 10 12;"/>
+            <ToggleButton fx:id="btnDailySchedule"
+                          text="Cronograma diario"
                           maxWidth="Infinity" alignment="CENTER_LEFT"
                           style="-fx-padding: 10 12 10 12;"/>
         </VBox>
