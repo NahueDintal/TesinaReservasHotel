@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import models.*;
 import repositories.*;
+import services.HotelTourService;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -116,6 +117,9 @@ public class NewReservationController {
   private final ObservableList<Consumption> consumptions = FXCollections.observableArrayList();
   private final List<Consumption> modifiedConsumptions = new ArrayList<>();
   private Consumption consumptionBeingEdited = null;
+
+  private final HotelTourService hotelTourService = new HotelTourService();
+  private List<HotelTour> availableTours = new ArrayList<>();
 
   private boolean loadingReservation = false;
 
@@ -340,7 +344,8 @@ public class NewReservationController {
 
     int requested = getRequestedGuests();
     System.out.println("[loadRoomCards] requested=" + requested
-        + " availableRooms=" + availableRooms.size());
+        + " availableRooms=" + availableRooms.size()
+        + " availableTours=" + availableTours.size());
 
     // 1. Sin cantidad de huéspedes
     if (requested <= 0) {
@@ -351,51 +356,92 @@ public class NewReservationController {
       return;
     }
 
-    // 2. Ninguna habitación cumple
-    if (availableRooms.isEmpty()) {
-      Label placeholder = new Label(
-          "No hay habitaciones disponibles para " + requested + " huésped(es).");
-      placeholder.setStyle("-fx-text-fill: #c0392b; -fx-font-weight: bold; -fx-font-size: 13;");
-      roomsContainer.getChildren().add(placeholder);
-      return;
-    }
+    // 2. Mostrar habitaciones directas (si las hay)
+    if (!availableRooms.isEmpty()) {
+      java.util.Set<Integer> selectedNumbers = selectedRooms.stream()
+          .map(Room::getNumber)
+          .collect(java.util.stream.Collectors.toSet());
 
-    // 3. Mostrar tarjetas
-    java.util.Set<Integer> selectedNumbers = selectedRooms.stream()
-        .map(Room::getNumber)
-        .collect(java.util.stream.Collectors.toSet());
+      for (Room room : availableRooms) {
+        VBox card = new VBox(5);
 
-    for (Room room : availableRooms) {
-      VBox card = new VBox(5);
+        Label lblNumber = new Label("Habitación " + room.getNumber());
+        Label lblType = new Label(room.getTypeName());
+        Label lblView = new Label(room.getViewName());
+        Label lblCapacity = new Label("Capacidad: " + room.getCapacity());
+        Label lblPrice = new Label(String.format("$ %.2f / noche", room.getPrice()));
 
-      Label lblNumber = new Label("Habitación " + room.getNumber());
-      Label lblType = new Label(room.getTypeName());
-      Label lblView = new Label(room.getViewName());
-      Label lblCapacity = new Label("Capacidad: " + room.getCapacity());
-      Label lblPrice = new Label(String.format("$ %.2f / noche", room.getPrice()));
+        card.getChildren().addAll(lblNumber, lblType, lblView, lblCapacity, lblPrice);
+        card.getStyleClass().add("room-card");
 
-      card.getChildren().addAll(lblNumber, lblType, lblView, lblCapacity, lblPrice);
-      card.getStyleClass().add("room-card");
-
-      if (selectedNumbers.contains(room.getNumber())) {
-        card.getStyleClass().add("selected");
-      }
-
-      card.setOnMouseClicked(event -> {
-        boolean isSelected = selectedRooms.stream()
-            .anyMatch(r -> r.getNumber() == room.getNumber());
-
-        if (isSelected) {
-          selectedRooms.removeIf(r -> r.getNumber() == room.getNumber());
-          card.getStyleClass().remove("selected");
-        } else {
-          selectedRooms.add(room);
+        if (selectedNumbers.contains(room.getNumber())) {
           card.getStyleClass().add("selected");
         }
-        updateTotalRate();
-      });
 
-      roomsContainer.getChildren().add(card);
+        card.setOnMouseClicked(event -> {
+          boolean isSelected = selectedRooms.stream()
+              .anyMatch(r -> r.getNumber() == room.getNumber());
+          if (isSelected) {
+            selectedRooms.removeIf(r -> r.getNumber() == room.getNumber());
+            card.getStyleClass().remove("selected");
+          } else {
+            selectedRooms.add(room);
+            card.getStyleClass().add("selected");
+          }
+          updateTotalRate();
+        });
+
+        roomsContainer.getChildren().add(card);
+      }
+    }
+
+    // 3. Mostrar tours (independiente de si hay o no habitaciones directas)
+    if (!availableTours.isEmpty()) {
+      Label lblTourTitle = new Label("🏨 Modo Hotel Tour — cambiás de habitación durante la estadía:");
+      lblTourTitle.setStyle("-fx-text-fill: #2d6cdf; -fx-font-weight: bold; -fx-padding: 10 0 4 0;");
+      roomsContainer.getChildren().add(lblTourTitle);
+
+      for (HotelTour tour : availableTours) {
+        VBox tourCard = new VBox(4);
+        tourCard.setStyle("-fx-background-color: #eef4ff; -fx-border-color: #2d6cdf;"
+            + " -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 12;"
+            + " -fx-cursor: hand;");
+
+        Label lblRooms = new Label("Habitaciones: " + tour.getRoomsSummary());
+        lblRooms.setStyle("-fx-font-weight: bold; -fx-text-fill: #2d6cdf;");
+
+        Label lblMoves = new Label(tour.getMoves() + " cambio(s) de habitación");
+        Label lblPrice = new Label(String.format("Total: $ %.2f", tour.getTotalPrice()));
+
+        tourCard.getChildren().addAll(lblRooms, lblMoves, lblPrice);
+
+        for (TourSegment seg : tour.getSegments()) {
+          Label segLabel = new Label(String.format("  • Hab. %d del %s al %s (%d noches, $%.2f)",
+              seg.getRoom().getNumber(), seg.getFrom(), seg.getTo(),
+              seg.getNights(), seg.getSubtotal()));
+          segLabel.setStyle("-fx-text-fill: #555; -fx-font-size: 11;");
+          tourCard.getChildren().add(segLabel);
+        }
+
+        tourCard.setOnMouseClicked(e -> {
+          selectedRooms.clear();
+          for (TourSegment seg : tour.getSegments()) {
+            selectedRooms.add(seg.getRoom());
+          }
+          loadRoomCards();
+          updateTotalRate();
+        });
+
+        roomsContainer.getChildren().add(tourCard);
+      }
+    }
+
+    // 4. Si NO hay NADA (ni habitaciones ni tours) → mensaje de error
+    if (availableRooms.isEmpty() && availableTours.isEmpty()) {
+      Label placeholder = new Label(
+          "No hay habitaciones ni tours disponibles para " + requested + " huésped(es).");
+      placeholder.setStyle("-fx-text-fill: #c0392b; -fx-font-weight: bold; -fx-font-size: 13;");
+      roomsContainer.getChildren().add(placeholder);
     }
   }
 
@@ -444,6 +490,21 @@ public class NewReservationController {
       if ((isFree && hasCapacity) || alreadyPicked) {
         availableRooms.add(room);
       }
+    }
+    if (getRequestedGuests() > 0
+        && dpCheckIn.getValue() != null
+        && dpCheckOut.getValue() != null
+        && dpCheckOut.getValue().isAfter(dpCheckIn.getValue())) {
+
+      HotelTourService.HotelTourResult result = hotelTourService.findOptions(
+          dpCheckIn.getValue(),
+          dpCheckOut.getValue(),
+          getRequestedGuests(),
+          activeRooms);
+
+      availableTours = result.getTours();
+    } else {
+      availableTours = new ArrayList<>();
     }
 
     loadRoomCards();
