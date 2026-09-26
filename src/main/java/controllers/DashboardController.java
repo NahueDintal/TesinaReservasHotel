@@ -111,30 +111,21 @@ public class DashboardController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
       Parent view = loader.load();
 
-      // Si el controlador necesita referencia al Dashboard, se la pasamos
-      // Object controller = loader.getController();
-      // if (controller instanceof RoomController) {
-      // ((RoomController) controller).setDashboardController(this);
-      // } else if (controller instanceof RoomFormController) {
-      // ((RoomFormController) controller).setDashboardController(this);
-      // }
-
       Object controller = loader.getController();
 
       if (controller instanceof ReservationsController) {
-
         ((ReservationsController) controller).setDashboardController(this);
       }
-
       if (controller instanceof NewReservationController) {
         ((NewReservationController) controller).setDashboardController(this);
       }
+      if (controller instanceof CustomerController) { // ← NUEVO
+        ((CustomerController) controller).setDashboardController(this);
+      }
 
-      // Limpiar el centerPane y agregar la vista
       centerPane.getChildren().clear();
       centerPane.getChildren().add(view);
 
-      // === FORZAR QUE LA VISTA SE ESTIRE A TODOS LOS LADOS ===
       AnchorPane.setTopAnchor(view, 0.0);
       AnchorPane.setBottomAnchor(view, 0.0);
       AnchorPane.setLeftAnchor(view, 0.0);
@@ -147,7 +138,7 @@ public class DashboardController {
   }
 
   public void loadEditReservation(Reservation reservation) {
-
+    selectSidebarButton("reservas");
     try {
 
       FXMLLoader loader = new FXMLLoader(
@@ -173,9 +164,8 @@ public class DashboardController {
     }
   }
 
-  public void loadReservationConsumptions(
-          Reservation reservation) {
-
+  public void loadReservationConsumptions(Reservation reservation) {
+    selectSidebarButton("reservas");
     try {
 
       FXMLLoader loader = new FXMLLoader(
@@ -206,7 +196,7 @@ public class DashboardController {
   }
 
   public void loadReservationDetail(Reservation reservation) {
-
+    selectSidebarButton("reservas");
     try {
 
       FXMLLoader loader = new FXMLLoader(
@@ -233,6 +223,37 @@ public class DashboardController {
     } catch (IOException e) {
 
       e.printStackTrace();
+    }
+  }
+  /**
+   * Selecciona programáticamente un botón de la sidebar.
+   * Útil cuando se navega a una vista desde otra (ej: historial → reservas).
+   */
+  public void selectSidebarButton(String buttonName) {
+    switch (buttonName) {
+      case "reservas":
+        selectButton(btnReservas);
+        break;
+      case "habitaciones":
+        selectButton(btnHabitaciones);
+        break;
+      case "clientes":
+        selectButton(btnClientes);
+        break;
+      case "planilla":
+        selectButton(btnPlanilla);
+        break;
+      case "reportes":
+        selectButton(btnReportes);
+        break;
+      case "personal":
+        selectButton(btnPersonal);
+        break;
+      case "configuracion":
+        selectButton(btnConfiguracion);
+        break;
+      default:
+        System.err.println("Botón desconocido: " + buttonName);
     }
   }
 
