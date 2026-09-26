@@ -520,5 +520,48 @@ public class ReservationRepo {
 
         return true;
     }
+    public List<Reservation> getReservationsByCustomer(int idCustomer) {
+        List<Reservation> reservations = new ArrayList<>();
+        String sql = "SELECT idReservation, idCustomer, creationDate, " +
+                "checkIn, checkOut, idReservationStatus, " +
+                "idReservationType, numberOfGuests, totalRate, observations " +
+                "FROM Reservation " +
+                "WHERE idCustomer = ? " +
+                "ORDER BY idReservation DESC";
+
+        try (Connection conn = ConexionDB.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idCustomer);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Reservation reservation = new Reservation();
+                    reservation.setIdReservation(rs.getInt("idReservation"));
+                    reservation.setIdCustomer(rs.getInt("idCustomer"));
+
+                    if (rs.getTimestamp("creationDate") != null) {
+                        reservation.setCreationDate(rs.getTimestamp("creationDate").toLocalDateTime());
+                    }
+                    if (rs.getDate("checkIn") != null) {
+                        reservation.setCheckIn(rs.getDate("checkIn").toLocalDate());
+                    }
+                    if (rs.getDate("checkOut") != null) {
+                        reservation.setCheckOut(rs.getDate("checkOut").toLocalDate());
+                    }
+
+                    reservation.setIdReservationStatus(rs.getInt("idReservationStatus"));
+                    reservation.setIdReservationType(rs.getInt("idReservationType"));
+                    reservation.setNumberOfGuests(rs.getInt("numberOfGuests"));
+                    reservation.setTotalRate(rs.getBigDecimal("totalRate"));
+                    reservation.setObservations(rs.getString("observations"));
+
+                    reservations.add(reservation);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener reservas por cliente: " + e.getMessage());
+        }
+        return reservations;
+    }
 }
 

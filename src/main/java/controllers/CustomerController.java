@@ -34,6 +34,8 @@ public class CustomerController {
     @FXML private Button btnViewInactive;
     @FXML private Button btnEdit;
     @FXML private Button btnDeactivate;
+    @FXML private Button btnHistory;
+
 
     // ========== DETAIL ==========
     @FXML private TextField txtDetailFullName;
@@ -53,6 +55,11 @@ public class CustomerController {
     private ObservableList<Customer> masterCustomerList = FXCollections.observableArrayList();
     private FilteredList<Customer> filteredCustomers;
 
+    private DashboardController dashboardController;
+
+    public void setDashboardController(DashboardController dashboardController) {
+        this.dashboardController = dashboardController;
+    }
     // ========== INIT ==========
     @FXML
     public void initialize() {
@@ -98,11 +105,14 @@ public class CustomerController {
         // Botones
         btnEdit.setDisable(true);
         btnDeactivate.setDisable(true);
+        btnHistory.setDisable(true);
+
         tableCustomers.getSelectionModel().selectedItemProperty().addListener(
                 (obs, old, newVal) -> {
                     boolean selected = newVal != null;
                     btnEdit.setDisable(!selected);
                     btnDeactivate.setDisable(!selected);
+                    btnHistory.setDisable(!selected);
                 }
         );
 
@@ -111,6 +121,7 @@ public class CustomerController {
         btnViewInactive.setOnAction(e -> openInactiveCustomersWindow());
         btnEdit.setOnAction(e -> openCustomerForm(tableCustomers.getSelectionModel().getSelectedItem()));
         btnDeactivate.setOnAction(e -> deactivateCustomer());
+        btnHistory.setOnAction(e -> openCustomerHistory());
     }
 
     // ========== LOAD ==========
@@ -193,6 +204,32 @@ public class CustomerController {
             updateCounter();
         } catch (IOException e) {
             showAlert("Error", "No se pudo abrir la ventana de inactivos", e.getMessage());
+        }
+    }
+
+    private void openCustomerHistory() {
+        Customer selected = tableCustomers.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/CustomerHistoryView.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(loader.load());
+
+            StyleManager.applyStyles(scene);
+
+            stage.setScene(scene);
+            stage.setTitle("Historial de reservas");
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(tableCustomers.getScene().getWindow());
+
+            CustomerHistoryController controller = loader.getController();
+            controller.setCustomer(selected);
+            controller.setDashboardController(dashboardController); // ← NUEVO
+
+            stage.showAndWait();
+        } catch (IOException e) {
+            showAlert("Error", "No se pudo abrir el historial", e.getMessage());
         }
     }
 
