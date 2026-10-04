@@ -1802,3 +1802,36 @@
     -fx-background-color: #732d91;
     -fx-opacity: 1.0;
 }
+/* ========================================================
+   TARJETAS DE CATÁLOGO (Productos y Servicios)
+   ======================================================== */
+.catalog-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e0e6ed;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+    -fx-padding: 30px 40px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-content-display: TOP;
+    -fx-graphic-text-gap: 10px;
+    -fx-min-width: 200px;
+    -fx-min-height: 130px;
+}
+
+.catalog-card:hover {
+    -fx-border-color: #2e7d32;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.18), 12, 0, 0, 4);
+    -fx-background-color: #f8fafc;
+}
+
+.catalog-card:pressed {
+    -fx-background-color: #eaf5ec;
+    -fx-translate-y: 1;
+}
