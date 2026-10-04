@@ -53,6 +53,8 @@ public class NewReservationController {
   @FXML private Button btnConsumptionAction;
   @FXML private Button btnChangeRoom;
 
+  @FXML private Button btnHotelTourConstruction; // <-- Agrega esta línea
+
   private final ObservableList<Customer> activeCustomers = FXCollections.observableArrayList();
   private Customer selectedCustomer;
   private final ObservableList<Room> activeRooms = FXCollections.observableArrayList();
@@ -523,6 +525,17 @@ public class NewReservationController {
     roomsContainer.getChildren().clear();
     int requested = getRequestedGuests();
 
+    // ============================================================
+    // NUEVO: Mostrar el botón de "Hotel Tour (En Construcción)"
+    // solo cuando se detecte que se necesita un tour.
+    // ============================================================
+    boolean needsHotelTour = !availableTours.isEmpty();
+    if (btnHotelTourConstruction != null) {
+      btnHotelTourConstruction.setVisible(needsHotelTour);
+      btnHotelTourConstruction.setManaged(needsHotelTour);
+    }
+    // ============================================================
+
     if (requested <= 0 && !openedFromBookingChart) {
       Label placeholder = new Label(
               "Ingresá la cantidad de huéspedes para ver las habitaciones disponibles.");
@@ -597,49 +610,20 @@ public class NewReservationController {
       }
     }
 
-    // 2) Tours de hotel
+    // ============================================================
+    // 2) Tours de hotel — AHORA SOLO MUESTRA UN AVISO
+    //    (Ya NO se crean las tarjetas azules complejas del tour)
+    // ============================================================
     if (!availableTours.isEmpty()) {
-      Label title = new Label("🏨 Modo Hotel Tour — cambiás de habitación durante la estadía:");
-      title.setStyle("-fx-text-fill: #2d6cdf; -fx-font-weight: bold; -fx-padding: 10 0 4 0;");
-      roomsContainer.getChildren().add(title);
+      Label title = new Label("🏨 Se requiere cambiar de habitación durante la estadía:");
+      title.setStyle("-fx-text-fill: #8e44ad; -fx-font-weight: bold; -fx-padding: 10 0 4 0; -fx-font-size: 13px;");
 
-      for (HotelTour tour : availableTours) {
-        VBox tourCard = new VBox(4);
-        tourCard.setStyle(
-                "-fx-background-color: #eef4ff;"
-                        + " -fx-border-color: #2d6cdf;"
-                        + " -fx-border-radius: 8;"
-                        + " -fx-background-radius: 8;"
-                        + " -fx-padding: 12;"
-                        + " -fx-cursor: hand;");
+      Label subtitle = new Label(
+              "El sistema detectó que necesita un Hotel Tour. Esta funcionalidad estará disponible próximamente.");
+      subtitle.setStyle("-fx-text-fill: #7f8c8d; -fx-font-style: italic; -fx-font-size: 12px;");
+      subtitle.setWrapText(true);
 
-        Label rooms = new Label("Habitaciones: " + tour.getRoomsSummary());
-        rooms.setStyle("-fx-font-weight: bold; -fx-text-fill: #2d6cdf;");
-
-        Label moves = new Label(tour.getMoves() + " cambio(s) de habitación");
-        Label price = new Label(String.format("Total: $ %.2f", tour.getTotalPrice()));
-
-        tourCard.getChildren().addAll(rooms, moves, price);
-
-        for (TourSegment seg : tour.getSegments()) {
-          Label segLabel = new Label(String.format(
-                  "  • Hab. %d del %s al %s (%d noches, $%.2f)",
-                  seg.getRoom().getNumber(), seg.getFrom(), seg.getTo(),
-                  seg.getNights(), seg.getSubtotal()));
-          segLabel.setStyle("-fx-text-fill: #555; -fx-font-size: 11;");
-          tourCard.getChildren().add(segLabel);
-        }
-
-        tourCard.setOnMouseClicked(e -> {
-          selectedRooms.clear();
-          for (TourSegment seg : tour.getSegments()) selectedRooms.add(seg.getRoom());
-          clearRoomsInvalid();
-          loadRoomCards();
-          updateTotalRate();
-        });
-
-        roomsContainer.getChildren().add(tourCard);
-      }
+      roomsContainer.getChildren().addAll(title, subtitle);
     }
 
     // 3) Mensaje cuando no hay nada para mostrar

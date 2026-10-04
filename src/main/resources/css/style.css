@@ -729,93 +729,6 @@
     -fx-text-fill: #a93226;
 }
 
-/* ========================================================
-         CELDAS LIBRES
- ======================================================== */
-
-   .booking-cell {
-       -fx-background-color: white;
-       -fx-border-color: #d5dfd7;
-       -fx-border-width: 0 1 1 0;
-       -fx-padding: 0;
-   }
-
-
-/* ========================================================
-   CONTENEDOR DE UNA RESERVA
-   ======================================================== */
-
-.reservation-container {
-    -fx-background-color: transparent;
-
-    /*
-     * Línea horizontal inferior de la fila
-     * y líneas verticales SOLO en los extremos
-     */
-    -fx-border-color: transparent #d5dfd7 #d5dfd7 #d5dfd7;
-    -fx-border-width: 0 1 1 1;
-
-    -fx-padding: 0;
-    -fx-spacing: 0;
-}
-
-
-/* ========================================================
-   BLOQUE COLOREADO
-   ======================================================== */
-
-.booking-block {
-    -fx-padding: 0;
-
-    /*
-     * Sin borde permanente.
-     * El borde oscuro solo aparece al seleccionar.
-     */
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-
-    -fx-background-radius: 5;
-    -fx-border-radius: 5;
-}
-
-
-/* ========================================================
-   COLORES DE RESERVA
-   ======================================================== */
-
-.pending-block {
-    -fx-background-color: #e8d47a;
-}
-
-.confirmed-block {
-    -fx-background-color: #76aa7d;
-}
-
-.finished-block {
-    -fx-background-color: #d0d0d0;
-}
-
-
-/* ========================================================
-   RESERVA SELECCIONADA
-   ======================================================== */
-
-.booking-block.selected-block {
-    -fx-border-color: #2E6D3D;
-    -fx-border-width: 2;
-    -fx-border-radius: 5;
-}
-
-
-/* ========================================================
-   FILA
-   ======================================================== */
-
-.room-row {
-    -fx-background-color: white;
-    -fx-padding: 0;
-    -fx-spacing: 0;
-}
 
 /* ======================================================
    15. PÁGINA DE RESERVAS
@@ -1389,28 +1302,8 @@
 .dialog-pane.warning-alert .header-panel {
     -fx-background-color: #f39c12;
 }
-   .top-toolbar {
-       -fx-background-color: white;
-       -fx-border-color: transparent transparent #e0e6ed transparent;
-       -fx-border-width: 0 0 1px 0;
-   }
 
-.nav-arrow-btn {
-    -fx-background-color: #f0f2f5;
-    -fx-text-fill: #2c3e50;
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 50%;
-    -fx-border-radius: 50%;
-    -fx-min-width: 36px;
-    -fx-min-height: 36px;
-    -fx-pref-width: 36px;
-    -fx-pref-height: 36px;
-    -fx-max-width: 36px;
-    -fx-max-height: 36px;
-    -fx-padding: 0;
-    -fx-cursor: hand;
-}
+
 
 .nav-arrow-btn:hover {
     -fx-background-color: #e5e9ed;
@@ -1420,30 +1313,6 @@
 .nav-arrow-btn:pressed {
     -fx-background-color: #dce2e6;
     -fx-text-fill: #245c32;
-}
-
-.month-label {
-    -fx-text-fill: #2c3e50;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 0 8px 0 8px;
-}
-
-.segmented-control {
-    -fx-background-color: #f0f2f5;
-    -fx-background-radius: 20px;
-    -fx-padding: 4px;
-}
-
-.filter-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: #6b7280;
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 16px;
-    -fx-border-radius: 16px;
-    -fx-padding: 8px 14px;
-    -fx-cursor: hand;
 }
 
 .filter-btn:hover {
@@ -1471,24 +1340,7 @@
     -fx-text-fill: white;
 }
 
-.btn-nueva-reserva {
-    -fx-background-color: #2e7d32;
-    -fx-text-fill: white;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6px;
-    -fx-border-radius: 6px;
-    -fx-padding: 10px 16px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(
-            gaussian,
-            rgba(46, 125, 50, 0.25),
-            6,
-            0.15,
-            0,
-            2
-    );
-}
+
 
 .btn-nueva-reserva:hover {
     -fx-background-color: #256b29;
@@ -1498,40 +1350,6 @@
     -fx-background-color: #1f5c23;
 }
 
-.corner-header {
-    -fx-background-color: #1b5e20;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-alignment: center;
-    -fx-padding: 10px;
-}
-
-.day-header {
-    -fx-background-color: #f8fafc;
-    -fx-text-fill: #2c3e50;
-    -fx-font-weight: bold;
-    -fx-alignment: center;
-    -fx-padding: 10px 4px;
-    -fx-border-color: transparent transparent #e0e6ed transparent;
-    -fx-border-width: 0 0 2px 0;
-}
-
-.day-header-weekend {
-    -fx-background-color: #fff5f5;
-    -fx-text-fill: #c0392b;
-    -fx-border-color: transparent transparent #e0e6ed transparent;
-    -fx-border-width: 0 0 2px 0;
-}
-
-.room-header {
-    -fx-background-color: #f8fafc;
-    -fx-text-fill: #2c3e50;
-    -fx-font-weight: bold;
-    -fx-alignment: center;
-    -fx-padding: 8px;
-    -fx-border-color: transparent #e0e6ed transparent transparent;
-    -fx-border-width: 0 2px 0 0;
-}
 
 /* ========================================================
   BOOKING CHART - ESTRUCTURA FIJA
@@ -1548,40 +1366,6 @@
     -fx-max-width: 55px;
 }
 
-#fixedRoomHeader {
-    -fx-pref-width: 55px;
-    -fx-min-width: 55px;
-    -fx-max-width: 55px;
-    -fx-pref-height: 45px;
-    -fx-min-height: 45px;
-    -fx-max-height: 45px;
-}
-
-.room-scroll {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-}
-
-.room-scroll > .viewport {
-    -fx-background-color: white;
-}
-
-.room-column {
-    -fx-background-color: white;
-}
-
-.calendar-container {
-    -fx-background-color: white;
-}
-
-.booking-fixed-header {
-    -fx-background-color: white;
-}
-
-.planilla-grid {
-    -fx-background-color: white;
-}
 /* ============================================
    DATE PICKER - Estilos para que se vea bien
    ============================================ */
@@ -1684,6 +1468,303 @@
    HOTEL TOUR - Bloque violeta en booking chart
    ============================================ */
 
+.booking-block.hotel-tour-block:hover {
+    -fx-background-color: linear-gradient(to right, #6a1b9a, #8e24aa);
+}
+
+.booking-block.hotel-tour-block.selected-block {
+    -fx-border-color: #ffeb3b;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, #ffeb3b, 8, 0.5, 0, 0);
+}
+
+/* =========================================
+   BOTÓN HOTEL TOUR (EN CONSTRUCCIÓN)
+   ========================================= */
+.btn-hotel-tour {
+    -fx-background-color: #8e44ad; /* Violeta */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 15px;
+    -fx-cursor: default; /* Como está deshabilitado, no muestra la manito */
+    -fx-opacity: 0.9; /* Un poco de transparencia para indicar que no se puede clickear */
+    -fx-max-width: Infinity;
+    -fx-alignment: center;
+}
+
+/* Efecto al pasar el mouse (opcional, pero le da vida) */
+.btn-hotel-tour:hover {
+    -fx-background-color: #732d91; /* Violeta más oscuro */
+    -fx-opacity: 1.0;
+}
+
+.btn-hotel-tour {
+    -fx-background-color: #8e44ad;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 15px;
+    -fx-cursor: default;
+    -fx-opacity: 0.9;
+    -fx-max-width: Infinity;
+    -fx-alignment: center;
+
+    /* AGREGA ESTA LÍNEA: Fuerza el uso de fuentes de emoji */
+    -fx-font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
+}
+/* ========================================================
+   PLANILLA / BOOKING CHART (BLOQUE CONSOLIDADO)
+   ======================================================== */
+
+/* ---------- SCROLLPANES (eliminar padding fantasma) ---------- */
+.header-scroll,
+.room-scroll,
+.planilla-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+}
+
+.header-scroll > .viewport,
+.room-scroll > .viewport,
+.planilla-scroll > .viewport {
+    -fx-background-color: white;
+}
+
+/* Ocultar barras del header (no deben robar espacio) */
+.header-scroll .scroll-bar:vertical,
+.header-scroll .scroll-bar:horizontal {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
+
+/* ---------- CONTENEDOR PRINCIPAL ---------- */
+.booking-chart-area {
+    -fx-background-color: white;
+}
+
+.room-column-container {
+    -fx-background-color: white;
+    -fx-pref-width: 55px;
+    -fx-min-width: 55px;
+    -fx-max-width: 55px;
+}
+
+.calendar-container,
+.booking-fixed-header,
+.planilla-grid,
+.room-column {
+    -fx-background-color: white;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+/* ---------- TOOLBAR SUPERIOR ---------- */
+.top-toolbar {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #e0e6ed transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.nav-arrow-btn {
+    -fx-background-color: #f0f2f5;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-pref-width: 36px;
+    -fx-pref-height: 36px;
+    -fx-max-width: 36px;
+    -fx-max-height: 36px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.nav-arrow-btn:hover {
+    -fx-background-color: #e5e9ed;
+    -fx-text-fill: #2e7d32;
+}
+
+.nav-arrow-btn:pressed {
+    -fx-background-color: #dce2e6;
+    -fx-text-fill: #245c32;
+}
+
+.month-label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 8px 0 8px;
+}
+
+/* ---------- PASTILLA DE FILTROS ---------- */
+.segmented-control {
+    -fx-background-color: #f0f2f5;
+    -fx-background-radius: 20px;
+    -fx-padding: 4px;
+}
+
+.filter-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 16px;
+    -fx-border-radius: 16px;
+    -fx-padding: 8px 14px;
+    -fx-cursor: hand;
+}
+
+.filter-btn:hover {
+    -fx-background-color: #e4e8ec;
+    -fx-text-fill: #2e7d32;
+}
+
+.filter-btn:selected {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+    -fx-background-radius: 16px;
+    -fx-border-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.25), 5, 0.15, 0, 2);
+}
+
+.filter-btn:selected:hover {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+}
+
+/* ---------- BOTÓN NUEVA RESERVA ---------- */
+.btn-nueva-reserva {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 10px 16px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(46, 125, 50, 0.25), 6, 0.15, 0, 2);
+}
+
+.btn-nueva-reserva:hover {
+    -fx-background-color: #256b29;
+}
+
+.btn-nueva-reserva:pressed {
+    -fx-background-color: #1f5c23;
+}
+
+/* ---------- ENCABEZADOS DE LA GRILLA ---------- */
+
+/* Esquina superior izquierda (ROOM) */
+.corner-header {
+    -fx-background-color: #1b5e20;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 10px;
+    -fx-border-color: transparent #1b5e20 #1b5e20 transparent;
+    -fx-border-width: 0 1 1 0;
+}
+
+#fixedRoomHeader {
+    -fx-pref-width: 55px;
+    -fx-min-width: 55px;
+    -fx-max-width: 55px;
+    -fx-pref-height: 45px;
+    -fx-min-height: 45px;
+    -fx-max-height: 45px;
+}
+
+/* Encabezado de días */
+.day-header {
+    -fx-background-color: #f8fafc;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 10px 4px;
+    -fx-border-color: transparent #e0e6ed #e0e6ed transparent;
+    -fx-border-width: 0 1 1 0;
+}
+
+.day-header-weekend {
+    -fx-background-color: #fff5f5;
+    -fx-text-fill: #c0392b;
+    -fx-border-color: transparent #e0e6ed #e0e6ed transparent;
+    -fx-border-width: 0 1 1 0;
+}
+
+/* Encabezado de habitaciones */
+.room-header {
+    -fx-background-color: #f8fafc;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-padding: 8px;
+    -fx-border-color: transparent #e0e6ed #e0e6ed transparent;
+    -fx-border-width: 0 1 1 0;
+}
+
+/* ---------- CELDAS Y FILAS ---------- */
+.room-row {
+    -fx-background-color: white;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+.booking-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent #d5dfd7 #d5dfd7 transparent;
+    -fx-border-width: 0 1 1 0;
+    -fx-padding: 0;
+}
+
+/* Contenedor de una reserva completa */
+.reservation-container {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent #d5dfd7 #d5dfd7 transparent;
+    -fx-border-width: 0 1 1 0;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+/* ---------- BLOQUES DE RESERVA (barras coloreadas) ---------- */
+.booking-block {
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.pending-block {
+    -fx-background-color: #e8d47a;
+}
+
+.confirmed-block {
+    -fx-background-color: #76aa7d;
+}
+
+.finished-block {
+    -fx-background-color: #d0d0d0;
+}
+
+.booking-block.selected-block {
+    -fx-border-color: #2E6D3D;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+}
+
+/* Hotel Tour (bloque violeta en el calendario) */
 .booking-block.hotel-tour-block {
     -fx-background-color: linear-gradient(to right, #7b1fa2, #9c27b0);
     -fx-border-color: #4a0072;
@@ -1700,4 +1781,24 @@
     -fx-border-color: #ffeb3b;
     -fx-border-width: 2;
     -fx-effect: dropshadow(gaussian, #ffeb3b, 8, 0.5, 0, 0);
+}
+
+/* ---------- BOTÓN HOTEL TOUR (EN CONSTRUCCIÓN) ---------- */
+.btn-hotel-tour {
+    -fx-background-color: #8e44ad;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px 15px;
+    -fx-cursor: default;
+    -fx-opacity: 0.9;
+    -fx-max-width: Infinity;
+    -fx-alignment: center;
+    -fx-font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Arial Unicode MS", "Segoe UI", sans-serif;
+}
+
+.btn-hotel-tour:hover {
+    -fx-background-color: #732d91;
+    -fx-opacity: 1.0;
 }
