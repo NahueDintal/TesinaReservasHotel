@@ -188,7 +188,6 @@ public class RoomController {
       masterRoomList.setAll(roomDAO.listActive());
       masterRoomList.removeIf(Room::isOutOfService);
 
-      // 👇 NUEVO: qué habitaciones están ocupadas HOY
       LocalDate today = LocalDate.now();
       Map<Integer, List<OccupiedInterval>> occupied = roomOccupancyDAO.findOccupiedInRange(today, today.plusDays(1));
       occupiedTodayRoomNumbers = occupied.keySet();
@@ -196,6 +195,7 @@ public class RoomController {
       filteredRooms = new FilteredList<>(masterRoomList, p -> true);
       tableRooms.setItems(filteredRooms);
       updateCounter();
+
     } catch (RuntimeException e) {
       logger.error("No se pudieron cargar las habitaciones.", e);
       showAlert("Error", "No se pudieron cargar las habitaciones", e.getMessage());
