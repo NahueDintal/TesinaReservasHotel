@@ -1530,21 +1530,115 @@
     -fx-padding: 8 0;
 }
 
-   .btn-config {
-       -fx-background-color: white;
-       -fx-border-color: #3E864D;
-       -fx-border-width: 2;
-       -fx-border-radius: 10;
-       -fx-background-radius: 10;
-       -fx-text-fill: #3E864D;
-       -fx-font-size: 16px;
-       -fx-font-weight: bold;
-       -fx-cursor: hand;
-   }
+.btn-config {
+    -fx-background-color: white;
+    -fx-border-color: #3E864D;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #3E864D;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
 
 .btn-config:hover {
     -fx-background-color: #3E864D;
     -fx-text-fill: white;
 }
 
+/* ======================================================
+   16. REPORTES (ABM de Reportes y Estadísticas)
+   ====================================================== */
 
+/* Tarjeta blanca genérica para KPIs, gráficos y detalle de tabla */
+.report-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.report-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.report-subtitle {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+}
+
+.report-chart-title {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Etiquetas y valores de las tarjetas KPI */
+.kpi-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+}
+
+.kpi-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.kpi-value-danger {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #c0392b;
+}
+
+.kpi-value-success {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E864D;
+}
+
+.kpi-value-accent {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E864D;
+}
+
+.kpi-detail {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 11px;
+}
+
+/* Barra de estado inferior */
+.report-status-bar {
+    -fx-background-color: #eef1f5;
+    -fx-padding: 8 18 8 18;
+}
+
+.report-status-label {
+    -fx-text-fill: #555;
+    -fx-font-size: 11px;
+}
+
+/* Gráficos de barras: usar la paleta verde institucional en vez del
+   naranja/azul por defecto de JavaFX */
+.report-chart .chart-bar {
+    -fx-bar-fill: #3E864D;
+}
+
+.report-chart .chart-bar:hover {
+    -fx-bar-fill: #2E6D3D;
+}
+
+/* ProgressBar dentro de tarjetas de reporte (KPI global y columna
+   "Distribución" de las tablas) con el mismo verde institucional */
+.report-card .progress-bar > .bar {
+    -fx-background-color: #3E864D;
+    -fx-background-insets: 0;
+}
+
+.report-card .progress-bar > .track {
+    -fx-background-color: #eef1f5;
+    -fx-background-insets: 0;
+}
