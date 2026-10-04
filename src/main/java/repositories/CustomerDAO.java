@@ -13,11 +13,13 @@ public class CustomerDAO {
         String sql = "SELECT c.*, " +
                 "dt.name AS documentTypeName, " +
                 "co.name AS countryName, " +
+                "pr.name AS provinceName, " +
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
                 "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN Province pr ON c.idProvince = pr.idProvince " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
                 "WHERE cs.name = 'active' " +
@@ -38,10 +40,12 @@ public class CustomerDAO {
                 c.setPhoneNumber(rs.getString("phoneNumber"));
                 c.setEmail(rs.getString("email"));
                 c.setIdCountry(rs.getInt("idCountry"));
+                c.setIdProvince(rs.getInt("idProvince"));
                 c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                 c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
                 c.setDocumentTypeName(rs.getString("documentTypeName"));
                 c.setCountryName(rs.getString("countryName"));
+                c.setProvinceName(rs.getString("provinceName"));
                 c.setStatusName(rs.getString("statusName"));
                 c.setOriginName(rs.getString("originName"));
                 customers.add(c);
@@ -54,11 +58,13 @@ public class CustomerDAO {
         String sql = "SELECT c.*, " +
                 "dt.name AS documentTypeName, " +
                 "co.name AS countryName, " +
+                "pr.name AS provinceName, " +
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
                 "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN Province pr ON c.idProvince = pr.idProvince " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
                 "WHERE cs.name = 'inactive' " +  // ← FILTRO POR INACTIVO
@@ -79,10 +85,12 @@ public class CustomerDAO {
                 c.setPhoneNumber(rs.getString("phoneNumber"));
                 c.setEmail(rs.getString("email"));
                 c.setIdCountry(rs.getInt("idCountry"));
+                c.setIdProvince(rs.getInt("idProvince"));
                 c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                 c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
                 c.setDocumentTypeName(rs.getString("documentTypeName"));
                 c.setCountryName(rs.getString("countryName"));
+                c.setProvinceName(rs.getString("provinceName"));
                 c.setStatusName(rs.getString("statusName"));
                 c.setOriginName(rs.getString("originName"));
                 customers.add(c);
@@ -96,11 +104,13 @@ public class CustomerDAO {
         String sql = "SELECT c.*, " +
                 "dt.name AS documentTypeName, " +
                 "co.name AS countryName, " +
+                "pr.name AS provinceName, " +
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
                 "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN Province pr ON c.idProvince = pr.idProvince " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
                 "WHERE c.idCustomer = ?";
@@ -120,10 +130,12 @@ public class CustomerDAO {
                     c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
                     c.setIdCountry(rs.getInt("idCountry"));
+                    c.setIdProvince(rs.getInt("idProvince"));
                     c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                     c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
                     c.setDocumentTypeName(rs.getString("documentTypeName"));
                     c.setCountryName(rs.getString("countryName"));
+                    c.setProvinceName(rs.getString("provinceName"));
                     c.setStatusName(rs.getString("statusName"));
                     c.setOriginName(rs.getString("originName"));
                     return c;
@@ -136,8 +148,8 @@ public class CustomerDAO {
     // 3. INSERT
     public boolean isInsert(Customer customer) throws SQLException {
         String sql = "INSERT INTO Customer (name, surname, idDocumentType, documentNumber, " +
-                "phoneNumber, email, idCountry, idCustomerStatus, idCustomerOrigin) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "phoneNumber, email, idCountry, idProvince, idCustomerStatus, idCustomerOrigin) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -148,8 +160,13 @@ public class CustomerDAO {
             stmt.setString(5, customer.getPhoneNumber());
             stmt.setString(6, customer.getEmail());
             stmt.setInt(7, customer.getIdCountry());
-            stmt.setInt(8, customer.getIdCustomerStatus());
-            stmt.setInt(9, customer.getIdCustomerOrigin());
+
+            if (customer.getIdProvince() == 0) {
+                stmt.setNull(8, java.sql.Types.INTEGER);
+            } else {stmt.setInt(8, customer.getIdProvince());}
+
+            stmt.setInt(9, customer.getIdCustomerStatus());
+            stmt.setInt(10, customer.getIdCustomerOrigin());
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
@@ -167,7 +184,7 @@ public class CustomerDAO {
     // 4. UPDATE
     public boolean isUpdate(Customer customer) throws SQLException {
         String sql = "UPDATE Customer SET name=?, surname=?, idDocumentType=?, documentNumber=?, " +
-                "phoneNumber=?, email=?, idCountry=?, idCustomerStatus=?, idCustomerOrigin=? " +
+                "phoneNumber=?, email=?, idCountry=?, idProvince=?, idCustomerStatus=?, idCustomerOrigin=? " +
                 "WHERE idCustomer=?";
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -179,9 +196,14 @@ public class CustomerDAO {
             stmt.setString(5, customer.getPhoneNumber());
             stmt.setString(6, customer.getEmail());
             stmt.setInt(7, customer.getIdCountry());
-            stmt.setInt(8, customer.getIdCustomerStatus());
-            stmt.setInt(9, customer.getIdCustomerOrigin());
-            stmt.setInt(10, customer.getIdCustomer());
+
+            if (customer.getIdProvince() == 0) {
+                stmt.setNull(8, java.sql.Types.INTEGER);
+            } else {stmt.setInt(8, customer.getIdProvince());}
+
+            stmt.setInt(9, customer.getIdCustomerStatus());
+            stmt.setInt(10, customer.getIdCustomerOrigin());
+            stmt.setInt(11, customer.getIdCustomer());
 
             return stmt.executeUpdate() > 0;
         }
@@ -231,11 +253,13 @@ public class CustomerDAO {
         String sql = "SELECT c.*, " +
                 "dt.name AS documentTypeName, " +
                 "co.name AS countryName, " +
+                "pr.name AS provinceName, " +
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
                 "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN Province pr ON c.idProvince = pr.idProvince " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
                 "WHERE (c.name LIKE ? " +
@@ -245,6 +269,7 @@ public class CustomerDAO {
                 "   OR c.email LIKE ? " +
                 "   OR dt.name LIKE ? " +
                 "   OR co.name LIKE ? " +
+                "   OR pr.name LIKE ? " +
                 "   OR co2.name LIKE ?) " +
                 "AND cs.name = 'active' " +  // Solo activos
                 "ORDER BY c.idCustomer DESC " +
@@ -254,7 +279,7 @@ public class CustomerDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             String likeTerm = "%" + searchTerm + "%";
-            for (int i = 1; i <= 8; i++) {
+            for (int i = 1; i <= 9; i++) {
                 stmt.setString(i, likeTerm);
             }
 
@@ -269,10 +294,12 @@ public class CustomerDAO {
                     c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
                     c.setIdCountry(rs.getInt("idCountry"));
+                    c.setIdProvince(rs.getInt("idProvince"));
                     c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                     c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
                     c.setDocumentTypeName(rs.getString("documentTypeName"));
                     c.setCountryName(rs.getString("countryName"));
+                    c.setProvinceName(rs.getString("provinceName"));
                     c.setStatusName(rs.getString("statusName"));
                     c.setOriginName(rs.getString("originName"));
                     customers.add(c);
@@ -286,11 +313,13 @@ public class CustomerDAO {
         String sql = "SELECT c.*, " +
                 "dt.name AS documentTypeName, " +
                 "co.name AS countryName, " +
+                "pr.name AS provinceName, " +
                 "cs.name AS statusName, " +
                 "co2.name AS originName " +
                 "FROM Customer c " +
                 "LEFT JOIN DocumentType dt ON c.idDocumentType = dt.idDocumentType " +
                 "LEFT JOIN Country co ON c.idCountry = co.idCountry " +
+                "LEFT JOIN Province pr ON c.idProvince = pr.idProvince " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
                 "WHERE (c.name LIKE ? " +
@@ -300,6 +329,7 @@ public class CustomerDAO {
                 "   OR c.email LIKE ? " +
                 "   OR dt.name LIKE ? " +
                 "   OR co.name LIKE ? " +
+                "   OR pr.name LIKE ? " +
                 "   OR co2.name LIKE ?) " +
                 "AND cs.name = 'inactive' " +  // Solo inactivos
                 "ORDER BY c.idCustomer DESC " +
@@ -309,7 +339,7 @@ public class CustomerDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             String likeTerm = "%" + searchTerm + "%";
-            for (int i = 1; i <= 8; i++) {
+            for (int i = 1; i <= 9; i++) {
                 stmt.setString(i, likeTerm);
             }
 
@@ -324,10 +354,12 @@ public class CustomerDAO {
                     c.setPhoneNumber(rs.getString("phoneNumber"));
                     c.setEmail(rs.getString("email"));
                     c.setIdCountry(rs.getInt("idCountry"));
+                    c.setIdProvince(rs.getInt("idProvince"));
                     c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
                     c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
                     c.setDocumentTypeName(rs.getString("documentTypeName"));
                     c.setCountryName(rs.getString("countryName"));
+                    c.setProvinceName(rs.getString("provinceName"));
                     c.setStatusName(rs.getString("statusName"));
                     c.setOriginName(rs.getString("originName"));
                     customers.add(c);

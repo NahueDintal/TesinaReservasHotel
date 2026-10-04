@@ -20,7 +20,7 @@ public class InactiveCustomersController {
     @FXML private TableView<Customer> tableInactiveCustomers;
     @FXML private TableColumn<Customer, String> colName;
     @FXML private TableColumn<Customer, String> colSurname;
-    @FXML private TableColumn<Customer, String> colDocumentType;
+    @FXML private TableColumn<Customer, String> colPhone;
     @FXML private TableColumn<Customer, String> colOrigin;
     @FXML private TableColumn<Customer, String> colCountry;
 
@@ -39,7 +39,21 @@ public class InactiveCustomersController {
         // 1. Configure table columns
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
-        colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
+        colPhone.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        colPhone.setCellFactory(column -> new TableCell<Customer, String>() {
+            @Override
+            protected void updateItem(String phone, boolean empty) {
+                super.updateItem(phone, empty);
+
+                if (empty) {
+                    setText(null);
+                } else if (phone == null || phone.trim().isEmpty()) {
+                    setText("Sin registro");
+                } else {
+                    setText(phone);
+                }
+            }
+        });
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
         colCountry.setCellValueFactory(new PropertyValueFactory<>("countryName"));
 

@@ -26,7 +26,6 @@
         <HBox alignment="CENTER_LEFT" spacing="15">
             <TextField fx:id="txtSearch" promptText="🔍 Buscar por nombre, apellido, email, teléfono..." styleClass="search-field" HBox.hgrow="ALWAYS" />
             <!-- Para despues -->
-            <!--<Button text="Limpiar filtros" onAction="#clearFilters" styleClass="btn-secondary" />-->
             <!--<Button text="📤 Exportar" styleClass="btn-secondary" />-->
         </HBox>
 
@@ -37,7 +36,7 @@
                     <columns>
                         <TableColumn fx:id="colName" prefWidth="120" text="Nombres" />
                         <TableColumn fx:id="colSurname" prefWidth="120" text="Apellidos" />
-                        <TableColumn fx:id="colDocumentType" prefWidth="120" text="Tipo Documento" />
+                        <TableColumn fx:id="colPhone" prefWidth="120" text="Telefono" />
                         <TableColumn fx:id="colOrigin" prefWidth="100" text="Origen" />
                         <TableColumn fx:id="colCountry" prefWidth="100" text="País" />
                     </columns>
@@ -73,6 +72,9 @@
 
                 <Label text="País:" styleClass="detail-label" />
                 <TextField fx:id="txtDetailCountry" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" maxWidth="Infinity" />
+
+                <Label text="Provincia:" styleClass="detail-label" />
+                <TextField fx:id="txtDetailProvince" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" maxWidth="Infinity" />
 
                 <Label text="Origen:" styleClass="detail-label" />
                 <TextField fx:id="txtDetailOrigin" text="--" styleClass="detail-value-field" editable="false" focusTraversable="false" />
