@@ -408,7 +408,7 @@ public class NewReservationController {
 
     allowRoomChange = false;
     if (btnChangeRoom != null) {
-      btnChangeRoom.setText("🔄 Cambiar habitación");
+      btnChangeRoom.setText("⚠️ Cambiar habitación");
       btnChangeRoom.setVisible(true);
       btnChangeRoom.setManaged(true);
     }
@@ -431,7 +431,9 @@ public class NewReservationController {
     dpCheckIn.setValue(reservation.getCheckIn());
     dpCheckOut.setValue(reservation.getCheckOut());
     txtNumberOfGuests.setText(String.valueOf(reservation.getNumberOfGuests()));
-    txtTotalRate.setText(reservation.getTotalRate() != null ? reservation.getTotalRate().toString() : "");
+    txtTotalRate.setText(reservation.getTotalRate() != null
+            ? reservation.getTotalRate().toString().replace('.', ',')
+            : "");
 
     cmbReservationStatus.getItems().stream()
             .filter(s -> s.getIdReservationStatus() == reservation.getIdReservationStatus())
@@ -466,10 +468,15 @@ public class NewReservationController {
     loadReservationConsumptions(reservation.getIdReservation());
     loadingReservation = false;
 
-    if (reservation == null && btnChangeRoom != null) {
-      btnChangeRoom.setVisible(false);
-      btnChangeRoom.setManaged(false);
+    // ============================================================
+    BigDecimal storedRate = reservation.getTotalRate();
+    boolean isRateValid = storedRate != null
+            && storedRate.compareTo(BigDecimal.ZERO) > 0;
+
+    if (!isRateValid && selectedRooms != null && !selectedRooms.isEmpty()) {
+      updateTotalRate();
     }
+
   }
 
   private void loadReservationPayment(int idReservation) {
@@ -926,8 +933,8 @@ public class NewReservationController {
     tblConsumptions.setItems(consumptions);
 
     colConsumptionActions.setCellFactory(column -> new TableCell<>() {
-      private final Button btnEdit = new Button("✏️");
-      private final Button btnDelete = new Button("❌");
+      private final Button btnEdit = new Button("Editar");
+      private final Button btnDelete = new Button("Anular");
       private final HBox box = new HBox(5, btnEdit, btnDelete);
 
       {
@@ -1562,21 +1569,17 @@ public class NewReservationController {
     a.showAndWait();
   }
 
-  /**
-   * Instala un filtro que solo permite dígitos y una coma decimal.
-   * Bloquea letras, puntos, signos, etc.
-   */
   private void installDecimalFilter(TextField field) {
     if (field == null) return;
 
     field.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
       String newText = change.getControlNewText();
 
-      // Vacío: permitir (para poder borrar todo)
+      // Allow empty (to clear the field)
       if (newText.isEmpty()) return change;
 
-      // Solo dígitos y, como máximo, una coma
-      if (!newText.matches("\\d*,?\\d*")) return null;
+      // Allow digits with at most ONE dot or comma as decimal separator
+      if (!newText.matches("\\d*[.,]?\\d*")) return null;
 
       return change;
     }));

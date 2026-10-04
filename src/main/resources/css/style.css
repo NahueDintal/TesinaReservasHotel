@@ -1835,3 +1835,134 @@
     -fx-background-color: #eaf5ec;
     -fx-translate-y: 1;
 }
+
+/* ========================================================
+   TABLA DE GESTIÓN DE CONSUMOS (Vista detalle de reserva)
+   ======================================================== */
+.consumption-management-table {
+    -fx-background-color: white;
+    -fx-border-color: #dfe7e1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 6, 0, 0, 2);
+    -fx-padding: 4px;
+}
+
+.consumption-management-table .column-header-background {
+    -fx-background-color: #f1f5f2;
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-color: transparent transparent #dfe7e1 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.consumption-management-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10px 8px;
+}
+
+.consumption-management-table .column-header .label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #245c32;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.consumption-management-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #eef1ef transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 38px;
+    -fx-padding: 0;
+}
+
+.consumption-management-table .table-row-cell:odd {
+    -fx-background-color: #fafbfc;
+}
+
+.consumption-management-table .table-row-cell:hover {
+    -fx-background-color: #f5f9f6;
+}
+
+.consumption-management-table .table-row-cell:selected {
+    -fx-background-color: #e3f1e6;
+}
+
+.consumption-management-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #245c32;
+}
+
+.consumption-management-table .table-cell {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #34443a;
+    -fx-padding: 8px 10px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-border-color: transparent;
+}
+
+/* Placeholder cuando no hay filas */
+.consumption-management-table .placeholder .label {
+    -fx-text-fill: #95a5a6;
+    -fx-font-style: italic;
+    -fx-font-size: 13px;
+}
+
+/* Scrollbar limpia */
+.consumption-management-table .scroll-bar:vertical,
+.consumption-management-table .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-width: 10;
+    -fx-pref-height: 10;
+}
+
+.consumption-management-table .scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.consumption-management-table .scroll-bar .thumb {
+    -fx-background-color: #c7d1ca;
+    -fx-background-radius: 5;
+}
+
+.consumption-management-table .scroll-bar .thumb:hover {
+    -fx-background-color: #aebbb2;
+}
+
+.consumption-management-table .scroll-bar .increment-button,
+.consumption-management-table .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.consumption-management-table .scroll-bar .increment-arrow,
+.consumption-management-table .scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+/* Botones de acción en la grilla */
+.consumption-action-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2e7d32;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 4px 8px;
+    -fx-cursor: hand;
+    -fx-background-radius: 4;
+}
+
+.consumption-action-btn:hover {
+    -fx-background-color: #eaf5ec;
+    -fx-underline: true;
+}
+
+.consumption-action-btn.danger {
+    -fx-text-fill: #c0392b;
+}
+
+.consumption-action-btn.danger:hover {
+    -fx-background-color: #fbeaea;
+}
