@@ -70,6 +70,10 @@ public class CancellationImpactController {
   @FXML
   private Label statusLabel;
 
+  // Paleta institucional del sistema (ver style.css): verde #3E864D y rojo #c0392b
+  private static final String COLOR_SUCCESS = "#3E864D";
+  private static final String COLOR_DANGER = "#c0392b";
+
   private final CancellationImpactDAO impactDAO = new CancellationImpactDAO();
   private final ProbabilityDAO probabilityDAO = new ProbabilityDAO();
   private final ObservableList<CancellationImpact> currentData = FXCollections.observableArrayList();
@@ -96,8 +100,8 @@ public class CancellationImpactController {
     lostRevenueColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getLostRevenue()));
     lostRatioColumn.setCellValueFactory(d -> new ReadOnlyObjectWrapper<>(d.getValue().getLostRatio()));
 
-    totalRevenueColumn.setCellFactory(c -> moneyCell("#27ae60"));
-    lostRevenueColumn.setCellFactory(c -> moneyCell("#c0392b"));
+    totalRevenueColumn.setCellFactory(c -> moneyCell(COLOR_SUCCESS));
+    lostRevenueColumn.setCellFactory(c -> moneyCell(COLOR_DANGER));
     lostRatioColumn.setCellFactory(c -> new TableCell<>() {
       @Override
       protected void updateItem(Double v, boolean empty) {
@@ -131,9 +135,9 @@ public class CancellationImpactController {
   @FXML
   private void onCalculate() {
     if (fromDatePicker.getValue() != null && toDatePicker.getValue() != null
-        && fromDatePicker.getValue().isAfter(toDatePicker.getValue())) {
+            && fromDatePicker.getValue().isAfter(toDatePicker.getValue())) {
       new Alert(Alert.AlertType.WARNING,
-          "'Desde' no puede ser posterior a 'Hasta'.").showAndWait();
+              "'Desde' no puede ser posterior a 'Hasta'.").showAndWait();
       return;
     }
     loadData();
@@ -159,7 +163,7 @@ public class CancellationImpactController {
     updateChart();
 
     statusLabel.setText(String.format("Mostrando %d canal(es). Período: %s → %s.",
-        currentData.size(), from, to));
+            currentData.size(), from, to));
   }
 
   private void updateKpis() {
@@ -189,16 +193,16 @@ public class CancellationImpactController {
       if (d.getNode() == null)
         continue;
       CancellationImpact p = currentData.stream()
-          .filter(x -> x.getCategory().equals(d.getXValue()))
-          .findFirst().orElse(null);
+              .filter(x -> x.getCategory().equals(d.getXValue()))
+              .findFirst().orElse(null);
       if (p != null) {
         Tooltip.install(d.getNode(), new Tooltip(
-            p.getCategory() + "\n" +
-                "Reservas: " + p.getTotalReservations() + "\n" +
-                "Canceladas: " + p.getCancelledReservations() + "\n" +
-                "Ingresos totales: " + String.format("%,.2f", p.getTotalRevenue()) + "\n" +
-                "Ingresos perdidos: " + String.format("%,.2f", p.getLostRevenue()) + "\n" +
-                "Ratio perdido: " + p.getLostRatioFormatted()));
+                p.getCategory() + "\n" +
+                        "Reservas: " + p.getTotalReservations() + "\n" +
+                        "Canceladas: " + p.getCancelledReservations() + "\n" +
+                        "Ingresos totales: " + String.format("%,.2f", p.getTotalRevenue()) + "\n" +
+                        "Ingresos perdidos: " + String.format("%,.2f", p.getLostRevenue()) + "\n" +
+                        "Ratio perdido: " + p.getLostRatioFormatted()));
       }
     }
   }
@@ -217,8 +221,8 @@ public class CancellationImpactController {
       pw.println("Canal;Reservas;Canceladas;Ingresos totales;Ingresos perdidos;Ratio perdido");
       for (CancellationImpact p : currentData) {
         pw.printf("%s;%d;%d;%.2f;%.2f;%.4f%n",
-            p.getCategory(), p.getTotalReservations(), p.getCancelledReservations(),
-            p.getTotalRevenue(), p.getLostRevenue(), p.getLostRatio());
+                p.getCategory(), p.getTotalReservations(), p.getCancelledReservations(),
+                p.getTotalRevenue(), p.getLostRevenue(), p.getLostRatio());
       }
       statusLabel.setText("Exportado a: " + file.getAbsolutePath());
     } catch (Exception ex) {
