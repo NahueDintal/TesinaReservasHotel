@@ -95,38 +95,38 @@ public class DashboardController {
       loadView("/views/BookingChart.fxml");
     });
     btnReservas.setOnAction(e -> {
-      if (!ensureAuthenticated())
-        return;
+      // if (!ensureAuthenticated())
+      // return;
       selectButton(btnReservas);
       loadView("/views/reservations.fxml");
     });
     btnHabitaciones.setOnAction(e -> {
-      if (!ensureAuthenticated())
-        return;
+      // if (!ensureAuthenticated())
+      // return;
       selectButton(btnHabitaciones);
       loadView("/views/RoomView.fxml");
     });
     btnClientes.setOnAction(e -> {
-      if (!ensureAuthenticated())
-        return;
+      // if (!ensureAuthenticated())
+      // return;
       selectButton(btnClientes);
       loadView("/views/CustomerView.fxml");
     });
     btnReportes.setOnAction(e -> {
-      if (!ensureAuthenticated())
-        return;
+      // if (!ensureAuthenticated())
+      // return;
       selectButton(btnReportes);
       loadView("/views/Report.fxml");
     });
     btnPersonal.setOnAction(e -> {
-      if (!ensureAuthenticated())
-        return;
+      // if (!ensureAuthenticated())
+      // return;
       selectButton(btnPersonal);
       loadView("/views/StaffView.fxml");
     });
     btnConfiguracion.setOnAction(e -> {
-      if (!ensureAuthenticated())
-        return;
+      // if (!ensureAuthenticated())
+      // return;
       selectButton(btnConfiguracion);
       loadView("/views/Configuration.fxml");
     });
@@ -185,7 +185,7 @@ public class DashboardController {
 
       if (controller instanceof BookingChartController) {
         ((BookingChartController) controller)
-                .setDashboardController(this);
+            .setDashboardController(this);
       }
 
       if (controller instanceof ReservationsController) {
@@ -245,13 +245,11 @@ public class DashboardController {
     try {
 
       FXMLLoader loader = new FXMLLoader(
-              getClass().getResource("/views/NewReservation.fxml")
-      );
+          getClass().getResource("/views/NewReservation.fxml"));
 
       Parent view = loader.load();
 
-      NewReservationController controller =
-              loader.getController();
+      NewReservationController controller = loader.getController();
 
       controller.setDashboardController(this);
 
