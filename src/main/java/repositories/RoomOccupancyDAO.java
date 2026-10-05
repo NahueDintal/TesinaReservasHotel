@@ -32,7 +32,7 @@ public class RoomOccupancyDAO {
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          int roomNumber = rs.getInt("roomNumber"); // 👈 ahora sí es number
+          int roomNumber = rs.getInt("roomNumber");
           LocalDate from = rs.getDate("checkIn").toLocalDate();
           LocalDate to = rs.getDate("checkOut").toLocalDate();
 

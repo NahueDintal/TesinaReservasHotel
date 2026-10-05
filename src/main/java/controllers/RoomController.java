@@ -289,7 +289,12 @@ public class RoomController {
     Room selected = tableRooms.getSelectionModel().getSelectedItem();
     if (selected == null)
       return;
-
+    if (occupiedTodayRoomNumbers.contains(selected.getNumber())) {
+      showAlert("No permitido",
+          "Habitación ocupada",
+          "No se puede marcar como no disponible una habitación ocupada hoy.");
+      return;
+    }
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle("Marcar como no disponible");
     alert.setHeaderText("¿Desea marcar esta habitación como no disponible?");
