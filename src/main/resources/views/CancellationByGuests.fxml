@@ -10,16 +10,15 @@
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.CancellationByGuestsController"
-            style="-fx-background-color: #f4f6f9;">
+            styleClass="content-main">
 
     <top>
         <VBox spacing="12">
             <padding><Insets top="18" right="18" bottom="12" left="18"/></padding>
 
-            <Label text="Cancelación por cantidad de huéspedes"
-                   style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #222;"/>
+            <Label text="Cancelación por cantidad de huéspedes" styleClass="report-title"/>
             <Label text="Probabilidad empírica P(cancelar | cantidad de huéspedes) con IC 95% de Wilson."
-                   style="-fx-text-fill: #666; -fx-font-size: 12;"/>
+                   styleClass="report-subtitle"/>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Desde:"/>
@@ -29,11 +28,10 @@
                 <Label text="Canal:"/>
                 <ComboBox fx:id="channelComboBox" prefWidth="170"/>
                 <Button fx:id="calculateButton" text="Calcular" onAction="#onCalculate"
-                        defaultButton="true"
-                        style="-fx-background-color: #2d6cdf; -fx-text-fill: white; -fx-font-weight: bold;"/>
-                <Button fx:id="exportButton" text="Exportar CSV" onAction="#onExport"/>
+                        defaultButton="true" styleClass="btn-primary"/>
+                <Button fx:id="exportButton" text="Exportar CSV" onAction="#onExport" styleClass="btn-secondary"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="clearButton" text="Limpiar" onAction="#onClear"/>
+                <Button fx:id="clearButton" text="Limpiar" onAction="#onClear" styleClass="btn-secondary"/>
             </HBox>
 
             <GridPane hgap="12">
@@ -43,30 +41,20 @@
                     <ColumnConstraints percentWidth="33.34"/>
                 </columnConstraints>
 
-                <VBox GridPane.columnIndex="0" spacing="4"
-                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
-                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
-                    <Label text="Total de reservas" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
-                    <Label fx:id="totalReservationsLabel" text="—"
-                           style="-fx-font-size: 22; -fx-font-weight: bold;"/>
+                <VBox GridPane.columnIndex="0" spacing="4" styleClass="report-card">
+                    <Label text="Total de reservas" styleClass="kpi-label"/>
+                    <Label fx:id="totalReservationsLabel" text="—" styleClass="kpi-value"/>
                 </VBox>
 
-                <VBox GridPane.columnIndex="1" spacing="4"
-                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
-                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
-                    <Label text="Reservas canceladas" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
-                    <Label fx:id="cancelledReservationsLabel" text="—"
-                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+                <VBox GridPane.columnIndex="1" spacing="4" styleClass="report-card">
+                    <Label text="Reservas canceladas" styleClass="kpi-label"/>
+                    <Label fx:id="cancelledReservationsLabel" text="—" styleClass="kpi-value-danger"/>
                 </VBox>
 
-                <VBox GridPane.columnIndex="2" spacing="6"
-                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
-                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
-                    <Label text="Grupo de mayor riesgo" style="-fx-text-fill: #888; -fx-font-size: 12;"/>
-                    <Label fx:id="highestRiskLabel" text="—"
-                           style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
-                    <Label fx:id="highestRiskDetailLabel" text=""
-                           style="-fx-text-fill: #666; -fx-font-size: 11;"/>
+                <VBox GridPane.columnIndex="2" spacing="6" styleClass="report-card">
+                    <Label text="Grupo de mayor riesgo" styleClass="kpi-label"/>
+                    <Label fx:id="highestRiskLabel" text="—" styleClass="kpi-value-danger"/>
+                    <Label fx:id="highestRiskDetailLabel" text="" styleClass="kpi-detail"/>
                 </VBox>
             </GridPane>
         </VBox>
@@ -76,12 +64,10 @@
         <VBox spacing="12">
             <padding><Insets top="6" right="18" bottom="18" left="18"/></padding>
 
-            <VBox VBox.vgrow="ALWAYS" spacing="6"
-                  style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+            <VBox VBox.vgrow="ALWAYS" spacing="6" styleClass="report-card">
                 <Label text="Probabilidad de cancelación por cantidad de huéspedes (%)"
-                       style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                <BarChart fx:id="guestsChart" VBox.vgrow="ALWAYS"
+                       styleClass="report-chart-title"/>
+                <BarChart fx:id="guestsChart" VBox.vgrow="ALWAYS" styleClass="report-chart"
                           legendVisible="false" animated="false" barGap="4" categoryGap="20">
                     <xAxis><CategoryAxis fx:id="guestsAxis" label="Cantidad de huéspedes"/></xAxis>
                     <yAxis><NumberAxis fx:id="probabilityAxis" label="Probabilidad (%)"
@@ -89,11 +75,9 @@
                 </BarChart>
             </VBox>
 
-            <VBox prefHeight="240" spacing="6"
-                  style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
-                <Label text="Detalle por cantidad de huéspedes" style="-fx-font-weight: bold; -fx-text-fill: #333;"/>
-                <TableView fx:id="dataTable" VBox.vgrow="ALWAYS">
+            <VBox prefHeight="240" spacing="6" styleClass="report-card">
+                <Label text="Detalle por cantidad de huéspedes" styleClass="report-chart-title"/>
+                <TableView fx:id="dataTable" VBox.vgrow="ALWAYS" styleClass="customer-table">
                     <columns>
                         <TableColumn fx:id="guestsColumn"             text="Huéspedes"       prefWidth="150"/>
                         <TableColumn fx:id="totalColumn"              text="Reservas"        prefWidth="110"/>
@@ -108,8 +92,8 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #eef1f5; -fx-padding: 8 18 8 18;">
-            <Label fx:id="statusLabel" text="Listo." style="-fx-text-fill: #555; -fx-font-size: 11;"/>
+        <HBox alignment="CENTER_LEFT" styleClass="report-status-bar">
+            <Label fx:id="statusLabel" text="Listo." styleClass="report-status-label"/>
         </HBox>
     </bottom>
 </BorderPane>
