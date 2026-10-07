@@ -823,31 +823,45 @@ public class NewReservationController {
 
   private void configureCustomerSearch() {
     txtCustomerSearch.textProperty().addListener((obs, oldVal, newVal) -> {
-      String text = newVal.trim().toLowerCase();
+      String text = newVal == null ? "" : newVal.trim();
 
       if (text.isEmpty()) {
+        // Sin texto: mostrar los precargados (los más recientes)
         lstCustomers.setItems(activeCustomers);
         if (selectedCustomer != null) selectedCustomer = null;
         if (touchedFields.contains(txtCustomerSearch)) validateCustomerField();
         return;
       }
 
-      ObservableList<Customer> filtered = FXCollections.observableArrayList();
+      // Con texto: buscar en la BD (ve TODOS los clientes)
+      try {
+        List<Customer> results = customerDAO.searchCustomers(text);
+        ObservableList<Customer> filtered = FXCollections.observableArrayList();
 
-      for (Customer c : activeCustomers) {
-        String name = c.getName().toLowerCase();
-        String surname = c.getSurname().toLowerCase();
-        String document = c.getDocumentNumber() != null ? c.getDocumentNumber().toLowerCase() : "";
+        // Solo mostrar los activos (para reservar solo se permite activos)
+        for (Customer c : results) {
+          if (c.getIdCustomerStatus() == 1) {
+            filtered.add(c);
+          }
+        }
 
-        if (name.contains(text) || surname.contains(text) || document.contains(text))
-          filtered.add(c);
+        lstCustomers.setItems(filtered);
+
+        // Si el usuario tipea distinto al cliente seleccionado, deseleccionar
+        if (selectedCustomer != null) {
+          String selected = selectedCustomer.getName() + " " + selectedCustomer.getSurname();
+          if (!selected.equalsIgnoreCase(text)) selectedCustomer = null;
+        }
+
+      } catch (java.sql.SQLException e) {
+        System.err.println("Error buscando clientes: " + e.getMessage());
+        lstCustomers.setItems(FXCollections.observableArrayList());
       }
-
-      lstCustomers.setItems(filtered);
 
       if (touchedFields.contains(txtCustomerSearch)) validateCustomerField();
     });
 
+    // Clic en un resultado
     lstCustomers.setOnMouseClicked(e -> {
       Customer c = lstCustomers.getSelectionModel().getSelectedItem();
       if (c != null) {
@@ -859,6 +873,7 @@ public class NewReservationController {
       }
     });
 
+    // Al enfocar, mostrar la lista
     txtCustomerSearch.focusedProperty().addListener((obs, oldVal, focused) -> {
       if (focused) {
         lstCustomers.setVisible(true);

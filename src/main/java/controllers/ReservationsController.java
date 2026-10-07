@@ -354,12 +354,24 @@ public class ReservationsController {
   }
 
   private String getCustomerName(int idCustomer) {
+    // 1. Buscar en la lista ya cargada (rápido, sin ir a BD)
     for (Customer customer : customers) {
       if (customer.getIdCustomer() == idCustomer) {
         return customer.getName() + " " + customer.getSurname();
       }
     }
-    return "Unknown customer";
+
+    // 2. Fallback: si no está, buscarlo puntualmente por ID
+    try {
+      Customer c = customerDAO.searchById(idCustomer);
+      if (c != null) {
+        return c.getName() + " " + c.getSurname();
+      }
+    } catch (java.sql.SQLException e) {
+      System.err.println("Error buscando cliente " + idCustomer + ": " + e.getMessage());
+    }
+
+    return "Cliente #" + idCustomer;
   }
 
   private String getStatusName(int idReservationStatus) {
