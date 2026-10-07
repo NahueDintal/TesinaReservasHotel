@@ -6,7 +6,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import models.Room;
 import repositories.RoomDAO;
 
@@ -40,7 +39,7 @@ public class UnavailableRoomsController {
   public void initialize() {
     colNumber.setCellValueFactory(new PropertyValueFactory<>("number"));
     colFloor.setCellValueFactory(new PropertyValueFactory<>("floor"));
-    colType.setCellValueFactory(new PropertyValueFactory<>("typeName")); // <-- corregido
+    colType.setCellValueFactory(new PropertyValueFactory<>("typeName"));
     colCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
     colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
 
@@ -97,8 +96,8 @@ public class UnavailableRoomsController {
             filteredUnavailable.remove(selected);
             tableUnavailableRooms.refresh();
             updateCounter();
-            showAlert("Éxito", "Habitación reactivada",
-                "La habitación ha sido reactivada correctamente.");
+            // showAlert("Éxito", "Habitación reactivada",
+            // "La habitación ha sido reactivada correctamente.");
           }
         } catch (RuntimeException e) {
           showAlert("Error", "No se pudo reactivar la habitación", e.getMessage());

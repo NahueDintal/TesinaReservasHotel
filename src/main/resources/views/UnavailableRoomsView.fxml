@@ -11,33 +11,33 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox Spacing="15"  stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UnavailableRoomsController">
+<VBox Spacing="15" stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UnavailableRoomsController">
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20" />
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
     <HBox alignment="CENTER_LEFT" spacing="15">
-        <Label text="Habitaciones No Disponibles" styleClass="section-title">
+        <Label styleClass="section-title" text="Habitaciones fuera de servicio">
             <font><Font size="22.0" /></font>
         </Label>
         <Region HBox.hgrow="ALWAYS" />
-        <Button fx:id="btnReactivate" text="Reactivar" styleClass="btn-primary" disable="true" />
+        <Button fx:id="btnReactivate" disable="true" styleClass="btn-primary" text="Reactivar" />
     </HBox>
 
     <TextField fx:id="txtSearch" promptText="🔍 Buscar por número, tipo, vista..." styleClass="search-field" />
 
     <TableView fx:id="tableUnavailableRooms" styleClass="customer-table" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colNumber" text="Número" prefWidth="100" />
-            <TableColumn fx:id="colFloor" text="Piso" prefWidth="80" />
-            <TableColumn fx:id="colType" text="Tipo" prefWidth="120" />
-            <TableColumn fx:id="colCapacity" text="Capacidad" prefWidth="100" />
-            <TableColumn fx:id="colPrice" text="Precio" prefWidth="120" />
+            <TableColumn fx:id="colNumber" prefWidth="100" text="Número" />
+            <TableColumn fx:id="colFloor" prefWidth="80" text="Piso" />
+            <TableColumn fx:id="colType" prefWidth="120" text="Tipo" />
+            <TableColumn fx:id="colCapacity" prefWidth="100" text="Capacidad" />
+            <TableColumn fx:id="colPrice" prefWidth="120" text="Precio" />
         </columns>
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
         </columnResizePolicy>
     </TableView>
 
-    <Label fx:id="lblTotalUnavailable" text="Mostrando 0 habitaciones no disponibles" styleClass="footer-info" />
+    <Label fx:id="lblTotalUnavailable" styleClass="footer-info" text="Mostrando 0 habitaciones no disponibles" />
 </VBox>
