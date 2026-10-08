@@ -1,44 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane style="-fx-background-color: #f4f6f9;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportController">
+<BorderPane styleClass="content-main" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportController">
 
-    <!-- ============ LEFT: menu ============ -->
-    <left>
-        <VBox fx:id="leftMenu" prefHeight="3506.0" prefWidth="227.0" spacing="6" style="-fx-background-color: #1f2937; -fx-padding: 18 12 18 12;">
-
-            <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;" text="Reports" />
-            <Label style="-fx-font-size: 11; -fx-text-fill: #9ca3af;" text="Analytics &amp; statistics" />
-
-            <Region prefHeight="14" />
-
-            <ToggleButton fx:id="btnCancellationProbability" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Probabilidad de cancelación" />
-            <ToggleButton fx:id="btnCancellationByLeadTime" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Cancelación por anticipación" />
-            <ToggleButton fx:id="btnCancellationByMonth" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Cancelación por mes" />
-            <ToggleButton fx:id="btnCancellationImpact" alignment="CENTER_LEFT" maxWidth="Infinity" style="-fx-padding: 10 12 10 12;" text="Impacto cancelaciones" />
-            <ToggleButton fx:id="btnCancellationByGuests"
-                          text="Cancelación por huéspedes"
-                          maxWidth="Infinity" alignment="CENTER_LEFT"
-                          style="-fx-padding: 10 12 10 12;"/>
-            <ToggleButton fx:id="btnCancellationByCustomerOrigin"
-                          text="Cancelación por origen"
-                          maxWidth="Infinity" alignment="CENTER_LEFT"
-                          style="-fx-padding: 10 12 10 12;"/>
-            <ToggleButton fx:id="btnDailySchedule"
-                          text="Cronograma diario"
-                          maxWidth="Infinity" alignment="CENTER_LEFT"
-                          style="-fx-padding: 10 12 10 12;"/>
-        </VBox>
-    </left>
-
-    <!-- ============ CENTER: dynamic sub-report ============ -->
+    <!-- ============ CENTER: dashboard de tarjetas + panel inferior ============ -->
     <center>
-        <AnchorPane fx:id="centerPane" style="-fx-background-color: #f4f6f9;" />
+        <ScrollPane fitToWidth="true" styleClass="dashboard-scroll" hbarPolicy="NEVER">
+            <VBox spacing="18" styleClass="dashboard-content">
+                <padding><Insets top="24" right="32" bottom="24" left="32"/></padding>
+
+                <!-- ======== ENCABEZADO ======== -->
+                <VBox spacing="4">
+                    <Label styleClass="section-title" text="Reportes" />
+                    <Label styleClass="subtitulo-seccion" text="Selecciona un reporte para ver su análisis detallado." />
+                </VBox>
+
+                <!-- ======== GRID DE TARJETAS ======== -->
+                <GridPane hgap="18" vgap="18" fx:id="cardsGrid">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" />
+                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" />
+                        <ColumnConstraints percentWidth="33.34" hgrow="ALWAYS" />
+                    </columnConstraints>
+
+                    <!-- Fila 1 -->
+                    <VBox fx:id="tileCancellationProbability" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
+                        <Label styleClass="report-tile-icon" text="📊" />
+                        <Label styleClass="report-tile-title" text="Probabilidad de cancelación" />
+                        <Label styleClass="report-tile-desc" text="Análisis empírico P(cancelar | canal) con intervalos de confianza." wrapText="true" />
+                    </VBox>
+
+                    <VBox fx:id="tileCancellationByLeadTime" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10">
+                        <Label styleClass="report-tile-icon" text="⏳" />
+                        <Label styleClass="report-tile-title" text="Cancelación por anticipación" />
+                        <Label styleClass="report-tile-desc" text="Días de antelación con los que se cancelan las reservas." wrapText="true" />
+                    </VBox>
+
+                    <VBox fx:id="tileCancellationByMonth" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="2" GridPane.rowIndex="0" spacing="10">
+                        <Label styleClass="report-tile-icon" text="📅" />
+                        <Label styleClass="report-tile-title" text="Cancelación por mes" />
+                        <Label styleClass="report-tile-desc" text="Evolución mensual de las cancelaciones en el período." wrapText="true" />
+                    </VBox>
+
+                    <!-- Fila 2 -->
+                    <VBox fx:id="tileCancellationImpact" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="10">
+                        <Label styleClass="report-tile-icon" text="📉" />
+                        <Label styleClass="report-tile-title" text="Impacto cancelaciones" />
+                        <Label styleClass="report-tile-desc" text="Pérdida estimada de ingresos por cancelaciones." wrapText="true" />
+                    </VBox>
+
+                    <VBox fx:id="tileCancellationByGuests" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="10">
+                        <Label styleClass="report-tile-icon" text="👥" />
+                        <Label styleClass="report-tile-title" text="Cancelación por huéspedes" />
+                        <Label styleClass="report-tile-desc" text="Comportamiento de cancelación según cantidad de huéspedes." wrapText="true" />
+                    </VBox>
+
+                    <VBox fx:id="tileCancellationByCustomerOrigin" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="2" GridPane.rowIndex="1" spacing="10">
+                        <Label styleClass="report-tile-icon" text="🌍" />
+                        <Label styleClass="report-tile-title" text="Cancelación por origen" />
+                        <Label styleClass="report-tile-desc" text="Distribución geográfica de las reservas canceladas." wrapText="true" />
+                    </VBox>
+
+                    <!-- Fila 3 -->
+                    <VBox fx:id="tileDailySchedule" styleClass="report-tile"
+                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
+                          GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="10">
+                        <Label styleClass="report-tile-icon" text="🗓️" />
+                        <Label styleClass="report-tile-title" text="Cronograma diario" />
+                        <Label styleClass="report-tile-desc" text="Check-ins y check-outs programados para una fecha." wrapText="true" />
+                    </VBox>
+
+                    <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
+
+                <!-- ======== PANEL INFERIOR CON REPORTE EMBEBIDO ======== -->
+                <VBox spacing="0" styleClass="report-embed-panel">
+                    <AnchorPane fx:id="centerPane" styleClass="report-embed-content" />
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
     </center>
 </BorderPane>
