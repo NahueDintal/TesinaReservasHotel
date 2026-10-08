@@ -132,10 +132,13 @@
                 text="Consumos registrados"
                 styleClass="reservation-card-title"/>
 
-        <TableView
-                fx:id="tblConsumptions"
-                VBox.vgrow="ALWAYS"
-                maxWidth="Infinity">
+        <TableView fx:id="tblConsumptions"
+                   styleClass="consumption-management-table"
+                   maxWidth="Infinity"
+                   VBox.vgrow="ALWAYS">
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
 
             <columns>
 

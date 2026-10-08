@@ -20,8 +20,8 @@ public class ValidationUtils {
     private static final Pattern OTHER_ID_PATTERN =
             Pattern.compile("^(?:\\s*[A-Za-z0-9]\\s*){6,15}$");
 
-    //private static final Pattern PHONE_PATTERN =
-            //Pattern.compile("^[+]?[0-9\\s\\-()]{7,20}$");
+    private static final Pattern PHONE_PATTERN =
+            Pattern.compile("^[+]?[0-9\\s\\-()]{7,20}$");
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
@@ -55,7 +55,9 @@ public class ValidationUtils {
     public static boolean isValidPhone(String phone) {
         if (phone == null || phone.trim().isEmpty()) return true; // Opcional
         String cleaned = phone.replaceAll("\\D", "");
-        return cleaned.length() >= 7 && cleaned.length() <= 15;
+        if (cleaned.length() >= 7 && cleaned.length() <= 15) {
+            return PHONE_PATTERN.matcher(phone.trim()).matches();
+        } else { return false; }
     }
 
     public static boolean isValidEmail(String email) {

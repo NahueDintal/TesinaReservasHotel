@@ -50,25 +50,31 @@ public class ReservationRoomRepo {
   public List<ReservationRoom> getByReservation(int idReservation) {
     List<ReservationRoom> rooms = new ArrayList<>();
 
-    String sql = "SELECT idReservation, idRoom FROM ReservationRoom WHERE idReservation = ?";
+    String sql = """
+        SELECT rr.idReservation, rr.idRoom, r.number AS roomNumber
+        FROM ReservationRoom rr
+        JOIN Room r ON r.idRoom = rr.idRoom
+        WHERE rr.idReservation = ?
+        """;
 
     try (Connection conn = ConexionDB.getConnection();
-        PreparedStatement ps = conn.prepareStatement(sql)) {
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
       ps.setInt(1, idReservation);
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
           ReservationRoom rr = new ReservationRoom(
-              rs.getInt("idReservation"),
-              rs.getInt("idRoom"));
+                  rs.getInt("idReservation"),
+                  rs.getInt("idRoom"));
+          rr.setRoomNumber(rs.getInt("roomNumber"));
           rooms.add(rr);
         }
       }
 
     } catch (SQLException e) {
       throw new RuntimeException(
-          "Error al obtener habitaciones de la reserva " + idReservation, e);
+              "Error al obtener habitaciones de la reserva " + idReservation, e);
     }
 
     return rooms;

@@ -36,13 +36,13 @@
 
         <Button fx:id="btnProducts"
                 text="🛒&#10;Productos"
-                styleClass="btn-config"
+                styleClass="catalog-card"
                 prefWidth="220"
                 prefHeight="130"/>
 
         <Button fx:id="btnServices"
                 text="🛎&#10;Servicios"
-                styleClass="btn-config"
+                styleClass="catalog-card"
                 prefWidth="220"
                 prefHeight="130"/>
 

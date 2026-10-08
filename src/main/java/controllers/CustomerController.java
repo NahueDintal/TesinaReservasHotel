@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+//meter provincia del detalle
 
 public class CustomerController {
 
@@ -25,7 +26,7 @@ public class CustomerController {
     @FXML private TableView<Customer> tableCustomers;
     @FXML private TableColumn<Customer, String> colName;
     @FXML private TableColumn<Customer, String> colSurname;
-    @FXML private TableColumn<Customer, String> colDocumentType;
+    @FXML private TableColumn<Customer, String> colPhone;
     @FXML private TableColumn<Customer, String> colOrigin;
     @FXML private TableColumn<Customer, String> colCountry;
 
@@ -44,6 +45,7 @@ public class CustomerController {
     @FXML private TextField txtDetailPhone;
     @FXML private TextField txtDetailEmail;
     @FXML private TextField txtDetailCountry;
+    @FXML private TextField txtDetailProvince;
     @FXML private TextField txtDetailOrigin;
 
     // ========== SEARCH ==========
@@ -66,7 +68,21 @@ public class CustomerController {
         // Configurar columnas
         colName.setCellValueFactory(new PropertyValueFactory<>("name"));
         colSurname.setCellValueFactory(new PropertyValueFactory<>("surname"));
-        colDocumentType.setCellValueFactory(new PropertyValueFactory<>("documentTypeName"));
+        colPhone.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        colPhone.setCellFactory(column -> new TableCell<Customer, String>() {
+            @Override
+            protected void updateItem(String phone, boolean empty) {
+                super.updateItem(phone, empty);
+
+                if (empty) {
+                    setText(null);
+                } else if (phone == null || phone.trim().isEmpty()) {
+                    setText("Sin registro");
+                } else {
+                    setText(phone);
+                }
+            }
+        });
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("originName"));
         colCountry.setCellValueFactory(new PropertyValueFactory<>("countryName"));
 
@@ -145,6 +161,10 @@ public class CustomerController {
         txtDetailPhone.setText(getDisplayText(c.getPhoneNumber()));
         txtDetailEmail.setText(getDisplayText(c.getEmail()));
         txtDetailCountry.setText(getDisplayText(c.getCountryName()));
+        // Revisar
+        String provincia = (c.getProvinceName() != null) ? getDisplayText(c.getProvinceName()) : "--";
+        txtDetailProvince.setText(provincia);
+
         txtDetailOrigin.setText(getDisplayText(c.getOriginName()));
     }
 
@@ -155,6 +175,7 @@ public class CustomerController {
         txtDetailPhone.setText("--");
         txtDetailEmail.setText("--");
         txtDetailCountry.setText("--");
+        txtDetailProvince.setText("--");
         txtDetailOrigin.setText("--");
     }
 

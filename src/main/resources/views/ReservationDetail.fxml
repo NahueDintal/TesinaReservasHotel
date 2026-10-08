@@ -127,12 +127,12 @@
                        GridPane.rowIndex="3"/>
 
 
-                <Label text="Origen:"
+                <Label text="Tarifa total:"
                        styleClass="detail-label"
                        GridPane.columnIndex="0"
                        GridPane.rowIndex="4"/>
 
-                <Label fx:id="lblOrigin"
+                <Label fx:id="lblTotalRate"
                        styleClass="detail-value"
                        GridPane.columnIndex="1"
                        GridPane.rowIndex="4"/>
@@ -283,4 +283,3 @@
     </VBox>
 
 </AnchorPane>
-

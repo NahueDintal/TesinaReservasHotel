@@ -8,13 +8,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import models.Consumption;
+import models.Customer;
 import models.Payment;
 import models.Product;
 import models.Reservation;
+import models.ReservationRoom;
+import models.ReservationStatus;
+import models.ReservationType;
 import models.Service;
 import repositories.ConsumptionRepo;
+import repositories.CustomerDAO;
 import repositories.PaymentRepo;
 import repositories.ProductRepo;
+import repositories.ReservationRoomRepo;
+import repositories.ReservationStatusRepo;
+import repositories.ReservationTypeRepo;
 import repositories.ServiceRepo;
 
 import java.math.BigDecimal;
@@ -30,101 +38,51 @@ public class ReservationDetailController {
     // RESERVA
     // =========================================================
 
-    @FXML
-    private Label lblTitle;
-
-    @FXML
-    private Label lblCustomer;
-
-    @FXML
-    private Label lblCheckIn;
-
-    @FXML
-    private Label lblCheckOut;
-
-    @FXML
-    private Label lblNights;
-
-    @FXML
-    private Label lblGuests;
-
-    @FXML
-    private Label lblRoom;
-
-    @FXML
-    private Label lblReservationType;
-
-    @FXML
-    private Label lblOrigin;
-
-    @FXML
-    private Label lblStatus;
-
-    @FXML
-    private Label lblObservations;
+    @FXML private Label lblTitle;
+    @FXML private Label lblCustomer;
+    @FXML private Label lblCheckIn;
+    @FXML private Label lblCheckOut;
+    @FXML private Label lblNights;
+    @FXML private Label lblGuests;
+    @FXML private Label lblRoom;
+    @FXML private Label lblReservationType;
+    @FXML private Label lblTotalRate;
+    @FXML private Label lblStatus;
+    @FXML private Label lblObservations;
 
 
     // =========================================================
     // PAGOS
     // =========================================================
 
-    @FXML
-    private TableView<Payment> tblPayments;
-
-    @FXML
-    private TableColumn<Payment, String> colPaymentDate;
-
-    @FXML
-    private TableColumn<Payment, String> colPaymentAmount;
-
-    @FXML
-    private TableColumn<Payment, String> colPaymentMethod;
-
-    @FXML
-    private TableColumn<Payment, String> colPaymentStatus;
-
-    @FXML
-    private TableColumn<Payment, String> colPaymentObservations;
-
-    @FXML
-    private Label lblTotalPaid;
+    @FXML private TableView<Payment> tblPayments;
+    @FXML private TableColumn<Payment, String> colPaymentDate;
+    @FXML private TableColumn<Payment, String> colPaymentAmount;
+    @FXML private TableColumn<Payment, String> colPaymentMethod;
+    @FXML private TableColumn<Payment, String> colPaymentStatus;
+    @FXML private TableColumn<Payment, String> colPaymentObservations;
+    @FXML private Label lblTotalPaid;
 
 
     // =========================================================
     // CONSUMOS
     // =========================================================
 
-    @FXML
-    private TableView<Consumption> tblConsumptions;
-
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionType;
-
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionName;
-
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionQuantity;
-
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionUnitPrice;
-
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionTotal;
-
-    @FXML
-    private TableColumn<Consumption, String> colConsumptionDate;
-
-    @FXML
-    private Label lblTotalConsumptions;
+    @FXML private TableView<Consumption> tblConsumptions;
+    @FXML private TableColumn<Consumption, String> colConsumptionType;
+    @FXML private TableColumn<Consumption, String> colConsumptionName;
+    @FXML private TableColumn<Consumption, String> colConsumptionQuantity;
+    @FXML private TableColumn<Consumption, String> colConsumptionUnitPrice;
+    @FXML private TableColumn<Consumption, String> colConsumptionTotal;
+    @FXML private TableColumn<Consumption, String> colConsumptionDate;
+    @FXML private Label lblTotalConsumptions;
 
 
     // =========================================================
     // BOTÓN
     // =========================================================
 
-    @FXML
-    private Button btnClose;
+    @FXML private Button btnClose;
 
 
     // =========================================================
@@ -135,6 +93,10 @@ public class ReservationDetailController {
     private final ConsumptionRepo consumptionRepo = new ConsumptionRepo();
     private final ProductRepo productRepo = new ProductRepo();
     private final ServiceRepo serviceRepo = new ServiceRepo();
+    private final ReservationRoomRepo reservationRoomRepo = new ReservationRoomRepo();
+    private final ReservationTypeRepo reservationTypeRepo = new ReservationTypeRepo();
+    private final ReservationStatusRepo reservationStatusRepo = new ReservationStatusRepo();
+    private final CustomerDAO customerDAO = new CustomerDAO();
 
 
     // =========================================================
@@ -145,12 +107,8 @@ public class ReservationDetailController {
 
     private DashboardController dashboardController;
 
-    private final Map<Integer, String> productNames =
-            new HashMap<>();
-
-    private final Map<Integer, String> serviceNames =
-            new HashMap<>();
-
+    private final Map<Integer, String> productNames = new HashMap<>();
+    private final Map<Integer, String> serviceNames = new HashMap<>();
 
     private final DateTimeFormatter dateTimeFormatter =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -160,9 +118,7 @@ public class ReservationDetailController {
     // DASHBOARD
     // =========================================================
 
-    public void setDashboardController(
-            DashboardController dashboardController) {
-
+    public void setDashboardController(DashboardController dashboardController) {
         this.dashboardController = dashboardController;
     }
 
@@ -172,7 +128,6 @@ public class ReservationDetailController {
     // =========================================================
 
     public void setReservation(Reservation reservation) {
-
         this.reservation = reservation;
 
         loadCatalogNames();
@@ -187,53 +142,27 @@ public class ReservationDetailController {
     // =========================================================
 
     private void loadCatalogNames() {
-
         productNames.clear();
         serviceNames.clear();
 
-        List<Product> activeProducts =
-                productRepo.getActiveProducts();
-
-        List<Product> inactiveProducts =
-                productRepo.getInactiveProducts();
+        List<Product> activeProducts = productRepo.getActiveProducts();
+        List<Product> inactiveProducts = productRepo.getInactiveProducts();
 
         for (Product product : activeProducts) {
-
-            productNames.put(
-                    product.getIdProduct(),
-                    product.getName()
-            );
+            productNames.put(product.getIdProduct(), product.getName());
         }
-
         for (Product product : inactiveProducts) {
-
-            productNames.put(
-                    product.getIdProduct(),
-                    product.getName()
-            );
+            productNames.put(product.getIdProduct(), product.getName());
         }
 
-
-        List<Service> activeServices =
-                serviceRepo.getActiveServices();
-
-        List<Service> inactiveServices =
-                serviceRepo.getInactiveServices();
+        List<Service> activeServices = serviceRepo.getActiveServices();
+        List<Service> inactiveServices = serviceRepo.getInactiveServices();
 
         for (Service service : activeServices) {
-
-            serviceNames.put(
-                    service.getIdService(),
-                    service.getName()
-            );
+            serviceNames.put(service.getIdService(), service.getName());
         }
-
         for (Service service : inactiveServices) {
-
-            serviceNames.put(
-                    service.getIdService(),
-                    service.getName()
-            );
+            serviceNames.put(service.getIdService(), service.getName());
         }
     }
 
@@ -243,91 +172,80 @@ public class ReservationDetailController {
     // =========================================================
 
     private void loadReservationData() {
+        if (reservation == null) return;
 
-        if (reservation == null) {
-            return;
+        lblTitle.setText("Detalle de reserva #" + reservation.getIdReservation());
+
+        // ---------- CLIENTE ----------
+        String customerName = "Cliente #" + reservation.getIdCustomer();
+        try {
+            Customer customer = customerDAO.searchById(reservation.getIdCustomer());
+            if (customer != null) {
+                customerName = customer.getName() + " " + customer.getSurname();
+            }
+        } catch (java.sql.SQLException e) {
+            System.err.println("Error al buscar cliente: " + e.getMessage());
         }
+        lblCustomer.setText(customerName);
 
-        lblTitle.setText(
-                "Detalle de reserva #" +
-                        reservation.getIdReservation()
-        );
+        // ---------- FECHAS ----------
+        lblCheckIn.setText(String.valueOf(reservation.getCheckIn()));
+        lblCheckOut.setText(String.valueOf(reservation.getCheckOut()));
 
-        lblCustomer.setText(
-                "Cliente #" +
-                        reservation.getIdCustomer()
-        );
-
-        lblCheckIn.setText(
-                String.valueOf(
-                        reservation.getCheckIn()
-                )
-        );
-
-        lblCheckOut.setText(
-                String.valueOf(
-                        reservation.getCheckOut()
-                )
-        );
-
-        // Calcular noches
-        if (reservation.getCheckIn() != null &&
-                reservation.getCheckOut() != null) {
-
-            long nights =
-                    java.time.temporal.ChronoUnit.DAYS.between(
-                            reservation.getCheckIn(),
-                            reservation.getCheckOut()
-                    );
-
-            lblNights.setText(
-                    String.valueOf(nights)
-            );
-
+        // ---------- NOCHES ----------
+        if (reservation.getCheckIn() != null && reservation.getCheckOut() != null) {
+            long nights = java.time.temporal.ChronoUnit.DAYS.between(
+                    reservation.getCheckIn(), reservation.getCheckOut());
+            lblNights.setText(String.valueOf(nights));
         } else {
-
             lblNights.setText("-");
         }
 
-        lblGuests.setText(
-                String.valueOf(
-                        reservation.getNumberOfGuests()
-                )
-        );
+        // ---------- HUÉSPEDES ----------
+        lblGuests.setText(String.valueOf(reservation.getNumberOfGuests()));
 
-        // Todavía no existe idRoom en Reservation
-        lblRoom.setText("-");
+        // ---------- HABITACIONES ----------
+        List<ReservationRoom> assignedRooms =
+                reservationRoomRepo.getByReservation(reservation.getIdReservation());
 
-        lblReservationType.setText(
-                String.valueOf(
-                        reservation.getIdReservationType()
-                )
-        );
-
-        lblOrigin.setText("-");
-
-        lblStatus.setText(
-                String.valueOf(
-                        reservation.getIdReservationStatus()
-                )
-        );
-
-        String observations =
-                reservation.getObservations();
-
-        if (observations == null ||
-                observations.isBlank()) {
-
-            lblObservations.setText(
-                    "Sin observaciones"
-            );
-
+        if (assignedRooms == null || assignedRooms.isEmpty()) {
+            lblRoom.setText("Sin asignar");
         } else {
-
-            lblObservations.setText(
-                    observations
-            );
+            StringBuilder roomsText = new StringBuilder();
+            for (int i = 0; i < assignedRooms.size(); i++) {
+                if (i > 0) roomsText.append(", ");
+                roomsText.append("Hab. ").append(assignedRooms.get(i).getRoomNumber());
+            }
+            lblRoom.setText(roomsText.toString());
         }
+
+        // ---------- TIPO ----------
+        String typeName = reservationTypeRepo.getReservationTypes().stream()
+                .filter(t -> t.getIdReservationType() == reservation.getIdReservationType())
+                .map(ReservationType::getName)
+                .findFirst()
+                .orElse("Tipo #" + reservation.getIdReservationType());
+        lblReservationType.setText(typeName);
+
+        // ---------- TARIFA ----------
+        BigDecimal rate = reservation.getTotalRate();
+        lblTotalRate.setText(rate != null ? formatMoney(rate) : "$0.00");
+
+        // ---------- ESTADO ----------
+        String statusName = reservationStatusRepo.getReservationStatuses().stream()
+                .filter(s -> s.getIdReservationStatus() == reservation.getIdReservationStatus())
+                .map(ReservationStatus::getName)
+                .findFirst()
+                .orElse("Estado #" + reservation.getIdReservationStatus());
+        lblStatus.setText(statusName);
+
+        // ---------- OBSERVACIONES ----------
+        String observations = reservation.getObservations();
+        lblObservations.setText(
+                (observations == null || observations.isBlank())
+                        ? "Sin observaciones"
+                        : observations
+        );
     }
 
 
@@ -336,88 +254,45 @@ public class ReservationDetailController {
     // =========================================================
 
     private void loadPayments() {
-
-        if (reservation == null) {
-            return;
-        }
+        if (reservation == null) return;
 
         List<Payment> payments =
-                paymentRepo.getPaymentsByReservation(
-                        reservation.getIdReservation()
-                );
+                paymentRepo.getPaymentsByReservation(reservation.getIdReservation());
 
         configurePaymentColumns();
 
-        tblPayments.setItems(
-                FXCollections.observableArrayList(
-                        payments
-                )
-        );
+        tblPayments.setItems(FXCollections.observableArrayList(payments));
 
-        BigDecimal totalPaid =
-                BigDecimal.ZERO;
-
+        BigDecimal totalPaid = BigDecimal.ZERO;
         for (Payment payment : payments) {
-
             if (payment.getAmount() != null) {
-
-                totalPaid =
-                        totalPaid.add(
-                                payment.getAmount()
-                        );
+                totalPaid = totalPaid.add(payment.getAmount());
             }
         }
-
-        lblTotalPaid.setText(
-                formatMoney(totalPaid)
-        );
+        lblTotalPaid.setText(formatMoney(totalPaid));
     }
 
 
     private void configurePaymentColumns() {
-
         colPaymentDate.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        formatDateTime(
-                                cell.getValue()
-                                        .getPaymentDate()
-                        )
-                )
-        );
+                        formatDateTime(cell.getValue().getPaymentDate())));
 
         colPaymentAmount.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        formatMoney(
-                                cell.getValue()
-                                        .getAmount()
-                        )
-                )
-        );
+                        formatMoney(cell.getValue().getAmount())));
 
         colPaymentMethod.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        "ID " +
-                                cell.getValue()
-                                        .getIdPaymentMethod()
-                )
-        );
+                        "ID " + cell.getValue().getIdPaymentMethod()));
 
         colPaymentStatus.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        "ID " +
-                                cell.getValue()
-                                        .getIdPaymentStatus()
-                )
-        );
+                        "ID " + cell.getValue().getIdPaymentStatus()));
 
         colPaymentObservations.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        safeText(
-                                cell.getValue()
-                                        .getObservations()
-                        )
-                )
-        );
+                        safeText(cell.getValue().getObservations())));
     }
 
 
@@ -426,153 +301,77 @@ public class ReservationDetailController {
     // =========================================================
 
     private void loadConsumptions() {
-
-        if (reservation == null) {
-            return;
-        }
+        if (reservation == null) return;
 
         try {
-
             List<Consumption> consumptions =
-                    consumptionRepo.getConsumptionsByReservation(
-                            reservation.getIdReservation()
-                    );
+                    consumptionRepo.getConsumptionsByReservation(reservation.getIdReservation());
 
             configureConsumptionColumns();
 
-            tblConsumptions.setItems(
-                    FXCollections.observableArrayList(
-                            consumptions
-                    )
-            );
+            tblConsumptions.setItems(FXCollections.observableArrayList(consumptions));
 
-            BigDecimal total =
-                    BigDecimal.ZERO;
-
+            BigDecimal total = BigDecimal.ZERO;
             for (Consumption consumption : consumptions) {
-
                 if (consumption.getTotal() != null) {
-
-                    total = total.add(
-                            consumption.getTotal()
-                    );
+                    total = total.add(consumption.getTotal());
                 }
             }
-
-            lblTotalConsumptions.setText(
-                    formatMoney(total)
-            );
+            lblTotalConsumptions.setText(formatMoney(total));
 
         } catch (java.sql.SQLException e) {
-
-            System.err.println(
-                    "Error al cargar los consumos de la reserva: "
-                            + e.getMessage()
-            );
-
-            tblConsumptions.setItems(
-                    FXCollections.observableArrayList()
-            );
-
-            lblTotalConsumptions.setText(
-                    "$0.00"
-            );
+            System.err.println("Error al cargar los consumos de la reserva: " + e.getMessage());
+            tblConsumptions.setItems(FXCollections.observableArrayList());
+            lblTotalConsumptions.setText("$0.00");
         }
     }
 
-    private void configureConsumptionColumns() {
 
+    private void configureConsumptionColumns() {
         colConsumptionType.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        getConsumptionTypeName(
-                                cell.getValue()
-                                        .getIdConsumptionType()
-                        )
-                )
-        );
+                        getConsumptionTypeName(cell.getValue().getIdConsumptionType())));
 
         colConsumptionName.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        getConsumptionName(
-                                cell.getValue()
-                        )
-                )
-        );
+                        getConsumptionName(cell.getValue())));
 
         colConsumptionQuantity.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        String.valueOf(
-                                cell.getValue()
-                                        .getQuantity()
-                        )
-                )
-        );
+                        String.valueOf(cell.getValue().getQuantity())));
 
         colConsumptionUnitPrice.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        formatMoney(
-                                cell.getValue()
-                                        .getUnitPrice()
-                        )
-                )
-        );
+                        formatMoney(cell.getValue().getUnitPrice())));
 
         colConsumptionTotal.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        formatMoney(
-                                cell.getValue()
-                                        .getTotal()
-                        )
-                )
-        );
+                        formatMoney(cell.getValue().getTotal())));
 
         colConsumptionDate.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        formatDateTime(
-                                cell.getValue()
-                                        .getConsumptionDate()
-                        )
-                )
-        );
+                        formatDateTime(cell.getValue().getConsumptionDate())));
     }
 
 
-    private String getConsumptionTypeName(
-            int idConsumptionType) {
-
-        if (idConsumptionType == 1) {
-            return "Producto";
-        }
-
-        if (idConsumptionType == 2) {
-            return "Servicio";
-        }
-
+    private String getConsumptionTypeName(int idConsumptionType) {
+        if (idConsumptionType == 1) return "Producto";
+        if (idConsumptionType == 2) return "Servicio";
         return "Desconocido";
     }
 
 
-    private String getConsumptionName(
-            Consumption consumption) {
-
+    private String getConsumptionName(Consumption consumption) {
         if (consumption.getIdConsumptionType() == 1) {
-
             return productNames.getOrDefault(
                     consumption.getIdProduct(),
-                    "Producto #" +
-                            consumption.getIdProduct()
-            );
+                    "Producto #" + consumption.getIdProduct());
         }
-
         if (consumption.getIdConsumptionType() == 2) {
-
             return serviceNames.getOrDefault(
                     consumption.getIdService(),
-                    "Servicio #" +
-                            consumption.getIdService()
-            );
+                    "Servicio #" + consumption.getIdService());
         }
-
         return "-";
     }
 
@@ -583,12 +382,8 @@ public class ReservationDetailController {
 
     @FXML
     private void handleClose() {
-
         if (dashboardController != null) {
-
-            dashboardController.loadView(
-                    "/views/reservations.fxml"
-            );
+            dashboardController.loadView("/views/reservations.fxml");
         }
     }
 
@@ -598,37 +393,19 @@ public class ReservationDetailController {
     // =========================================================
 
     private String formatMoney(BigDecimal amount) {
-
-        if (amount == null) {
-            return "$0.00";
-        }
-
+        if (amount == null) return "$0.00";
         return "$" + amount.toPlainString();
     }
 
 
-    private String formatDateTime(
-            LocalDateTime dateTime) {
-
-        if (dateTime == null) {
-            return "-";
-        }
-
-        return dateTimeFormatter.format(
-                dateTime
-        );
+    private String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) return "-";
+        return dateTimeFormatter.format(dateTime);
     }
 
 
     private String safeText(String text) {
-
-        if (text == null ||
-                text.isBlank()) {
-
-            return "-";
-        }
-
+        if (text == null || text.isBlank()) return "-";
         return text;
     }
 }
-

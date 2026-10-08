@@ -25,6 +25,7 @@ public class CustomerFormController {
     @FXML private TextField txtPhone;
     @FXML private TextField txtEmail;
     @FXML private ComboBox<String> comboCountry;
+    @FXML private ComboBox<String> comboProvince;
     @FXML private ComboBox<String> comboOrigin;
 
     @FXML private Button btnSave;
@@ -37,15 +38,18 @@ public class CustomerFormController {
     private CustomerDAO customerDAO = new CustomerDAO();
     private DocumentTypeDAO documentTypeDAO = new DocumentTypeDAO();
     private CountryDAO countryDAO = new CountryDAO();
+    private ProvinceDAO provinceDAO = new ProvinceDAO();
     private CustomerStatusDAO customerStatusDAO = new CustomerStatusDAO();
     private CustomerOriginDAO customerOriginDAO = new CustomerOriginDAO();
 
     private Map<Integer, String> documentTypes;
     private Map<Integer, String> countries;
+    private Map<Integer, String> provinces;
     private Map<Integer, String> statuses;
     private Map<Integer, String> origins;
 
     private Customer editingCustomer;
+    private static final int ARGENTINA_ID = 9;
 
     // ========== INITIALIZATION ==========
     @FXML
@@ -53,6 +57,8 @@ public class CustomerFormController {
         loadCatalogs();
         setupButtonActions();
         setupValidations();
+
+        comboProvince.setDisable(true);
 
         if (editingCustomer == null) {
             btnSave.setText("Guardar");
@@ -67,6 +73,9 @@ public class CustomerFormController {
 
             countries = countryDAO.listAll();
             comboCountry.getItems().setAll(countries.values());
+
+            provinces = provinceDAO.listAll();
+            comboProvince.getItems().setAll(provinces.values());
 
             statuses = customerStatusDAO.listAll();
 
@@ -133,6 +142,26 @@ public class CustomerFormController {
         });
 
         comboCountry.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                // Obtener el ID del país seleccionado
+                int countryId = getIdBySelection(comboCountry, countries);
+                boolean isArgentina = (countryId == ARGENTINA_ID);
+
+                // Habilitar/deshabilitar provincia según el país
+                comboProvince.setDisable(!isArgentina);
+
+                // Si NO es Argentina, limpiar la provincia
+                if (!isArgentina) {
+                    comboProvince.getSelectionModel().clearSelection();
+                }
+
+                // Actualizar el estado del botón guardar
+                updateSaveButtonState();
+            }
+        });
+
+        //revisar
+        comboProvince.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) updateSaveButtonState();
         });
 
@@ -251,19 +280,30 @@ public class CustomerFormController {
 
     // ========== ACTUALIZAR ESTADO DEL BOTÓN GUARDAR ==========
     private void updateSaveButtonState() {
-        boolean allValid =
-                ValidationUtils.isValidName(txtName.getText()) &&
-                ValidationUtils.isValidName(txtSurname.getText()) &&
+        // Validar campos comunes
+        boolean nameValid = ValidationUtils.isValidName(txtName.getText());
+        boolean surnameValid = ValidationUtils.isValidName(txtSurname.getText());
+        boolean documentValid = ValidationUtils.isValidDocument(
+                txtDocumentNumber.getText(),
+                comboDocumentType.getSelectionModel().getSelectedItem()
+        );
+        boolean phoneValid = ValidationUtils.isValidPhone(txtPhone.getText());
+        boolean emailValid = ValidationUtils.isValidEmail(txtEmail.getText());
 
-                ValidationUtils.isValidDocument(txtDocumentNumber.getText(),
-                        comboDocumentType.getSelectionModel().getSelectedItem()) &&
+        // Validar combos obligatorios
+        boolean docTypeSelected = !comboDocumentType.getSelectionModel().isEmpty();
+        boolean countrySelected = !comboCountry.getSelectionModel().isEmpty();
+        boolean originSelected = !comboOrigin.getSelectionModel().isEmpty();
 
-                ValidationUtils.isValidPhone(txtPhone.getText()) &&
-                ValidationUtils.isValidEmail(txtEmail.getText()) &&
+        // Validar provincia SOLO si el país es Argentina
+        int countryId = getIdBySelection(comboCountry, countries);
+        boolean isArgentina = (countryId == ARGENTINA_ID);
+        boolean provinceValid = !isArgentina || !comboProvince.getSelectionModel().isEmpty();
 
-                !comboDocumentType.getSelectionModel().isEmpty() &&
-                !comboCountry.getSelectionModel().isEmpty() &&
-                !comboOrigin.getSelectionModel().isEmpty();
+        boolean allValid = nameValid && surnameValid && documentValid &&
+                phoneValid && emailValid &&
+                docTypeSelected && countrySelected && originSelected &&
+                provinceValid;
 
         btnSave.setDisable(!allValid);
     }
@@ -298,7 +338,12 @@ public class CustomerFormController {
         comboCountry.getSelectionModel().select(customer.getCountryName());
         comboOrigin.getSelectionModel().select(customer.getOriginName());
 
-        // Se validan para ingresos no realizados desde "Nuevo"
+        // Si el cliente es de Argentina, seleccionar la provincia
+        if (customer.getIdCountry() == ARGENTINA_ID && customer.getIdProvince() > 0) {
+            comboProvince.getSelectionModel().select(customer.getProvinceName());
+        }
+
+        // Validar todos los campos después de cargar
         validateName();
         validateSurname();
         validateDocument();
@@ -355,49 +400,70 @@ public class CustomerFormController {
         touchedFields.add(txtEmail);
         touchedFields.add(comboDocumentType);
         touchedFields.add(comboCountry);
+        touchedFields.add(comboProvince);
         touchedFields.add(comboOrigin);
 
+        // Validar campos de texto
         boolean nameValid = validateName();
         boolean surnameValid = validateSurname();
         boolean documentValid = validateDocument();
         boolean phoneValid = validatePhone();
         boolean emailValid = validateEmail();
 
-        // Validar combos
+        // Validar combos obligatorios
         boolean docTypeValid = !comboDocumentType.getSelectionModel().isEmpty();
         boolean countryValid = !comboCountry.getSelectionModel().isEmpty();
         boolean originValid = !comboOrigin.getSelectionModel().isEmpty();
 
+        // Validar provincia SOLO si el país es Argentina
+        int countryId = getIdBySelection(comboCountry, countries);
+        boolean isArgentina = (countryId == ARGENTINA_ID);
+        boolean provinceValid = !isArgentina || !comboProvince.getSelectionModel().isEmpty();
+
         return nameValid && surnameValid && documentValid &&
-                phoneValid && emailValid && docTypeValid && countryValid && originValid;
+                phoneValid && emailValid &&
+                docTypeValid && countryValid && originValid &&
+                provinceValid;
     }
 
     // ========== LOAD DATA FROM FORM ==========
     private void loadDataFromForm(Customer customer) {
-        //foraneas
+        // Obtener IDs de los combos
         int idDocType = getIdBySelection(comboDocumentType, documentTypes);
         int idCountry = getIdBySelection(comboCountry, countries);
         int idOrigin = getIdBySelection(comboOrigin, origins);
         int idStatus = getActiveStatusId();
+
+        // Asignar los IDs al customer
         customer.setIdDocumentType(idDocType);
         customer.setIdCountry(idCountry);
         customer.setIdCustomerStatus(idStatus);
         customer.setIdCustomerOrigin(idOrigin);
 
-        //campos que no requieren limpieza
+        // Provincia: solo si es Argentina
+        boolean isArgentina = (idCountry == ARGENTINA_ID);
+        if (isArgentina) {
+            int idProvince = getIdBySelection(comboProvince, provinces);
+            customer.setIdProvince(idProvince);
+        } else {
+            // Si NO es Argentina, seteamos 0 (que el DAO convierte a NULL)
+            customer.setIdProvince(0);
+        }
+
+        // Campos de texto (con limpieza)
         customer.setName(txtName.getText().trim());
         customer.setSurname(txtSurname.getText().trim());
         customer.setEmail(txtEmail.getText().trim());
 
-        // Campos que requieren limpieza
-        // numero de telefono
+        // Limpiar teléfono
         String rawPhone = txtPhone.getText().trim();
         String cleanPhone = rawPhone.replaceAll("[^+0-9]", "");
         customer.setPhoneNumber(cleanPhone);
-        // numero de documento (todos)
+
+        // Limpiar documento según tipo
         String docType = comboDocumentType.getSelectionModel().getSelectedItem();
         String rawDocumentNumber = txtDocumentNumber.getText().trim();
-        String cleanDocumentNumber = "";
+        String cleanDocumentNumber;
         switch (docType) {
             case "dni":
                 cleanDocumentNumber = rawDocumentNumber.replaceAll("[^0-9]", "");
@@ -416,8 +482,6 @@ public class CustomerFormController {
                 break;
         }
         customer.setDocumentNumber(cleanDocumentNumber);
-
-
     }
 
     private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {

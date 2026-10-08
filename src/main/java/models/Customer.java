@@ -9,12 +9,14 @@ public class Customer {
   private String phoneNumber;
   private String email;
   private int idCountry;
+  private int idProvince;
   private int idCustomerStatus;
   private int idCustomerOrigin;
 
   // atributos de tablas catalogo
   private String documentTypeName;
   private String countryName;
+  private String provinceName;
   private String statusName;
   private String originName;
 
@@ -23,7 +25,7 @@ public class Customer {
   //constructor
   public Customer() {}
   public Customer(int idClient, String name, String surname,int idDocumentType, String documentNumber,
-                  String phoneNumber, String email,int idCountry, int idCustomerStatus, int idCustomerOrigin) {
+                  String phoneNumber, String email, int idCountry, int idProvince, int idCustomerStatus, int idCustomerOrigin) {
     this.name = name;
     this.surname = surname;
     this.idDocumentType = idDocumentType;
@@ -31,9 +33,9 @@ public class Customer {
     this.phoneNumber = phoneNumber;
     this.email = email;
     this.idCountry = idCountry;
+    this.idProvince = idProvince;
     this.idCustomerStatus = idCustomerStatus;
     this.idCustomerOrigin = idCustomerOrigin;
-
   }
   // GETTERS
   public int getIdCustomer() {return idCustomer;}
@@ -52,10 +54,9 @@ public class Customer {
   public String getPhoneNumber() {
     return phoneNumber;
   }
-  public String getEmail() {
-    return email;
-  }
+  public String getEmail() {return email;}
   public int getIdCountry() {return idCountry; }
+  public int getIdProvince() {return idProvince; }
   public int getIdCustomerStatus() {
     return idCustomerStatus;
   }
@@ -66,6 +67,9 @@ public class Customer {
   }
   public String getCountryName() {
     return countryName;
+  }
+  public String getProvinceName() {
+    return provinceName;
   }
   public String getStatusName() {
     return statusName;
@@ -84,11 +88,13 @@ public class Customer {
   public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
   public void setEmail(String email) { this.email = email; }
   public void setIdCountry(int idCountry) { this.idCountry = idCountry; }
+  public void setIdProvince(int idProvince) { this.idProvince = idProvince; }
   public void setIdCustomerStatus(int idCustomerStatus) { this.idCustomerStatus = idCustomerStatus; }
   public void setIdCustomerOrigin(int idCustomerOrigin) { this.idCustomerOrigin = idCustomerOrigin; }
   //Atributos Catalogo
   public void setDocumentTypeName(String documentTypeName) { this.documentTypeName = documentTypeName; }
   public void setCountryName(String countryName) { this.countryName = countryName; }
+  public void setProvinceName(String provinceName) { this.provinceName = provinceName; }
   public void setStatusName(String statusName) { this.statusName = statusName; }
   public void setOriginName(String originName) { this.originName = originName; }
 

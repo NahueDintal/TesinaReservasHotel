@@ -21,6 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.FlowPane?>
 
+<?import javafx.scene.control.Tooltip?>
 <StackPane xmlns="http://javafx.com/javafx/17"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="controllers.NewReservationController"
@@ -212,15 +213,27 @@
                                styleClass="reservation-field-label"/>
 
                         <Button fx:id="btnChangeRoom"
-                                text="🔄 Cambiar habitación"
+                                text="⚠️ Cambiar habitación"
                                 onAction="#handleChangeRoom"
                                 visible="false"
                                 managed="false"
                                 style="-fx-background-color: #2d6cdf;
-                                 -fx-text-fill: white;
-                                  -fx-font-weight: bold;
-                                   -fx-background-radius: 6;
-                                    -fx-padding: 6 14 6 14;"/>
+                                -fx-text-fill: white;
+                                -fx-font-weight: bold;
+                                -fx-background-radius: 6;
+                                -fx-padding: 6 14 6 14;
+                                 -fx-font-family: 'Segoe UI Emoji', 'Segoe UI Symbol', 'Arial Unicode MS', sans-serif;"/>
+
+                        <Button fx:id="btnHotelTourConstruction"
+                                text="⚠ Hotel Tour (En Construcción)"
+                                visible="false"
+                                managed="false"
+                                disable="true"
+                                styleClass="btn-hotel-tour">
+                            <tooltip>
+                                <Tooltip text="Esta funcionalidad estará disponible en la próxima versión." />
+                            </tooltip>
+                        </Button>
 
                         <FlowPane fx:id="roomsContainer"
                                   hgap="8"
@@ -410,7 +423,7 @@
                                    styleClass="reservation-field-label"/>
 
                             <Button fx:id="btnConsumptionAction"
-                                    text="+ Agregar"
+                                    text="Agregar"
                                     onAction="#handleAddConsumption"
                                     styleClass="reservation-secondary-button"/>
                         </VBox>
