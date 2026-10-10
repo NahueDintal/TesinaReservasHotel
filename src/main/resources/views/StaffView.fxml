@@ -28,16 +28,19 @@
         </padding>
 
         <!-- Título y botones -->
-        <HBox alignment="CENTER_LEFT" spacing="15">
-            <Label text="Personal" styleClass="section-title">
-                <font><Font size="24.0" /></font>
-            </Label>
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnNewStaff" text="+ Nuevo Personal" styleClass="btn-primary"
-                    onAction="#handleNewStaff" />
-            <Button fx:id="btnViewHistory" text="Inactivos" styleClass="btn-secondary"
-                    onAction="#handleViewHistory" />
-        </HBox>
+        <VBox spacing="2">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="Personal" styleClass="section-title">
+                    <font><Font size="24.0" /></font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="btnNewStaff" text="+ Nuevo Personal" styleClass="btn-primary"
+                        onAction="#handleNewStaff" />
+                <Button fx:id="btnViewHistory" text="Inactivos" styleClass="btn-secondary"
+                        onAction="#handleViewHistory" />
+            </HBox>
+            <Label text="Gestioná el personal activo del hotel." styleClass="subtitulo-seccion" />
+        </VBox>
 
         <!-- Buscador (ocupa todo el ancho; la tabla principal solo muestra Activos) -->
         <HBox spacing="15" alignment="CENTER_LEFT">
@@ -48,7 +51,7 @@
         <!-- SplitPane: Tabla + Detalle -->
         <SplitPane dividerPositions="0.7" VBox.vgrow="ALWAYS" styleClass="split-pane">
             <VBox spacing="10">
-                <TableView fx:id="tableStaff" styleClass="staff-table" VBox.vgrow="ALWAYS">
+                <TableView fx:id="tableStaff" styleClass="customer-table" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="colFullName" text="Nombre Completo" prefWidth="150" />
                         <TableColumn fx:id="colPosition" text="Cargo" prefWidth="120" />

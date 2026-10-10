@@ -13,12 +13,13 @@
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.StaffFormController"
+      styleClass="form-container"
       spacing="16" prefWidth="620">
     <padding>
         <Insets top="20" right="24" bottom="20" left="24"/>
     </padding>
 
-    <Label fx:id="lblFormTitle" text="Nuevo Personal" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Label fx:id="lblFormTitle" text="Nuevo Personal" styleClass="form-title"/>
 
     <GridPane hgap="14" vgap="12">
         <columnConstraints>
@@ -69,7 +70,6 @@
             <Label text="El salario tiene un límite de 10 dígitos" wrapText="true" maxWidth="Infinity" style="-fx-font-size: 10px; -fx-text-fill: gray;"/>
             <Label fx:id="lblSalaryCounter" text="0/10" style="-fx-font-size: 10px; -fx-text-fill: gray;"/>
         </VBox>
-
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
