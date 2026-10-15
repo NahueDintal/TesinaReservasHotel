@@ -3,58 +3,62 @@ package controllers;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Region;
-import models.Reservation;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
 import java.io.IOException;
-import javafx.scene.control.Button;
+
 import auth.LoginGuard;
 import auth.LoginManager;
-import javafx.scene.control.Label;
-import javafx.scene.control.Alert;
+import models.Reservation;
 
 public class DashboardController {
 
-  @FXML
-  private ImageView logoApp;
-  @FXML
-  private Region espaciadorTop;
-  @FXML
-  private VBox leftMenu;
-  @FXML
-  private Button btnMenu;
-  @FXML
-  private AnchorPane centerPane;
-  @FXML
-  private ToggleButton btnPlanilla;
-  @FXML
-  private ToggleButton btnReservas;
-  @FXML
-  private ToggleButton btnHabitaciones;
-  @FXML
-  private ToggleButton btnClientes;
-  @FXML
-  private ToggleButton btnReportes;
-  @FXML
-  private ToggleButton btnPersonal;
-  @FXML
-  private ToggleButton btnConfiguracion;
-  @FXML
-  private Label lblUsuario;
-  @FXML
-  private Button btnSession;
+  /**
+   * ============================================================
+   *  FLAG MAESTRO DEL LOGIN
+   *  ------------------------------------------------------------
+   *  true  -> el login vuelve a estar activo (botón "Cerrar sesión",
+   *           guard en navegación, label de usuario, etc.)
+   *  false -> login apagado (botón de sesión oculto, sin guard).
+   *
+   *  Cambiá SOLO esta línea para prender/apagar todo el sistema.
+   * ============================================================
+   */
+  private static final boolean LOGIN_ENABLED = false;
+
+  // ========== FXML FIELDS ==========
+  @FXML private ImageView logoApp;
+  @FXML private Region espaciadorTop;
+  @FXML private VBox leftMenu;
+  @FXML private Button btnMenu;
+  @FXML private AnchorPane centerPane;
+  @FXML private ToggleButton btnPlanilla;
+  @FXML private ToggleButton btnReservas;
+  @FXML private ToggleButton btnHabitaciones;
+  @FXML private ToggleButton btnClientes;
+  @FXML private ToggleButton btnReportes;
+  @FXML private ToggleButton btnPersonal;
+  @FXML private ToggleButton btnConfiguracion;
+  @FXML private Label lblUsuario;
+  @FXML private Button btnSession;
 
   private ToggleGroup menuGroup;
 
+  // ========== INIT ==========
   @FXML
   public void initialize() {
-    // 1. Crear un ToggleGroup para que solo un botón esté seleccionado a la vez
+
+    // Sidebar colapsada al arrancar
     leftMenu.getStyleClass().add("collapsed");
     leftMenu.setPrefWidth(70);
     leftMenu.setMinWidth(70);
@@ -67,9 +71,9 @@ public class DashboardController {
       btnMenu.setTranslateX(-(70 - anchoBoton) / 2);
     });
 
+    // ToggleGroup del menú
     menuGroup = new ToggleGroup();
     btnPlanilla.setToggleGroup(menuGroup);
-    loadView("/views/BookingChart.fxml");
     btnReservas.setToggleGroup(menuGroup);
     btnHabitaciones.setToggleGroup(menuGroup);
     btnClientes.setToggleGroup(menuGroup);
@@ -77,7 +81,11 @@ public class DashboardController {
     btnPersonal.setToggleGroup(menuGroup);
     btnConfiguracion.setToggleGroup(menuGroup);
 
-    // 2. Asignar tooltips
+    // Vista por defecto
+    loadView("/views/BookingChart.fxml");
+    btnPlanilla.setSelected(true);
+
+    // Tooltips
     btnPlanilla.setTooltip(new Tooltip("Planilla"));
     btnReservas.setTooltip(new Tooltip("Reservas"));
     btnHabitaciones.setTooltip(new Tooltip("Habitaciones"));
@@ -86,58 +94,54 @@ public class DashboardController {
     btnPersonal.setTooltip(new Tooltip("Personal"));
     btnConfiguracion.setTooltip(new Tooltip("Configuracion"));
 
-    // 3. Seleccionar "Planilla" por defecto
-    btnPlanilla.setSelected(true);
-
-    // 4. Asignar acciones a los botones
+    // Acciones de navegación (con guard condicional)
     btnPlanilla.setOnAction(e -> {
       selectButton(btnPlanilla);
       loadView("/views/BookingChart.fxml");
     });
     btnReservas.setOnAction(e -> {
-      // if (!ensureAuthenticated())
-      // return;
+      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
       selectButton(btnReservas);
       loadView("/views/reservations.fxml");
     });
     btnHabitaciones.setOnAction(e -> {
-      // if (!ensureAuthenticated())
-      // return;
+      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
       selectButton(btnHabitaciones);
       loadView("/views/RoomView.fxml");
     });
     btnClientes.setOnAction(e -> {
-      // if (!ensureAuthenticated())
-      // return;
+      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
       selectButton(btnClientes);
       loadView("/views/CustomerView.fxml");
     });
     btnReportes.setOnAction(e -> {
-      // if (!ensureAuthenticated())
-      // return;
+      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
       selectButton(btnReportes);
       loadView("/views/Report.fxml");
     });
     btnPersonal.setOnAction(e -> {
-      // if (!ensureAuthenticated())
-      // return;
+      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
       selectButton(btnPersonal);
       loadView("/views/StaffView.fxml");
     });
     btnConfiguracion.setOnAction(e -> {
-      // if (!ensureAuthenticated())
-      // return;
+      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
       selectButton(btnConfiguracion);
       loadView("/views/Configuration.fxml");
     });
 
-    // 5. Centrar btn hamburguesa al iniciar
+    // Centrar hamburguesa al iniciar
     btnMenu.setTranslateX(-10);
 
-    LoginManager.getInstance().refreshConfig(); // por si cambiaron el toggle
+    // Estado inicial de la sesión (label + botón)
+    // Sólo toca LoginManager si el flag está activo.
+    if (LOGIN_ENABLED) {
+      LoginManager.getInstance().refreshConfig();
+    }
     updateSessionUI();
   }
 
+  // ========== SIDEBAR ==========
   @FXML
   private void toggleSidebar() {
     boolean collapsed = leftMenu.getStyleClass().contains("collapsed");
@@ -148,7 +152,7 @@ public class DashboardController {
       leftMenu.setPrefWidth(240);
       leftMenu.setMinWidth(240);
       leftMenu.setMaxWidth(240);
-      ajustarEspaciador(!collapsed);
+      ajustarEspaciador(false);
       ocultarLogo(false);
       btnMenu.setTranslateX(-10);
     } else {
@@ -158,7 +162,7 @@ public class DashboardController {
       leftMenu.setMinWidth(70);
       leftMenu.setMaxWidth(70);
       ocultarLogo(true);
-      ajustarEspaciador(!collapsed);
+      ajustarEspaciador(true);
       Platform.runLater(() -> {
         double anchoBoton = btnMenu.getWidth() > 0 ? btnMenu.getWidth() : 40;
         btnMenu.setTranslateX(-(70 - anchoBoton) / 2);
@@ -166,16 +170,117 @@ public class DashboardController {
     }
   }
 
+  // ========== SESIÓN (con flag) ==========
+
   /**
-   * Selecciona un botón y deselecciona los demás (a través del ToggleGroup)
+   * Handler del botón de sesión. SIEMPRE debe existir para que
+   * el FXML (onAction="#handleSessionButton") se resuelva aunque
+   * el login esté apagado.
    */
+  @FXML
+  private void handleSessionButton() {
+    if (!LOGIN_ENABLED) {
+      // Login apagado: no debería llegar acá porque el botón está oculto,
+      // pero por las dudas mostramos un aviso coherente.
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Login desactivado");
+      alert.setHeaderText(null);
+      alert.setContentText(
+          "El sistema de login está desactivado.\n" +
+          "Para activarlo, poné LOGIN_ENABLED = true en DashboardController.");
+      alert.showAndWait();
+      return;
+    }
+
+    LoginManager lm = LoginManager.getInstance();
+
+    if (!lm.isLoginEnabled()) {
+      Alert alert = new Alert(Alert.AlertType.INFORMATION);
+      alert.setTitle("Login desactivado");
+      alert.setHeaderText(null);
+      alert.setContentText(
+          "El sistema de login está desactivado.\n" +
+          "Para activarlo, un administrador debe hacerlo desde Configuración → Seguridad.");
+      alert.showAndWait();
+      return;
+    }
+
+    if (lm.isAuthenticated()) {
+      lm.logout();
+      selectButton(btnPlanilla);
+      loadView("/views/BookingChart.fxml");
+    } else {
+      LoginGuard.requireAccess();
+    }
+
+    updateSessionUI();
+  }
+
+  /**
+   * Refresca label + botón de sesión según el estado.
+   * Si LOGIN_ENABLED == false, oculta ambos y no toca LoginManager.
+   */
+  private void updateSessionUI() {
+    if (!LOGIN_ENABLED) {
+      lblUsuario.setText("");
+      lblUsuario.setVisible(false);
+      lblUsuario.setManaged(false);
+
+      btnSession.setVisible(false);
+      btnSession.setManaged(false);
+      return;
+    }
+
+    // A partir de acá, login activo -> aseguramos visibilidad
+    lblUsuario.setVisible(true);
+    lblUsuario.setManaged(true);
+    btnSession.setVisible(true);
+    btnSession.setManaged(true);
+
+    LoginManager lm = LoginManager.getInstance();
+
+    if (!lm.isLoginEnabled()) {
+      lblUsuario.setText("Login off");
+      btnSession.setText("Login off");
+      btnSession.setDisable(true);
+      return;
+    }
+
+    btnSession.setDisable(false);
+
+    if (lm.isAuthenticated()) {
+      String nombre = lm.getCurrentUser().getFullName();
+      String rol    = lm.getCurrentUser().getRole();
+      lblUsuario.setText("👤 " + nombre + " (" + rol + ")");
+      btnSession.setText("Cerrar sesión");
+    } else {
+      lblUsuario.setText("Sin sesión");
+      btnSession.setText("Iniciar sesión");
+    }
+  }
+
+  /**
+   * Guard de navegación. Si el login está apagado, devuelve true
+   * sin tocar nada (no bloquea la navegación).
+   */
+  private boolean ensureAuthenticated() {
+    if (!LOGIN_ENABLED) return true;
+
+    if (LoginGuard.requireAccess()) {
+      updateSessionUI();
+      return true;
+    }
+
+    selectButton(btnPlanilla);
+    return false;
+  }
+
+  // ========== NAVEGACIÓN ==========
+
   private void selectButton(ToggleButton button) {
     button.setSelected(true);
   }
 
-  /**
-   * Carga un archivo FXML en el panel central.
-   */
   public void loadView(String fxmlPath) {
     try {
       FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -184,17 +289,15 @@ public class DashboardController {
       Object controller = loader.getController();
 
       if (controller instanceof BookingChartController) {
-        ((BookingChartController) controller)
-            .setDashboardController(this);
+        ((BookingChartController) controller).setDashboardController(this);
       }
-
       if (controller instanceof ReservationsController) {
         ((ReservationsController) controller).setDashboardController(this);
       }
       if (controller instanceof NewReservationController) {
         ((NewReservationController) controller).setDashboardController(this);
       }
-      if (controller instanceof CustomerController) { // ← NUEVO
+      if (controller instanceof CustomerController) {
         ((CustomerController) controller).setDashboardController(this);
       }
 
@@ -215,20 +318,15 @@ public class DashboardController {
   public void loadEditReservation(Reservation reservation) {
     selectSidebarButton("reservas");
     try {
-
       FXMLLoader loader = new FXMLLoader(
           getClass().getResource("/views/NewReservation.fxml"));
-
       Parent view = loader.load();
 
       NewReservationController controller = loader.getController();
-
       controller.setDashboardController(this);
       controller.setReservationToEdit(reservation);
 
-      // Colocar la vista exactamente igual que las demás
       centerPane.getChildren().setAll(view);
-
       AnchorPane.setTopAnchor(view, 0.0);
       AnchorPane.setBottomAnchor(view, 0.0);
       AnchorPane.setLeftAnchor(view, 0.0);
@@ -241,20 +339,15 @@ public class DashboardController {
 
   public void loadNewReservation() {
     selectSidebarButton("reservas");
-
     try {
-
       FXMLLoader loader = new FXMLLoader(
           getClass().getResource("/views/NewReservation.fxml"));
-
       Parent view = loader.load();
 
       NewReservationController controller = loader.getController();
-
       controller.setDashboardController(this);
 
       centerPane.getChildren().setAll(view);
-
       AnchorPane.setTopAnchor(view, 0.0);
       AnchorPane.setBottomAnchor(view, 0.0);
       AnchorPane.setLeftAnchor(view, 0.0);
@@ -268,27 +361,21 @@ public class DashboardController {
   public void loadReservationConsumptions(Reservation reservation) {
     selectSidebarButton("reservas");
     try {
-
       FXMLLoader loader = new FXMLLoader(
-          getClass().getResource(
-              "/views/ConsumptionManagement.fxml"));
-
+          getClass().getResource("/views/ConsumptionManagement.fxml"));
       Parent view = loader.load();
 
       ConsumptionManagementController controller = loader.getController();
-
       controller.setDashboardController(this);
       controller.setReservation(reservation);
 
       centerPane.getChildren().setAll(view);
-
       AnchorPane.setTopAnchor(view, 0.0);
       AnchorPane.setBottomAnchor(view, 0.0);
       AnchorPane.setLeftAnchor(view, 0.0);
       AnchorPane.setRightAnchor(view, 0.0);
 
     } catch (IOException e) {
-
       e.printStackTrace();
     }
   }
@@ -296,130 +383,47 @@ public class DashboardController {
   public void loadReservationDetail(Reservation reservation) {
     selectSidebarButton("reservas");
     try {
-
       FXMLLoader loader = new FXMLLoader(
-          getClass().getResource(
-              "/views/ReservationDetail.fxml"));
-
+          getClass().getResource("/views/ReservationDetail.fxml"));
       Parent view = loader.load();
 
       ReservationDetailController controller = loader.getController();
-
       controller.setDashboardController(this);
       controller.setReservation(reservation);
 
       centerPane.getChildren().setAll(view);
-
       AnchorPane.setTopAnchor(view, 0.0);
       AnchorPane.setBottomAnchor(view, 0.0);
       AnchorPane.setLeftAnchor(view, 0.0);
       AnchorPane.setRightAnchor(view, 0.0);
 
     } catch (IOException e) {
-
       e.printStackTrace();
     }
   }
 
-  /**
-   * Selecciona programáticamente un botón de la sidebar.
-   * Útil cuando se navega a una vista desde otra (ej: historial → reservas).
-   */
   public void selectSidebarButton(String buttonName) {
     switch (buttonName) {
-      case "reservas":
-        selectButton(btnReservas);
-        break;
-      case "habitaciones":
-        selectButton(btnHabitaciones);
-        break;
-      case "clientes":
-        selectButton(btnClientes);
-        break;
-      case "planilla":
-        selectButton(btnPlanilla);
-        break;
-      case "reportes":
-        selectButton(btnReportes);
-        break;
-      case "personal":
-        selectButton(btnPersonal);
-        break;
-      case "configuracion":
-        selectButton(btnConfiguracion);
-        break;
+      case "reservas":      selectButton(btnReservas);      break;
+      case "habitaciones":  selectButton(btnHabitaciones);  break;
+      case "clientes":      selectButton(btnClientes);      break;
+      case "planilla":      selectButton(btnPlanilla);      break;
+      case "reportes":      selectButton(btnReportes);      break;
+      case "personal":      selectButton(btnPersonal);      break;
+      case "configuracion": selectButton(btnConfiguracion); break;
       default:
         System.err.println("Botón desconocido: " + buttonName);
     }
   }
 
+  // ========== HELPERS DE UI ==========
   private void ocultarLogo(boolean ocultar) {
     logoApp.setVisible(!ocultar);
-    logoApp.setManaged(!ocultar); // ← clave: no participa del layout
+    logoApp.setManaged(!ocultar);
   }
 
   private void ajustarEspaciador(boolean colapsada) {
-    espaciadorTop.setMinHeight(colapsada ? 50 : 0);
-    espaciadorTop.setPrefHeight(colapsada ? 50 : 0);
-  }
-
-  @FXML
-  private void handleSessionButton() {
-    LoginManager lm = LoginManager.getInstance();
-
-    if (!lm.isLoginEnabled()) {
-      Alert alert = new Alert(Alert.AlertType.INFORMATION);
-      alert.setTitle("Login desactivado");
-      alert.setHeaderText(null);
-      alert.setContentText(
-          "El sistema de login está desactivado.\n" +
-              "Para activarlo, un administrador debe hacerlo desde Configuración → Seguridad.");
-      alert.showAndWait();
-      return;
-    }
-
-    if (lm.isAuthenticated()) {
-      lm.logout();
-
-      selectButton(btnPlanilla);
-      loadView("/views/BookingChart.fxml");
-    } else {
-      LoginGuard.requireAccess();
-    }
-
-    updateSessionUI();
-  }
-
-  private void updateSessionUI() {
-    LoginManager lm = LoginManager.getInstance();
-
-    if (!lm.isLoginEnabled()) {
-      lblUsuario.setText("Login off");
-      btnSession.setText("Login off");
-      btnSession.setDisable(true);
-      return;
-    }
-
-    btnSession.setDisable(false);
-
-    if (lm.isAuthenticated()) {
-      String nombre = lm.getCurrentUser().getFullName();
-      String rol = lm.getCurrentUser().getRole();
-      lblUsuario.setText("👤 " + nombre + " (" + rol + ")");
-      btnSession.setText("Cerrar sesión");
-    } else {
-      lblUsuario.setText("Sin sesión");
-      btnSession.setText("Iniciar sesión");
-    }
-  }
-
-  private boolean ensureAuthenticated() {
-    if (LoginGuard.requireAccess()) {
-      updateSessionUI(); // refresca label/button si acaba de loguearse
-      return true;
-    }
-
-    selectButton(btnPlanilla);
-    return false;
+    espaciadorTop.setMinHeight(colapsada ? 50 : 15);
+    espaciadorTop.setPrefHeight(colapsada ? 50 : 15);
   }
 }
