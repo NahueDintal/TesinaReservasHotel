@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      stylesheets="@/css/style.css"
       fx:controller="controllers.StaffFormController"
       spacing="16" prefWidth="620">
     <padding>
@@ -73,8 +74,7 @@
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="btnCancel" text="Cancelar"/>
-        <Button fx:id="btnSave" text="Guardar" style="-fx-font-weight: bold;"/>
+        <Button fx:id="btnCancel" text="Cancelar" styleClass="btn-secondary"/>
+        <Button fx:id="btnSave" text="Guardar" styleClass="btn-primary" disable="true"/>
     </HBox>
-
 </VBox>

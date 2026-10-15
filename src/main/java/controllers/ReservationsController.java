@@ -202,27 +202,27 @@ public class ReservationsController {
         switch (status.toLowerCase()) {
           case "pendiente":
             setStyle("-fx-background-color: #fdfbea;" +
-                "-fx-text-fill: #c0a72b;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
+                    "-fx-text-fill: #c0a72b;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-alignment: CENTER;");
             break;
           case "confirmada":
             setStyle("-fx-background-color: #e0ffcc;" +
-                "-fx-text-fill: #1a6d03;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
+                    "-fx-text-fill: #1a6d03;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-alignment: CENTER;");
             break;
           case "cancelada":
             setStyle("-fx-background-color: #ffdde5;" +
-                "-fx-text-fill: #8a1527;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
+                    "-fx-text-fill: #8a1527;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-alignment: CENTER;");
             break;
           case "finalizada":
             setStyle("-fx-background-color: #e8e8e8;" +
-                "-fx-text-fill: #666666;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
+                    "-fx-text-fill: #666666;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-alignment: CENTER;");
             break;
           default:
             setStyle("-fx-alignment: CENTER;");
@@ -236,20 +236,20 @@ public class ReservationsController {
   // ============================================================
   private void configureSelection() {
     tblReservations.getSelectionModel()
-        .selectedItemProperty()
-        .addListener((observable, oldReservation, newReservation) -> {
-          if (newReservation != null) {
-            showDetail(newReservation);
-            btnEditReservation.setDisable(false);
-            btnReservationConsumptions.setDisable(false);
-            btnViewMore.setDisable(false);
-          } else {
-            clearDetail();
-            btnEditReservation.setDisable(true);
-            btnReservationConsumptions.setDisable(true);
-            btnViewMore.setDisable(true);
-          }
-        });
+            .selectedItemProperty()
+            .addListener((observable, oldReservation, newReservation) -> {
+              if (newReservation != null) {
+                showDetail(newReservation);
+                btnEditReservation.setDisable(false);
+                btnReservationConsumptions.setDisable(false);
+                btnViewMore.setDisable(false);
+              } else {
+                clearDetail();
+                btnEditReservation.setDisable(true);
+                btnReservationConsumptions.setDisable(true);
+                btnViewMore.setDisable(true);
+              }
+            });
   }
 
   private void showDetail(Reservation reservation) {
@@ -330,8 +330,8 @@ public class ReservationsController {
 
       for (ReservationRoom rr : all) {
         roomsByReservation
-            .computeIfAbsent(rr.getIdReservation(), k -> new ArrayList<>())
-            .add(rr.getRoomNumber());
+                .computeIfAbsent(rr.getIdReservation(), k -> new ArrayList<>())
+                .add(rr.getRoomNumber());
       }
 
       System.out.println("Room assignments loaded: " + all.size());
@@ -354,12 +354,24 @@ public class ReservationsController {
   }
 
   private String getCustomerName(int idCustomer) {
+    // 1. Buscar en la lista ya cargada (rápido, sin ir a BD)
     for (Customer customer : customers) {
       if (customer.getIdCustomer() == idCustomer) {
         return customer.getName() + " " + customer.getSurname();
       }
     }
-    return "Unknown customer";
+
+    // 2. Fallback: si no está, buscarlo puntualmente por ID
+    try {
+      Customer c = customerDAO.searchById(idCustomer);
+      if (c != null) {
+        return c.getName() + " " + c.getSurname();
+      }
+    } catch (java.sql.SQLException e) {
+      System.err.println("Error buscando cliente " + idCustomer + ": " + e.getMessage());
+    }
+
+    return "Cliente #" + idCustomer;
   }
 
   private String getStatusName(int idReservationStatus) {
@@ -387,20 +399,20 @@ public class ReservationsController {
   // ============================================================
   private void configureStatusFilter() {
     cmbEstadoReserva.setItems(FXCollections.observableArrayList(
-        "Activas",
-        "Todas",
-        "Pendiente",
-        "Confirmada",
-        "Finalizada",
-        "Cancelada"));
+            "Activas",
+            "Todas",
+            "Pendiente",
+            "Confirmada",
+            "Finalizada",
+            "Cancelada"));
     cmbEstadoReserva.setValue("Activas");
     cmbEstadoReserva.valueProperty().addListener(
-        (observable, oldValue, newValue) -> applyFilters());
+            (observable, oldValue, newValue) -> applyFilters());
   }
 
   private void configureSearch() {
     txtBuscarReserva.textProperty().addListener(
-        (observable, oldValue, newValue) -> applyFilters());
+            (observable, oldValue, newValue) -> applyFilters());
   }
 
   private void applyFilters() {
@@ -420,10 +432,10 @@ public class ReservationsController {
       String rooms = getRoomNumbersString(reservation.getIdReservation()).toLowerCase();
 
       boolean matchesText = text.isEmpty()
-          || id.contains(text)
-          || customer.contains(text)
-          || status.contains(text)
-          || rooms.contains(text);
+              || id.contains(text)
+              || customer.contains(text)
+              || status.contains(text)
+              || rooms.contains(text);
 
       if (!matchesText)
         continue;
@@ -450,8 +462,8 @@ public class ReservationsController {
 
     boolean hayBusqueda = !text.isEmpty();
     boolean estadoEspecifico = selectedStatus != null
-        && !"Activas".equals(selectedStatus)
-        && !"Todas".equals(selectedStatus);
+            && !"Activas".equals(selectedStatus)
+            && !"Todas".equals(selectedStatus);
 
     ObservableList<Reservation> visibles = FXCollections.observableArrayList();
 
@@ -478,7 +490,7 @@ public class ReservationsController {
   private void updateCounter(int totalEncontradas, int visibles) {
     if (totalEncontradas > MAX_RESERVAS_VISIBLES && visibles == MAX_RESERVAS_VISIBLES) {
       lblTotalReservations.setText(
-          "Mostrando " + visibles + " de " + totalEncontradas + " reservas");
+              "Mostrando " + visibles + " de " + totalEncontradas + " reservas");
     } else {
       lblTotalReservations.setText("Mostrando " + visibles + " reservas");
     }

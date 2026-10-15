@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import utils.Alerts;
 
 import java.io.IOException;
 
@@ -183,6 +184,7 @@ public class RoomController {
       masterRoomList.setAll(roomDAO.listActive());
       masterRoomList.removeIf(Room::isOutOfService);
 
+      // 👇 NUEVO: qué habitaciones están ocupadas HOY
       LocalDate today = LocalDate.now();
       Map<Integer, List<OccupiedInterval>> occupied = roomOccupancyDAO.findOccupiedInRange(today, today.plusDays(1));
       occupiedTodayRoomNumbers = occupied.keySet();
@@ -190,7 +192,6 @@ public class RoomController {
       filteredRooms = new FilteredList<>(masterRoomList, p -> true);
       tableRooms.setItems(filteredRooms);
       updateCounter();
-
     } catch (RuntimeException e) {
       logger.error("No se pudieron cargar las habitaciones.", e);
       showAlert("Error", "No se pudieron cargar las habitaciones", e.getMessage());
@@ -285,36 +286,34 @@ public class RoomController {
       return;
 
     if (occupiedTodayRoomNumbers.contains(selected.getNumber())) {
-      showAlert("No permitido",
+      Alerts.warn("No permitido",
           "Habitación ocupada",
-          "No se puede marcar como no disponible una habitación ocupada hoy.");
+          "No se puede marcar como no disponible una habitación ocupada.");
       return;
     }
 
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Marcar fuera de servicio");
-    alert.setHeaderText("¿Desea marcar esta habitación como fuera de servicio?");
-    alert.setContentText("La habitación " + selected.getNumber()
-        + " quedará inutilizable hasta que la reactives desde la ventana aparte.");
-    alert.showAndWait().ifPresent(response -> {
-      if (response == ButtonType.OK) {
-        try {
-          selected.setOutOfService(true); // ← fuerza available=false internamente
-          if (roomDAO.update(selected)) {
-            masterRoomList.remove(selected);
-            filteredRooms.remove(selected);
-            tableRooms.refresh();
-            clearDetail();
-            updateCounter();
-            // showAlert("Éxito", "Habitación fuera de servicio",
-            // "Ahora aparece en la ventana de fuera de servicio.");
-          }
-        } catch (RuntimeException e) {
-          logger.error("No se pudo marcar fuera de servicio {}", selected.getNumber(), e);
-          showAlert("Error", "No se pudo actualizar", e.getMessage());
-        }
+    boolean confirmed = Alerts.confirm(
+        "Marcar fuera de servicio",
+        "¿Desea marcar esta habitación como fuera de servicio?",
+        "La habitación " + selected.getNumber()
+            + " quedará inutilizable hasta que la reactives desde la ventana aparte.");
+
+    if (!confirmed)
+      return;
+
+    try {
+      selected.setOutOfService(true);
+      if (roomDAO.update(selected)) {
+        masterRoomList.remove(selected);
+        filteredRooms.remove(selected);
+        tableRooms.refresh();
+        clearDetail();
+        updateCounter();
       }
-    });
+    } catch (RuntimeException e) {
+      logger.error("No se pudo marcar fuera de servicio {}", selected.getNumber(), e);
+      Alerts.error("Error", "No se pudo actualizar", e.getMessage());
+    }
   }
 
   private void deleteRoom() {
@@ -323,35 +322,34 @@ public class RoomController {
       return;
 
     if (occupiedTodayRoomNumbers.contains(selected.getNumber())) {
-      showAlert("No permitido",
+      Alerts.warn("No permitido",
           "Habitación ocupada",
-          "No se puede marcar como no disponible una habitación ocupada hoy.");
+          "No se puede eliminar una habitación ocupada.");
       return;
     }
 
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setTitle("Eliminar habitación");
-    alert.setHeaderText("¿Desea eliminar esta habitación?");
-    alert.setContentText("La habitación " + selected.getNumber()
-        + " se dará de baja permanentemente.");
-    alert.showAndWait().ifPresent(response -> {
-      if (response == ButtonType.OK) {
-        try {
-          selected.setActive(false);
-          if (roomDAO.update(selected)) {
-            masterRoomList.remove(selected);
-            filteredRooms.remove(selected);
-            tableRooms.refresh();
-            clearDetail();
-            updateCounter();
-            // showAlert("Éxito", "Habitación eliminada", "");
-          }
-        } catch (RuntimeException e) {
-          logger.error("No se pudo eliminar habitación {}", selected.getNumber(), e);
-          showAlert("Error", "No se pudo eliminar", e.getMessage());
-        }
+    boolean confirmed = Alerts.confirm(
+        "Eliminar habitación",
+        "¿Desea eliminar esta habitación?",
+        "La habitación " + selected.getNumber()
+            + " se dará de baja permanentemente.");
+
+    if (!confirmed)
+      return;
+
+    try {
+      selected.setActive(false);
+      if (roomDAO.update(selected)) {
+        masterRoomList.remove(selected);
+        filteredRooms.remove(selected);
+        tableRooms.refresh();
+        clearDetail();
+        updateCounter();
       }
-    });
+    } catch (RuntimeException e) {
+      logger.error("No se pudo eliminar habitación {}", selected.getNumber(), e);
+      Alerts.error("Error", "No se pudo eliminar", e.getMessage());
+    }
   }
 
   private void updateCounter() {
@@ -359,10 +357,6 @@ public class RoomController {
   }
 
   private void showAlert(String title, String header, String content) {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle(title);
-    alert.setHeaderText(header);
-    alert.setContentText(content);
-    alert.showAndWait();
+    Alerts.info(title, header, content);
   }
 }
