@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import utils.StyleManager;
 
@@ -19,77 +20,51 @@ public class ConfigurationController {
 
     @FXML
     public void initialize() {
-
         btnProducts.setOnAction(e -> openProducts());
-
         btnServices.setOnAction(e -> openServices());
     }
 
     private void openProducts() {
-
         try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/views/Product.fxml"
-                            )
-                    );
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/Product.fxml"));
 
             Stage stage = new Stage();
-
-            stage.setScene(
-                    new Scene(loader.load())
-            );
+            stage.setScene(new Scene(loader.load()));
 
             StyleManager.applyStyles(stage);
 
-            stage.setTitle("Productos");
+            // 🎯 Modal + centrada sobre la ventana principal
+            stage.initOwner(btnProducts.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
 
+            stage.setTitle("Productos");
             stage.show();
 
         } catch (IOException e) {
-
             e.printStackTrace();
         }
     }
 
     private void openServices() {
-
-        System.out.println("CLICK EN SERVICIOS");
-
         try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/views/Service.fxml"
-                            )
-                    );
-
-            System.out.println("FXML encontrado, intentando cargar...");
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/views/Service.fxml"));
 
             Stage stage = new Stage();
-
-            stage.setScene(
-                    new Scene(loader.load())
-            );
-
-            System.out.println("FXML cargado correctamente.");
+            stage.setScene(new Scene(loader.load()));
 
             StyleManager.applyStyles(stage);
 
-            stage.setTitle("Servicios");
+            // 🎯 Modal + centrada sobre la ventana principal
+            stage.initOwner(btnServices.getScene().getWindow());
+            stage.initModality(Modality.WINDOW_MODAL);
 
+            stage.setTitle("Servicios");
             stage.show();
 
-            System.out.println("Ventana de servicios abierta.");
-
-        } catch (Exception e) {
-
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-
-
