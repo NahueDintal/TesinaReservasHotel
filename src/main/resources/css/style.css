@@ -1,4 +1,3 @@
-
 /* ======================================================
    1. ESTILOS GLOBALES
    ====================================================== */
@@ -94,8 +93,6 @@
     -fx-background-radius: 6;
 }
 
-/* Sidebar colapsada */
-
 .sidebar.collapsed {
     -fx-padding: 20 8 20 8;
 }
@@ -140,7 +137,8 @@
     -fx-font-size: 24px;
 }
 
-.subtitulo-seccion {
+.subtitulo-seccion,
+.section-subtitle {
     -fx-text-fill: #7f8c8d;
     -fx-font-size: 14px;
 }
@@ -154,8 +152,6 @@
 /* ======================================================
    4. BOTONES GENERALES
    ====================================================== */
-
-/* Botón principal y alias antiguo */
 
 .btn-primary,
 .btn-primario {
@@ -184,8 +180,6 @@
     -fx-translate-y: 1;
 }
 
-/* Botón secundario y alias antiguo */
-
 .btn-secondary,
 .btn-secundario {
     -fx-background-color: #ecf0f1;
@@ -211,8 +205,6 @@
     -fx-translate-y: 1;
 }
 
-/* Botón de peligro */
-
 .btn-danger {
     -fx-background-color: #e74c3c;
     -fx-text-fill: white;
@@ -232,8 +224,6 @@
     -fx-background-color: #a93226;
     -fx-translate-y: 1;
 }
-
-/* Botones de filtro y detalle */
 
 .btn-filter {
     -fx-background-color: white;
@@ -336,8 +326,6 @@
     -fx-border-color: #3E864D;
 }
 
-/* Campos de solo lectura en detalles */
-
 .detail-value-field,
 .detail-value-field-name {
     -fx-background-color: transparent;
@@ -369,8 +357,6 @@
     -fx-background-insets: 0;
     -fx-effect: null;
 }
-
-/* Campos inválidos */
 
 .invalid-field {
     -fx-border-color: #e74c3c;
@@ -590,6 +576,13 @@
     -fx-border-width: 0 0 0 1;
 }
 
+.detail-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-wrap-text: true;
+}
+
 .detail-name {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -618,6 +611,16 @@
     -fx-text-fill: #2c3e50;
     -fx-font-size: 13px;
     -fx-font-weight: normal;
+}
+
+/* ScrollPane del panel de detalle (evita el gris por defecto) */
+.detail-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.detail-scroll > .viewport {
+    -fx-background-color: transparent;
 }
 
 /* ======================================================
@@ -728,7 +731,6 @@
     -fx-background-color: #fbeaea;
     -fx-text-fill: #a93226;
 }
-
 
 /* ======================================================
    15. PÁGINA DE RESERVAS
@@ -883,8 +885,6 @@
    16. NUEVA RESERVA
    ====================================================== */
 
-/* Contenedor y scroll */
-
 .new-reservation-root {
     -fx-background-color: #f5f7f6;
 }
@@ -907,8 +907,6 @@
     -fx-spacing: 22px;
 }
 
-/* Encabezado */
-
 .reservation-page-header {
     -fx-padding: 0 0 4px 0;
 }
@@ -925,8 +923,6 @@
     -fx-font-size: 13px;
     -fx-text-fill: #3E864D;
 }
-
-/* Botón volver */
 
 .reservation-back-button {
     -fx-background-color: white;
@@ -946,14 +942,10 @@
     -fx-border-color: #3e864d;
 }
 
-/* Grilla principal */
-
 .reservation-dashboard-grid {
     -fx-background-color: transparent;
     -fx-fill-width: true;
 }
-
-/* Tarjetas */
 
 .card {
     -fx-background-color: white;
@@ -979,16 +971,12 @@
     -fx-padding: 0 0 5px 0;
 }
 
-/* Labels de los campos */
-
 .reservation-field-label {
     -fx-font-family: "Segoe UI";
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-text-fill: #536158;
 }
-
-/* Campos de Nueva Reserva */
 
 .reservation-field {
     -fx-background-color: #fafcfb;
@@ -1011,8 +999,6 @@
     -fx-effect: dropshadow(gaussian, rgba(62,134,77,0.16), 5, 0.1, 0, 0);
 }
 
-/* Área de texto */
-
 .reservation-textarea {
     -fx-background-color: #fafcfb;
     -fx-border-color: #dce4de;
@@ -1029,16 +1015,12 @@
     -fx-border-color: #3e864d;
 }
 
-/* Lista de clientes */
-
 .reservation-customer-list {
     -fx-background-color: white;
     -fx-border-color: #dce4de;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
 }
-
-/* Habitaciones */
 
 .rooms-container {
     -fx-background-color: #f7faf8;
@@ -1074,13 +1056,9 @@
     -fx-border-width: 2;
 }
 
-/* Formulario de consumos */
-
 .consumption-form {
     -fx-padding: 2px 0 5px 0;
 }
-
-/* Botón agregar consumo */
 
 .reservation-secondary-button {
     -fx-background-color: #eef5ef;
@@ -1098,8 +1076,6 @@
 .reservation-secondary-button:hover {
     -fx-background-color: #dfeee2;
 }
-
-/* Tabla de consumos */
 
 .reservation-table {
     -fx-background-color: white;
@@ -1147,8 +1123,6 @@
     -fx-padding: 7px 9px;
 }
 
-/* Total de consumos */
-
 .reservation-total-container {
     -fx-padding: 8px 0 0 0;
 }
@@ -1172,13 +1146,9 @@
     -fx-alignment: CENTER-RIGHT;
 }
 
-/* Acciones del formulario */
-
 .reservation-actions {
     -fx-padding: 2px 0 0 0;
 }
-
-/* Footer fijo */
 
 .reservation-floating-actions {
     -fx-padding: 15px 32px;
@@ -1187,8 +1157,6 @@
     -fx-border-width: 1px 0 0 0;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 12, 0, 0, -3);
 }
-
-/* Botón cancelar */
 
 .reservation-cancel-button {
     -fx-background-color: #f1f3f2;
@@ -1206,8 +1174,6 @@
 .reservation-cancel-button:hover {
     -fx-background-color: #e5e8e6;
 }
-
-/* Botón guardar */
 
 .reservation-primary-button {
     -fx-background-color: #3e864d;
@@ -1303,223 +1269,10 @@
     -fx-background-color: #f39c12;
 }
 
+/* ======================================================
+   PLANILLA / BOOKING CHART
+   ====================================================== */
 
-
-.nav-arrow-btn:hover {
-    -fx-background-color: #e5e9ed;
-    -fx-text-fill: #2e7d32;
-}
-
-.nav-arrow-btn:pressed {
-    -fx-background-color: #dce2e6;
-    -fx-text-fill: #245c32;
-}
-
-.filter-btn:hover {
-    -fx-background-color: #e4e8ec;
-    -fx-text-fill: #2e7d32;
-}
-
-.filter-btn:selected {
-    -fx-background-color: #2e7d32;
-    -fx-text-fill: white;
-    -fx-background-radius: 16px;
-    -fx-border-radius: 16px;
-    -fx-effect: dropshadow(
-            gaussian,
-            rgba(46, 125, 50, 0.25),
-            5,
-            0.15,
-            0,
-            2
-    );
-}
-
-.filter-btn:selected:hover {
-    -fx-background-color: #2e7d32;
-    -fx-text-fill: white;
-}
-
-
-
-.btn-nueva-reserva:hover {
-    -fx-background-color: #256b29;
-}
-
-.btn-nueva-reserva:pressed {
-    -fx-background-color: #1f5c23;
-}
-
-
-/* ========================================================
-  BOOKING CHART - ESTRUCTURA FIJA
- ========================================================= */
-
-.booking-chart-area {
-    -fx-background-color: white;
-}
-
-.room-column-container {
-    -fx-background-color: white;
-    -fx-pref-width: 55px;
-    -fx-min-width: 55px;
-    -fx-max-width: 55px;
-}
-
-/* ============================================
-   DATE PICKER - Estilos para que se vea bien
-   ============================================ */
-
-.date-picker {
-    -fx-background-color: white;
-    -fx-border-color: #2e7d32;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-}
-
-.date-picker .text-field {
-    -fx-background-color: white;
-    -fx-text-fill: #222222;
-    -fx-prompt-text-fill: #888888;
-    -fx-font-size: 13px;
-}
-
-.date-picker .arrow-button {
-    -fx-background-color: #2e7d32;
-}
-
-.date-picker .arrow-button .arrow {
-    -fx-background-color: white;
-}
-
-/* Popup del calendario */
-.date-picker-popup {
-    -fx-background-color: white;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 3);
-}
-
-.date-picker-popup > .month-year-pane {
-    -fx-background-color: #2e7d32;
-    -fx-padding: 6;
-}
-
-.date-picker-popup > .month-year-pane .label {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.date-picker-popup > .month-year-pane .button {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 13px;
-}
-
-.date-picker-popup > .month-year-pane .button:hover {
-    -fx-background-color: rgba(255,255,255,0.2);
-    -fx-background-radius: 3;
-}
-
-/* Números de los días */
-.date-picker-popup > * > .day-cell {
-    -fx-background-color: white;
-    -fx-text-fill: #222222;
-    -fx-border-color: transparent;
-    -fx-font-size: 12px;
-    -fx-padding: 6 8 6 8;
-}
-
-.date-picker-popup > * > .day-cell:hover {
-    -fx-background-color: #e8f5e9;
-    -fx-text-fill: #1b5e20;
-}
-
-.date-picker-popup > * > .day-cell:selected {
-    -fx-background-color: #2e7d32;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-}
-
-.date-picker-popup > * > .day-cell:selected:hover {
-    -fx-background-color: #1b5e20;
-}
-
-/* Días de otro mes */
-.date-picker-popup > * > .day-cell.previous-month,
-.date-picker-popup > * > .day-cell.next-month {
-    -fx-text-fill: #bbbbbb;
-}
-
-/* Nombres de días de la semana (Lun, Mar, Mié...) */
-.date-picker-popup > * > .day-name-cell {
-    -fx-text-fill: #555555;
-    -fx-font-weight: bold;
-    -fx-font-size: 11px;
-    -fx-background-color: #f5f5f5;
-}
-
-.date-picker-popup > * > .week-number-cell {
-    -fx-text-fill: #999999;
-    -fx-background-color: #f5f5f5;
-}
-
-/* ============================================
-   HOTEL TOUR - Bloque violeta en booking chart
-   ============================================ */
-
-.booking-block.hotel-tour-block:hover {
-    -fx-background-color: linear-gradient(to right, #6a1b9a, #8e24aa);
-}
-
-.booking-block.hotel-tour-block.selected-block {
-    -fx-border-color: #ffeb3b;
-    -fx-border-width: 2;
-    -fx-effect: dropshadow(gaussian, #ffeb3b, 8, 0.5, 0, 0);
-}
-
-/* =========================================
-   BOTÓN HOTEL TOUR (EN CONSTRUCCIÓN)
-   ========================================= */
-.btn-hotel-tour {
-    -fx-background-color: #8e44ad; /* Violeta */
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-background-radius: 6px;
-    -fx-padding: 10px 15px;
-    -fx-cursor: default; /* Como está deshabilitado, no muestra la manito */
-    -fx-opacity: 0.9; /* Un poco de transparencia para indicar que no se puede clickear */
-    -fx-max-width: Infinity;
-    -fx-alignment: center;
-}
-
-/* Efecto al pasar el mouse (opcional, pero le da vida) */
-.btn-hotel-tour:hover {
-    -fx-background-color: #732d91; /* Violeta más oscuro */
-    -fx-opacity: 1.0;
-}
-
-.btn-hotel-tour {
-    -fx-background-color: #8e44ad;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-background-radius: 6px;
-    -fx-padding: 10px 15px;
-    -fx-cursor: default;
-    -fx-opacity: 0.9;
-    -fx-max-width: Infinity;
-    -fx-alignment: center;
-
-    /* AGREGA ESTA LÍNEA: Fuerza el uso de fuentes de emoji */
-    -fx-font-family: "Segoe UI Emoji", "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
-}
-/* ========================================================
-   PLANILLA / BOOKING CHART (BLOQUE CONSOLIDADO)
-   ======================================================== */
-
-/* ---------- SCROLLPANES (eliminar padding fantasma) ---------- */
 .header-scroll,
 .room-scroll,
 .planilla-scroll {
@@ -1536,7 +1289,6 @@
     -fx-background-color: white;
 }
 
-/* Ocultar barras del header (no deben robar espacio) */
 .header-scroll .scroll-bar:vertical,
 .header-scroll .scroll-bar:horizontal {
     -fx-pref-width: 0;
@@ -1544,7 +1296,6 @@
     -fx-opacity: 0;
 }
 
-/* ---------- CONTENEDOR PRINCIPAL ---------- */
 .booking-chart-area {
     -fx-background-color: white;
 }
@@ -1565,7 +1316,6 @@
     -fx-spacing: 0;
 }
 
-/* ---------- TOOLBAR SUPERIOR ---------- */
 .top-toolbar {
     -fx-background-color: white;
     -fx-border-color: transparent transparent #e0e6ed transparent;
@@ -1606,7 +1356,6 @@
     -fx-padding: 0 8px 0 8px;
 }
 
-/* ---------- PASTILLA DE FILTROS ---------- */
 .segmented-control {
     -fx-background-color: #f0f2f5;
     -fx-background-radius: 20px;
@@ -1642,7 +1391,6 @@
     -fx-text-fill: white;
 }
 
-/* ---------- BOTÓN NUEVA RESERVA ---------- */
 .btn-nueva-reserva {
     -fx-background-color: #2e7d32;
     -fx-text-fill: white;
@@ -1663,9 +1411,6 @@
     -fx-background-color: #1f5c23;
 }
 
-/* ---------- ENCABEZADOS DE LA GRILLA ---------- */
-
-/* Esquina superior izquierda (ROOM) */
 .corner-header {
     -fx-background-color: #1b5e20;
     -fx-text-fill: white;
@@ -1685,7 +1430,6 @@
     -fx-max-height: 45px;
 }
 
-/* Encabezado de días */
 .day-header {
     -fx-background-color: #f8fafc;
     -fx-text-fill: #2c3e50;
@@ -1703,7 +1447,6 @@
     -fx-border-width: 0 1 1 0;
 }
 
-/* Encabezado de habitaciones */
 .room-header {
     -fx-background-color: #f8fafc;
     -fx-text-fill: #2c3e50;
@@ -1714,7 +1457,6 @@
     -fx-border-width: 0 1 1 0;
 }
 
-/* ---------- CELDAS Y FILAS ---------- */
 .room-row {
     -fx-background-color: white;
     -fx-padding: 0;
@@ -1728,7 +1470,6 @@
     -fx-padding: 0;
 }
 
-/* Contenedor de una reserva completa */
 .reservation-container {
     -fx-background-color: transparent;
     -fx-border-color: transparent #d5dfd7 #d5dfd7 transparent;
@@ -1737,7 +1478,6 @@
     -fx-spacing: 0;
 }
 
-/* ---------- BLOQUES DE RESERVA (barras coloreadas) ---------- */
 .booking-block {
     -fx-padding: 0;
     -fx-border-color: transparent;
@@ -1764,7 +1504,6 @@
     -fx-border-radius: 5;
 }
 
-/* Hotel Tour (bloque violeta en el calendario) */
 .booking-block.hotel-tour-block {
     -fx-background-color: linear-gradient(to right, #7b1fa2, #9c27b0);
     -fx-border-color: #4a0072;
@@ -1783,7 +1522,6 @@
     -fx-effect: dropshadow(gaussian, #ffeb3b, 8, 0.5, 0, 0);
 }
 
-/* ---------- BOTÓN HOTEL TOUR (EN CONSTRUCCIÓN) ---------- */
 .btn-hotel-tour {
     -fx-background-color: #8e44ad;
     -fx-text-fill: white;
@@ -1802,9 +1540,10 @@
     -fx-background-color: #732d91;
     -fx-opacity: 1.0;
 }
-/* ========================================================
-   TARJETAS DE CATÁLOGO (Productos y Servicios)
-   ======================================================== */
+
+/* ======================================================
+   TARJETAS DE CATÁLOGO
+   ====================================================== */
 .catalog-card {
     -fx-background-color: white;
     -fx-background-radius: 10px;
@@ -1836,9 +1575,9 @@
     -fx-translate-y: 1;
 }
 
-/* ========================================================
-   TABLA DE GESTIÓN DE CONSUMOS (Vista detalle de reserva)
-   ======================================================== */
+/* ======================================================
+   TABLA DE GESTIÓN DE CONSUMOS
+   ====================================================== */
 .consumption-management-table {
     -fx-background-color: white;
     -fx-border-color: #dfe7e1;
@@ -1903,14 +1642,12 @@
     -fx-border-color: transparent;
 }
 
-/* Placeholder cuando no hay filas */
 .consumption-management-table .placeholder .label {
     -fx-text-fill: #95a5a6;
     -fx-font-style: italic;
     -fx-font-size: 13px;
 }
 
-/* Scrollbar limpia */
 .consumption-management-table .scroll-bar:vertical,
 .consumption-management-table .scroll-bar:horizontal {
     -fx-background-color: transparent;
@@ -1943,7 +1680,6 @@
     -fx-padding: 0;
 }
 
-/* Botones de acción en la grilla */
 .consumption-action-btn {
     -fx-background-color: transparent;
     -fx-text-fill: #2e7d32;
@@ -1965,4 +1701,601 @@
 
 .consumption-action-btn.danger:hover {
     -fx-background-color: #fbeaea;
+}
+
+/* ========================================================
+   DATE PICKER
+   ======================================================== */
+.date-picker {
+    -fx-background-color: white;
+    -fx-border-color: #2e7d32;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.date-picker .text-field {
+    -fx-background-color: white;
+    -fx-text-fill: #222222;
+    -fx-prompt-text-fill: #888888;
+    -fx-font-size: 13px;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #2e7d32;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+.date-picker-popup {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 3);
+}
+
+.date-picker-popup > .month-year-pane {
+    -fx-background-color: #2e7d32;
+    -fx-padding: 6;
+}
+
+.date-picker-popup > .month-year-pane .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.date-picker-popup > .month-year-pane .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}
+
+.date-picker-popup > .month-year-pane .button:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+    -fx-background-radius: 3;
+}
+
+.date-picker-popup > * > .day-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #222222;
+    -fx-border-color: transparent;
+    -fx-font-size: 12px;
+    -fx-padding: 6 8 6 8;
+}
+
+.date-picker-popup > * > .day-cell:hover {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #1b5e20;
+}
+
+.date-picker-popup > * > .day-cell:selected {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.date-picker-popup > * > .day-cell:selected:hover {
+    -fx-background-color: #1b5e20;
+}
+
+.date-picker-popup > * > .day-cell.previous-month,
+.date-picker-popup > * > .day-cell.next-month {
+    -fx-text-fill: #bbbbbb;
+}
+
+.date-picker-popup > * > .day-name-cell {
+    -fx-text-fill: #555555;
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-background-color: #f5f5f5;
+}
+
+.date-picker-popup > * > .week-number-cell {
+    -fx-text-fill: #999999;
+    -fx-background-color: #f5f5f5;
+}
+
+/* ======================================================
+   18. SWITCH DE TEMA (SIEMPRE AL FINAL PARA FACILITAR CAMBIOS)
+   ====================================================== */
+.theme-switch {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 10 0 10 4;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 10;
+    -fx-alignment: CENTER_LEFT;
+    -fx-pref-width: Infinity;
+}
+
+.theme-switch:hover {
+    -fx-text-fill: #eaf7ed;
+}
+
+.theme-switch .switch-container {
+    -fx-min-width: 46px;  -fx-min-height: 24px;
+    -fx-max-width: 46px;  -fx-max-height: 24px;
+}
+
+.theme-switch .switch-track {
+    -fx-background-color: #2E6D3D;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.35);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-min-width: 46px;  -fx-min-height: 24px;
+    -fx-max-width: 46px;  -fx-max-height: 24px;
+}
+
+.theme-switch .switch-thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-min-width: 18px; -fx-min-height: 18px;
+    -fx-max-width: 18px; -fx-max-height: 18px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 3, 0, 0, 1);
+    -fx-translate-x: 3;
+}
+
+.theme-switch:selected .switch-track {
+    -fx-background-color: #f39c12;
+    -fx-border-color: rgba(255,255,255,0.55);
+}
+
+.theme-switch:selected .switch-thumb {
+    -fx-translate-x: 25;
+}
+
+.sidebar.collapsed .theme-switch {
+    -fx-content-display: graphic-only;
+    -fx-alignment: CENTER;
+    -fx-graphic-text-gap: 0;
+}
+
+/* ======================================================
+   19. TILES DE REPORTES
+   ====================================================== */
+.report-tile {
+    -fx-background-color: white;
+    -fx-border-color: #d0d7d2;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.report-tile:hover {
+    -fx-border-color: #2e7d32;
+    -fx-effect: dropshadow(gaussian, rgba(46,125,50,0.15), 10, 0, 0, 3);
+}
+
+.report-tile-icon {
+    -fx-font-size: 22px;
+}
+
+.report-tile-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #245c32;
+}
+
+.report-tile-desc {
+    -fx-font-size: 12px;
+    -fx-text-fill: #5a6b60;
+}
+
+.report-embed-panel {
+    -fx-background-color: white;
+    -fx-border-color: #d0d7d2;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+}
+
+.report-embed-content {
+    -fx-background-color: transparent;
+}
+
+/* ScrollPane del dashboard de reportes */
+.dashboard-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.dashboard-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dashboard-content {
+    -fx-background-color: transparent;
+}
+
+/* ======================================================
+   20. TEMA OSCURO — se activa con .dark-theme en el root
+   ====================================================== */
+
+/* --- Fondo general --- */
+.root.dark-theme {
+    -fx-background-color: #1b1f1d;
+}
+
+.root.dark-theme .content-main,
+.root.dark-theme .contenido-principal,
+.root.dark-theme .new-reservation-root,
+.root.dark-theme .reservations-page,
+.root.dark-theme .reservations-container,
+.root.dark-theme .booking-chart-area,
+.root.dark-theme .calendar-container,
+.root.dark-theme .booking-fixed-header,
+.root.dark-theme .planilla-grid,
+.root.dark-theme .room-column,
+.root.dark-theme .room-column-container,
+.root.dark-theme .dashboard-scroll,
+.root.dark-theme .dashboard-scroll > .viewport,
+.root.dark-theme .dashboard-content {
+    -fx-background-color: #1b1f1d;
+    -fx-background: #1b1f1d;
+}
+
+/* --- Sidebar --- */
+.root.dark-theme .sidebar { -fx-background-color: #14361f; }
+.root.dark-theme .sidebar-btn:hover,
+.root.dark-theme .sidebar-btn:selected,
+.root.dark-theme .hamburger-button:hover { -fx-background-color: #0e2a17; }
+
+/* --- Títulos / subtítulos --- */
+.root.dark-theme .section-title,
+.root.dark-theme .titulo-seccion,
+.root.dark-theme .form-title,
+.root.dark-theme .card-title,
+.root.dark-theme .detail-name,
+.root.dark-theme .detail-title,
+.root.dark-theme .detail-value-field,
+.root.dark-theme .detail-value-field-name,
+.root.dark-theme .reservations-title,
+.root.dark-theme .reservation-page-title,
+.root.dark-theme .month-label { -fx-text-fill: #e8eaed; }
+
+.root.dark-theme .subtitulo-seccion,
+.root.dark-theme .section-subtitle,
+.root.dark-theme .footer-info,
+.root.dark-theme .info-pie,
+.root.dark-theme .detail-label,
+.root.dark-theme .detail-section-title,
+.root.dark-theme .card-description,
+.root.dark-theme .form-label,
+.root.dark-theme .reservation-field-label,
+.root.dark-theme .reservations-subtitle,
+.root.dark-theme .reservation-page-subtitle { -fx-text-fill: #9aa0a6; }
+
+.root.dark-theme .detail-value { -fx-text-fill: #d7dbde; }
+
+/* --- Tarjetas / contenedores --- */
+.root.dark-theme .card,
+.root.dark-theme .form-container,
+.root.dark-theme .detail-panel,
+.root.dark-theme .table-container,
+.root.dark-theme .rooms-container,
+.root.dark-theme .room-card,
+.root.dark-theme .catalog-card,
+.root.dark-theme .reservation-customer-list {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+.root.dark-theme .stats-card { -fx-background-color: #1f2426; }
+.root.dark-theme .catalog-card:hover { -fx-background-color: #2a3033; -fx-border-color: #3E864D; }
+.root.dark-theme .catalog-card .label,
+.root.dark-theme .catalog-card .text { -fx-text-fill: #e8eaed; -fx-fill: #e8eaed; }
+.root.dark-theme .room-card.selected { -fx-background-color: #1f3a28; -fx-border-color: #4f855d; }
+
+/* --- Campos --- */
+.root.dark-theme .text-field,
+.root.dark-theme .search-field,
+.root.dark-theme .campo-busqueda,
+.root.dark-theme .combo-box,
+.root.dark-theme .combo-filtro,
+.root.dark-theme .reservation-field,
+.root.dark-theme .reservation-textarea,
+.root.dark-theme .reservation-search,
+.root.dark-theme .reservation-total-field {
+    -fx-background-color: #2a3033;
+    -fx-text-fill: #e8eaed;
+    -fx-prompt-text-fill: #7a8085;
+    -fx-border-color: #3a4144;
+}
+.root.dark-theme .text-field:focused,
+.root.dark-theme .combo-box:focused,
+.root.dark-theme .reservation-field:focused,
+.root.dark-theme .reservation-textarea:focused,
+.root.dark-theme .reservation-search:focused { -fx-border-color: #3E864D; }
+.root.dark-theme .text-field:disabled { -fx-background-color: #1f2426; -fx-text-fill: #7a8085; }
+.root.dark-theme .combo-box .list-cell { -fx-text-fill: #e8eaed; }
+.root.dark-theme .combo-box .arrow { -fx-background-color: #9aa0a6; }
+.root.dark-theme .combo-box-popup .list-view { -fx-background-color: #2a3033; -fx-border-color: #3a4144; }
+.root.dark-theme .combo-box-popup .list-view .list-cell { -fx-background-color: #2a3033; -fx-text-fill: #e8eaed; }
+.root.dark-theme .combo-box-popup .list-view .list-cell:hover { -fx-background-color: #2f4a37; }
+.root.dark-theme .detail-value-field,
+.root.dark-theme .detail-value-field-name { -fx-text-fill: #e8eaed; }
+
+/* --- Tablas --- */
+.root.dark-theme .customer-table,
+.root.dark-theme .reservations-table,
+.root.dark-theme .reservation-table,
+.root.dark-theme .consumption-management-table {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+.root.dark-theme .customer-table .column-header-background,
+.root.dark-theme .reservations-table .column-header-background,
+.root.dark-theme .reservation-table .column-header-background,
+.root.dark-theme .consumption-management-table .column-header-background {
+    -fx-background-color: #1f2426;
+}
+.root.dark-theme .customer-table .column-header .label,
+.root.dark-theme .reservations-table .column-header .label,
+.root.dark-theme .reservation-table .column-header .label,
+.root.dark-theme .consumption-management-table .column-header .label {
+    -fx-text-fill: #b8bfc4;
+}
+.root.dark-theme .customer-table .table-row-cell,
+.root.dark-theme .reservations-table .table-row-cell,
+.root.dark-theme .reservation-table .table-row-cell,
+.root.dark-theme .consumption-management-table .table-row-cell {
+    -fx-background-color: #24292b;
+    -fx-border-color: transparent transparent #2f3437 transparent;
+}
+.root.dark-theme .customer-table .table-row-cell:odd,
+.root.dark-theme .consumption-management-table .table-row-cell:odd {
+    -fx-background-color: #282d30;
+}
+.root.dark-theme .customer-table .table-row-cell:hover,
+.root.dark-theme .reservations-table .table-row-cell:hover,
+.root.dark-theme .reservation-table .table-row-cell:hover,
+.root.dark-theme .consumption-management-table .table-row-cell:hover {
+    -fx-background-color: #2f4a37;
+}
+.root.dark-theme .customer-table .table-row-cell:selected,
+.root.dark-theme .reservations-table .table-row-cell:selected,
+.root.dark-theme .reservation-table .table-row-cell:selected,
+.root.dark-theme .consumption-management-table .table-row-cell:selected {
+    -fx-background-color: #345c40;
+}
+.root.dark-theme .customer-table .table-cell,
+.root.dark-theme .reservations-table .table-cell,
+.root.dark-theme .reservation-table .table-cell,
+.root.dark-theme .consumption-management-table .table-cell {
+    -fx-text-fill: #d7dbde;
+}
+.root.dark-theme .customer-table .table-row-cell:selected .text,
+.root.dark-theme .reservations-table .table-row-cell:selected .text { -fx-fill: #d7dbde; }
+
+/* --- Planilla --- */
+.root.dark-theme .booking-cell,
+.root.dark-theme .reservation-container,
+.root.dark-theme .room-row {
+    -fx-background-color: #24292b;
+    -fx-border-color: transparent #343a3d #343a3d transparent;
+}
+.root.dark-theme .day-header,
+.root.dark-theme .room-header {
+    -fx-background-color: #1f2426;
+    -fx-text-fill: #d7dbde;
+    -fx-border-color: transparent #343a3d #343a3d transparent;
+}
+.root.dark-theme .day-header-weekend { -fx-background-color: #2e1f22; -fx-text-fill: #e57373; }
+.root.dark-theme .corner-header {
+    -fx-background-color: #0e2a17;
+    -fx-text-fill: #e8eaed;
+    -fx-border-color: transparent #0e2a17 #0e2a17 transparent;
+}
+.root.dark-theme .top-toolbar { -fx-background-color: #24292b; -fx-border-color: transparent transparent #343a3d transparent; }
+.root.dark-theme .segmented-control { -fx-background-color: #1f2426; }
+.root.dark-theme .filter-btn { -fx-text-fill: #b8bfc4; }
+.root.dark-theme .filter-btn:hover { -fx-background-color: #2a3033; }
+.root.dark-theme .nav-arrow-btn { -fx-background-color: #2a3033; -fx-text-fill: #d7dbde; }
+.root.dark-theme .nav-arrow-btn:hover { -fx-background-color: #343a3d; }
+
+/* --- ScrollPanes de la planilla --- */
+.root.dark-theme .header-scroll,
+.root.dark-theme .room-scroll,
+.root.dark-theme .planilla-scroll,
+.root.dark-theme .header-scroll > .viewport,
+.root.dark-theme .room-scroll > .viewport,
+.root.dark-theme .planilla-scroll > .viewport {
+    -fx-background-color: #1b1f1d;
+    -fx-background: #1b1f1d;
+}
+.root.dark-theme .booking-fixed-header,
+.root.dark-theme .planilla-grid,
+.root.dark-theme .room-column {
+    -fx-background-color: #1b1f1d;
+}
+
+/* --- SplitPane --- */
+.root.dark-theme .split-pane {
+    -fx-background-color: #1b1f1d;
+}
+.root.dark-theme .split-pane > .split-pane-divider {
+    -fx-background-color: #343a3d;
+    -fx-padding: 0 2;
+}
+
+/* --- Botones secundarios --- */
+.root.dark-theme .btn-secondary,
+.root.dark-theme .btn-secundario,
+.root.dark-theme .btn-filter,
+.root.dark-theme .btn-detail,
+.root.dark-theme .reservation-cancel-button,
+.root.dark-theme .reservation-back-button,
+.root.dark-theme .reservation-secondary-button {
+    -fx-background-color: #2a3033;
+    -fx-text-fill: #d7dbde;
+    -fx-border-color: #3a4144;
+}
+.root.dark-theme .btn-secondary:hover,
+.root.dark-theme .btn-secundario:hover,
+.root.dark-theme .btn-filter:hover,
+.root.dark-theme .btn-detail:hover,
+.root.dark-theme .reservation-cancel-button:hover,
+.root.dark-theme .reservation-back-button:hover,
+.root.dark-theme .reservation-secondary-button:hover {
+    -fx-background-color: #343a3d;
+}
+
+/* --- Detalle (panel derecho) --- */
+.root.dark-theme .detail-scroll,
+.root.dark-theme .detail-scroll > .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+.root.dark-theme .detail-panel {
+    -fx-background-color: transparent;
+}
+.root.dark-theme .detail-title { -fx-text-fill: #e8eaed; }
+.root.dark-theme .detail-label { -fx-text-fill: #9aa0a6; }
+.root.dark-theme .detail-value-field,
+.root.dark-theme .detail-value-field-name {
+    -fx-text-fill: #e8eaed;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.root.dark-theme .detail-panel .btn-detail,
+.root.dark-theme .detail-panel .button {
+    -fx-background-color: #2a3033;
+    -fx-text-fill: #d7dbde;
+    -fx-border-color: #3a4144;
+}
+
+/* --- Reportes --- */
+.root.dark-theme .report-tile {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+.root.dark-theme .report-tile:hover {
+    -fx-background-color: #2a3033;
+    -fx-border-color: #3E864D;
+}
+.root.dark-theme .report-tile-title { -fx-text-fill: #8fd19b; }
+.root.dark-theme .report-tile-desc  { -fx-text-fill: #9aa0a6; }
+.root.dark-theme .report-embed-panel {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+
+/* --- Diálogos --- */
+.root.dark-theme .dialog-pane { -fx-background-color: #24292b; -fx-border-color: #343a3d; }
+.root.dark-theme .dialog-pane .content.label { -fx-text-fill: #d7dbde; }
+
+/* --- Footer flotante de nueva reserva --- */
+.root.dark-theme .reservation-floating-actions {
+    -fx-background-color: rgba(30,35,33,0.97);
+    -fx-border-color: #343a3d transparent transparent transparent;
+}
+
+/* --- Scrollbars --- */
+.root.dark-theme .scroll-bar .thumb { -fx-background-color: #4a5257; }
+.root.dark-theme .scroll-bar .thumb:hover { -fx-background-color: #5a6267; }
+.root.dark-theme .consumption-management-table .placeholder .label { -fx-text-fill: #7a8085; }
+
+/* --- DatePicker oscuro --- */
+.root.dark-theme .date-picker {
+    -fx-background-color: #2a3033;
+    -fx-border-color: #3E864D;
+}
+.root.dark-theme .date-picker .text-field {
+    -fx-background-color: #2a3033;
+    -fx-text-fill: #e8eaed;
+    -fx-prompt-text-fill: #7a8085;
+}
+.root.dark-theme .date-picker .arrow-button {
+    -fx-background-color: #3E864D;
+}
+.root.dark-theme .date-picker-popup {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+.root.dark-theme .date-picker-popup > .month-year-pane {
+    -fx-background-color: #14361f;
+}
+.root.dark-theme .date-picker-popup > * > .day-cell {
+    -fx-background-color: #24292b;
+    -fx-text-fill: #d7dbde;
+}
+.root.dark-theme .date-picker-popup > * > .day-cell:hover {
+    -fx-background-color: #2f4a37;
+    -fx-text-fill: #e8eaed;
+}
+.root.dark-theme .date-picker-popup > * > .day-cell:selected {
+    -fx-background-color: #3E864D;
+    -fx-text-fill: white;
+}
+.root.dark-theme .date-picker-popup > * > .day-cell.previous-month,
+.root.dark-theme .date-picker-popup > * > .day-cell.next-month {
+    -fx-text-fill: #565c60;
+}
+.root.dark-theme .date-picker-popup > * > .day-name-cell {
+    -fx-text-fill: #9aa0a6;
+    -fx-background-color: #1f2426;
+}
+.root.dark-theme .date-picker-popup > * > .week-number-cell {
+    -fx-text-fill: #7a8085;
+    -fx-background-color: #1f2426;
+}
+
+/* ======================================================
+   21. HINTS EN FORMULARIOS
+   ====================================================== */
+.form-hint {
+    -fx-font-size: 10px;
+    -fx-text-fill: #7f8c8d;
+}
+
+.root.dark-theme .form-hint {
+    -fx-text-fill: #7a8085;
+}
+
+/* Reforzar el form-container en dark mode (por las dudas) */
+.root.dark-theme .form-container {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+
+.root.dark-theme .form-container .form-title {
+    -fx-text-fill: #e8eaed;
+}
+
+.root.dark-theme .form-container .form-label {
+    -fx-text-fill: #b8bfc4;
+}
+
+/* Soporte para la tabla "staff-table" (por si la usás en algún lado) */
+.root.dark-theme .staff-table {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+.root.dark-theme .staff-table .column-header-background {
+    -fx-background-color: #1f2426;
+}
+.root.dark-theme .staff-table .column-header .label {
+    -fx-text-fill: #b8bfc4;
+}
+.root.dark-theme .staff-table .table-row-cell {
+    -fx-background-color: #24292b;
+    -fx-border-color: transparent transparent #2f3437 transparent;
+}
+.root.dark-theme .staff-table .table-row-cell:odd {
+    -fx-background-color: #282d30;
+}
+.root.dark-theme .staff-table .table-row-cell:hover {
+    -fx-background-color: #2f4a37;
+}
+.root.dark-theme .staff-table .table-row-cell:selected {
+    -fx-background-color: #345c40;
+}
+.root.dark-theme .staff-table .table-cell {
+    -fx-text-fill: #d7dbde;
 }

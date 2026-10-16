@@ -8,10 +8,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.Region?>
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.DashboardController">
@@ -38,11 +38,9 @@
                     <Image url="@../images/viridinn_isologo.png" />
                 </ImageView>
 
-                <!-- <Label styleClass="sidebar-titulo" text="SISTEMA HOTEL" /> -->
-
                 <Region fx:id="espaciadorTop" minHeight="0.0" prefHeight="0.0" />
 
-                <!-- Botones -->
+                <!-- Botones de navegación -->
                 <ToggleButton fx:id="btnPlanilla" styleClass="sidebar-btn" text="Planilla de reserva">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
@@ -101,6 +99,23 @@
 
                 <!-- Espaciador flexible -->
                 <VBox VBox.vgrow="ALWAYS" />
+
+                <!-- ==================== TOGGLE DE TEMA ==================== -->
+                <ToggleButton fx:id="btnTheme"
+                              styleClass="theme-switch"
+                              text="Modo oscuro"
+                              onAction="#toggleTheme">
+                    <graphic>
+                        <StackPane styleClass="switch-container">
+                            <Region styleClass="switch-track" />
+                            <StackPane fx:id="switchThumb"
+                                       styleClass="switch-thumb"
+                                       StackPane.alignment="CENTER_LEFT" />
+                        </StackPane>
+                    </graphic>
+                </ToggleButton>
+
+                <!-- Usuario -->
                 <Label fx:id="lblUsuario" styleClass="sidebar-usuario" text="👤 Sin sesión" />
 
                 <Button fx:id="btnSession" styleClass="sidebar-logout" text="Iniciar sesión"
@@ -133,4 +148,3 @@
     </center>
 
 </BorderPane>
-

@@ -16,6 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.prefs.Preferences; // ⬅️ NUEVO
 
 import auth.LoginGuard;
 import auth.LoginManager;
@@ -25,32 +26,52 @@ public class DashboardController {
 
   /**
    * ============================================================
-   *  FLAG MAESTRO DEL LOGIN
-   *  ------------------------------------------------------------
-   *  true  -> el login vuelve a estar activo (botón "Cerrar sesión",
-   *           guard en navegación, label de usuario, etc.)
-   *  false -> login apagado (botón de sesión oculto, sin guard).
+   * FLAG MAESTRO DEL LOGIN
+   * ------------------------------------------------------------
+   * true -> el login vuelve a estar activo (botón "Cerrar sesión",
+   * guard en navegación, label de usuario, etc.)
+   * false -> login apagado (botón de sesión oculto, sin guard).
    *
-   *  Cambiá SOLO esta línea para prender/apagar todo el sistema.
+   * Cambiá SOLO esta línea para prender/apagar todo el sistema.
    * ============================================================
    */
   private static final boolean LOGIN_ENABLED = false;
 
+  // ========== TEMA (preferencia persistida) ⬅️ NUEVO ==========
+  private static final String DARK_CLASS = "dark-theme";
+  private static final Preferences PREFS = Preferences.userNodeForPackage(DashboardController.class);
+
   // ========== FXML FIELDS ==========
-  @FXML private ImageView logoApp;
-  @FXML private Region espaciadorTop;
-  @FXML private VBox leftMenu;
-  @FXML private Button btnMenu;
-  @FXML private AnchorPane centerPane;
-  @FXML private ToggleButton btnPlanilla;
-  @FXML private ToggleButton btnReservas;
-  @FXML private ToggleButton btnHabitaciones;
-  @FXML private ToggleButton btnClientes;
-  @FXML private ToggleButton btnReportes;
-  @FXML private ToggleButton btnPersonal;
-  @FXML private ToggleButton btnConfiguracion;
-  @FXML private Label lblUsuario;
-  @FXML private Button btnSession;
+  @FXML
+  private ImageView logoApp;
+  @FXML
+  private Region espaciadorTop;
+  @FXML
+  private VBox leftMenu;
+  @FXML
+  private Button btnMenu;
+  @FXML
+  private AnchorPane centerPane;
+  @FXML
+  private ToggleButton btnPlanilla;
+  @FXML
+  private ToggleButton btnReservas;
+  @FXML
+  private ToggleButton btnHabitaciones;
+  @FXML
+  private ToggleButton btnClientes;
+  @FXML
+  private ToggleButton btnReportes;
+  @FXML
+  private ToggleButton btnPersonal;
+  @FXML
+  private ToggleButton btnConfiguracion;
+  @FXML
+  private Label lblUsuario;
+  @FXML
+  private Button btnSession;
+  @FXML
+  private ToggleButton btnTheme; // ⬅️ NUEVO
 
   private ToggleGroup menuGroup;
 
@@ -100,32 +121,38 @@ public class DashboardController {
       loadView("/views/BookingChart.fxml");
     });
     btnReservas.setOnAction(e -> {
-      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
+      if (LOGIN_ENABLED && !ensureAuthenticated())
+        return;
       selectButton(btnReservas);
       loadView("/views/reservations.fxml");
     });
     btnHabitaciones.setOnAction(e -> {
-      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
+      if (LOGIN_ENABLED && !ensureAuthenticated())
+        return;
       selectButton(btnHabitaciones);
       loadView("/views/RoomView.fxml");
     });
     btnClientes.setOnAction(e -> {
-      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
+      if (LOGIN_ENABLED && !ensureAuthenticated())
+        return;
       selectButton(btnClientes);
       loadView("/views/CustomerView.fxml");
     });
     btnReportes.setOnAction(e -> {
-      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
+      if (LOGIN_ENABLED && !ensureAuthenticated())
+        return;
       selectButton(btnReportes);
       loadView("/views/Report.fxml");
     });
     btnPersonal.setOnAction(e -> {
-      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
+      if (LOGIN_ENABLED && !ensureAuthenticated())
+        return;
       selectButton(btnPersonal);
       loadView("/views/StaffView.fxml");
     });
     btnConfiguracion.setOnAction(e -> {
-      if (LOGIN_ENABLED && !ensureAuthenticated()) return;
+      if (LOGIN_ENABLED && !ensureAuthenticated())
+        return;
       selectButton(btnConfiguracion);
       loadView("/views/Configuration.fxml");
     });
@@ -133,12 +160,51 @@ public class DashboardController {
     // Centrar hamburguesa al iniciar
     btnMenu.setTranslateX(-10);
 
+    // ⬇️⬇️⬇️ NUEVO: inicializar el toggle de tema ⬇️⬇️⬇️
+    initThemeToggle();
+
     // Estado inicial de la sesión (label + botón)
-    // Sólo toca LoginManager si el flag está activo.
     if (LOGIN_ENABLED) {
       LoginManager.getInstance().refreshConfig();
     }
     updateSessionUI();
+  }
+
+  // ============================================================
+  // TEMA CLARO / OSCURO ⬅️ NUEVO
+  // ============================================================
+
+  private void initThemeToggle() {
+    if (btnTheme == null)
+      return;
+
+    boolean dark = utils.ThemeManager.isDark();
+    btnTheme.setSelected(dark);
+    btnTheme.setText(dark ? "Modo claro" : "Modo oscuro");
+    btnTheme.setTooltip(new Tooltip(dark
+        ? "Cambiar a tema claro"
+        : "Cambiar a tema oscuro"));
+
+    javafx.application.Platform.runLater(() -> {
+      if (btnTheme.getScene() != null) {
+        utils.ThemeManager.applyTo(btnTheme.getScene().getRoot());
+      }
+    });
+  }
+
+  @FXML
+  private void toggleTheme() {
+    boolean dark = btnTheme.isSelected();
+    utils.ThemeManager.setDark(dark);
+
+    if (btnTheme.getScene() != null) {
+      utils.ThemeManager.applyTo(btnTheme.getScene().getRoot());
+    }
+
+    btnTheme.setText(dark ? "Modo claro" : "Modo oscuro");
+    btnTheme.setTooltip(new Tooltip(dark
+        ? "Cambiar a tema claro"
+        : "Cambiar a tema oscuro"));
   }
 
   // ========== SIDEBAR ==========
@@ -172,22 +238,15 @@ public class DashboardController {
 
   // ========== SESIÓN (con flag) ==========
 
-  /**
-   * Handler del botón de sesión. SIEMPRE debe existir para que
-   * el FXML (onAction="#handleSessionButton") se resuelva aunque
-   * el login esté apagado.
-   */
   @FXML
   private void handleSessionButton() {
     if (!LOGIN_ENABLED) {
-      // Login apagado: no debería llegar acá porque el botón está oculto,
-      // pero por las dudas mostramos un aviso coherente.
       Alert alert = new Alert(Alert.AlertType.INFORMATION);
       alert.setTitle("Login desactivado");
       alert.setHeaderText(null);
       alert.setContentText(
           "El sistema de login está desactivado.\n" +
-          "Para activarlo, poné LOGIN_ENABLED = true en DashboardController.");
+              "Para activarlo, poné LOGIN_ENABLED = true en DashboardController.");
       alert.showAndWait();
       return;
     }
@@ -200,7 +259,7 @@ public class DashboardController {
       alert.setHeaderText(null);
       alert.setContentText(
           "El sistema de login está desactivado.\n" +
-          "Para activarlo, un administrador debe hacerlo desde Configuración → Seguridad.");
+              "Para activarlo, un administrador debe hacerlo desde Configuración → Seguridad.");
       alert.showAndWait();
       return;
     }
@@ -216,10 +275,6 @@ public class DashboardController {
     updateSessionUI();
   }
 
-  /**
-   * Refresca label + botón de sesión según el estado.
-   * Si LOGIN_ENABLED == false, oculta ambos y no toca LoginManager.
-   */
   private void updateSessionUI() {
     if (!LOGIN_ENABLED) {
       lblUsuario.setText("");
@@ -231,7 +286,6 @@ public class DashboardController {
       return;
     }
 
-    // A partir de acá, login activo -> aseguramos visibilidad
     lblUsuario.setVisible(true);
     lblUsuario.setManaged(true);
     btnSession.setVisible(true);
@@ -250,7 +304,7 @@ public class DashboardController {
 
     if (lm.isAuthenticated()) {
       String nombre = lm.getCurrentUser().getFullName();
-      String rol    = lm.getCurrentUser().getRole();
+      String rol = lm.getCurrentUser().getRole();
       lblUsuario.setText("👤 " + nombre + " (" + rol + ")");
       btnSession.setText("Cerrar sesión");
     } else {
@@ -259,12 +313,9 @@ public class DashboardController {
     }
   }
 
-  /**
-   * Guard de navegación. Si el login está apagado, devuelve true
-   * sin tocar nada (no bloquea la navegación).
-   */
   private boolean ensureAuthenticated() {
-    if (!LOGIN_ENABLED) return true;
+    if (!LOGIN_ENABLED)
+      return true;
 
     if (LoginGuard.requireAccess()) {
       updateSessionUI();
@@ -404,13 +455,27 @@ public class DashboardController {
 
   public void selectSidebarButton(String buttonName) {
     switch (buttonName) {
-      case "reservas":      selectButton(btnReservas);      break;
-      case "habitaciones":  selectButton(btnHabitaciones);  break;
-      case "clientes":      selectButton(btnClientes);      break;
-      case "planilla":      selectButton(btnPlanilla);      break;
-      case "reportes":      selectButton(btnReportes);      break;
-      case "personal":      selectButton(btnPersonal);      break;
-      case "configuracion": selectButton(btnConfiguracion); break;
+      case "reservas":
+        selectButton(btnReservas);
+        break;
+      case "habitaciones":
+        selectButton(btnHabitaciones);
+        break;
+      case "clientes":
+        selectButton(btnClientes);
+        break;
+      case "planilla":
+        selectButton(btnPlanilla);
+        break;
+      case "reportes":
+        selectButton(btnReportes);
+        break;
+      case "personal":
+        selectButton(btnPersonal);
+        break;
+      case "configuracion":
+        selectButton(btnConfiguracion);
+        break;
       default:
         System.err.println("Botón desconocido: " + buttonName);
     }

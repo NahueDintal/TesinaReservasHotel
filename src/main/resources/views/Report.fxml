@@ -10,9 +10,11 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="content-main" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ReportController">
+<BorderPane styleClass="content-main"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ReportController">
 
-    <!-- ============ CENTER: dashboard de tarjetas + panel inferior ============ -->
     <center>
         <ScrollPane fitToWidth="true" styleClass="dashboard-scroll" hbarPolicy="NEVER">
             <VBox spacing="18" styleClass="dashboard-content">
@@ -34,7 +36,6 @@
 
                     <!-- Fila 1 -->
                     <VBox fx:id="tileCancellationProbability" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
                         <Label styleClass="report-tile-icon" text="📊" />
                         <Label styleClass="report-tile-title" text="Probabilidad de cancelación" />
@@ -42,7 +43,6 @@
                     </VBox>
 
                     <VBox fx:id="tileCancellationByLeadTime" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10">
                         <Label styleClass="report-tile-icon" text="⏳" />
                         <Label styleClass="report-tile-title" text="Cancelación por anticipación" />
@@ -50,7 +50,6 @@
                     </VBox>
 
                     <VBox fx:id="tileCancellationByMonth" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="2" GridPane.rowIndex="0" spacing="10">
                         <Label styleClass="report-tile-icon" text="📅" />
                         <Label styleClass="report-tile-title" text="Cancelación por mes" />
@@ -59,7 +58,6 @@
 
                     <!-- Fila 2 -->
                     <VBox fx:id="tileCancellationImpact" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="10">
                         <Label styleClass="report-tile-icon" text="📉" />
                         <Label styleClass="report-tile-title" text="Impacto cancelaciones" />
@@ -67,7 +65,6 @@
                     </VBox>
 
                     <VBox fx:id="tileCancellationByGuests" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="10">
                         <Label styleClass="report-tile-icon" text="👥" />
                         <Label styleClass="report-tile-title" text="Cancelación por huéspedes" />
@@ -75,7 +72,6 @@
                     </VBox>
 
                     <VBox fx:id="tileCancellationByCustomerOrigin" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="2" GridPane.rowIndex="1" spacing="10">
                         <Label styleClass="report-tile-icon" text="🌍" />
                         <Label styleClass="report-tile-title" text="Cancelación por origen" />
@@ -84,7 +80,6 @@
 
                     <!-- Fila 3 -->
                     <VBox fx:id="tileDailySchedule" styleClass="report-tile"
-                          style="-fx-background-color: white; -fx-border-color: #d0d7d2; -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);"
                           GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="10">
                         <Label styleClass="report-tile-icon" text="🗓️" />
                         <Label styleClass="report-tile-title" text="Cronograma diario" />
