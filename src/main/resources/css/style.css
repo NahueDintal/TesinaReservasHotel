@@ -2299,3 +2299,148 @@
 .root.dark-theme .staff-table .table-cell {
     -fx-text-fill: #d7dbde;
 }
+/* ======================================================
+   22. FIXES REALES — DialogPane, form-container, Unavailable
+   ====================================================== */
+
+/* -------- Contador de caracteres -------- */
+.char-counter {
+    -fx-font-size: 10px;
+    -fx-text-fill: #7f8c8d;
+}
+.root.dark-theme .char-counter {
+    -fx-text-fill: #7a8085;
+}
+
+/* ============================================================
+   DialogPane en modo oscuro
+   ------------------------------------------------------------
+   El DialogPane puede estar en 2 situaciones:
+   A) ES el Scene root   → clases: .root.dialog-pane.dark-theme
+   B) Está dentro de otro root oscuro
+   Cubrimos las 2 con selectores redundantes.
+   ============================================================ */
+
+/* --- Caso A: el DialogPane ES el Scene root --- */
+.dialog-pane.dark-theme {
+    -fx-background-color: #24292b;
+}
+
+/* La región .content interna suele tener fondo blanco duro.
+   La hacemos TRANSPARENTE para que se vea el fondo del
+   form-container o del propio DialogPane. */
+.dialog-pane.dark-theme > .content,
+.dialog-pane.dark-theme > .content > * {
+    -fx-background-color: transparent;
+}
+
+/* Header / button-bar */
+.dialog-pane.dark-theme > .button-bar,
+.dialog-pane.dark-theme > .button-bar > .container {
+    -fx-background-color: #24292b;
+}
+
+/* --- Caso B: el DialogPane está dentro de otro root oscuro --- */
+.root.dark-theme .dialog-pane {
+    -fx-background-color: #24292b;
+}
+.root.dark-theme .dialog-pane > .content,
+.root.dark-theme .dialog-pane > .content > * {
+    -fx-background-color: transparent;
+}
+.root.dark-theme .dialog-pane > .button-bar,
+.root.dark-theme .dialog-pane > .button-bar > .container {
+    -fx-background-color: #24292b;
+}
+
+/* ============================================================
+   form-container — funciona como dialog-content O como scene-root
+   ============================================================ */
+
+/* Caso 1: está anidado dentro de un root oscuro */
+.root.dark-theme .form-container {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+
+/* Caso 2: el form-container ES el Scene root (VBox raíz del FXML) */
+.form-container.dark-theme,
+.form-container.root.dark-theme {
+    -fx-background-color: #24292b;
+    -fx-border-color: #343a3d;
+}
+
+/* Labels dentro de cualquier form (anidados o directos) */
+.root.dark-theme .form-container .label,
+.form-container.dark-theme .label {
+    -fx-text-fill: #d7dbde;
+}
+
+.root.dark-theme .form-container .form-title,
+.form-container.dark-theme .form-title {
+    -fx-text-fill: #e8eaed;
+}
+
+.root.dark-theme .form-container .form-label,
+.form-container.dark-theme .form-label {
+    -fx-text-fill: #b8bfc4;
+}
+
+/* ============================================================
+   CheckBox en modo oscuro (RoomFormView tiene 4)
+   ============================================================ */
+.root.dark-theme .check-box,
+.form-container.dark-theme .check-box {
+    -fx-text-fill: #d7dbde;
+}
+.root.dark-theme .check-box .box,
+.form-container.dark-theme .check-box .box {
+    -fx-background-color: #2a3033;
+    -fx-border-color: #3a4144;
+}
+.root.dark-theme .check-box:selected .box,
+.form-container.dark-theme .check-box:selected .box {
+    -fx-background-color: #3E864D;
+    -fx-border-color: #3E864D;
+}
+.root.dark-theme .check-box:selected .mark,
+.form-container.dark-theme .check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+/* ============================================================
+   RoomView / UnavailableRooms
+   ============================================================ */
+
+/* VBox raíz de RoomView usa styleClass="room-table" (raro, pero ok) */
+.root.dark-theme .room-table,
+.room-table.dark-theme {
+    -fx-background-color: #1b1f1d;
+}
+
+/* SplitPane con clase mal escrita `.SplitPane` (mayúscula) */
+.root.dark-theme .SplitPane,
+.SplitPane.dark-theme {
+    -fx-background-color: #1b1f1d;
+}
+.root.dark-theme .SplitPane > .split-pane-divider {
+    -fx-background-color: #343a3d;
+    -fx-padding: 0 2;
+}
+
+/* Detalle: el `.detail-status` es un Label, necesita color claro */
+.root.dark-theme .detail-status,
+.detail-status.dark-theme {
+    -fx-text-fill: #d7dbde;
+}
+
+/* ============================================================
+   FONDO BLANCO DURO en cualquier VBox raíz sin styleClass
+   ------------------------------------------------------------
+   Por si UnavailableRoomsView tiene un VBox raíz sin clase,
+   forzamos el color a través del ancestro oscuro. Solo aplica
+   dentro del centerPane (que sí tiene la clase .dark-theme).
+   ============================================================ */
+.root.dark-theme .content-main {
+    -fx-background-color: #1b1f1d;
+}

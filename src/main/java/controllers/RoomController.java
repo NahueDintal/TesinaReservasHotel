@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import utils.Alerts;
+import utils.StyleManager;
 
 import java.io.IOException;
 
@@ -124,7 +125,7 @@ public class RoomController {
           setText("Ocupada");
           setStyle("-fx-text-fill: #c0392b; -fx-font-weight: bold;");
         } else if (noDisp) {
-          setText("Fuera de sercio");
+          setText("Fuera de servicio");
           setStyle("-fx-text-fill: #d97706; -fx-font-weight: bold;");
         } else {
           setText("Disponible");
@@ -175,7 +176,7 @@ public class RoomController {
     btnNewRoom.setOnAction(e -> openRoomForm(null));
     btnViewUnavailable.setOnAction(e -> openUnavailableRoomsWindow());
     btnEdit.setOnAction(e -> openRoomForm(tableRooms.getSelectionModel().getSelectedItem()));
-    btnOutOfService.setOnAction(e -> markAsOutOfService()); // → "fuera de servicio"
+    btnOutOfService.setOnAction(e -> markAsOutOfService());
     btnDelete.setOnAction(e -> deleteRoom());
   }
 
@@ -184,7 +185,6 @@ public class RoomController {
       masterRoomList.setAll(roomDAO.listActive());
       masterRoomList.removeIf(Room::isOutOfService);
 
-      // 👇 NUEVO: qué habitaciones están ocupadas HOY
       LocalDate today = LocalDate.now();
       Map<Integer, List<OccupiedInterval>> occupied = roomOccupancyDAO.findOccupiedInRange(today, today.plusDays(1));
       occupiedTodayRoomNumbers = occupied.keySet();
@@ -244,6 +244,7 @@ public class RoomController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/RoomFormView.fxml"));
       Stage stage = new Stage();
       stage.setScene(new Scene(loader.load()));
+      StyleManager.applyStyles(stage);                                  // ← NUEVO
       stage.initModality(Modality.WINDOW_MODAL);
       stage.initOwner(tableRooms.getScene().getWindow());
       stage.setTitle(room == null ? "Nueva Habitación" : "Editar Habitación");
@@ -267,6 +268,7 @@ public class RoomController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UnavailableRoomsView.fxml"));
       Stage stage = new Stage();
       stage.setScene(new Scene(loader.load()));
+      StyleManager.applyStyles(stage);                                  // ← NUEVO
       stage.setTitle("Habitaciones Fuera de Servicio");
       stage.initModality(Modality.WINDOW_MODAL);
       stage.initOwner(tableRooms.getScene().getWindow());

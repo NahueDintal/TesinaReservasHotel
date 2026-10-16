@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import models.Room;
 import repositories.RoomDAO;
+import utils.StyleManager;
 
 public class UnavailableRoomsController {
 
@@ -52,7 +53,7 @@ public class UnavailableRoomsController {
         String lower = newVal.toLowerCase();
         return String.valueOf(room.getNumber()).contains(lower) ||
             String.valueOf(room.getFloor()).contains(lower) ||
-            (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) || // <-- corregido
+            (room.getTypeName() != null && room.getTypeName().toLowerCase().contains(lower)) ||
             String.valueOf(room.getCapacity()).contains(lower) ||
             String.valueOf(room.getPrice()).contains(lower);
       });
@@ -87,6 +88,7 @@ public class UnavailableRoomsController {
     alert.setTitle("Reactivar habitación");
     alert.setHeaderText("¿Desea volver a marcar como disponible esta habitación?");
     alert.setContentText("La habitación " + selected.getNumber() + " estará disponible nuevamente.");
+    StyleManager.applyStyles(alert.getDialogPane());                 // ← NUEVO
     alert.showAndWait().ifPresent(response -> {
       if (response == ButtonType.OK) {
         try {
@@ -96,8 +98,6 @@ public class UnavailableRoomsController {
             filteredUnavailable.remove(selected);
             tableUnavailableRooms.refresh();
             updateCounter();
-            // showAlert("Éxito", "Habitación reactivada",
-            // "La habitación ha sido reactivada correctamente.");
           }
         } catch (RuntimeException e) {
           showAlert("Error", "No se pudo reactivar la habitación", e.getMessage());
@@ -116,6 +116,7 @@ public class UnavailableRoomsController {
     alert.setTitle(title);
     alert.setHeaderText(header);
     alert.setContentText(content);
+    StyleManager.applyStyles(alert.getDialogPane());                 // ← NUEVO
     alert.showAndWait();
   }
 }

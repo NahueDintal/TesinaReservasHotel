@@ -13,16 +13,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomController">
+<AnchorPane stylesheets="@/css/style.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.RoomController">
 
-  <VBox spacing="15" styleClass="room-table" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+  <VBox spacing="15" styleClass="content-main"
+        AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+        AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
     <padding>
       <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
     <HBox alignment="CENTER_LEFT" spacing="15">
-      <Label styleClass="room-table" text="Habitaciones">
-        <font><Font name="System Bold" size="24.0" /></font>
+      <Label styleClass="section-title" text="Habitaciones">
+        <font><Font size="24.0" /></font>
       </Label>
       <Region HBox.hgrow="ALWAYS" />
       <Button fx:id="btnNewRoom" styleClass="btn-primary" text="Nuevo" />
@@ -33,7 +38,7 @@
         <TextField fx:id="txtSearch" promptText="🔍 Buscar por número, tipo, vista, precio..." styleClass="search-field" HBox.hgrow="ALWAYS" />
     </HBox>
 
-    <SplitPane dividerPositions="0.75" styleClass="SplitPane" VBox.vgrow="ALWAYS">
+    <SplitPane dividerPositions="0.75" styleClass="split-pane" VBox.vgrow="ALWAYS">
       <VBox spacing="10">
         <TableView fx:id="tableRooms" styleClass="customer-table" VBox.vgrow="ALWAYS">
           <columns>
