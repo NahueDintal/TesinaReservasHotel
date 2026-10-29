@@ -1,0 +1,3 @@
+
+agregar hashmap para que carge en el buffer las grillas!
+listar personas que se hospedan por tema seguro
