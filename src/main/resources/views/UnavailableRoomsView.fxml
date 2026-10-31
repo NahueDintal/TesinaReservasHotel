@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox styleClass="content-main" spacing="15" stylesheets="@/css/style.css"
+<VBox styleClass="content-main" spacing="15"
       xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.UnavailableRoomsController">

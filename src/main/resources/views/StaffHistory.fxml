@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="controllers.StaffHistoryController"
       styleClass="form-container"
       spacing="15" prefWidth="500" prefHeight="400">

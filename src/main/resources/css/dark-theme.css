@@ -1,0 +1,188 @@
+/* ======================================================
+   DARK-THEME.CSS - Colores del modo oscuro
+   ====================================================== */
+
+.root.dark-theme { -fx-background-color: #1b1f1d; }
+.root.dark-theme .content-main, .root.dark-theme .contenido-principal, .root.dark-theme .dashboard-scroll, .root.dark-theme .dashboard-scroll > .viewport, .root.dark-theme .dashboard-content { -fx-background-color: #1b1f1d; -fx-background: #1b1f1d; }
+
+/* --- SIDEBAR --- */
+.root.dark-theme .sidebar { -fx-background-color: #14361f; }
+.root.dark-theme .sidebar-btn:hover, .root.dark-theme .sidebar-btn:selected, .root.dark-theme .hamburger-button:hover { -fx-background-color: #0e2a17; }
+/* Forzamos a que los textos de la sidebar sigan blancos */
+.root.dark-theme .sidebar-btn, .root.dark-theme .sidebar-titulo, .root.dark-theme .sidebar-usuario, .root.dark-theme .hamburger-button { -fx-text-fill: white; }
+
+/* --- TEXTOS GENERALES --- */
+.root.dark-theme .section-title, .root.dark-theme .titulo-seccion, .root.dark-theme .form-title, .root.dark-theme .card-title, .root.dark-theme .detail-name, .root.dark-theme .detail-title, .root.dark-theme .detail-value-field, .root.dark-theme .detail-value-field-name { -fx-text-fill: #e8eaed; }
+.root.dark-theme .subtitulo-seccion, .root.dark-theme .section-subtitle, .root.dark-theme .footer-info, .root.dark-theme .info-pie, .root.dark-theme .detail-label, .root.dark-theme .detail-section-title, .root.dark-theme .form-label { -fx-text-fill: #9aa0a6; }
+
+/* --- TARJETAS --- */
+.root.dark-theme .card, .root.dark-theme .form-container, .root.dark-theme .detail-panel, .root.dark-theme .table-container, .root.dark-theme .rooms-container, .root.dark-theme .room-card, .root.dark-theme .catalog-card, .root.dark-theme .report-tile, .root.dark-theme .report-embed-panel { -fx-background-color: #24292b; -fx-border-color: #343a3d; }
+
+/* --- CAMPOS --- */
+.root.dark-theme .text-field, .root.dark-theme .search-field, .root.dark-theme .combo-box, .root.dark-theme .reservation-field, .root.dark-theme .reservation-textarea, .root.dark-theme .reservation-search { -fx-background-color: #2a3033; -fx-text-fill: #e8eaed; -fx-prompt-text-fill: #7a8085; -fx-border-color: #3a4144; }
+.root.dark-theme .text-field:focused, .root.dark-theme .combo-box:focused, .root.dark-theme .reservation-field:focused, .root.dark-theme .reservation-textarea:focused { -fx-border-color: #3E864D; }
+.root.dark-theme .text-field:disabled { -fx-background-color: #1f2426; -fx-text-fill: #7a8085; }
+.root.dark-theme .combo-box .list-cell { -fx-text-fill: #e8eaed; }
+.root.dark-theme .combo-box .arrow { -fx-background-color: #9aa0a6; }
+.root.dark-theme .combo-box-popup .list-view { -fx-background-color: #2a3033; -fx-border-color: #3a4144; }
+.root.dark-theme .combo-box-popup .list-view .list-cell { -fx-background-color: #2a3033; -fx-text-fill: #e8eaed; }
+.root.dark-theme .combo-box-popup .list-view .list-cell:hover { -fx-background-color: #2f4a37; }
+.root.dark-theme .detail-value-field, .root.dark-theme .detail-value-field-name { -fx-text-fill: #e8eaed; -fx-background-color: transparent; -fx-border-color: transparent; }
+
+/* --- TABLAS --- */
+.root.dark-theme .customer-table, .root.dark-theme .reservation-table, .root.dark-theme .consumption-management-table { -fx-background-color: #24292b; -fx-border-color: #343a3d; }
+.root.dark-theme .customer-table .column-header-background, .root.dark-theme .reservation-table .column-header-background, .root.dark-theme .consumption-management-table .column-header-background { -fx-background-color: #1f2426; }
+.root.dark-theme .customer-table .column-header .label, .root.dark-theme .reservation-table .column-header .label, .root.dark-theme .consumption-management-table .column-header .label { -fx-text-fill: #b8bfc4; }
+.root.dark-theme .customer-table .table-row-cell, .root.dark-theme .reservation-table .table-row-cell, .root.dark-theme .consumption-management-table .table-row-cell { -fx-background-color: #24292b; -fx-border-color: transparent transparent #2f3437 transparent; }
+.root.dark-theme .customer-table .table-row-cell:odd, .root.dark-theme .consumption-management-table .table-row-cell:odd { -fx-background-color: #282d30; }
+.root.dark-theme .customer-table .table-row-cell:hover, .root.dark-theme .reservation-table .table-row-cell:hover, .root.dark-theme .consumption-management-table .table-row-cell:hover { -fx-background-color: #2f4a37; }
+.root.dark-theme .customer-table .table-row-cell:selected, .root.dark-theme .reservation-table .table-row-cell:selected { -fx-background-color: #345c40; }
+.root.dark-theme .customer-table .table-cell, .root.dark-theme .reservation-table .table-cell, .root.dark-theme .consumption-management-table .table-cell { -fx-text-fill: #d7dbde; }
+
+/* --- REPORTES --- */
+.root.dark-theme .report-tile-title { -fx-text-fill: #8fd19b; }
+.root.dark-theme .report-tile-desc { -fx-text-fill: #9aa0a6; }
+.root.dark-theme .report-tile:hover { -fx-background-color: #2a3033; -fx-border-color: #3E864D; }
+.root.dark-theme .report-embed-panel .label,
+.root.dark-theme .report-embed-panel .text-field { -fx-text-fill: #ffffff !important; }
+
+/* --- BOTONES SECUNDARIOS --- */
+.root.dark-theme .btn-secondary, .root.dark-theme .btn-detail, .root.dark-theme .reservation-cancel-button { -fx-background-color: #2a3033; -fx-text-fill: #d7dbde; -fx-border-color: #3a4144; }
+.root.dark-theme .btn-secondary:hover, .root.dark-theme .btn-detail:hover, .root.dark-theme .reservation-cancel-button:hover { -fx-background-color: #343a3d; }
+
+/* --- PLANILLA (BOOKING CHART) OSCURO --- */
+.root.dark-theme .booking-chart-area, .root.dark-theme .calendar-container, .root.dark-theme .booking-fixed-header, .root.dark-theme .planilla-grid, .root.dark-theme .room-column, .root.dark-theme .room-column-container { -fx-background-color: #1b1f1d; }
+.root.dark-theme .top-toolbar { -fx-background-color: #24292b; -fx-border-color: transparent transparent #343a3d transparent; }
+.root.dark-theme .segmented-control { -fx-background-color: #1f2426; }
+.root.dark-theme .filter-btn { -fx-text-fill: #b8bfc4; }
+.root.dark-theme .filter-btn:hover { -fx-background-color: #2a3033; }
+.root.dark-theme .filter-btn:selected { -fx-background-color: #2e7d32; -fx-text-fill: white; }
+.root.dark-theme .nav-arrow-btn { -fx-background-color: #2a3033; -fx-text-fill: #d7dbde; }
+.root.dark-theme .nav-arrow-btn:hover { -fx-background-color: #343a3d; }
+.root.dark-theme .month-label { -fx-text-fill: #e8eaed; }
+.root.dark-theme .corner-header { -fx-background-color: #0e2a17; -fx-text-fill: #e8eaed; -fx-border-color: transparent #0e2a17 #0e2a17 transparent; }
+.root.dark-theme .day-header { -fx-background-color: #1f2426; -fx-text-fill: #d7dbde; -fx-border-color: transparent #343a3d #343a3d transparent; }
+.root.dark-theme .day-header-weekend { -fx-background-color: #2e1f22; -fx-text-fill: #e57373; -fx-border-color: transparent #343a3d #343a3d transparent; }
+.root.dark-theme .room-header { -fx-background-color: #1f2426; -fx-text-fill: #d7dbde; -fx-border-color: transparent #343a3d #343a3d transparent; }
+.root.dark-theme .room-row { -fx-background-color: #24292b; }
+.root.dark-theme .booking-cell, .root.dark-theme .reservation-container { -fx-background-color: #24292b; -fx-border-color: transparent #343a3d #343a3d transparent; }
+.root.dark-theme .header-scroll > .viewport, .root.dark-theme .room-scroll > .viewport, .root.dark-theme .planilla-scroll > .viewport { -fx-background-color: #1b1f1d; }
+
+/* ======================================================
+   FIXES - COLORES FALTANTES (MODO OSCURO)
+   ====================================================== */
+
+/* --- Textos de la Planilla (días y habitaciones) --- */
+.root.dark-theme .day-header .label, .root.dark-theme .day-header { -fx-text-fill: #d7dbde; }
+.root.dark-theme .day-header-weekend .label, .root.dark-theme .day-header-weekend { -fx-text-fill: #e57373; }
+.root.dark-theme .room-header .label, .root.dark-theme .room-header { -fx-text-fill: #d7dbde; }
+
+/* --- Arreglo Configuración (Tarjetas Productos/Servicios) --- */
+.root.dark-theme .catalog-card .label, 
+.root.dark-theme .catalog-card .text { 
+    -fx-text-fill: #e8eaed; 
+    -fx-fill: #e8eaed; 
+}
+
+/* --- Arreglo Reportes (Textos de las tarjetas y tablas) --- */
+.root.dark-theme .report-embed-panel .label, 
+.root.dark-theme .report-embed-panel .text-field,
+.root.dark-theme .report-embed-panel .table-cell { 
+    -fx-text-fill: #e8eaed !important; 
+}
+
+/* ======================================================
+   FIXES FINALES - MODO OSCURO
+   ====================================================== */
+
+/* --- BOTÓN NUEVA RESERVA (OSCURO) --- */
+.root.dark-theme .btn-nueva-reserva {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+}
+.root.dark-theme .btn-nueva-reserva:hover { -fx-background-color: #3e864d; }
+.root.dark-theme .btn-nueva-reserva:pressed { -fx-background-color: #256b29; }
+
+/* --- ARREGLO DEL SWITCH DE TEMA (Que no sea invisible) --- */
+.root.dark-theme .theme-switch { 
+    -fx-text-fill: #e8eaed; 
+}
+.root.dark-theme .theme-switch:hover { 
+    -fx-text-fill: #ffffff; 
+}
+
+/* --- BARRAS DE ESTADO (PLANILLA) EN OSCURO --- */
+/* Usamos los mismos colores, pero si querés que sean más brillantes para el fondo oscuro, podés cambiar estos HEX */
+.root.dark-theme .pending-block { -fx-background-color: #e8d47a; }
+.root.dark-theme .confirmed-block { -fx-background-color: #76aa7d; }
+.root.dark-theme .finished-block { -fx-background-color: #d0d0d0; }
+
+.root.dark-theme .booking-block.selected-block { 
+    -fx-border-color: #64b5f6; /* Azul brillante para que resalte en oscuro */
+    -fx-border-width: 2; 
+    -fx-border-radius: 5; 
+}
+.root.dark-theme .booking-block.hotel-tour-block { 
+    -fx-background-color: linear-gradient(to right, #7b1fa2, #9c27b0); 
+    -fx-border-color: #4a0072; 
+}
+
+/* ======================================================
+   FIXES FINALES - MODO OSCURO (SWITCH Y REPORTES)
+   ====================================================== */
+
+/* --- SWITCH DE TEMA: Que se vea la bolita y el riel --- */
+.root.dark-theme .theme-switch .switch-track {
+    -fx-background-color: #3a4144; /* Gris oscuro para el carril */
+    -fx-border-color: #5a6267;
+}
+.root.dark-theme .theme-switch:selected .switch-track {
+    -fx-background-color: #f39c12; /* Naranja cuando está en oscuro */
+    -fx-border-color: #f39c12;
+}
+.root.dark-theme .theme-switch .switch-thumb {
+    -fx-background-color: #ffffff; /* Bolita blanca brillante */
+}
+
+/* --- REPORTES EMBEBIDOS: Forzar fondo oscuro --- */
+/* Esto ataca al panel del cronograma y cualquier contenedor interno */
+.root.dark-theme .report-embed-content,
+.root.dark-theme .report-embed-panel VBox,
+.root.dark-theme .report-embed-panel HBox,
+.root.dark-theme .report-embed-panel AnchorPane,
+.root.dark-theme .report-embed-panel GridPane,
+.root.dark-theme .report-embed-panel .card {
+    -fx-background-color: #24292b !important;
+}
+
+/* Tarjetas blancas de "Check-ins del día", etc. */
+.root.dark-theme .report-embed-panel .card,
+.root.dark-theme .report-embed-panel .stats-card {
+    -fx-background-color: #2a3033 !important;
+    -fx-border-color: #3a4144 !important;
+}
+
+/* Tablas dentro del reporte */
+.root.dark-theme .report-embed-panel .table-view {
+    -fx-background-color: #24292b !important;
+}
+.root.dark-theme .report-embed-panel .table-view .column-header-background {
+    -fx-background-color: #1f2426 !important;
+}
+.root.dark-theme .report-embed-panel .table-view .table-row-cell {
+    -fx-background-color: #24292b !important;
+    -fx-border-color: transparent transparent #343a3d transparent !important;
+}
+.root.dark-theme .report-embed-panel .table-view .table-row-cell:odd {
+    -fx-background-color: #282d30 !important;
+}
+.root.dark-theme .report-embed-panel .table-view .table-cell {
+    -fx-text-fill: #e8eaed !important;
+}
+
+/* Si el reporte tiene sus propios botones grises */
+.root.dark-theme .report-embed-panel .button {
+    -fx-background-color: #2a3033 !important;
+    -fx-text-fill: #d7dbde !important;
+    -fx-border-color: #3a4144 !important;
+}

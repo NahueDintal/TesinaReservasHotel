@@ -11,7 +11,7 @@
 
 <VBox spacing="18"
       styleClass="form-container"
-      stylesheets="@/css/style.css"
+     
       xmlns="http://javafx.com/javafx/26"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.LoginController"

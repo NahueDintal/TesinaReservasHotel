@@ -180,7 +180,10 @@ public class DashboardController {
 
     boolean dark = utils.ThemeManager.isDark();
     btnTheme.setSelected(dark);
-    btnTheme.setText(dark ? "Modo claro" : "Modo oscuro");
+
+    // Invertimos el texto para que muestre el estado actual
+    btnTheme.setText(dark ? "Modo oscuro" : "Modo claro");
+
     btnTheme.setTooltip(new Tooltip(dark
         ? "Cambiar a tema claro"
         : "Cambiar a tema oscuro"));

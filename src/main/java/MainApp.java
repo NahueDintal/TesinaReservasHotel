@@ -11,10 +11,9 @@ public class MainApp extends Application {
   public void start(Stage primaryStage) throws Exception {
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Dashboard.fxml"));
     BorderPane root = loader.load();
-    Scene scene = new Scene(root, 1200, 800);
-    // Aplicar el CSS global a la escena principal
+    Scene scene = new Scene(root);
     StyleManager.applyStyles(scene);
-    scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+    // scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
     primaryStage.setTitle("Sistema de Reservas - Dashboard");
     primaryStage.setScene(scene);
     primaryStage.setMaximized(true);

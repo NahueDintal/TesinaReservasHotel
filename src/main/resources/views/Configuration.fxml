@@ -9,7 +9,7 @@
 
 <VBox spacing="25"
       styleClass="content-main"
-      stylesheets="@/css/style.css"
+     
       xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.ConfigurationController">

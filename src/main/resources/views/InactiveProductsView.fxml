@@ -14,7 +14,7 @@
 <BorderPane prefHeight="500.0"
             prefWidth="750.0"
             styleClass="content-main"
-            stylesheets="@/css/style.css"
+           
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.InactiveProductsController">

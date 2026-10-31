@@ -14,14 +14,19 @@ import java.util.prefs.Preferences;
 /**
  * Gestor central de estilos y tema (claro/oscuro).
  * - Aplica el CSS de la app a Scenes, Stages y DialogPanes.
+ * - Separa la estructura (base.css) de los colores (light-theme.css /
+ * dark-theme.css).
  * - Recuerda el tema elegido entre ejecuciones.
- * - Provee helpers para Alertas/confirmaciones.
  */
 public final class StyleManager {
 
   private static final String DARK_CLASS = "dark-theme";
   private static final String THEME_KEY = "darkTheme";
-  private static final String CSS_PATH = "/css/style.css";
+
+  // Nuevas rutas de los archivos CSS
+  private static final String CSS_BASE = "/css/base.css";
+  private static final String CSS_LIGHT = "/css/light-theme.css";
+  private static final String CSS_DARK = "/css/dark-theme.css";
 
   private static final Preferences PREFS = Preferences.userNodeForPackage(StyleManager.class);
 
@@ -42,16 +47,20 @@ public final class StyleManager {
   public static void setDark(boolean value) {
     dark = value;
     PREFS.putBoolean(THEME_KEY, value);
+
+    // Al cambiar el tema, actualizamos TODAS las ventanas abiertas automáticamente
+    refreshAllWindows();
   }
 
   public static void toggle() {
     setDark(!dark);
   }
 
-  /** Aplica el tema actual al Parent indicado (agrega/quita .dark-theme). */
+  /** Aplica la clase dark-theme al root si es necesario. */
   public static void applyTheme(Parent root) {
     if (root == null)
       return;
+
     if (dark) {
       if (!root.getStyleClass().contains(DARK_CLASS)) {
         root.getStyleClass().add(DARK_CLASS);
@@ -61,7 +70,6 @@ public final class StyleManager {
     }
   }
 
-  // Alias por si en algún lado quedó la llamada `applyTo`
   public static void applyTo(Parent root) {
     applyTheme(root);
   }
@@ -89,7 +97,7 @@ public final class StyleManager {
   public static void applyStyles(Scene scene) {
     if (scene == null)
       return;
-    ensureStylesheet(scene);
+    updateStylesheet(scene);
     applyTheme(scene.getRoot());
   }
 
@@ -105,35 +113,64 @@ public final class StyleManager {
 
     Scene scene = dialogPane.getScene();
     if (scene != null) {
-      ensureStylesheet(scene);
+      updateStylesheet(scene);
     }
     applyTheme(dialogPane);
   }
 
-  /** Alias por compatibilidad: algunos controllers llaman `applyTo(Scene)`. */
   public static void applyTo(Scene scene) {
     applyStyles(scene);
   }
 
-  /** Alias por compatibilidad con nodos arbitrarios. */
   public static void applyTo(javafx.scene.Node node) {
     if (node == null || node.getScene() == null)
       return;
     applyStyles(node.getScene());
   }
 
-  /** Agrega el CSS a la Scene solo si no estaba ya (evita duplicados). */
-  private static void ensureStylesheet(Scene scene) {
+  /**
+   * Actualiza las hojas de estilo de una escena.
+   * Remueve las anteriores y agrega la base + el tema actual.
+   */
+  private static void updateStylesheet(Scene scene) {
     try {
-      java.net.URL url = StyleManager.class.getResource(CSS_PATH);
-      if (url == null)
-        return;
-      String css = url.toExternalForm();
-      if (!scene.getStylesheets().contains(css)) {
-        scene.getStylesheets().add(css);
+      String baseUrl = getCssResource(CSS_BASE);
+      String lightUrl = getCssResource(CSS_LIGHT);
+      String darkUrl = getCssResource(CSS_DARK);
+
+      // 1. Limpiamos por si ya estaban cargados (para evitar duplicados y permitir el
+      // cambio)
+      scene.getStylesheets().removeAll(baseUrl, lightUrl, darkUrl);
+
+      // 2. Agregamos el CSS base (estructura)
+      if (baseUrl != null)
+        scene.getStylesheets().add(baseUrl);
+
+      // 3. Agregamos el CSS del tema correspondiente
+      if (dark) {
+        if (darkUrl != null)
+          scene.getStylesheets().add(darkUrl);
+      } else {
+        if (lightUrl != null)
+          scene.getStylesheets().add(lightUrl);
       }
-    } catch (Exception ignored) {
-      // Si no encuentra el CSS, no rompemos la app
+    } catch (Exception e) {
+      System.err.println("Error al cargar los estilos: " + e.getMessage());
+    }
+  }
+
+  private static String getCssResource(String path) {
+    java.net.URL url = StyleManager.class.getResource(path);
+    return url != null ? url.toExternalForm() : null;
+  }
+
+  /** Itera sobre todas las ventanas abiertas y les actualiza el CSS. */
+  private static void refreshAllWindows() {
+    for (Window window : Window.getWindows()) {
+      if (window.getScene() != null) {
+        updateStylesheet(window.getScene());
+        applyTheme(window.getScene().getRoot());
+      }
     }
   }
 
@@ -141,11 +178,6 @@ public final class StyleManager {
   // DIÁLOGOS Y CONFIRMACIONES
   // ==========================================================
 
-  /**
-   * Aplica los estilos a un Alert y le pone una clase extra
-   * (error-alert / warning-alert / information-alert) para que
-   * el CSS pueda pintarle el header según el tipo.
-   */
   public static void configureDialog(Alert alert) {
     if (alert == null)
       return;
@@ -153,8 +185,7 @@ public final class StyleManager {
     applyStyles(alert.getDialogPane());
 
     DialogPane pane = alert.getDialogPane();
-    pane.getStyleClass().removeAll(
-        "error-alert", "warning-alert", "information-alert");
+    pane.getStyleClass().removeAll("error-alert", "warning-alert", "information-alert");
 
     switch (alert.getAlertType()) {
       case ERROR -> pane.getStyleClass().add("error-alert");
@@ -163,13 +194,7 @@ public final class StyleManager {
     }
   }
 
-  /**
-   * Muestra un Alert de confirmación con OK / Cancelar
-   * y devuelve true si el usuario confirma con OK.
-   */
-  public static boolean showConfirmation(String title,
-      String header,
-      String content) {
+  public static boolean showConfirmation(String title, String header, String content) {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setTitle(title);
     alert.setHeaderText(header);
