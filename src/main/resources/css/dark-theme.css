@@ -31,7 +31,7 @@
 
 /* --- TABLAS --- */
 .root.dark-theme .customer-table, .root.dark-theme .reservation-table, .root.dark-theme .consumption-management-table { -fx-background-color: #24292b; -fx-border-color: #343a3d; }
-.root.dark-theme .customer-table .column-header-background, .root.dark-theme .reservation-table .column-header-background, .root.dark-theme .consumption-management-table .column-header-background { -fx-background-color: #1f2426; }
+.root.dark-theme .customer-table .column-header-background, .root.dark-theme .reservation-table .column-header-background, .root.dark-theme .consumption-management-table .column-header-background { -fx-background-color: #1f2426 !important; }
 .root.dark-theme .customer-table .column-header .label, .root.dark-theme .reservation-table .column-header .label, .root.dark-theme .consumption-management-table .column-header .label { -fx-text-fill: #b8bfc4; }
 .root.dark-theme .customer-table .table-row-cell, .root.dark-theme .reservation-table .table-row-cell, .root.dark-theme .consumption-management-table .table-row-cell { -fx-background-color: #24292b; -fx-border-color: transparent transparent #2f3437 transparent; }
 .root.dark-theme .customer-table .table-row-cell:odd, .root.dark-theme .consumption-management-table .table-row-cell:odd { -fx-background-color: #282d30; }
@@ -112,19 +112,21 @@
 }
 
 /* --- BARRAS DE ESTADO (PLANILLA) EN OSCURO --- */
-/* Usamos los mismos colores, pero si querés que sean más brillantes para el fondo oscuro, podés cambiar estos HEX */
-.root.dark-theme .pending-block { -fx-background-color: #e8d47a; }
-.root.dark-theme .confirmed-block { -fx-background-color: #76aa7d; }
-.root.dark-theme .finished-block { -fx-background-color: #d0d0d0; }
 
-.root.dark-theme .booking-block.selected-block { 
-    -fx-border-color: #64b5f6; /* Azul brillante para que resalte en oscuro */
-    -fx-border-width: 2; 
+.root.dark-theme .pending-block { 
+    -fx-background-color: #d68910; /* Ámbar oscuro */
+    -fx-background-radius: 5; 
     -fx-border-radius: 5; 
 }
-.root.dark-theme .booking-block.hotel-tour-block { 
-    -fx-background-color: linear-gradient(to right, #7b1fa2, #9c27b0); 
-    -fx-border-color: #4a0072; 
+.root.dark-theme .confirmed-block { 
+    -fx-background-color: #1e8449; /* Verde profundo */
+    -fx-background-radius: 5; 
+    -fx-border-radius: 5; 
+}
+.root.dark-theme .finished-block { 
+    -fx-background-color: #7f8c8d; /* Gris oscuro */
+    -fx-background-radius: 5; 
+    -fx-border-radius: 5; 
 }
 
 /* ======================================================
@@ -185,4 +187,102 @@
     -fx-background-color: #2a3033 !important;
     -fx-text-fill: #d7dbde !important;
     -fx-border-color: #3a4144 !important;
+}
+/* --- Estados en la Grilla de Reservas (Tabla) en Oscuro --- */
+.root.dark-theme .estado-confirmada {
+    -fx-background-color: #1e8449; 
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8 2 8;
+    -fx-font-weight: bold;
+}
+.root.dark-theme .estado-pendiente {
+    -fx-background-color: #d68910; 
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8 2 8;
+    -fx-font-weight: bold;
+}
+
+
+/* --- Estados en la Tabla de Reservas (Modo Oscuro) --- */
+.root.dark-theme .estado-confirmada {
+    -fx-background-color: #1e8449; /* Mismo verde oscuro que la planilla */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.root.dark-theme .estado-pendiente {
+    -fx-background-color: #d68910; /* Mismo naranja oscuro que la planilla */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.root.dark-theme .estado-cancelada {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.root.dark-theme .estado-finalizada {
+    -fx-background-color: #7f8c8d;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+/* --- Arreglo del encabezado gris claro en la tabla --- */
+.root.dark-theme .reservations-table .column-header-background,
+.root.dark-theme .reservations-table .column-header-background .filler,
+.root.dark-theme .reservations-table .column-header {
+    -fx-background-color: #1f2426 !important; /* Forzamos el fondo oscuro */
+    -fx-border-color: transparent transparent #343a3d transparent !important;
+}
+
+.root.dark-theme .reservations-table .column-header .label {
+    -fx-text-fill: #e8eaed !important; /* Texto claro para leer bien */
+}
+/* --- COLORES DE ESTADOS EN LA TABLA (MODO OSCURO) --- */
+.root.dark-theme .estado-confirmada {
+    -fx-background-color: #1e8449; /* Verde oscuro igual a la planilla */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.root.dark-theme .estado-pendiente {
+    -fx-background-color: #d68910; /* Ámbar oscuro igual a la planilla */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.root.dark-theme .estado-cancelada {
+    -fx-background-color: #c0392b; /* Rojo oscuro */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.root.dark-theme .estado-finalizada {
+    -fx-background-color: #7f8c8d; /* Gris oscuro */
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
 }

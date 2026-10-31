@@ -98,30 +98,25 @@
    FIXES - COLORES FALTANTES (MODO CLARO)
    ====================================================== */
 
-/* --- Barras de estado en la Planilla --- */
-.booking-block { -fx-background-radius: 5; -fx-border-radius: 5; }
-.pending-block { -fx-background-color: #e8d47a; }
-.confirmed-block { -fx-background-color: #76aa7d; }
-.finished-block { -fx-background-color: #d0d0d0; }
-.booking-block.selected-block { 
-    -fx-border-color: #2E6D3D; 
-    -fx-border-width: 2; 
+/* --- Barras de estado en la Planilla (MODO CLARO) --- */
+.booking-block { 
+    -fx-background-radius: 5; 
     -fx-border-radius: 5; 
 }
-.booking-block.hotel-tour-block { 
-    -fx-background-color: linear-gradient(to right, #7b1fa2, #9c27b0); 
-    -fx-border-color: #4a0072; 
-    -fx-border-width: 1.5; 
-    -fx-border-radius: 4; 
-    -fx-background-radius: 4; 
+.pending-block { 
+    -fx-background-color: #e67e22; 
+    -fx-background-radius: 5; 
+    -fx-border-radius: 5; 
 }
-.booking-block.hotel-tour-block:hover { 
-    -fx-background-color: linear-gradient(to right, #6a1b9a, #8e24aa); 
+.confirmed-block { 
+    -fx-background-color: #27ae60; 
+    -fx-background-radius: 5; 
+    -fx-border-radius: 5; 
 }
-.booking-block.hotel-tour-block.selected-block { 
-    -fx-border-color: #ffeb3b; 
-    -fx-border-width: 2; 
-    -fx-effect: dropshadow(gaussian, #ffeb3b, 8, 0.5, 0, 0); 
+.finished-block { 
+    -fx-background-color: #95a5a6; 
+    -fx-background-radius: 5; 
+    -fx-border-radius: 5; 
 }
 
 /* --- Textos de la Planilla (días y habitaciones) --- */
@@ -149,3 +144,54 @@
 }
 .btn-nueva-reserva:hover { -fx-background-color: #256b29; }
 .btn-nueva-reserva:pressed { -fx-background-color: #1f5c23; }
+
+
+/* --- Estados en la Grilla de Reservas (Tabla) --- */
+.estado-confirmada {
+    -fx-background-color: #27ae60; 
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8 2 8;
+    -fx-font-weight: bold;
+}
+.estado-pendiente {
+    -fx-background-color: #e67e22; 
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+    -fx-padding: 2 8 2 8;
+    -fx-font-weight: bold;
+}
+
+/* --- Estados en la Tabla de Reservas (Modo Claro) --- */
+.estado-confirmada {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.estado-pendiente {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.estado-cancelada {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.estado-finalizada {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}

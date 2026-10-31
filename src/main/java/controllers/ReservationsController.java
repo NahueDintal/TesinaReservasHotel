@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 public class ReservationsController {
 
-
   private static final int MAX_RESERVAS_VISIBLES = 100;
 
   private final ReservationRepo reservationRepo;
@@ -141,20 +140,20 @@ public class ReservationsController {
     btnReservationConsumptions.setDisable(true);
 
     splitPaneReservations.getDividers().get(0)
-            .positionProperty()
-            .addListener((obs, oldValue, newValue) -> {
+        .positionProperty()
+        .addListener((obs, oldValue, newValue) -> {
 
-              double position = newValue.doubleValue();
+          double position = newValue.doubleValue();
 
-              double min = 0.55;
-              double max = 0.82;
+          double min = 0.55;
+          double max = 0.82;
 
-              if (position < min) {
-                splitPaneReservations.setDividerPosition(0, min);
-              } else if (position > max) {
-                splitPaneReservations.setDividerPosition(0, max);
-              }
-            });
+          if (position < min) {
+            splitPaneReservations.setDividerPosition(0, min);
+          } else if (position > max) {
+            splitPaneReservations.setDividerPosition(0, max);
+          }
+        });
   }
 
   // ============================================================
@@ -191,41 +190,31 @@ public class ReservationsController {
       protected void updateItem(String status, boolean empty) {
         super.updateItem(status, empty);
 
+        // 1. Limpiamos estilos inline viejos y clases anteriores
+        setStyle("");
+        getStyleClass().removeAll("estado-pendiente", "estado-confirmada", "estado-cancelada", "estado-finalizada");
+
         if (empty || status == null) {
           setText(null);
-          setStyle("");
           return;
         }
 
         setText(status);
 
+        // 2. Aplicamos las clases CSS en lugar de setStyle()
         switch (status.toLowerCase()) {
           case "pendiente":
-            setStyle("-fx-background-color: #fdfbea;" +
-                    "-fx-text-fill: #c0a72b;" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-alignment: CENTER;");
+            getStyleClass().add("estado-pendiente");
             break;
           case "confirmada":
-            setStyle("-fx-background-color: #e0ffcc;" +
-                    "-fx-text-fill: #1a6d03;" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-alignment: CENTER;");
+            getStyleClass().add("estado-confirmada");
             break;
           case "cancelada":
-            setStyle("-fx-background-color: #ffdde5;" +
-                    "-fx-text-fill: #8a1527;" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-alignment: CENTER;");
+            getStyleClass().add("estado-cancelada");
             break;
           case "finalizada":
-            setStyle("-fx-background-color: #e8e8e8;" +
-                    "-fx-text-fill: #666666;" +
-                    "-fx-font-weight: bold;" +
-                    "-fx-alignment: CENTER;");
+            getStyleClass().add("estado-finalizada");
             break;
-          default:
-            setStyle("-fx-alignment: CENTER;");
         }
       }
     });
@@ -236,20 +225,20 @@ public class ReservationsController {
   // ============================================================
   private void configureSelection() {
     tblReservations.getSelectionModel()
-            .selectedItemProperty()
-            .addListener((observable, oldReservation, newReservation) -> {
-              if (newReservation != null) {
-                showDetail(newReservation);
-                btnEditReservation.setDisable(false);
-                btnReservationConsumptions.setDisable(false);
-                btnViewMore.setDisable(false);
-              } else {
-                clearDetail();
-                btnEditReservation.setDisable(true);
-                btnReservationConsumptions.setDisable(true);
-                btnViewMore.setDisable(true);
-              }
-            });
+        .selectedItemProperty()
+        .addListener((observable, oldReservation, newReservation) -> {
+          if (newReservation != null) {
+            showDetail(newReservation);
+            btnEditReservation.setDisable(false);
+            btnReservationConsumptions.setDisable(false);
+            btnViewMore.setDisable(false);
+          } else {
+            clearDetail();
+            btnEditReservation.setDisable(true);
+            btnReservationConsumptions.setDisable(true);
+            btnViewMore.setDisable(true);
+          }
+        });
   }
 
   private void showDetail(Reservation reservation) {
@@ -330,8 +319,8 @@ public class ReservationsController {
 
       for (ReservationRoom rr : all) {
         roomsByReservation
-                .computeIfAbsent(rr.getIdReservation(), k -> new ArrayList<>())
-                .add(rr.getRoomNumber());
+            .computeIfAbsent(rr.getIdReservation(), k -> new ArrayList<>())
+            .add(rr.getRoomNumber());
       }
 
       System.out.println("Room assignments loaded: " + all.size());
@@ -399,20 +388,20 @@ public class ReservationsController {
   // ============================================================
   private void configureStatusFilter() {
     cmbEstadoReserva.setItems(FXCollections.observableArrayList(
-            "Activas",
-            "Todas",
-            "Pendiente",
-            "Confirmada",
-            "Finalizada",
-            "Cancelada"));
+        "Activas",
+        "Todas",
+        "Pendiente",
+        "Confirmada",
+        "Finalizada",
+        "Cancelada"));
     cmbEstadoReserva.setValue("Activas");
     cmbEstadoReserva.valueProperty().addListener(
-            (observable, oldValue, newValue) -> applyFilters());
+        (observable, oldValue, newValue) -> applyFilters());
   }
 
   private void configureSearch() {
     txtBuscarReserva.textProperty().addListener(
-            (observable, oldValue, newValue) -> applyFilters());
+        (observable, oldValue, newValue) -> applyFilters());
   }
 
   private void applyFilters() {
@@ -432,10 +421,10 @@ public class ReservationsController {
       String rooms = getRoomNumbersString(reservation.getIdReservation()).toLowerCase();
 
       boolean matchesText = text.isEmpty()
-              || id.contains(text)
-              || customer.contains(text)
-              || status.contains(text)
-              || rooms.contains(text);
+          || id.contains(text)
+          || customer.contains(text)
+          || status.contains(text)
+          || rooms.contains(text);
 
       if (!matchesText)
         continue;
@@ -462,8 +451,8 @@ public class ReservationsController {
 
     boolean hayBusqueda = !text.isEmpty();
     boolean estadoEspecifico = selectedStatus != null
-            && !"Activas".equals(selectedStatus)
-            && !"Todas".equals(selectedStatus);
+        && !"Activas".equals(selectedStatus)
+        && !"Todas".equals(selectedStatus);
 
     ObservableList<Reservation> visibles = FXCollections.observableArrayList();
 
@@ -490,7 +479,7 @@ public class ReservationsController {
   private void updateCounter(int totalEncontradas, int visibles) {
     if (totalEncontradas > MAX_RESERVAS_VISIBLES && visibles == MAX_RESERVAS_VISIBLES) {
       lblTotalReservations.setText(
-              "Mostrando " + visibles + " de " + totalEncontradas + " reservas");
+          "Mostrando " + visibles + " de " + totalEncontradas + " reservas");
     } else {
       lblTotalReservations.setText("Mostrando " + visibles + " reservas");
     }
