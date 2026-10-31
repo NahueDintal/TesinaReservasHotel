@@ -8,7 +8,6 @@
 /* --- SIDEBAR --- */
 .root.dark-theme .sidebar { -fx-background-color: #14361f; }
 .root.dark-theme .sidebar-btn:hover, .root.dark-theme .sidebar-btn:selected, .root.dark-theme .hamburger-button:hover { -fx-background-color: #0e2a17; }
-/* Forzamos a que los textos de la sidebar sigan blancos */
 .root.dark-theme .sidebar-btn, .root.dark-theme .sidebar-titulo, .root.dark-theme .sidebar-usuario, .root.dark-theme .hamburger-button { -fx-text-fill: white; }
 
 /* --- TEXTOS GENERALES --- */
@@ -69,7 +68,7 @@
 .root.dark-theme .header-scroll > .viewport, .root.dark-theme .room-scroll > .viewport, .root.dark-theme .planilla-scroll > .viewport { -fx-background-color: #1b1f1d; }
 
 /* ======================================================
-   FIXES - COLORES FALTANTES (MODO OSCURO)
+   BARRAS Y ESTADOS (MODO OSCURO)
    ====================================================== */
 
 /* --- Textos de la Planilla (días y habitaciones) --- */
@@ -91,10 +90,6 @@
     -fx-text-fill: #e8eaed !important; 
 }
 
-/* ======================================================
-   FIXES FINALES - MODO OSCURO
-   ====================================================== */
-
 /* --- BOTÓN NUEVA RESERVA (OSCURO) --- */
 .root.dark-theme .btn-nueva-reserva {
     -fx-background-color: #2e7d32;
@@ -103,16 +98,14 @@
 .root.dark-theme .btn-nueva-reserva:hover { -fx-background-color: #3e864d; }
 .root.dark-theme .btn-nueva-reserva:pressed { -fx-background-color: #256b29; }
 
-/* --- ARREGLO DEL SWITCH DE TEMA (Que no sea invisible) --- */
-.root.dark-theme .theme-switch { 
-    -fx-text-fill: #e8eaed; 
-}
-.root.dark-theme .theme-switch:hover { 
-    -fx-text-fill: #ffffff; 
-}
+/* --- ARREGLO DEL SWITCH DE TEMA --- */
+.root.dark-theme .theme-switch { -fx-text-fill: #e8eaed; }
+.root.dark-theme .theme-switch:hover { -fx-text-fill: #ffffff; }
+.root.dark-theme .theme-switch .switch-track { -fx-background-color: #3a4144; -fx-border-color: #5a6267; }
+.root.dark-theme .theme-switch:selected .switch-track { -fx-background-color: #f39c12; -fx-border-color: #f39c12; }
+.root.dark-theme .theme-switch .switch-thumb { -fx-background-color: #ffffff; }
 
 /* --- BARRAS DE ESTADO (PLANILLA) EN OSCURO --- */
-
 .root.dark-theme .pending-block { 
     -fx-background-color: #d68910; /* Ámbar oscuro */
     -fx-background-radius: 5; 
@@ -129,160 +122,62 @@
     -fx-border-radius: 5; 
 }
 
-/* ======================================================
-   FIXES FINALES - MODO OSCURO (SWITCH Y REPORTES)
-   ====================================================== */
-
-/* --- SWITCH DE TEMA: Que se vea la bolita y el riel --- */
-.root.dark-theme .theme-switch .switch-track {
-    -fx-background-color: #3a4144; /* Gris oscuro para el carril */
-    -fx-border-color: #5a6267;
-}
-.root.dark-theme .theme-switch:selected .switch-track {
-    -fx-background-color: #f39c12; /* Naranja cuando está en oscuro */
-    -fx-border-color: #f39c12;
-}
-.root.dark-theme .theme-switch .switch-thumb {
-    -fx-background-color: #ffffff; /* Bolita blanca brillante */
-}
-
 /* --- REPORTES EMBEBIDOS: Forzar fondo oscuro --- */
-/* Esto ataca al panel del cronograma y cualquier contenedor interno */
 .root.dark-theme .report-embed-content,
 .root.dark-theme .report-embed-panel VBox,
 .root.dark-theme .report-embed-panel HBox,
 .root.dark-theme .report-embed-panel AnchorPane,
 .root.dark-theme .report-embed-panel GridPane,
-.root.dark-theme .report-embed-panel .card {
-    -fx-background-color: #24292b !important;
-}
-
-/* Tarjetas blancas de "Check-ins del día", etc. */
+.root.dark-theme .report-embed-panel .card { -fx-background-color: #24292b !important; }
 .root.dark-theme .report-embed-panel .card,
-.root.dark-theme .report-embed-panel .stats-card {
-    -fx-background-color: #2a3033 !important;
-    -fx-border-color: #3a4144 !important;
-}
+.root.dark-theme .report-embed-panel .stats-card { -fx-background-color: #2a3033 !important; -fx-border-color: #3a4144 !important; }
+.root.dark-theme .report-embed-panel .table-view { -fx-background-color: #24292b !important; }
+.root.dark-theme .report-embed-panel .table-view .column-header-background { -fx-background-color: #1f2426 !important; }
+.root.dark-theme .report-embed-panel .table-view .table-row-cell { -fx-background-color: #24292b !important; -fx-border-color: transparent transparent #343a3d transparent !important; }
+.root.dark-theme .report-embed-panel .table-view .table-row-cell:odd { -fx-background-color: #282d30 !important; }
+.root.dark-theme .report-embed-panel .table-view .table-cell { -fx-text-fill: #e8eaed !important; }
+.root.dark-theme .report-embed-panel .button { -fx-background-color: #2a3033 !important; -fx-text-fill: #d7dbde !important; -fx-border-color: #3a4144 !important; }
 
-/* Tablas dentro del reporte */
-.root.dark-theme .report-embed-panel .table-view {
-    -fx-background-color: #24292b !important;
-}
-.root.dark-theme .report-embed-panel .table-view .column-header-background {
-    -fx-background-color: #1f2426 !important;
-}
-.root.dark-theme .report-embed-panel .table-view .table-row-cell {
-    -fx-background-color: #24292b !important;
-    -fx-border-color: transparent transparent #343a3d transparent !important;
-}
-.root.dark-theme .report-embed-panel .table-view .table-row-cell:odd {
-    -fx-background-color: #282d30 !important;
-}
-.root.dark-theme .report-embed-panel .table-view .table-cell {
-    -fx-text-fill: #e8eaed !important;
-}
-
-/* Si el reporte tiene sus propios botones grises */
-.root.dark-theme .report-embed-panel .button {
-    -fx-background-color: #2a3033 !important;
-    -fx-text-fill: #d7dbde !important;
-    -fx-border-color: #3a4144 !important;
-}
-/* --- Estados en la Grilla de Reservas (Tabla) en Oscuro --- */
-.root.dark-theme .estado-confirmada {
-    -fx-background-color: #1e8449; 
-    -fx-text-fill: white;
-    -fx-background-radius: 4;
-    -fx-padding: 2 8 2 8;
-    -fx-font-weight: bold;
-}
-.root.dark-theme .estado-pendiente {
-    -fx-background-color: #d68910; 
-    -fx-text-fill: white;
-    -fx-background-radius: 4;
-    -fx-padding: 2 8 2 8;
-    -fx-font-weight: bold;
-}
-
-
-/* --- Estados en la Tabla de Reservas (Modo Oscuro) --- */
-.root.dark-theme .estado-confirmada {
-    -fx-background-color: #1e8449; /* Mismo verde oscuro que la planilla */
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
-    -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
-}
-.root.dark-theme .estado-pendiente {
-    -fx-background-color: #d68910; /* Mismo naranja oscuro que la planilla */
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
-    -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
-}
-.root.dark-theme .estado-cancelada {
-    -fx-background-color: #c0392b;
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
-    -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
-}
-.root.dark-theme .estado-finalizada {
-    -fx-background-color: #7f8c8d;
-    -fx-text-fill: white;
-    -fx-alignment: CENTER;
-    -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
-}
-
-/* --- Arreglo del encabezado gris claro en la tabla --- */
+/* --- Encabezado de la tabla de reservas --- */
 .root.dark-theme .reservations-table .column-header-background,
 .root.dark-theme .reservations-table .column-header-background .filler,
-.root.dark-theme .reservations-table .column-header {
-    -fx-background-color: #1f2426 !important; /* Forzamos el fondo oscuro */
-    -fx-border-color: transparent transparent #343a3d transparent !important;
-}
+.root.dark-theme .reservations-table .column-header { -fx-background-color: #1f2426 !important; -fx-border-color: transparent transparent #343a3d transparent !important; }
+.root.dark-theme .reservations-table .column-header .label { -fx-text-fill: #e8eaed !important; }
 
-.root.dark-theme .reservations-table .column-header .label {
-    -fx-text-fill: #e8eaed !important; /* Texto claro para leer bien */
-}
-/* --- COLORES DE ESTADOS EN LA TABLA (MODO OSCURO) --- */
+/* --- Estados en la Tabla de Reservas (MODO OSCURO) --- */
 .root.dark-theme .estado-confirmada {
     -fx-background-color: #1e8449; /* Verde oscuro igual a la planilla */
     -fx-text-fill: white;
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-background-insets: 4 6 4 6;
 }
-
 .root.dark-theme .estado-pendiente {
     -fx-background-color: #d68910; /* Ámbar oscuro igual a la planilla */
     -fx-text-fill: white;
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-background-insets: 4 6 4 6;
 }
-
 .root.dark-theme .estado-cancelada {
     -fx-background-color: #c0392b; /* Rojo oscuro */
     -fx-text-fill: white;
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-background-insets: 4 6 4 6;
 }
-
 .root.dark-theme .estado-finalizada {
     -fx-background-color: #7f8c8d; /* Gris oscuro */
     -fx-text-fill: white;
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 4px;
-    -fx-border-radius: 4px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-background-insets: 4 6 4 6;
 }
