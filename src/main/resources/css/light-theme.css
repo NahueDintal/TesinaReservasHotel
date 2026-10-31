@@ -148,7 +148,7 @@
 
 /* --- Estados en la Tabla de Reservas (MODO CLARO) --- */
 .estado-confirmada {
-    -fx-background-color: #52be80; /* Mismo verde que la planilla */
+    -fx-background-color: #54bb80; /* Mismo verde que la planilla */
     -fx-text-fill: white;
     -fx-alignment: CENTER;
     -fx-font-weight: bold;

@@ -189,6 +189,7 @@ public class ReservationsController {
       @Override
       protected void updateItem(String status, boolean empty) {
         super.updateItem(status, empty);
+        colStatus.setPrefWidth(130); // Dale al menos 130 píxeles de ancho
 
         // 1. Limpiamos estilos inline viejos y clases anteriores
         setStyle("");
