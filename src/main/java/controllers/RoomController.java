@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
+import javafx.collections.transformation.SortedList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -190,7 +192,11 @@ public class RoomController {
       occupiedTodayRoomNumbers = occupied.keySet();
 
       filteredRooms = new FilteredList<>(masterRoomList, p -> true);
-      tableRooms.setItems(filteredRooms);
+
+      SortedList<Room> sortedRooms = new SortedList<>(filteredRooms);
+      sortedRooms.comparatorProperty().bind(tableRooms.comparatorProperty());
+      tableRooms.setItems(sortedRooms);
+
       updateCounter();
     } catch (RuntimeException e) {
       logger.error("No se pudieron cargar las habitaciones.", e);
@@ -244,7 +250,7 @@ public class RoomController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/RoomFormView.fxml"));
       Stage stage = new Stage();
       stage.setScene(new Scene(loader.load()));
-      StyleManager.applyStyles(stage);                                  // ← NUEVO
+      StyleManager.applyStyles(stage); // ← NUEVO
       stage.initModality(Modality.WINDOW_MODAL);
       stage.initOwner(tableRooms.getScene().getWindow());
       stage.setTitle(room == null ? "Nueva Habitación" : "Editar Habitación");
@@ -268,7 +274,7 @@ public class RoomController {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UnavailableRoomsView.fxml"));
       Stage stage = new Stage();
       stage.setScene(new Scene(loader.load()));
-      StyleManager.applyStyles(stage);                                  // ← NUEVO
+      StyleManager.applyStyles(stage); // ← NUEVO
       stage.setTitle("Habitaciones Fuera de Servicio");
       stage.initModality(Modality.WINDOW_MODAL);
       stage.initOwner(tableRooms.getScene().getWindow());

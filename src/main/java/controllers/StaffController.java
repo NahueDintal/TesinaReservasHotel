@@ -8,6 +8,7 @@ import utils.StyleManager;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -89,7 +90,15 @@ public class StaffController {
     try {
       staffList = FXCollections.observableArrayList(staffDAO.listAll());
       filteredStaffList = new FilteredList<>(staffList, s -> true);
-      tableStaff.setItems(filteredStaffList);
+
+      // --- NUEVO: Envolver en SortedList para reactivar el ordenamiento ---
+      // OJO: Cambia "Staff" por el nombre real de tu clase modelo (ej. Employee,
+      // Personal)
+      SortedList<Staff> sortedStaffList = new SortedList<>(filteredStaffList);
+      sortedStaffList.comparatorProperty().bind(tableStaff.comparatorProperty());
+      tableStaff.setItems(sortedStaffList);
+      // -------------------------------------------------------------------
+
       aplicarFiltros(); // arranca mostrando solo Activos desde el primer momento
     } catch (SQLException e) {
       mostrarAlerta("No se pudo cargar la lista de personal: " + e.getMessage());

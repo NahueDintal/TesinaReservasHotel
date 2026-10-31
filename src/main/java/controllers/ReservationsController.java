@@ -364,7 +364,6 @@ public class ReservationsController {
     return "Unknown";
   }
 
-  /** Devuelve "101, 102" ordenado, o "—" si no tiene habitaciones. */
   private String getRoomNumbersString(int idReservation) {
     List<Integer> rooms = roomsByReservation.get(idReservation);
     if (rooms == null || rooms.isEmpty())
