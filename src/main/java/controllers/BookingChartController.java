@@ -215,15 +215,11 @@ public class BookingChartController {
 
     Platform.runLater(this::createBookingGrid);
 
-    // ... código anterior de initialize() ...
-
     scrollPane.setVvalue(0);
     scrollPane.setHvalue(0);
 
-    // AQUÍ ESTÁ LA MAGIA: Escuchar cuando el ScrollPane obtenga su ancho real
     scrollPane.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> {
       if (newVal != null && newVal.getWidth() > 0) {
-        // Si el ancho cambió (o es la primera vez que se calcula), redibujamos
         if (oldVal == null || oldVal.getWidth() != newVal.getWidth()) {
           Platform.runLater(this::createBookingGrid);
         }
@@ -231,6 +227,8 @@ public class BookingChartController {
     });
 
     Platform.runLater(this::createBookingGrid);
+    // Evita que aparezca la barra de scroll horizontal en la grilla
+    scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
   }
 
   // =========================================================

@@ -144,40 +144,33 @@
 .root.dark-theme .reservations-table .column-header { -fx-background-color: #1f2426 !important; -fx-border-color: transparent transparent #343a3d transparent !important; }
 .root.dark-theme .reservations-table .column-header .label { -fx-text-fill: #e8eaed !important; }
 
+/* --- Arreglo del encabezado gris en TODAS las tablas en Modo Oscuro --- */
+.root.dark-theme .table-view .column-header-background,
+.root.dark-theme .table-view .column-header {
+    -fx-background-color: #1f2426 !important; 
+}
+.root.dark-theme .table-view .column-header .label {
+    -fx-text-fill: #e8eaed !important; 
+}
+
 /* --- Estados en la Tabla de Reservas (MODO OSCURO) --- */
-.root.dark-theme .estado-confirmada {
-    -fx-background-color: #1e8449; /* Verde oscuro igual a la planilla */
-    -fx-text-fill: white;
+.root.dark-theme .table-cell.estado-confirmada {
+    -fx-text-fill: #4ade80 !important; /* Verde brillante */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }
-.root.dark-theme .estado-pendiente {
-    -fx-background-color: #d68910; /* Ámbar oscuro igual a la planilla */
-    -fx-text-fill: white;
+.root.dark-theme .table-cell.estado-pendiente {
+    -fx-text-fill: #fbbf24 !important; /* Amarillo brillante */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }
-.root.dark-theme .estado-cancelada {
-    -fx-background-color: #c0392b; /* Rojo oscuro */
-    -fx-text-fill: white;
+.root.dark-theme .table-cell.estado-cancelada {
+    -fx-text-fill: #f87171 !important; /* Rojo brillante */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }
-.root.dark-theme .estado-finalizada {
-    -fx-background-color: #7f8c8d; /* Gris oscuro */
-    -fx-text-fill: white;
+.root.dark-theme .table-cell.estado-finalizada {
+    -fx-text-fill: #9ca3af !important; /* Gris claro */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }

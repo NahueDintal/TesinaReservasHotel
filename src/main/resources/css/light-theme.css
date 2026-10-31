@@ -147,39 +147,23 @@
 .btn-nueva-reserva:pressed { -fx-background-color: #1f5c23; }
 
 /* --- Estados en la Tabla de Reservas (MODO CLARO) --- */
-.estado-confirmada {
-    -fx-background-color: #54bb80; /* Mismo verde que la planilla */
-    -fx-text-fill: white;
+.table-cell.estado-confirmada {
+    -fx-text-fill: #218838 !important; /* Verde oscuro */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6; /* Esto crea el efecto "píldora" sin cortar el texto */
 }
-.estado-pendiente {
-    -fx-background-color: #f5b041; /* Mismo naranja que la planilla */
-    -fx-text-fill: white;
+.table-cell.estado-pendiente {
+    -fx-text-fill: #b8860b !important; /* Mostaza/Ámbar */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }
-.estado-cancelada {
-    -fx-background-color: #e74c3c; /* Rojo vivo */
-    -fx-text-fill: white;
+.table-cell.estado-cancelada {
+    -fx-text-fill: #dc3545 !important; /* Rojo */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }
-.estado-finalizada {
-    -fx-background-color: #bdc3c7; /* Mismo gris que la planilla */
-    -fx-text-fill: white;
+.table-cell.estado-finalizada {
+    -fx-text-fill: #6c757d !important; /* Gris */
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
-    -fx-background-radius: 10px;
-    -fx-border-radius: 10px;
-    -fx-background-insets: 4 6 4 6;
 }
