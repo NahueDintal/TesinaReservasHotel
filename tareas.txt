@@ -1,3 +1,4 @@
-
 agregar hashmap para que carge en el buffer las grillas!
 listar personas que se hospedan por tema seguro
+cambiar por letras mayusculas los clientes
+corregir theme las barras de titulo de las grillas que queden integradas en el theme!
