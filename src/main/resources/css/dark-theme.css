@@ -174,3 +174,8 @@
     -fx-alignment: CENTER;
     -fx-font-weight: bold;
 }
+
+ /* Emojis de reportes */
+.report-tile-icon {
+    -fx-icon-color: #4CAF50; /* El verde de tu marca */
+}

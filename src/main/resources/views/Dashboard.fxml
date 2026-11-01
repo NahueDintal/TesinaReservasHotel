@@ -73,18 +73,18 @@
                     </graphic>
                 </ToggleButton>
 
-                <ToggleButton fx:id="btnReportes" styleClass="sidebar-btn" text="Reportes">
-                    <graphic>
-                        <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
-                            <Image url="@../images/file-chart-column.png" />
-                        </ImageView>
-                    </graphic>
-                </ToggleButton>
-
                 <ToggleButton fx:id="btnPersonal" styleClass="sidebar-btn" text="Personal">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
                             <Image url="@../images/user-group.png" />
+                        </ImageView>
+                    </graphic>
+                </ToggleButton>
+
+                <ToggleButton fx:id="btnReportes" styleClass="sidebar-btn" text="Reportes">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20" preserveRatio="true">
+                            <Image url="@../images/file-chart-column.png" />
                         </ImageView>
                     </graphic>
                 </ToggleButton>

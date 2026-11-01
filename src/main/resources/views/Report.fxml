@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane styleClass="content-main"
             xmlns="http://javafx.com/javafx/17"
@@ -37,21 +38,24 @@
                     <!-- Fila 1 -->
                     <VBox fx:id="tileCancellationProbability" styleClass="report-tile"
                           GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10">
-                        <Label styleClass="report-tile-icon" text="📊" />
+                        <!-- Probabilidad de cancelación -->
+                        <FontIcon iconLiteral="fas-chart-bar" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Probabilidad de cancelación" />
                         <Label styleClass="report-tile-desc" text="Análisis empírico P(cancelar | canal) con intervalos de confianza." wrapText="true" />
                     </VBox>
 
                     <VBox fx:id="tileCancellationByLeadTime" styleClass="report-tile"
                           GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10">
-                        <Label styleClass="report-tile-icon" text="⏳" />
+                        <!-- Cancelación por anticipación -->
+                        <FontIcon iconLiteral="fas-hourglass-half" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Cancelación por anticipación" />
                         <Label styleClass="report-tile-desc" text="Días de antelación con los que se cancelan las reservas." wrapText="true" />
                     </VBox>
 
                     <VBox fx:id="tileCancellationByMonth" styleClass="report-tile"
                           GridPane.columnIndex="2" GridPane.rowIndex="0" spacing="10">
-                        <Label styleClass="report-tile-icon" text="📅" />
+                        <!-- Cancelación por mes -->
+                        <FontIcon iconLiteral="fas-calendar-alt" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Cancelación por mes" />
                         <Label styleClass="report-tile-desc" text="Evolución mensual de las cancelaciones en el período." wrapText="true" />
                     </VBox>
@@ -59,21 +63,24 @@
                     <!-- Fila 2 -->
                     <VBox fx:id="tileCancellationImpact" styleClass="report-tile"
                           GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="10">
-                        <Label styleClass="report-tile-icon" text="📉" />
+                        <!-- Impacto cancelaciones -->
+                        <FontIcon iconLiteral="fas-chart-line" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Impacto cancelaciones" />
                         <Label styleClass="report-tile-desc" text="Pérdida estimada de ingresos por cancelaciones." wrapText="true" />
                     </VBox>
 
                     <VBox fx:id="tileCancellationByGuests" styleClass="report-tile"
                           GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="10">
-                        <Label styleClass="report-tile-icon" text="👥" />
+                        <!-- Cancelación por huéspedes -->
+                        <FontIcon iconLiteral="fas-users" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Cancelación por huéspedes" />
                         <Label styleClass="report-tile-desc" text="Comportamiento de cancelación según cantidad de huéspedes." wrapText="true" />
                     </VBox>
 
                     <VBox fx:id="tileCancellationByCustomerOrigin" styleClass="report-tile"
                           GridPane.columnIndex="2" GridPane.rowIndex="1" spacing="10">
-                        <Label styleClass="report-tile-icon" text="🌍" />
+                        <!-- Cancelación por origen -->
+                        <FontIcon iconLiteral="fas-globe-americas" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Cancelación por origen" />
                         <Label styleClass="report-tile-desc" text="Distribución geográfica de las reservas canceladas." wrapText="true" />
                     </VBox>
@@ -81,7 +88,8 @@
                     <!-- Fila 3 -->
                     <VBox fx:id="tileDailySchedule" styleClass="report-tile"
                           GridPane.columnIndex="0" GridPane.rowIndex="2" spacing="10">
-                        <Label styleClass="report-tile-icon" text="🗓️" />
+                        <!-- Cronograma diario -->
+                        <FontIcon iconLiteral="fas-calendar-day" iconSize="24" styleClass="report-tile-icon" />
                         <Label styleClass="report-tile-title" text="Cronograma diario" />
                         <Label styleClass="report-tile-desc" text="Check-ins y check-outs programados para una fecha." wrapText="true" />
                     </VBox>
