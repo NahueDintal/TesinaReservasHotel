@@ -5,58 +5,63 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<VBox spacing="18"
-      styleClass="form-container"
-     
-      xmlns="http://javafx.com/javafx/26"
+<!-- El VBox ahora es el nodo principal -->
+<VBox xmlns="http://javafx.com/javafx/17" 
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.LoginController"
-      alignment="CENTER">
+      styleClass="form-container" 
+      spacing="15" 
+      alignment="TOP_CENTER">
 
     <padding>
-        <Insets bottom="30" left="35" right="35" top="30"/>
+        <Insets bottom="30" left="30" right="30" top="30"/>
     </padding>
 
-    <!-- Título -->
-    <Label styleClass="form-title" text="Iniciar Sesión">
-        <font>
-            <Font size="15.0"/>
-        </font>
-    </Label>
+    <!-- LOGO -->
+    <ImageView fitHeight="90.0" 
+               preserveRatio="true" 
+               smooth="true"
+               pickOnBounds="true">
+        <Image url="@../images/viridinn_isotipo.png" />
+        <VBox.margin>
+            <Insets bottom="10.0" />
+        </VBox.margin>
+    </ImageView>
 
-    <Label styleClass="subtitulo-seccion"
-           text="Ingresá tus credenciales para continuar"/>
+    <!-- Título -->
+    <Label styleClass="form-title" text="Iniciar Sesión" />
+    <Label styleClass="subtitulo-seccion" text="Ingresá tus credenciales para continuar">
+        <VBox.margin>
+            <Insets bottom="10.0" />
+        </VBox.margin>
+    </Label>
 
     <!-- Usuario -->
     <VBox spacing="6">
         <Label styleClass="form-label" text="Usuario"/>
-        <TextField fx:id="txtUsername"
-                   prefWidth="280.0"
-                   promptText="Ingresá tu usuario"/>
+        <TextField fx:id="txtUsername" promptText="Ingresá tu usuario"/>
     </VBox>
 
     <!-- Contraseña -->
     <VBox spacing="6">
         <Label styleClass="form-label" text="Contraseña"/>
-        <PasswordField fx:id="txtPassword"
-                       prefWidth="280.0"
-                       promptText="Ingresá tu contraseña"/>
+        <PasswordField fx:id="txtPassword" promptText="Ingresá tu contraseña"/>
     </VBox>
 
     <!-- Error -->
-    <Label fx:id="lblError"
-           style="-fx-text-fill: #e74c3c; -fx-font-size: 12px; -fx-font-weight: bold;"
-           wrapText="true"
-           maxWidth="280.0"/>
+    <Label fx:id="lblError" style="-fx-text-fill: #e74c3c; -fx-font-size: 12px; -fx-font-weight: bold;" wrapText="true"/>
 
     <!-- Botones -->
     <HBox alignment="CENTER_RIGHT" spacing="12">
+        <padding>
+            <Insets top="10.0" />
+        </padding>
         <Button fx:id="btnCancel" styleClass="btn-secondary" text="Cancelar"/>
-        <Button fx:id="btnLogin" styleClass="btn-primary" text="Ingresar"
-                defaultButton="true"/>
+        <Button fx:id="btnLogin" styleClass="btn-primary" text="Ingresar" defaultButton="true"/>
     </HBox>
 </VBox>
