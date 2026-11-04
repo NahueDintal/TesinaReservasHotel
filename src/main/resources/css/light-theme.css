@@ -153,3 +153,15 @@
 .table-cell.estado-cancelada { -fx-text-fill: #dc3545 !important; -fx-alignment: CENTER; -fx-font-weight: bold; }
 .table-cell.estado-finalizada { -fx-text-fill: #6c757d !important; -fx-alignment: CENTER; -fx-font-weight: bold; }
 .report-tile-icon { -fx-icon-color: #4CAF50; }
+
+
+/* Colores para los títulos de las tablas */
+.report-chart-title.text-success { -fx-text-fill: #218838 !important; }
+.report-chart-title.text-danger { -fx-text-fill: #dc3545 !important; }
+
+/* Estilo para el DatePicker (Modo Claro) */
+.date-picker .text-field { -fx-background-color: white; -fx-border-color: #dcdde1; -fx-text-fill: #2c3e50; }
+.date-picker:focused .text-field { -fx-border-color: #3E864D; }
+.date-picker .arrow-button { -fx-background-color: transparent; }
+
+

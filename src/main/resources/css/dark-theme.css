@@ -136,3 +136,28 @@
 .root.dark-theme .table-cell.estado-cancelada { -fx-text-fill: #f87171 !important; -fx-alignment: CENTER; -fx-font-weight: bold; }
 .root.dark-theme .table-cell.estado-finalizada { -fx-text-fill: #9ca3af !important; -fx-alignment: CENTER; -fx-font-weight: bold; }
 .report-tile-icon { -fx-icon-color: #4CAF50; }
+
+
+
+/* Colores para los títulos de las tablas en oscuro */
+.root.dark-theme .report-chart-title.text-success { -fx-text-fill: #4ade80 !important; }
+.root.dark-theme .report-chart-title.text-danger { -fx-text-fill: #f87171 !important; }
+
+/* Estilo para el DatePicker (Modo Oscuro) */
+.root.dark-theme .date-picker .text-field { 
+    -fx-background-color: #2a3033; 
+    -fx-border-color: #3a4144; 
+    -fx-text-fill: #e8eaed; 
+}
+.root.dark-theme .date-picker:focused .text-field { -fx-border-color: #3E864D; }
+.root.dark-theme .date-picker .arrow-button { -fx-background-color: transparent; }
+.root.dark-theme .date-picker .arrow { -fx-background-color: #9aa0a6; }
+
+/* Arreglo para el calendario desplegable (popup) en oscuro */
+.root.dark-theme .date-picker-popup { -fx-background-color: #24292b; -fx-border-color: #343a3d; }
+.root.dark-theme .date-picker-popup .month-year-pane { -fx-background-color: #1f2426; }
+.root.dark-theme .date-picker-popup .label { -fx-text-fill: #e8eaed; }
+.root.dark-theme .date-picker-popup .day-cell { -fx-background-color: #24292b; -fx-text-fill: #d7dbde; }
+.root.dark-theme .date-picker-popup .day-cell:hover { -fx-background-color: #2f4a37; }
+.root.dark-theme .date-picker-popup .day-cell:selected { -fx-background-color: #3E864D; -fx-text-fill: white; }
+.root.dark-theme .date-picker-popup .week-day-cell { -fx-text-fill: #9aa0a6; }
