@@ -3,51 +3,65 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <VBox spacing="25"
       styleClass="content-main"
-     
       xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controllers.ConfigurationController">
 
     <padding>
-        <Insets top="30"
-                right="30"
-                bottom="30"
-                left="30"/>
+        <Insets top="30" right="30" bottom="30" left="30"/>
     </padding>
 
-    <Label text="Configuración"
-           styleClass="section-title">
-        <font>
-            <Font size="26.0"/>
-        </font>
+    <Label text="Configuración" styleClass="section-title">
+        <font><Font size="26.0"/></font>
     </Label>
 
     <Label text="Administración de catálogos y opciones del sistema."
            styleClass="footer-info"/>
 
-    <HBox spacing="20"
-          alignment="CENTER_LEFT">
+    <FlowPane hgap="20"
+              vgap="20"
+              alignment="CENTER_LEFT"
+              prefWrapLength="660">
 
         <Button fx:id="btnProducts"
-                text="🛒&#10;Productos"
+                text="Productos"
                 styleClass="catalog-card"
-                prefWidth="220"
-                prefHeight="130"/>
+                prefWidth="200"
+                prefHeight="130"
+                contentDisplay="TOP">
+            <graphic>
+                <Label text="🛒" style="-fx-font-size: 30px;"/>
+            </graphic>
+        </Button>
 
         <Button fx:id="btnServices"
-                text="🛎&#10;Servicios"
+                text="Servicios"
                 styleClass="catalog-card"
-                prefWidth="220"
-                prefHeight="130"/>
+                prefWidth="200"
+                prefHeight="130"
+                contentDisplay="TOP">
+            <graphic>
+                <Label text="🛎" style="-fx-font-size: 30px;"/>
+            </graphic>
+        </Button>
 
-    </HBox>
+        <Button fx:id="btnManual"
+                text="Manual de Usuario"
+                styleClass="catalog-card"
+                prefWidth="200"
+                prefHeight="130"
+                contentDisplay="TOP">
+            <graphic>
+                <Label text="📖" style="-fx-font-size: 30px;"/>
+            </graphic>
+        </Button>
+
+    </FlowPane>
 
 </VBox>
-
-
