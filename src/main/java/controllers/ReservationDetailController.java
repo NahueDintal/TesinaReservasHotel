@@ -10,6 +10,8 @@ import javafx.scene.control.TableView;
 import models.Consumption;
 import models.Customer;
 import models.Payment;
+import models.PaymentMethod;
+import models.PaymentStatus;
 import models.Product;
 import models.Reservation;
 import models.ReservationRoom;
@@ -18,7 +20,9 @@ import models.ReservationType;
 import models.Service;
 import repositories.ConsumptionRepo;
 import repositories.CustomerDAO;
+import repositories.PaymentMethodRepo;
 import repositories.PaymentRepo;
+import repositories.PaymentStatusRepo;
 import repositories.ProductRepo;
 import repositories.ReservationRoomRepo;
 import repositories.ReservationStatusRepo;
@@ -90,6 +94,8 @@ public class ReservationDetailController {
     // =========================================================
 
     private final PaymentRepo paymentRepo = new PaymentRepo();
+    private final PaymentMethodRepo paymentMethodRepo = new PaymentMethodRepo();
+    private final PaymentStatusRepo paymentStatusRepo = new PaymentStatusRepo();
     private final ConsumptionRepo consumptionRepo = new ConsumptionRepo();
     private final ProductRepo productRepo = new ProductRepo();
     private final ServiceRepo serviceRepo = new ServiceRepo();
@@ -284,15 +290,49 @@ public class ReservationDetailController {
 
         colPaymentMethod.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        "ID " + cell.getValue().getIdPaymentMethod()));
+                        resolvePaymentMethodName(cell.getValue().getIdPaymentMethod())));
 
         colPaymentStatus.setCellValueFactory(
                 cell -> new SimpleStringProperty(
-                        "ID " + cell.getValue().getIdPaymentStatus()));
+                        resolvePaymentStatusName(cell.getValue().getIdPaymentStatus())));
 
         colPaymentObservations.setCellValueFactory(
                 cell -> new SimpleStringProperty(
                         safeText(cell.getValue().getObservations())));
+    }
+
+
+    // =========================================================
+    // RESOLVER NOMBRES DE PAGO
+    // =========================================================
+
+    private String resolvePaymentMethodName(int idPaymentMethod) {
+        try {
+            List<PaymentMethod> methods = paymentMethodRepo.getPaymentMethods();
+            for (PaymentMethod m : methods) {
+                if (m.getIdPaymentMethod() == idPaymentMethod) {
+                    return m.getName();
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al resolver método de pago: " + e.getMessage());
+        }
+        return "ID " + idPaymentMethod;
+    }
+
+
+    private String resolvePaymentStatusName(int idPaymentStatus) {
+        try {
+            List<PaymentStatus> statuses = paymentStatusRepo.getPaymentStatuses();
+            for (PaymentStatus s : statuses) {
+                if (s.getIdPaymentStatus() == idPaymentStatus) {
+                    return s.getName();
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error al resolver estado de pago: " + e.getMessage());
+        }
+        return "ID " + idPaymentStatus;
     }
 
 
