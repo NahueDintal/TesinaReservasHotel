@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox spacing="20" styleClass="form-container" stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomFormController">
+<VBox spacing="20" styleClass="form-container" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RoomFormController">
     <padding>
         <Insets bottom="25" left="25" right="25" top="25" />
     </padding>

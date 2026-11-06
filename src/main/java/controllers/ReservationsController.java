@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 public class ReservationsController {
 
-
   private static final int MAX_RESERVAS_VISIBLES = 100;
 
   private final ReservationRepo reservationRepo;
@@ -141,20 +140,20 @@ public class ReservationsController {
     btnReservationConsumptions.setDisable(true);
 
     splitPaneReservations.getDividers().get(0)
-            .positionProperty()
-            .addListener((obs, oldValue, newValue) -> {
+        .positionProperty()
+        .addListener((obs, oldValue, newValue) -> {
 
-              double position = newValue.doubleValue();
+          double position = newValue.doubleValue();
 
-              double min = 0.55;
-              double max = 0.82;
+          double min = 0.55;
+          double max = 0.82;
 
-              if (position < min) {
-                splitPaneReservations.setDividerPosition(0, min);
-              } else if (position > max) {
-                splitPaneReservations.setDividerPosition(0, max);
-              }
-            });
+          if (position < min) {
+            splitPaneReservations.setDividerPosition(0, min);
+          } else if (position > max) {
+            splitPaneReservations.setDividerPosition(0, max);
+          }
+        });
   }
 
   // ============================================================
@@ -191,41 +190,23 @@ public class ReservationsController {
       protected void updateItem(String status, boolean empty) {
         super.updateItem(status, empty);
 
+        // 1. Limpiamos CUALQUIER rastro de estilos anteriores
+        setStyle("");
+        getStyleClass().removeAll("estado-pendiente", "estado-confirmada", "estado-cancelada", "estado-finalizada");
+
         if (empty || status == null) {
           setText(null);
-          setStyle("");
           return;
         }
 
         setText(status);
 
+        // 2. Aplicamos la clase según el estado
         switch (status.toLowerCase()) {
-          case "pendiente":
-            setStyle("-fx-background-color: #fdfbea;" +
-                "-fx-text-fill: #c0a72b;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
-            break;
-          case "confirmada":
-            setStyle("-fx-background-color: #e0ffcc;" +
-                "-fx-text-fill: #1a6d03;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
-            break;
-          case "cancelada":
-            setStyle("-fx-background-color: #ffdde5;" +
-                "-fx-text-fill: #8a1527;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
-            break;
-          case "finalizada":
-            setStyle("-fx-background-color: #e8e8e8;" +
-                "-fx-text-fill: #666666;" +
-                "-fx-font-weight: bold;" +
-                "-fx-alignment: CENTER;");
-            break;
-          default:
-            setStyle("-fx-alignment: CENTER;");
+          case "pendiente" -> getStyleClass().add("estado-pendiente");
+          case "confirmada" -> getStyleClass().add("estado-confirmada");
+          case "cancelada" -> getStyleClass().add("estado-cancelada");
+          case "finalizada" -> getStyleClass().add("estado-finalizada");
         }
       }
     });
@@ -383,7 +364,6 @@ public class ReservationsController {
     return "Unknown";
   }
 
-  /** Devuelve "101, 102" ordenado, o "—" si no tiene habitaciones. */
   private String getRoomNumbersString(int idReservation) {
     List<Integer> rooms = roomsByReservation.get(idReservation);
     if (rooms == null || rooms.isEmpty())

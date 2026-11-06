@@ -11,10 +11,13 @@ import models.Room;
 import repositories.RoomDAO;
 import repositories.RoomTypeDAO;
 import repositories.RoomViewDAO;
+import utils.Alerts;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RoomFormController {
 
@@ -70,6 +73,11 @@ public class RoomFormController {
 
   private Room editingRoom;
 
+  /**
+   * Campos que ya fueron tocados por el usuario (para mostrar feedback visual).
+   */
+  private final Set<Control> touchedFields = new HashSet<>();
+
   @FXML
   public void initialize() {
     loadCatalogs();
@@ -77,6 +85,8 @@ public class RoomFormController {
     setupNumericFields();
     setupPriceField();
     setupDescriptionLimit();
+    setupValidations();
+    btnSave.setDisable(true); // 🔴 Botón deshabilitado al abrir
   }
 
   private void loadCatalogs() {
@@ -97,6 +107,8 @@ public class RoomFormController {
     btnSave.setOnAction(e -> saveRoom());
   }
 
+  // ============== TEXT FORMATTERS (limitan entrada) ==============
+
   private void setupNumericField(TextField field, int maxDigits) {
     field.setTextFormatter(new TextFormatter<>(change -> {
       String newText = change.getControlNewText();
@@ -110,14 +122,11 @@ public class RoomFormController {
   private void setupPriceField() {
     txtPrice.setTextFormatter(new TextFormatter<>(change -> {
       String newText = change.getControlNewText();
-
       if (newText.isEmpty())
         return change;
-
       String regex = "\\d{0," + MAX_PRICE_INT_DIGITS + "}(\\.\\d{0," + MAX_PRICE_DECIMALS + "})?";
-      if (newText.matches(regex)) {
+      if (newText.matches(regex))
         return change;
-      }
       return null;
     }));
   }
@@ -130,9 +139,8 @@ public class RoomFormController {
 
   private void setupDescriptionLimit() {
     txtDescription.setTextFormatter(new TextFormatter<>(change -> {
-      if (change.getControlNewText().length() <= MAX_DESCRIPTION_LENGTH) {
+      if (change.getControlNewText().length() <= MAX_DESCRIPTION_LENGTH)
         return change;
-      }
       return null;
     }));
 
@@ -156,6 +164,247 @@ public class RoomFormController {
     }
   }
 
+  // ============== VALIDACIONES EN VIVO ==============
+
+  private void setupValidations() {
+    // Validar al perder el foco (patrón CustomerForm)
+    txtNumber.focusedProperty().addListener((obs, oldVal, newVal) -> {
+      if (!newVal) {
+        touchedFields.add(txtNumber);
+        validateNumber();
+      }
+    });
+
+    txtFloor.focusedProperty().addListener((obs, oldVal, newVal) -> {
+      if (!newVal) {
+        touchedFields.add(txtFloor);
+        validateFloor();
+      }
+    });
+
+    txtCapacity.focusedProperty().addListener((obs, oldVal, newVal) -> {
+      if (!newVal) {
+        touchedFields.add(txtCapacity);
+        validateCapacity();
+      }
+    });
+
+    txtPrice.focusedProperty().addListener((obs, oldVal, newVal) -> {
+      if (!newVal) {
+        touchedFields.add(txtPrice);
+        validatePrice();
+      }
+    });
+
+    // Combos: al seleccionar, marcar como tocado y actualizar botón
+    comboType.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal != null)
+        touchedFields.add(comboType);
+      updateSaveButtonState();
+    });
+
+    comboView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+      if (newVal != null)
+        touchedFields.add(comboView);
+      updateSaveButtonState();
+    });
+
+    // Mientras escribe: solo actualizar botón (sin feedback visual)
+    txtNumber.textProperty().addListener((obs, o, n) -> updateSaveButtonState());
+    txtFloor.textProperty().addListener((obs, o, n) -> updateSaveButtonState());
+    txtCapacity.textProperty().addListener((obs, o, n) -> updateSaveButtonState());
+    txtPrice.textProperty().addListener((obs, o, n) -> updateSaveButtonState());
+  }
+
+  // ============== VALIDACIONES INDIVIDUALES ==============
+
+  private boolean validateNumber() {
+    String text = txtNumber.getText();
+    boolean valid = false;
+    String error = null;
+
+    if (text == null || text.trim().isEmpty()) {
+      error = "El número de habitación es obligatorio.";
+    } else {
+      try {
+        int n = Integer.parseInt(text.trim());
+        if (n < 1) {
+          error = "El número debe ser un valor positivo.";
+        } else {
+          valid = true;
+        }
+      } catch (NumberFormatException e) {
+        error = "El número debe ser un valor numérico entero.";
+      }
+    }
+
+    setFieldValid(txtNumber, valid, error);
+    updateSaveButtonState();
+    return valid;
+  }
+
+  private boolean validateFloor() {
+    String text = txtFloor.getText();
+    boolean valid = false;
+    String error = null;
+
+    if (text == null || text.trim().isEmpty()) {
+      error = "El piso es obligatorio.";
+    } else {
+      try {
+        int f = Integer.parseInt(text.trim());
+        if (f < 0) {
+          error = "El piso no puede ser un valor negativo.";
+        } else {
+          valid = true;
+        }
+      } catch (NumberFormatException e) {
+        error = "El piso debe ser un valor numérico entero.";
+      }
+    }
+
+    setFieldValid(txtFloor, valid, error);
+    updateSaveButtonState();
+    return valid;
+  }
+
+  private boolean validateCapacity() {
+    String text = txtCapacity.getText();
+    boolean valid = false;
+    String error = null;
+
+    if (text == null || text.trim().isEmpty()) {
+      error = "La capacidad es obligatoria.";
+    } else {
+      try {
+        int c = Integer.parseInt(text.trim());
+        if (c < 1) {
+          error = "La capacidad debe ser un valor positivo.";
+        } else {
+          valid = true;
+        }
+      } catch (NumberFormatException e) {
+        error = "La capacidad debe ser un valor numérico entero.";
+      }
+    }
+
+    setFieldValid(txtCapacity, valid, error);
+    updateSaveButtonState();
+    return valid;
+  }
+
+  private boolean validatePrice() {
+    String text = txtPrice.getText();
+    boolean valid = false;
+    String error = null;
+
+    if (text == null || text.trim().isEmpty()) {
+      error = "El precio es obligatorio.";
+    } else {
+      try {
+        double p = Double.parseDouble(text.trim());
+        if (p < 0) {
+          error = "El precio no puede ser un valor negativo.";
+        } else {
+          valid = true;
+        }
+      } catch (NumberFormatException e) {
+        error = "El precio debe ser un valor numérico.";
+      }
+    }
+
+    setFieldValid(txtPrice, valid, error);
+    updateSaveButtonState();
+    return valid;
+  }
+
+  // ============== HELPERS SILENCIOSOS (para el botón) ==============
+
+  private boolean isValidNumber() {
+    String t = txtNumber.getText();
+    if (t == null || t.trim().isEmpty())
+      return false;
+    try {
+      return Integer.parseInt(t.trim()) >= 1;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidFloor() {
+    String t = txtFloor.getText();
+    if (t == null || t.trim().isEmpty())
+      return false;
+    try {
+      return Integer.parseInt(t.trim()) >= 0;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidCapacity() {
+    String t = txtCapacity.getText();
+    if (t == null || t.trim().isEmpty())
+      return false;
+    try {
+      return Integer.parseInt(t.trim()) >= 1;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidPrice() {
+    String t = txtPrice.getText();
+    if (t == null || t.trim().isEmpty())
+      return false;
+    try {
+      return Double.parseDouble(t.trim()) >= 0;
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  private boolean isValidType() {
+    return comboType.getSelectionModel().getSelectedItem() != null;
+  }
+
+  private boolean isValidView() {
+    return comboView.getSelectionModel().getSelectedItem() != null;
+  }
+
+  // ============== FEEDBACK VISUAL ==============
+
+  private void setFieldValid(Control field, boolean valid, String errorMessage) {
+    // Solo mostrar feedback si el usuario ya tocó el campo
+    if (!touchedFields.contains(field))
+      return;
+
+    if (valid) {
+      field.setStyle("");
+      field.setTooltip(null);
+    } else {
+      field.setStyle("-fx-border-color: #e74c3c; -fx-border-width: 2; -fx-border-radius: 5;");
+      if (errorMessage != null) {
+        field.setTooltip(new Tooltip(errorMessage));
+      }
+    }
+  }
+
+  // ============== ESTADO DEL BOTÓN GUARDAR ==============
+
+  private void updateSaveButtonState() {
+    boolean allValid = isValidNumber()
+        && isValidFloor()
+        && isValidCapacity()
+        && isValidPrice()
+        && isValidType()
+        && isValidView();
+
+    btnSave.setDisable(!allValid);
+  }
+
+  // ============== EDICIÓN ==============
+
   public void setRoom(Room room) {
     logger.debug("Ejecutando setRoom para room {}", room);
     this.editingRoom = room;
@@ -172,16 +421,21 @@ public class RoomFormController {
     chkTv.setSelected(room.getFeatures().contains("TV"));
     chkAc.setSelected(room.getFeatures().contains("Aire acondicionado"));
     chkMiniBar.setSelected(room.getFeatures().contains("Minibar"));
+
+    // Habilitar botón si los datos cargados son válidos
+    updateSaveButtonState();
   }
 
-  // ============================================================
-  // SAVE
-  // ============================================================
+  // ============== GUARDAR ==============
 
   private void saveRoom() {
     logger.debug("Ejecutando saveRoom");
-    if (!validateFields())
+
+    // Validación final (defensiva: normalmente el botón está deshabilitado si hay
+    // errores)
+    if (!validateAllFields()) {
       return;
+    }
 
     Room room = editingRoom != null ? editingRoom : new Room();
     loadDataFromForm(room);
@@ -195,7 +449,6 @@ public class RoomFormController {
       }
 
       if (success) {
-        showAlert("Éxito", "Habitación guardada", "La habitación se ha guardado correctamente.");
         closeWindow();
       }
     } catch (IllegalArgumentException e) {
@@ -206,6 +459,25 @@ public class RoomFormController {
       showAlert("Error", "No se pudo guardar la habitación", e.getMessage());
     }
   }
+
+  private boolean validateAllFields() {
+    // Marcar todos como tocados (por si el usuario nunca tocó alguno)
+    touchedFields.add(txtNumber);
+    touchedFields.add(txtFloor);
+    touchedFields.add(txtCapacity);
+    touchedFields.add(txtPrice);
+
+    boolean numberValid = validateNumber();
+    boolean floorValid = validateFloor();
+    boolean capacityValid = validateCapacity();
+    boolean priceValid = validatePrice();
+    boolean typeValid = isValidType();
+    boolean viewValid = isValidView();
+
+    return numberValid && floorValid && capacityValid && priceValid && typeValid && viewValid;
+  }
+
+  // ============== CARGA DE DATOS AL MODELO ==============
 
   private void loadDataFromForm(Room room) {
     room.setNumber(Integer.parseInt(txtNumber.getText().trim()));
@@ -235,6 +507,8 @@ public class RoomFormController {
 
   private int getIdBySelection(ComboBox<String> combo, Map<Integer, String> map) {
     String selected = combo.getSelectionModel().getSelectedItem();
+    if (selected == null)
+      return 0;
     for (Map.Entry<Integer, String> entry : map.entrySet()) {
       if (entry.getValue().equals(selected)) {
         return entry.getKey();
@@ -243,106 +517,7 @@ public class RoomFormController {
     return 0;
   }
 
-  private boolean validateIntegerField(String rawText,
-      String fieldName,
-      int maxDigits,
-      StringBuilder errors) {
-    String value = rawText == null ? "" : rawText.trim();
-
-    if (value.isEmpty()) {
-      logger.warn("Intento de dejar vacío el campo {}", fieldName);
-      errors.append(fieldName).append(" es un valor obligatorio.\n");
-      return false;
-    }
-
-    if (!value.matches("\\d+")) {
-      logger.error("Valor '{}' para {} no es un entero válido", value, fieldName);
-      errors.append(fieldName).append(" debe ser un valor numérico entero.\n");
-      return false;
-    }
-
-    if (value.length() > maxDigits) {
-      logger.warn("Valor '{}' para {} supera los {} dígitos", value, fieldName, maxDigits);
-      errors.append(fieldName)
-          .append(" no puede tener más de ")
-          .append(maxDigits)
-          .append(" dígitos.\n");
-      return false;
-    }
-
-    return true;
-  }
-
-  private boolean validateFields() {
-    StringBuilder errors = new StringBuilder();
-
-    // ---- Número de habitación: máximo 4 dígitos (0..9999) ----
-    if (validateIntegerField(txtNumber.getText(), "El número de habitación", MAX_DIGITS_NUMBER, errors)) {
-      int n = Integer.parseInt(txtNumber.getText().trim());
-      if (n < 1) {
-        logger.warn("Intento de insertar valor '{}' menor que 1", txtNumber.getText());
-        errors.append("El número debe ser un valor positivo.\n");
-      }
-    }
-
-    // ---- Piso: máximo 3 dígitos (0..999) ----
-    if (validateIntegerField(txtFloor.getText(), "El piso", MAX_DIGITS_FLOOR, errors)) {
-      int f = Integer.parseInt(txtFloor.getText().trim());
-      if (f < 0) {
-        logger.warn("Intento de insertar valor '{}' negativo", txtFloor.getText());
-        errors.append("El piso no puede ser un valor negativo.\n");
-      }
-    }
-
-    if (comboType.getValue() == null) {
-      logger.warn("Intento de no insertar ningun tipo de habitación");
-      errors.append("Seleccione un tipo de habitación.\n");
-    }
-
-    // ---- Capacidad: máximo 3 dígitos (0..999) ----
-    if (validateIntegerField(txtCapacity.getText(), "La capacidad", MAX_DIGITS_CAPACITY, errors)) {
-      int c = Integer.parseInt(txtCapacity.getText().trim());
-      if (c < 1) {
-        logger.warn("Intento de insertar valor '{}' menor que 1", txtCapacity.getText());
-        errors.append("La capacidad debe ser un valor positivo.\n");
-      }
-    }
-
-    if (comboView.getValue() == null) {
-      logger.warn("Intento de no insertar vista");
-      errors.append("Seleccione una vista.\n");
-    }
-
-    if (txtPrice.getText().trim().isEmpty()) {
-      logger.warn("Intento de no insertar precio");
-      errors.append("El precio es obligatorio.\n");
-    } else {
-      try {
-        double p = Double.parseDouble(txtPrice.getText().trim());
-        if (p < 0) {
-          logger.warn("Intento de insertar valor '{}' negativo", txtPrice.getText());
-          errors.append("El precio no puede ser un valor negativo.\n");
-        }
-      } catch (NumberFormatException e) {
-        errors.append("El precio debe ser un valor numérico (puede ser decimal).\n");
-        logger.error("Intento de insertar valor '{}' que no es un número", txtPrice.getText());
-      }
-    }
-
-    // ---- Descripción ----
-    if (txtDescription.getText().length() > MAX_DESCRIPTION_LENGTH) {
-      logger.warn("Intento de ingresar más de {} caracteres en la descripción.", MAX_DESCRIPTION_LENGTH);
-      errors.append("La descripción no debe tener más de ")
-          .append(MAX_DESCRIPTION_LENGTH)
-          .append(" caracteres.\n");
-    }
-
-    if (errors.length() > 0) {
-      showAlert("Validación", "Corrija los siguientes errores", errors.toString());
-      return false;
-    }
-    return true;
-  }
+  // ============== VENTANA ==============
 
   private void closeWindow() {
     Stage stage = (Stage) btnCancel.getScene().getWindow();
@@ -350,10 +525,6 @@ public class RoomFormController {
   }
 
   private void showAlert(String title, String header, String content) {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-    alert.setTitle(title);
-    alert.setHeaderText(header);
-    alert.setContentText(content);
-    alert.showAndWait();
+    Alerts.info(title, header, content);
   }
 }

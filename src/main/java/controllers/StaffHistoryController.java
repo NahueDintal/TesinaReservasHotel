@@ -2,6 +2,7 @@ package controllers;
 
 import models.Staff;
 import repositories.StaffDAO;
+import utils.Alerts;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -56,17 +57,18 @@ public class StaffHistoryController {
       return;
     }
 
-        try {
-            staffDAO.reactivate(seleccionado.getId());
-            cargarInactivos(); // refresca: el reactivado ya no debería aparecer en la lista
-            mostrarAlerta("El personal ha sido reincorporado satisfactoriamente.");
-        } catch (SQLException e) {
-            mostrarAlerta("No se pudo reactivar: " + e.getMessage());
-        }
+    try {
+      staffDAO.reactivate(seleccionado.getId());
+      cargarInactivos(); // refresca: el reactivado ya no debería aparecer en la lista
+      mostrarAlerta("El personal ha sido reincorporado satisfactoriamente.");
+    } catch (SQLException e) {
+      mostrarAlerta("No se pudo reactivar: " + e.getMessage());
     }
+  }
 
   private void mostrarAlerta(String mensaje) {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION, mensaje);
-    alert.showAndWait();
+    // Alert alert = new Alert(Alert.AlertType.INFORMATION, mensaje);
+    // alert.showAndWait();
+    Alerts.info("Personal", mensaje);
   }
 }

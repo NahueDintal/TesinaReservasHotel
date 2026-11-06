@@ -1,0 +1,135 @@
+/* ======================================================
+   BASE.CSS - Estructura, fuentes, tamaños y animaciones
+   ====================================================== */
+
+.root {
+    -fx-font-family: "Segoe UI", "Adwaita Sans", sans-serif;
+}
+
+/* --- SIDEBAR ESTRUCTURA --- */
+.sidebar { -fx-padding: 20px; }
+.sidebar-titulo { -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 0 20 0; }
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-padding: 12 15;
+    -fx-background-radius: 6;
+    -fx-alignment: CENTER_LEFT;
+    -fx-pref-width: Infinity;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 12;
+}
+.sidebar-btn:hover { -fx-translate-x: 5; }
+.sidebar-btn:selected { -fx-font-weight: bold; }
+.sidebar-usuario { -fx-font-size: 14px; -fx-padding: 10 0 5 0; }
+.sidebar-logout {
+    -fx-background-radius: 6;
+    -fx-padding: 8 15;
+    -fx-pref-width: Infinity;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2);
+    -fx-graphic-text-gap: 10;
+}
+.sidebar-logout:pressed { -fx-translate-y: 1; }
+.hamburger-button { -fx-background-color: transparent; -fx-font-size: 25px; -fx-cursor: hand; -fx-padding: 12 15; }
+.sidebar.collapsed { -fx-padding: 20 8 20 8; }
+.sidebar.collapsed .sidebar-btn { -fx-content-display: graphic-only; -fx-alignment: CENTER; -fx-padding: 12 0; -fx-graphic-text-gap: 0; }
+.sidebar.collapsed .sidebar-btn:hover { -fx-translate-x: 0; }
+.sidebar.collapsed .sidebar-titulo, .sidebar.collapsed .sidebar-usuario, .sidebar.collapsed #logoApp { -fx-opacity: 0; -fx-max-height: 0; -fx-padding: 0; -fx-font-size: 0; }
+.sidebar.collapsed .sidebar-logout { -fx-content-display: graphic-only; -fx-padding: 10 0; -fx-alignment: CENTER; }
+
+/* --- TÍTULOS --- */
+.section-title, .titulo-seccion { -fx-font-weight: bold; }
+.section-title { -fx-font-size: 24px; }
+.subtitulo-seccion, .section-subtitle { -fx-font-size: 14px; }
+.footer-info, .info-pie { -fx-font-size: 13px; }
+
+/* --- BOTONES GENERALES --- */
+.btn-primary, .btn-primario { -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 10 20; -fx-font-size: 14px; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 4, 0, 0, 2); }
+.btn-primary:pressed, .btn-primario:pressed { -fx-translate-y: 1; }
+.btn-secondary, .btn-secundario { -fx-background-radius: 6; -fx-padding: 10 20; -fx-font-size: 14px; -fx-cursor: hand; }
+.btn-secondary:pressed, .btn-secundario:pressed { -fx-translate-y: 1; }
+.btn-detail { -fx-background-radius: 6; -fx-padding: 8 15; -fx-font-size: 13px; -fx-cursor: hand; }
+.btn-detail:pressed { -fx-translate-y: 1; }
+.btn-detail-danger { -fx-background-radius: 6; -fx-padding: 8 15; -fx-font-size: 13px; -fx-cursor: hand; }
+.btn-detail-danger:pressed { -fx-translate-y: 1; }
+
+/* --- CAMPOS DE TEXTO --- */
+.text-field { -fx-background-radius: 6; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-padding: 10 15; -fx-font-size: 14px; }
+.text-field:focused { -fx-border-width: 2; }
+.search-field, .campo-busqueda { -fx-background-radius: 5; -fx-border-radius: 5; -fx-padding: 10 15; -fx-font-size: 14px; }
+.detail-value-field, .detail-value-field-name { -fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 0; -fx-background-insets: 0; -fx-border-width: 0; -fx-effect: null; }
+.detail-value-field { -fx-font-size: 13px; }
+.detail-value-field-name { -fx-font-size: 18px; -fx-font-weight: bold; }
+
+/* --- COMBOBOX --- */
+.combo-box { -fx-background-radius: 6; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-padding: 0; -fx-font-size: 14px; -fx-cursor: hand; }
+.combo-box:focused { -fx-border-width: 2; }
+.combo-box .list-cell { -fx-padding: 10 15; -fx-font-size: 14px; }
+.combo-box .arrow-button { -fx-background-color: transparent; -fx-padding: 0 12 0 0; }
+.combo-box .arrow { -fx-shape: "M 0 0 L 4 4 L 8 0 Z"; -fx-padding: 4; }
+.combo-box-popup .list-view { -fx-background-radius: 6; -fx-border-width: 1; -fx-border-radius: 6; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 3); }
+.combo-box-popup .list-view .list-cell { -fx-padding: 10 15; -fx-font-size: 14px; -fx-cursor: hand; }
+
+/* --- TABLAS --- */
+.customer-table, .reservation-table, .consumption-management-table { -fx-border-width: 1; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 5; }
+.customer-table .column-header, .reservation-table .column-header { -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 12 0; -fx-border-color: transparent; }
+.customer-table .table-row-cell { -fx-cell-size: 30px; -fx-padding: 0; }
+.customer-table .table-cell { -fx-font-size: 13px; -fx-padding: 0 10; -fx-alignment: CENTER_LEFT; -fx-border-color: transparent; }
+.customer-table .corner, .customer-table .filler, .customer-table .scroll-bar .track { -fx-background-color: transparent; }
+
+/* --- FORMULARIOS --- */
+.form-container { -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-width: 1; }
+.form-title { -fx-font-weight: bold; -fx-font-size: 20px; }
+.form-label { -fx-font-weight: bold; -fx-font-size: 13px; }
+.char-counter { -fx-font-size: 10px; }
+
+/* --- TARJETAS DE REPORTES --- */
+.report-tile { -fx-border-width: 1.5; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 18; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2); }
+.report-tile-icon { -fx-font-size: 22px; }
+.report-tile-title { -fx-font-size: 15px; -fx-font-weight: bold; }
+.report-tile-desc { -fx-font-size: 12px; }
+.report-embed-panel { -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2); }
+
+/* --- PLANILLA (BOOKING CHART) ESTRUCTURA --- */
+.booking-chart-area { -fx-background-color: transparent; }
+.room-column-container { -fx-pref-width: 55px; -fx-min-width: 55px; -fx-max-width: 55px; }
+.calendar-container, .booking-fixed-header, .planilla-grid, .room-column { -fx-padding: 0; -fx-spacing: 0; }
+.top-toolbar { -fx-border-width: 0 0 1px 0; }
+.segmented-control { -fx-background-radius: 20px; -fx-padding: 4px; }
+.filter-btn { -fx-background-color: transparent; -fx-font-size: 11px; -fx-font-weight: bold; -fx-background-radius: 16px; -fx-border-radius: 16px; -fx-padding: 8px 14px; -fx-cursor: hand; }
+.nav-arrow-btn { -fx-font-size: 22px; -fx-font-weight: bold; -fx-background-radius: 50%; -fx-border-radius: 50%; -fx-min-width: 36px; -fx-min-height: 36px; -fx-pref-width: 36px; -fx-pref-height: 36px; -fx-max-width: 36px; -fx-max-height: 36px; -fx-padding: 0; -fx-cursor: hand; }
+.month-label { -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 0 8px 0 8px; }
+.corner-header { -fx-font-weight: bold; -fx-alignment: center; -fx-padding: 10px; -fx-border-width: 0 1 1 0; }
+#fixedRoomHeader { -fx-pref-width: 55px; -fx-min-width: 55px; -fx-max-width: 55px; -fx-pref-height: 45px; -fx-min-height: 45px; -fx-max-height: 45px; }
+.day-header { -fx-font-weight: bold; -fx-alignment: center; -fx-padding: 10px 4px; -fx-border-width: 0 1 1 0; }
+.room-header { -fx-font-weight: bold; -fx-alignment: center; -fx-padding: 8px; -fx-border-width: 0 1 1 0; }
+.room-row { -fx-padding: 0; -fx-spacing: 0; }
+.booking-cell, .reservation-container { -fx-border-width: 0 1 1 0; -fx-padding: 0; -fx-spacing: 0; }
+
+/* --- OTROS --- */
+.detail-panel { -fx-border-width: 0 0 0 1; }
+.split-pane { -fx-background-color: transparent; }
+.split-pane .split-pane-divider { -fx-padding: 0 3; }
+.tooltip { -fx-font-size: 12px; -fx-background-radius: 5; }
+.dashboard-scroll, .detail-scroll, .new-reservation-scroll, .header-scroll, .room-scroll, .planilla-scroll { -fx-background-color: transparent; -fx-background: transparent; }
+.dashboard-scroll > .viewport, .detail-scroll > .viewport, .new-reservation-scroll > .viewport, .header-scroll > .viewport, .room-scroll > .viewport, .planilla-scroll > .viewport { -fx-background-color: transparent; }
+
+/* --- SWITCH DE TEMA --- */
+.theme-switch { -fx-background-color: transparent; -fx-font-size: 13px; -fx-padding: 10 0 10 4; -fx-cursor: hand; -fx-graphic-text-gap: 10; -fx-alignment: CENTER_LEFT; -fx-pref-width: Infinity; }
+.theme-switch .switch-container { -fx-min-width: 46px; -fx-min-height: 24px; -fx-max-width: 46px; -fx-max-height: 24px; }
+.theme-switch .switch-track { -fx-background-radius: 12; -fx-border-radius: 12; -fx-border-width: 1; -fx-min-width: 46px; -fx-min-height: 24px; -fx-max-width: 46px; -fx-max-height: 24px; }
+.theme-switch .switch-thumb { -fx-background-radius: 10; -fx-min-width: 18px; -fx-min-height: 18px; -fx-max-width: 18px; -fx-max-height: 18px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 3, 0, 0, 1); -fx-translate-x: 3; }
+.theme-switch:selected .switch-thumb { -fx-translate-x: 25; }
+.sidebar.collapsed .theme-switch { -fx-content-display: graphic-only; -fx-alignment: CENTER; -fx-graphic-text-gap: 0; }
+
+/* --- BOTÓN NUEVA RESERVA --- */
+.btn-nueva-reserva {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 10px 16px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 6, 0.15, 0, 2);
+}

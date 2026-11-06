@@ -18,14 +18,14 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane style="-fx-background-color: #f4f6f9;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CancellationImpactController">
+<BorderPane styleClass="content-main" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CancellationImpactController">
 
     <top>
         <VBox spacing="12">
             <padding><Insets bottom="12" left="18" right="18" top="18" /></padding>
 
-            <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #222;" text="Impacto económico de las cancelaciones" />
-            <Label style="-fx-text-fill: #666; -fx-font-size: 12;" text="Ingresos perdidos (totalRate de reservas canceladas) vs ingresos totales, por canal." />
+            <Label styleClass="report-title" text="Impacto económico de las cancelaciones" />
+            <Label styleClass="report-subtitle" text="Ingresos perdidos (total de reservas canceladas) vs ingresos totales, por canal." />
 
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <Label text="Desde:" />
@@ -34,10 +34,10 @@
                 <DatePicker fx:id="toDatePicker" prefWidth="140" />
                 <Label text="Canal:" />
                 <ComboBox fx:id="channelComboBox" prefWidth="170" />
-                <Button fx:id="calculateButton" defaultButton="true" onAction="#onCalculate" style="-fx-background-color: #2d6cdf; -fx-text-fill: white; -fx-font-weight: bold;" text="Calcular" />
-                <Button fx:id="exportButton" onAction="#onExport" text="Exportar CSV" />
+                <Button fx:id="calculateButton" defaultButton="true" onAction="#onCalculate" styleClass="btn-primary" text="Calcular" />
+                <Button fx:id="exportButton" onAction="#onExport" styleClass="btn-secondary" text="Exportar CSV" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="clearButton" onAction="#onClear" text="Limpiar" />
+                <Button fx:id="clearButton" onAction="#onClear" styleClass="btn-secondary" text="Limpiar" />
             </HBox>
 
             <GridPane hgap="12">
@@ -48,29 +48,29 @@
                     <ColumnConstraints percentWidth="25" />
                 </columnConstraints>
 
-                <VBox spacing="4" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="0">
-                    <Label style="-fx-text-fill: #888; -fx-font-size: 12;" text="Total de reservas" />
-                    <Label fx:id="totalReservationsLabel" style="-fx-font-size: 22; -fx-font-weight: bold;" text="—" />
+                <VBox spacing="4" styleClass="report-card" GridPane.columnIndex="0">
+                    <Label styleClass="kpi-label" text="Total de reservas" />
+                    <Label fx:id="totalReservationsLabel" styleClass="kpi-value" text="—" />
                 </VBox>
 
-                <VBox spacing="4" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="1">
-                    <Label style="-fx-text-fill: #888; -fx-font-size: 12;" text="Canceladas" />
-                    <Label fx:id="cancelledReservationsLabel" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;" text="—" />
+                <VBox spacing="4" styleClass="report-card" GridPane.columnIndex="1">
+                    <Label styleClass="kpi-label" text="Canceladas" />
+                    <Label fx:id="cancelledReservationsLabel" styleClass="kpi-value-danger" text="—" />
                 </VBox>
 
-                <VBox spacing="4" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="2">
-                    <Label style="-fx-text-fill: #888; -fx-font-size: 12;" text="Ingresos totales" />
-                    <Label fx:id="totalRevenueLabel" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #27ae60;" text="—" />
+                <VBox spacing="4" styleClass="report-card" GridPane.columnIndex="2">
+                    <Label styleClass="kpi-label" text="Ingresos totales" />
+                    <Label fx:id="totalRevenueLabel" styleClass="kpi-value-success" text="—" />
                 </VBox>
 
-                <VBox spacing="4" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;                              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);" GridPane.columnIndex="3">
-                    <Label style="-fx-text-fill: #888; -fx-font-size: 12;" text="Ingresos perdidos" />
-                    <Label fx:id="lostRevenueLabel" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #c0392b;" text="—" />
-                    <Label fx:id="lostRatioLabel" style="-fx-text-fill: #666; -fx-font-size: 11;" text="" />
+                <VBox spacing="4" styleClass="report-card" GridPane.columnIndex="3">
+                    <Label styleClass="kpi-label" text="Ingresos perdidos" />
+                    <Label fx:id="lostRevenueLabel" styleClass="kpi-value-danger" text="—" />
+                    <Label fx:id="lostRatioLabel" styleClass="kpi-detail" text="" />
                 </VBox>
-            <rowConstraints>
-               <RowConstraints />
-            </rowConstraints>
+                <rowConstraints>
+                    <RowConstraints />
+                </rowConstraints>
             </GridPane>
         </VBox>
     </top>
@@ -79,17 +79,17 @@
         <VBox spacing="12">
             <padding><Insets bottom="18" left="18" right="18" top="6" /></padding>
 
-            <VBox spacing="6" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);" VBox.vgrow="ALWAYS">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Ingresos perdidos por canal" />
-                <BarChart fx:id="revenueChart" animated="false" barGap="4" categoryGap="20" legendVisible="false" VBox.vgrow="ALWAYS">
+            <VBox spacing="6" styleClass="report-card" VBox.vgrow="ALWAYS">
+                <Label styleClass="report-chart-title" text="Ingresos perdidos por canal" />
+                <BarChart fx:id="revenueChart" styleClass="report-chart" animated="false" barGap="4" categoryGap="20" legendVisible="false" VBox.vgrow="ALWAYS">
                     <xAxis><CategoryAxis fx:id="channelAxis" label="Canal de reserva" /></xAxis>
                     <yAxis><NumberAxis fx:id="revenueAxis" forceZeroInRange="true" label="Monto" tickUnit="1000" /></yAxis>
                 </BarChart>
             </VBox>
 
-            <VBox prefHeight="240" spacing="6" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 14;                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);">
-                <Label style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Detalle por canal" />
-                <TableView fx:id="dataTable" VBox.vgrow="ALWAYS">
+            <VBox prefHeight="240" spacing="6" styleClass="report-card">
+                <Label styleClass="report-chart-title" text="Detalle por canal" />
+                <TableView fx:id="dataTable" styleClass="customer-table" VBox.vgrow="ALWAYS">
                     <columns>
                         <TableColumn fx:id="channelColumn" prefWidth="140" text="Canal" />
                         <TableColumn fx:id="totalColumn" prefWidth="110" text="Reservas" />
@@ -104,8 +104,8 @@
     </center>
 
     <bottom>
-        <HBox alignment="CENTER_LEFT" style="-fx-background-color: #eef1f5; -fx-padding: 8 18 8 18;">
-            <Label fx:id="statusLabel" style="-fx-text-fill: #555; -fx-font-size: 11;" text="Listo." />
+        <HBox alignment="CENTER_LEFT" styleClass="report-status-bar">
+            <Label fx:id="statusLabel" styleClass="report-status-label" text="Listo." />
         </HBox>
     </bottom>
 </BorderPane>

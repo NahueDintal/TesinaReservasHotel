@@ -1,6 +1,7 @@
 package repositories;
 
 import models.Customer;
+import utils.TextUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,6 +9,9 @@ import java.util.List;
 
 public class CustomerDAO {
 
+    // ============================================================
+    // 1. LIST ALL (ACTIVOS)
+    // ============================================================
     public List<Customer> listAll() throws SQLException {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT c.*, " +
@@ -31,28 +35,15 @@ public class CustomerDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Customer c = new Customer();
-                c.setIdCustomer(rs.getInt("idCustomer"));
-                c.setName(rs.getString("name"));
-                c.setSurname(rs.getString("surname"));
-                c.setIdDocumentType(rs.getInt("idDocumentType"));
-                c.setDocumentNumber(rs.getString("documentNumber"));
-                c.setPhoneNumber(rs.getString("phoneNumber"));
-                c.setEmail(rs.getString("email"));
-                c.setIdCountry(rs.getInt("idCountry"));
-                c.setIdProvince(rs.getInt("idProvince"));
-                c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
-                c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                c.setDocumentTypeName(rs.getString("documentTypeName"));
-                c.setCountryName(rs.getString("countryName"));
-                c.setProvinceName(rs.getString("provinceName"));
-                c.setStatusName(rs.getString("statusName"));
-                c.setOriginName(rs.getString("originName"));
-                customers.add(c);
+                customers.add(mapCustomer(rs));
             }
         }
         return customers;
     }
+
+    // ============================================================
+    // 1.b LIST ALL INACTIVOS
+    // ============================================================
     public List<Customer> listAllInactive() throws SQLException {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT c.*, " +
@@ -67,7 +58,7 @@ public class CustomerDAO {
                 "LEFT JOIN Province pr ON c.idProvince = pr.idProvince " +
                 "LEFT JOIN CustomerStatus cs ON c.idCustomerStatus = cs.idCustomerStatus " +
                 "LEFT JOIN CustomerOrigin co2 ON c.idCustomerOrigin = co2.idCustomerOrigin " +
-                "WHERE cs.name = 'inactive' " +  // ← FILTRO POR INACTIVO
+                "WHERE cs.name = 'inactive' " +
                 "ORDER BY c.idCustomer DESC " +
                 "LIMIT 100";
 
@@ -76,30 +67,15 @@ public class CustomerDAO {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Customer c = new Customer();
-                c.setIdCustomer(rs.getInt("idCustomer"));
-                c.setName(rs.getString("name"));
-                c.setSurname(rs.getString("surname"));
-                c.setIdDocumentType(rs.getInt("idDocumentType"));
-                c.setDocumentNumber(rs.getString("documentNumber"));
-                c.setPhoneNumber(rs.getString("phoneNumber"));
-                c.setEmail(rs.getString("email"));
-                c.setIdCountry(rs.getInt("idCountry"));
-                c.setIdProvince(rs.getInt("idProvince"));
-                c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
-                c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                c.setDocumentTypeName(rs.getString("documentTypeName"));
-                c.setCountryName(rs.getString("countryName"));
-                c.setProvinceName(rs.getString("provinceName"));
-                c.setStatusName(rs.getString("statusName"));
-                c.setOriginName(rs.getString("originName"));
-                customers.add(c);
+                customers.add(mapCustomer(rs));
             }
         }
         return customers;
     }
 
+    // ============================================================
     // 2. SEARCH BY ID
+    // ============================================================
     public Customer searchById(int id) throws SQLException {
         String sql = "SELECT c.*, " +
                 "dt.name AS documentTypeName, " +
@@ -121,31 +97,16 @@ public class CustomerDAO {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    Customer c = new Customer();
-                    c.setIdCustomer(rs.getInt("idCustomer"));
-                    c.setName(rs.getString("name"));
-                    c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumentType"));
-                    c.setDocumentNumber(rs.getString("documentNumber"));
-                    c.setPhoneNumber(rs.getString("phoneNumber"));
-                    c.setEmail(rs.getString("email"));
-                    c.setIdCountry(rs.getInt("idCountry"));
-                    c.setIdProvince(rs.getInt("idProvince"));
-                    c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
-                    c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                    c.setDocumentTypeName(rs.getString("documentTypeName"));
-                    c.setCountryName(rs.getString("countryName"));
-                    c.setProvinceName(rs.getString("provinceName"));
-                    c.setStatusName(rs.getString("statusName"));
-                    c.setOriginName(rs.getString("originName"));
-                    return c;
+                    return mapCustomer(rs);
                 }
             }
         }
         return null;
     }
 
+    // ============================================================
     // 3. INSERT
+    // ============================================================
     public boolean isInsert(Customer customer) throws SQLException {
         String sql = "INSERT INTO Customer (name, surname, idDocumentType, documentNumber, " +
                 "phoneNumber, email, idCountry, idProvince, idCustomerStatus, idCustomerOrigin) " +
@@ -163,7 +124,9 @@ public class CustomerDAO {
 
             if (customer.getIdProvince() == 0) {
                 stmt.setNull(8, java.sql.Types.INTEGER);
-            } else {stmt.setInt(8, customer.getIdProvince());}
+            } else {
+                stmt.setInt(8, customer.getIdProvince());
+            }
 
             stmt.setInt(9, customer.getIdCustomerStatus());
             stmt.setInt(10, customer.getIdCustomerOrigin());
@@ -181,7 +144,9 @@ public class CustomerDAO {
         }
     }
 
+    // ============================================================
     // 4. UPDATE
+    // ============================================================
     public boolean isUpdate(Customer customer) throws SQLException {
         String sql = "UPDATE Customer SET name=?, surname=?, idDocumentType=?, documentNumber=?, " +
                 "phoneNumber=?, email=?, idCountry=?, idProvince=?, idCustomerStatus=?, idCustomerOrigin=? " +
@@ -199,7 +164,9 @@ public class CustomerDAO {
 
             if (customer.getIdProvince() == 0) {
                 stmt.setNull(8, java.sql.Types.INTEGER);
-            } else {stmt.setInt(8, customer.getIdProvince());}
+            } else {
+                stmt.setInt(8, customer.getIdProvince());
+            }
 
             stmt.setInt(9, customer.getIdCustomerStatus());
             stmt.setInt(10, customer.getIdCustomerOrigin());
@@ -209,7 +176,9 @@ public class CustomerDAO {
         }
     }
 
-    // 5. validation for duplicated documentation
+    // ============================================================
+    // 5. VALIDACIÓN DUPLICADOS
+    // ============================================================
     public boolean isDuplicatedByDocumentation(String documentNumber, int idDocumentType, int excludeCustomerId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Customer WHERE documentNumber = ? AND idDocumentType = ?";
 
@@ -229,14 +198,16 @@ public class CustomerDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int count = rs.getInt(1); // Aquí obtenemos el COUNT
-                    return count > 0; // Si count > 0, existe duplicado
+                    return rs.getInt(1) > 0;
                 }
             }
         }
         return false;
     }
 
+    // ============================================================
+    // 6. COUNT
+    // ============================================================
     public int countAll() throws SQLException {
         String sql = "SELECT COUNT(*) FROM Customer";
         try (Connection conn = ConexionDB.getConnection();
@@ -248,6 +219,10 @@ public class CustomerDAO {
         }
         return 0;
     }
+
+    // ============================================================
+    // 7. SEARCH ACTIVOS
+    // ============================================================
     public List<Customer> searchCustomers(String searchTerm) throws SQLException {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT c.*, " +
@@ -271,9 +246,9 @@ public class CustomerDAO {
                 "   OR co.name LIKE ? " +
                 "   OR pr.name LIKE ? " +
                 "   OR co2.name LIKE ?) " +
-                "AND cs.name = 'active' " +  // Solo activos
+                "AND cs.name = 'active' " +
                 "ORDER BY c.idCustomer DESC " +
-                "LIMIT 100";  //limite de la grilla
+                "LIMIT 100";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -285,29 +260,16 @@ public class CustomerDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Customer c = new Customer();
-                    c.setIdCustomer(rs.getInt("idCustomer"));
-                    c.setName(rs.getString("name"));
-                    c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumentType"));
-                    c.setDocumentNumber(rs.getString("documentNumber"));
-                    c.setPhoneNumber(rs.getString("phoneNumber"));
-                    c.setEmail(rs.getString("email"));
-                    c.setIdCountry(rs.getInt("idCountry"));
-                    c.setIdProvince(rs.getInt("idProvince"));
-                    c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
-                    c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                    c.setDocumentTypeName(rs.getString("documentTypeName"));
-                    c.setCountryName(rs.getString("countryName"));
-                    c.setProvinceName(rs.getString("provinceName"));
-                    c.setStatusName(rs.getString("statusName"));
-                    c.setOriginName(rs.getString("originName"));
-                    customers.add(c);
+                    customers.add(mapCustomer(rs));
                 }
             }
         }
         return customers;
     }
+
+    // ============================================================
+    // 8. SEARCH INACTIVOS
+    // ============================================================
     public List<Customer> searchInactiveCustomers(String searchTerm) throws SQLException {
         List<Customer> customers = new ArrayList<>();
         String sql = "SELECT c.*, " +
@@ -331,9 +293,9 @@ public class CustomerDAO {
                 "   OR co.name LIKE ? " +
                 "   OR pr.name LIKE ? " +
                 "   OR co2.name LIKE ?) " +
-                "AND cs.name = 'inactive' " +  // Solo inactivos
+                "AND cs.name = 'inactive' " +
                 "ORDER BY c.idCustomer DESC " +
-                "LIMIT 100";  // limite de grilla
+                "LIMIT 100";
 
         try (Connection conn = ConexionDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -345,27 +307,37 @@ public class CustomerDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Customer c = new Customer();
-                    c.setIdCustomer(rs.getInt("idCustomer"));
-                    c.setName(rs.getString("name"));
-                    c.setSurname(rs.getString("surname"));
-                    c.setIdDocumentType(rs.getInt("idDocumentType"));
-                    c.setDocumentNumber(rs.getString("documentNumber"));
-                    c.setPhoneNumber(rs.getString("phoneNumber"));
-                    c.setEmail(rs.getString("email"));
-                    c.setIdCountry(rs.getInt("idCountry"));
-                    c.setIdProvince(rs.getInt("idProvince"));
-                    c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
-                    c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
-                    c.setDocumentTypeName(rs.getString("documentTypeName"));
-                    c.setCountryName(rs.getString("countryName"));
-                    c.setProvinceName(rs.getString("provinceName"));
-                    c.setStatusName(rs.getString("statusName"));
-                    c.setOriginName(rs.getString("originName"));
-                    customers.add(c);
+                    customers.add(mapCustomer(rs));
                 }
             }
         }
         return customers;
+    }
+
+    // ============================================================
+    // HELPER: mapea un ResultSet a Customer aplicando formato
+    // ============================================================
+    private Customer mapCustomer(ResultSet rs) throws SQLException {
+        Customer c = new Customer();
+        c.setIdCustomer(rs.getInt("idCustomer"));
+        c.setName(TextUtils.titleCase(rs.getString("name")));
+        c.setSurname(TextUtils.titleCase(rs.getString("surname")));
+        c.setIdDocumentType(rs.getInt("idDocumentType"));
+        c.setDocumentNumber(rs.getString("documentNumber"));
+        c.setPhoneNumber(rs.getString("phoneNumber"));
+        c.setEmail(rs.getString("email"));
+        c.setIdCountry(rs.getInt("idCountry"));
+        c.setIdProvince(rs.getInt("idProvince"));
+        c.setIdCustomerStatus(rs.getInt("idCustomerStatus"));
+        c.setIdCustomerOrigin(rs.getInt("idCustomerOrigin"));
+
+        // 👇 Aquí aplicamos el formateo SOLO a los campos de texto libre
+        c.setDocumentTypeName(rs.getString("documentTypeName")); // NO se toca (ej: "DNI", "CE")
+        c.setCountryName(TextUtils.titleCase(rs.getString("countryName")));
+        c.setProvinceName(TextUtils.titleCase(rs.getString("provinceName")));
+        c.setStatusName(rs.getString("statusName"));             // NO se toca (es "active"/"inactive")
+        c.setOriginName(TextUtils.titleCase(rs.getString("originName")));
+
+        return c;
     }
 }

@@ -5,59 +5,60 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class LoginGuard {
 
-  private LoginGuard() {
-  }
+  private LoginGuard() {}
 
-  /**
-   * Devuelve TRUE si la acción puede continuar.
-   * - Login desactivado → TRUE
-   * - Ya logueado → TRUE
-   * - Si no → abre dialog y devuelve el resultado
-   */
   public static boolean requireAccess() {
     LoginManager lm = LoginManager.getInstance();
-
-    if (!lm.isLoginEnabled())
-      return true;
+    if (!lm.isLoginEnabled()) return true;
     if (lm.isAuthenticated()) {
       lm.touch();
       return true;
     }
-
     return showLoginDialog();
-  }
-
-  /**
-   * Para acciones que requieren un rol específico (ej: ADMIN)
-   */
-  public static boolean requireRole(String role) {
-    if (!requireAccess())
-      return false;
-    return LoginManager.getInstance().hasRole(role);
   }
 
   private static boolean showLoginDialog() {
     try {
-      FXMLLoader loader = new FXMLLoader(
-          LoginGuard.class.getResource("/views/Login.fxml"));
+      FXMLLoader loader = new FXMLLoader(LoginGuard.class.getResource("/views/Login.fxml"));
       Parent root = loader.load();
 
-      Scene scene = new Scene(root);
+      // 🔥 Quitamos el "420, 520" fijo para que la ventana mida justo lo que mide la tarjeta
+      Scene scene = new Scene(root); 
 
-      // 👇 Igual que RoomForm: nada de setWidth/setHeight manual
       Stage stage = new Stage();
       stage.setTitle("Iniciar Sesión");
-
-      // Modal: bloquea la principal y queda siempre encima
-      stage.initModality(Modality.APPLICATION_MODAL);
-
       stage.setScene(scene);
+      stage.initModality(Modality.WINDOW_MODAL);
+      stage.setResizable(false);
 
-      stage.sizeToScene();
-      stage.centerOnScreen();
+      Window owner = Stage.getWindows().stream().filter(Window::isFocused).findFirst().orElse(null);
+      
+      if (owner != null) {
+        stage.initOwner(owner);
+        
+        // 🔥 INYECTAMOS EL CSS DEL DASHBOARD (Para que el botón sea verde y respete el tema)
+        if (owner.getScene() != null) {
+            scene.getStylesheets().addAll(owner.getScene().getStylesheets());
+            
+            if (owner.getScene().getRoot().getStyleClass().contains("dark-theme")) {
+                root.getStyleClass().add("dark-theme");
+            }
+        }
+        
+        stage.setOnShown(ev -> {
+          stage.setX(owner.getX() + (owner.getWidth() - stage.getWidth()) / 2);
+          stage.setY(owner.getY() + (owner.getHeight() - stage.getHeight()) / 2);
+        });
+      } else {
+        stage.centerOnScreen();
+      }
+
+      // 🔥 Ajustamos el Stage al tamaño exacto del contenido
+      stage.sizeToScene(); 
 
       stage.showAndWait();
 

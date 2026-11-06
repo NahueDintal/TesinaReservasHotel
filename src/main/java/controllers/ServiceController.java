@@ -19,376 +19,373 @@ import java.math.BigDecimal;
 
 public class ServiceController {
 
-    @FXML
-    private TableView<Service> tableServices;
+  @FXML
+  private TableView<Service> tableServices;
 
-    @FXML
-    private TableColumn<Service, String> colName;
+  @FXML
+  private TableColumn<Service, String> colName;
 
-    @FXML
-    private TableColumn<Service, String> colDescription;
+  @FXML
+  private TableColumn<Service, String> colDescription;
 
-    @FXML
-    private TableColumn<Service, BigDecimal> colPrice;
+  @FXML
+  private TableColumn<Service, BigDecimal> colPrice;
 
-    @FXML
-    private Button btnNewService;
+  @FXML
+  private Button btnNewService;
 
-    @FXML
-    private Button btnViewInactive;
+  @FXML
+  private Button btnViewInactive;
 
-    @FXML
-    private Button btnEdit;
+  @FXML
+  private Button btnEdit;
 
-    @FXML
-    private Button btnDeactivate;
+  @FXML
+  private Button btnDeactivate;
 
-    @FXML
-    private TextField txtDetailName;
+  @FXML
+  private TextField txtDetailName;
 
-    @FXML
-    private TextField txtDetailDescription;
+  @FXML
+  private TextField txtDetailDescription;
 
-    @FXML
-    private TextField txtDetailPrice;
+  @FXML
+  private TextField txtDetailPrice;
 
-    @FXML
-    private TextField txtSearch;
+  @FXML
+  private TextField txtSearch;
 
-    @FXML
-    private Label lblTotalServices;
+  @FXML
+  private Label lblTotalServices;
 
-    private final ServiceRepo serviceRepo = new ServiceRepo();
+  private final ServiceRepo serviceRepo = new ServiceRepo();
 
-    private final ObservableList<Service> masterServiceList =
-            FXCollections.observableArrayList();
+  private final ObservableList<Service> masterServiceList = FXCollections.observableArrayList();
 
-    private FilteredList<Service> filteredServices;
+  private FilteredList<Service> filteredServices;
 
-    @FXML
-    public void initialize() {
+  // 🔑 Referencias a ventanas hijas (para evitar abrir múltiples veces)
+  private Stage serviceFormStage;
+  private Stage inactiveServicesStage;
 
-        colName.setCellValueFactory(
-                new PropertyValueFactory<>("name")
-        );
+  @FXML
+  public void initialize() {
 
-        colDescription.setCellValueFactory(
-                new PropertyValueFactory<>("description")
-        );
+    colName.setCellValueFactory(
+        new PropertyValueFactory<>("name"));
 
-        colPrice.setCellValueFactory(
-                new PropertyValueFactory<>("price")
-        );
+    colDescription.setCellValueFactory(
+        new PropertyValueFactory<>("description"));
 
+    colPrice.setCellValueFactory(
+        new PropertyValueFactory<>("price"));
+
+    loadActiveServices();
+
+    txtSearch.textProperty().addListener(
+        (observable, oldValue, newValue) -> {
+
+          if (newValue == null || newValue.trim().isEmpty()) {
+
+            loadActiveServices();
+
+          } else {
+
+            masterServiceList.setAll(
+                serviceRepo.searchServices(
+                    newValue.trim()));
+
+            filteredServices = new FilteredList<>(
+                masterServiceList,
+                service -> true);
+
+            tableServices.setItems(filteredServices);
+
+            updateCounter();
+          }
+        });
+
+    tableServices.getSelectionModel()
+        .selectedItemProperty()
+        .addListener((obs, oldValue, newValue) -> {
+
+          if (newValue != null) {
+            showDetail(newValue);
+          } else {
+            clearDetail();
+          }
+
+          boolean selected = newValue != null;
+
+          btnEdit.setDisable(!selected);
+          btnDeactivate.setDisable(!selected);
+        });
+
+    btnEdit.setDisable(true);
+    btnDeactivate.setDisable(true);
+
+    btnNewService.setOnAction(
+        e -> openServiceForm(null));
+
+    btnViewInactive.setOnAction(
+        e -> openInactiveServicesWindow());
+
+    btnEdit.setOnAction(
+        e -> openServiceForm(
+            tableServices
+                .getSelectionModel()
+                .getSelectedItem()));
+
+    btnDeactivate.setOnAction(
+        e -> deactivateService());
+  }
+
+  private void loadActiveServices() {
+
+    masterServiceList.setAll(
+        serviceRepo.getActiveServices());
+
+    filteredServices = new FilteredList<>(
+        masterServiceList,
+        service -> true);
+
+    tableServices.setItems(filteredServices);
+
+    updateCounter();
+  }
+
+  private void showDetail(Service service) {
+
+    txtDetailName.setText(
+        getDisplayText(service.getName()));
+
+    txtDetailDescription.setText(
+        getDisplayText(service.getDescription()));
+
+    txtDetailPrice.setText(
+        service.getPrice() != null
+            ? service.getPrice().toString()
+            : "--");
+  }
+
+  private void clearDetail() {
+
+    txtDetailName.setText("Seleccione un servicio");
+    txtDetailDescription.setText("--");
+    txtDetailPrice.setText("--");
+  }
+
+  private String getDisplayText(String value) {
+
+    return value != null && !value.isEmpty()
+        ? value
+        : "--";
+  }
+
+  // ============================================================
+  // FORM DE SERVICIO (Nuevo / Editar)
+  // ============================================================
+
+  private void openServiceForm(Service service) {
+
+    // 🔑 Si ya hay un form abierto, traerlo al frente y salir
+    if (serviceFormStage != null && serviceFormStage.isShowing()) {
+      serviceFormStage.toFront();
+      serviceFormStage.requestFocus();
+      return;
+    }
+
+    try {
+
+      FXMLLoader loader = new FXMLLoader(
+          getClass().getResource(
+              "/views/ServiceFormView.fxml"));
+
+      serviceFormStage = new Stage();
+
+      serviceFormStage.setScene(
+          new Scene(loader.load()));
+
+      StyleManager.applyStyles(serviceFormStage);
+
+      serviceFormStage.initModality(Modality.WINDOW_MODAL);
+
+      serviceFormStage.initOwner(
+          tableServices.getScene().getWindow());
+
+      ServiceFormController controller = loader.getController();
+
+      if (service != null) {
+
+        controller.setService(service);
+
+        serviceFormStage.setTitle(
+            "Modificación de Servicio");
+
+      } else {
+
+        serviceFormStage.setTitle(
+            "Registro de Servicio");
+      }
+
+      // 🔑 Al cerrarse: limpiar referencia + recargar
+      serviceFormStage.setOnHidden(evt -> {
+        serviceFormStage = null;
         loadActiveServices();
+        tableServices.refresh();
+        updateCounter();
+      });
 
-        txtSearch.textProperty().addListener(
-                (observable, oldValue, newValue) -> {
+      serviceFormStage.showAndWait();
 
-                    if (newValue == null || newValue.trim().isEmpty()) {
+    } catch (IOException e) {
 
-                        loadActiveServices();
+      serviceFormStage = null;
 
-                    } else {
+      showAlert(
+          "Error",
+          "No se pudo abrir el formulario",
+          e.getMessage());
+    }
+  }
 
-                        masterServiceList.setAll(
-                                serviceRepo.searchServices(
-                                        newValue.trim()
-                                )
-                        );
+  // ============================================================
+  // VENTANA DE SERVICIOS ELIMINADOS
+  // ============================================================
 
-                        filteredServices =
-                                new FilteredList<>(
-                                        masterServiceList,
-                                        service -> true
-                                );
+  private void openInactiveServicesWindow() {
 
-                        tableServices.setItems(filteredServices);
+    // 🔑 Si ya está abierta, traerla al frente y salir
+    if (inactiveServicesStage != null && inactiveServicesStage.isShowing()) {
+      inactiveServicesStage.toFront();
+      inactiveServicesStage.requestFocus();
+      return;
+    }
 
-                        updateCounter();
-                    }
-                }
-        );
+    try {
 
-        tableServices.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((obs, oldValue, newValue) -> {
+      FXMLLoader loader = new FXMLLoader(
+          getClass().getResource(
+              "/views/InactiveServiceView.fxml"));
 
-                    if (newValue != null) {
-                        showDetail(newValue);
-                    } else {
-                        clearDetail();
-                    }
+      inactiveServicesStage = new Stage();
 
-                    boolean selected = newValue != null;
+      inactiveServicesStage.setScene(
+          new Scene(loader.load()));
 
-                    btnEdit.setDisable(!selected);
-                    btnDeactivate.setDisable(!selected);
-                });
+      StyleManager.applyStyles(inactiveServicesStage);
+
+      inactiveServicesStage.setTitle("Servicios Eliminados");
+
+      inactiveServicesStage.initModality(Modality.WINDOW_MODAL);
+
+      inactiveServicesStage.initOwner(
+          tableServices.getScene().getWindow());
+
+      // 🔑 Al cerrarse: limpiar referencia + recargar
+      inactiveServicesStage.setOnHidden(evt -> {
+        inactiveServicesStage = null;
+        loadActiveServices();
+        tableServices.refresh();
+        updateCounter();
+      });
+
+      inactiveServicesStage.showAndWait();
+
+    } catch (Exception e) {
+
+      inactiveServicesStage = null;
+
+      e.printStackTrace();
+
+      showAlert(
+          "Error",
+          "No se pudo abrir la ventana de inactivos",
+          e.getMessage());
+    }
+  }
+
+  // ============================================================
+  // ELIMINAR (soft delete)
+  // ============================================================
+
+  private void deactivateService() {
+
+    Service selected = tableServices
+        .getSelectionModel()
+        .getSelectedItem();
+
+    if (selected == null) {
+      return;
+    }
+
+    boolean confirmed = StyleManager.showConfirmation(
+        "Eliminar servicio",
+        "¿Desea eliminar este servicio?",
+        "El servicio "
+            + selected.getName()
+            + " dejará de estar disponible para nuevos consumos.");
+
+    if (confirmed) {
+
+      boolean success = serviceRepo.deactivate(
+          selected.getIdService());
+
+      if (success) {
+
+        masterServiceList.remove(selected);
+
+        tableServices.refresh();
+
+        clearDetail();
 
         btnEdit.setDisable(true);
         btnDeactivate.setDisable(true);
 
-        btnNewService.setOnAction(
-                e -> openServiceForm(null)
-        );
-
-        btnViewInactive.setOnAction(
-                e -> openInactiveServicesWindow()
-        );
-
-        btnEdit.setOnAction(
-                e -> openServiceForm(
-                        tableServices
-                                .getSelectionModel()
-                                .getSelectedItem()
-                )
-        );
-
-        btnDeactivate.setOnAction(
-                e -> deactivateService()
-        );
-    }
-
-    private void loadActiveServices() {
-
-        masterServiceList.setAll(
-                serviceRepo.getActiveServices()
-        );
-
-        filteredServices =
-                new FilteredList<>(
-                        masterServiceList,
-                        service -> true
-                );
-
-        tableServices.setItems(filteredServices);
-
         updateCounter();
+
+        showAlert(
+            "Éxito",
+            "Servicio eliminado",
+            "El servicio se desactivó correctamente.");
+
+      } else {
+
+        showAlert(
+            "Error",
+            "No se pudo eliminar",
+            "No fue posible desactivar el servicio.");
+      }
     }
+  }
 
-    private void showDetail(Service service) {
+  private void updateCounter() {
 
-        txtDetailName.setText(
-                getDisplayText(service.getName())
-        );
+    int count = filteredServices != null
+        ? filteredServices.size()
+        : 0;
 
-        txtDetailDescription.setText(
-                getDisplayText(service.getDescription())
-        );
+    lblTotalServices.setText(
+        "Mostrando "
+            + count
+            + " servicios");
+  }
 
-        txtDetailPrice.setText(
-                service.getPrice() != null
-                        ? service.getPrice().toString()
-                        : "--"
-        );
-    }
+  private void showAlert(
+      String title,
+      String header,
+      String content) {
 
-    private void clearDetail() {
+    Alert alert = new Alert(
+        Alert.AlertType.INFORMATION);
 
-        txtDetailName.setText("Seleccione un servicio");
-        txtDetailDescription.setText("--");
-        txtDetailPrice.setText("--");
-    }
+    alert.setTitle(title);
+    alert.setHeaderText(header);
+    alert.setContentText(content);
 
-    private String getDisplayText(String value) {
+    StyleManager.applyStyles(
+        alert.getDialogPane());
 
-        return value != null && !value.isEmpty()
-                ? value
-                : "--";
-    }
-
-    private void openServiceForm(Service service) {
-
-        try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/views/ServiceFormView.fxml"
-                            )
-                    );
-
-            Stage stage = new Stage();
-
-            stage.setScene(
-                    new Scene(loader.load())
-            );
-
-            StyleManager.applyStyles(stage);
-
-            stage.initModality(Modality.WINDOW_MODAL);
-
-            stage.initOwner(
-                    tableServices.getScene().getWindow()
-            );
-
-            ServiceFormController controller =
-                    loader.getController();
-
-            if (service != null) {
-
-                controller.setService(service);
-
-                stage.setTitle(
-                        "Modificación de Servicio"
-                );
-
-            } else {
-
-                stage.setTitle(
-                        "Registro de Servicio"
-                );
-            }
-
-            stage.showAndWait();
-
-            loadActiveServices();
-
-            tableServices.refresh();
-
-            updateCounter();
-
-        } catch (IOException e) {
-
-            showAlert(
-                    "Error",
-                    "No se pudo abrir el formulario",
-                    e.getMessage()
-            );
-        }
-    }
-
-    private void openInactiveServicesWindow() {
-        try {
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/views/InactiveServiceView.fxml"
-                            )
-                    );
-
-            Stage stage = new Stage();
-
-            stage.setScene(
-                    new Scene(loader.load())
-            );
-
-            StyleManager.applyStyles(stage);
-
-            stage.setTitle("Servicios Eliminados");
-
-            stage.initModality(Modality.WINDOW_MODAL);
-
-            stage.showAndWait();
-
-            loadActiveServices();
-            tableServices.refresh();
-            updateCounter();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            showAlert(
-                    "Error",
-                    "No se pudo abrir la ventana de inactivos",
-                    e.getMessage()
-            );
-        }
-    }
-
-
-    private void deactivateService() {
-
-        Service selected =
-                tableServices
-                        .getSelectionModel()
-                        .getSelectedItem();
-
-        if (selected == null) {
-            return;
-        }
-
-        boolean confirmed =
-                StyleManager.showConfirmation(
-                        "Eliminar servicio",
-                        "¿Desea eliminar este servicio?",
-                        "El servicio "
-                                + selected.getName()
-                                + " dejará de estar disponible para nuevos consumos."
-                );
-
-        if (confirmed) {
-
-            boolean success =
-                    serviceRepo.deactivate(
-                            selected.getIdService()
-                    );
-
-            if (success) {
-
-                masterServiceList.remove(selected);
-
-                tableServices.refresh();
-
-                clearDetail();
-
-                btnEdit.setDisable(true);
-                btnDeactivate.setDisable(true);
-
-                updateCounter();
-
-                showAlert(
-                        "Éxito",
-                        "Servicio eliminado",
-                        "El servicio se desactivó correctamente."
-                );
-
-            } else {
-
-                showAlert(
-                        "Error",
-                        "No se pudo eliminar",
-                        "No fue posible desactivar el servicio."
-                );
-            }
-        }
-    }
-
-    private void updateCounter() {
-
-        int count =
-                filteredServices != null
-                        ? filteredServices.size()
-                        : 0;
-
-        lblTotalServices.setText(
-                "Mostrando "
-                        + count
-                        + " servicios"
-        );
-    }
-
-    private void showAlert(
-            String title,
-            String header,
-            String content
-    ) {
-
-        Alert alert =
-                new Alert(
-                        Alert.AlertType.INFORMATION
-                );
-
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-
-        StyleManager.applyStyles(
-                alert.getDialogPane()
-        );
-
-        alert.showAndWait();
-    }
+    alert.showAndWait();
+  }
 }
-
